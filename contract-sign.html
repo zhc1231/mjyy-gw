@@ -127,6 +127,97 @@
       font-weight: 600;
     }
 
+    .topbar-chevron {
+      width: 14px;
+      height: 14px;
+      color: var(--text-muted);
+      transition: transform 0.2s;
+    }
+
+    .topbar-user:hover .topbar-chevron {
+      transform: rotate(180deg);
+    }
+
+    .topbar-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 220px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      border: 1px solid var(--gray-100);
+      z-index: 1000;
+      display: none;
+      overflow: hidden;
+    }
+
+    .topbar-user:hover .topbar-dropdown,
+    .topbar-user:focus-within .topbar-dropdown {
+      display: block;
+    }
+
+    .topbar-banner {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--warning-light);
+      color: var(--warning);
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .topbar-banner-title {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .topbar-banner-desc {
+      font-size: 11px;
+      opacity: 0.8;
+    }
+
+    .topbar-dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      border: none;
+      background: none;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+      transition: background 0.2s;
+    }
+
+    .topbar-dropdown-item:hover {
+      background: var(--gray-50);
+    }
+
+    .topbar-dropdown-item svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .topbar-dropdown-item-primary {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .topbar-dropdown-divider {
+      height: 1px;
+      background: var(--gray-100);
+      margin: 4px 0;
+    }
+
+    .verify-name {
+      color: var(--text-muted);
+    }
+
     /* ===== 主内容区 ===== */
     .main-container {
       max-width: 960px;
@@ -578,6 +669,37 @@
         <div class="topbar-user" id="topbarUser">
           <div class="topbar-avatar" id="topbarAvatar">用</div>
           <span id="topbarName">用户</span>
+          <svg class="topbar-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2"/></svg>
+          <div class="topbar-dropdown" id="topbarDropdown">
+            <div id="verifyBanner" class="topbar-banner" style="display:none;">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="currentColor" stroke-width="2"/><path d="M12 9v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="17" r="1" fill="currentColor"/></svg>
+              <div>
+                <div class="topbar-banner-title">未完成实名认证</div>
+                <div class="topbar-banner-desc">完成认证后即可使用全部功能</div>
+              </div>
+            </div>
+            <a href="verify.html" class="topbar-dropdown-item" id="personalVerifyItem">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
+              <span>个人认证：<span class="verify-name" id="personalVerifyName">未认证</span></span>
+            </a>
+            <a href="verify.html" class="topbar-dropdown-item" id="enterpriseVerifyItem">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="2"/><polyline points="9 22 9 12 15 12 15 22" stroke="currentColor" stroke-width="2"/></svg>
+              <span>企业认证：<span class="verify-name" id="enterpriseVerifyName">未认证</span></span>
+            </a>
+            <a href="verify.html" class="topbar-dropdown-item topbar-dropdown-item-primary" id="verifyLink" style="display:none;">
+              <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span id="verifyLinkText">未认证 去认证</span>
+            </a>
+            <a href="#" class="topbar-dropdown-item topbar-dropdown-item-primary" id="enterSystemBtn">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="currentColor" stroke-width="2"/><path d="M12 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+              进入系统
+            </a>
+            <div class="topbar-dropdown-divider"></div>
+            <button class="topbar-dropdown-item" id="logoutBtn">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" stroke-width="2"/><polyline points="16 17 21 12 16 7" stroke="currentColor" stroke-width="2"/><line x1="21" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="2"/></svg>
+              退出登录
+            </button>
+          </div>
         </div>
         <a href="javascript:void(0)" class="topbar-exit" id="exitLink">
           <svg viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" stroke-width="2"/><polyline points="16 17 21 12 16 7" stroke="currentColor" stroke-width="2"/><line x1="21" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="2"/></svg>
@@ -763,6 +885,57 @@
       if (currentPlatform !== 'agent') {
         backBtn.style.display = 'none';
       }
+
+      function updateVerifyStatus() {
+        var personalVerified = localStorage.getItem('mjyy_personal_verified') === 'true';
+        var enterpriseVerified = localStorage.getItem('mjyy_enterprise_verified') === 'true';
+        
+        if (personalVerified) {
+          document.getElementById('personalVerifyName').textContent = '已认证';
+          document.getElementById('personalVerifyName').style.color = 'var(--success)';
+        }
+        if (enterpriseVerified) {
+          document.getElementById('enterpriseVerifyName').textContent = '已认证';
+          document.getElementById('enterpriseVerifyName').style.color = 'var(--success)';
+        }
+        
+        if (!personalVerified && !enterpriseVerified) {
+          document.getElementById('verifyBanner').style.display = 'flex';
+        }
+        
+        if (selectedAuthType === 'personal' && !personalVerified) {
+          document.getElementById('verifyLink').style.display = 'flex';
+          document.getElementById('verifyLinkText').textContent = '个人认证 去认证';
+        } else if (selectedAuthType === 'enterprise' && !enterpriseVerified) {
+          document.getElementById('verifyLink').style.display = 'flex';
+          document.getElementById('verifyLinkText').textContent = '企业认证 去认证';
+        }
+      }
+      updateVerifyStatus();
+
+      document.getElementById('enterSystemBtn').addEventListener('click', function(e) {
+        e.preventDefault();
+        if (currentPlatform === 'anxinyun') window.location.href = 'anxinyun.html';
+        else if (currentPlatform === 'agent') window.location.href = 'agent.html';
+        else window.location.href = 'minjiang.html';
+      });
+
+      document.getElementById('logoutBtn').addEventListener('click', function() {
+        localStorage.removeItem('mjyy_logged_in');
+        localStorage.removeItem('mjyy_user_data');
+        localStorage.removeItem('mjyy_personal_data');
+        localStorage.removeItem('mjyy_enterprise_data');
+        localStorage.removeItem('mjyy_identity_verified');
+        localStorage.removeItem('mjyy_contract_signed_minjiang');
+        localStorage.removeItem('mjyy_contract_signed_anxinyun');
+        localStorage.removeItem('mjyy_contract_signed_agent');
+        localStorage.removeItem('mjyy_verify_step');
+        localStorage.removeItem('mjyy_verify_target');
+        localStorage.removeItem('mjyy_from_platform');
+        localStorage.removeItem('mjyy_auth_type');
+        localStorage.removeItem('mjyy_contract_info');
+        window.location.href = 'login.html';
+      });
 
       var contracts = {
         minjiang: { name: '民匠有约 · 灵活用工服务合作协议', platform: '民匠有约',
