@@ -1066,7 +1066,7 @@
         <div class="step-circle">1</div>
         <div class="step-info">
           <div class="step-label">STEP 01</div>
-          <div class="step-title">认证方式</div>
+          <div class="step-title">登录</div>
         </div>
       </div>
       <div class="step-line"></div>
@@ -1082,7 +1082,7 @@
         <div class="step-circle">3</div>
         <div class="step-info">
           <div class="step-label">STEP 03</div>
-          <div class="step-title">认证确认</div>
+          <div class="step-title">认证</div>
         </div>
       </div>
     </div>
@@ -1382,7 +1382,7 @@
       </div>
     </div>
 
-    <!-- Step 3: 认证确认（手机号/人脸认证） -->
+    <!-- Step 3: 认证（手机号/人脸认证） -->
     <div class="panel" id="panel-verify-confirm">
       <div class="panel-header">
         <div class="alert alert-success" style="margin-bottom:16px;">
@@ -1696,9 +1696,9 @@
           var authCards = document.getElementById('authCards');
           if (authCards) authCards.style.display = 'none';
         }
-        // 步骤条第一步标题改为"企业认证"
+        // 步骤条第一步标题改为"登录"
         var step1Title = document.querySelector('.step[data-step="1"] .step-title');
-        if (step1Title) step1Title.textContent = '企业认证';
+        if (step1Title) step1Title.textContent = '登录';
       }
 
       // 退出模态框
@@ -1731,7 +1731,7 @@
         if (e.target === this) this.classList.remove('visible');
       });
 
-      // 步骤切换（3步：选择方式/企业认证、信息提交、认证确认）
+      // 步骤切换（3步：登录、信息提交、认证）
       function gotoStep(step) {
         currentStep = step;
         localStorage.setItem('mjyy_verify_step', String(step));
@@ -2030,7 +2030,7 @@
         }, 1000);
       });
 
-      // 认证确认面板事件
+      // 认证面板事件
       var verifyMethod = 'sms';
       var verifyMethodsEl = document.getElementById('verifyMethods');
       verifyMethodsEl.addEventListener('click', function(e) {
