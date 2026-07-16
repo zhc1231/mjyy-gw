@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>渠道代理 - 选择身份类型</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .agent-select-page {
+      min-height: 100vh;
+      background: linear-gradient(180deg, #FFF7E6 0%, #FFFFFF 40%, #F9FAFB 100%);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .agent-select-nav {
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .agent-select-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .agent-select-brand-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #FA8C16, #FFA940);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 900;
+      font-size: 18px;
+    }
+
+    .agent-select-back {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      transition: var(--transition);
+    }
+
+    .agent-select-back:hover {
+      color: var(--primary);
+    }
+
+    .agent-select-main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px 80px;
+    }
+
+    .agent-select-content {
+      max-width: 960px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .agent-select-header {
+      margin-bottom: 56px;
+    }
+
+    .agent-select-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      background: rgba(250,140,22,0.1);
+      color: #FA8C16;
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: var(--radius-full);
+      margin-bottom: 20px;
+      border: 1px solid rgba(250,140,22,0.15);
+    }
+
+    .agent-select-title {
+      font-size: 40px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.2;
+      margin-bottom: 14px;
+      letter-spacing: -0.5px;
+    }
+
+    .agent-select-title-grad {
+      background: linear-gradient(135deg, #FA8C16, #F5222D);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .agent-select-desc {
+      font-size: 16px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    .agent-select-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .agent-type-card {
+      background: #fff;
+      border-radius: var(--radius-2xl);
+      padding: 48px 40px;
+      border: 2px solid var(--gray-200);
+      transition: var(--transition-slow);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      text-align: left;
+    }
+
+    .agent-type-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: var(--card-grad, linear-gradient(135deg, #FA8C16, #FFA940));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: var(--transition-slow);
+    }
+
+    .agent-type-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 24px 60px rgba(250,140,22,0.15);
+      border-color: transparent;
+    }
+
+    .agent-type-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .agent-type-card.personal {
+      --card-grad: linear-gradient(135deg, #722ED1, #9254DE);
+    }
+
+    .agent-type-card.enterprise {
+      --card-grad: linear-gradient(135deg, #FA8C16, #FFA940);
+    }
+
+    .agent-type-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 28px;
+      transition: var(--transition);
+    }
+
+    .agent-type-card.personal .agent-type-icon {
+      background: linear-gradient(135deg, #722ED1, #9254DE);
+      box-shadow: 0 10px 24px rgba(114,46,209,0.25);
+    }
+
+    .agent-type-card.enterprise .agent-type-icon {
+      background: linear-gradient(135deg, #FA8C16, #FFA940);
+      box-shadow: 0 10px 24px rgba(250,140,22,0.25);
+    }
+
+    .agent-type-card:hover .agent-type-icon {
+      transform: scale(1.05);
+    }
+
+    .agent-type-title {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .agent-type-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .agent-type-features {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 36px;
+    }
+
+    .agent-type-feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .agent-type-feature .icon {
+      color: var(--green);
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .agent-type-action {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 24px;
+      border-top: 1px solid var(--gray-100);
+    }
+
+    .agent-type-btn {
+      padding: 12px 28px;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .agent-type-card.personal .agent-type-btn {
+      background: linear-gradient(135deg, #722ED1, #9254DE);
+      box-shadow: 0 4px 12px rgba(114,46,209,0.2);
+    }
+
+    .agent-type-card.enterprise .agent-type-btn {
+      background: linear-gradient(135deg, #FA8C16, #FFA940);
+      box-shadow: 0 4px 12px rgba(250,140,22,0.2);
+    }
+
+    .agent-type-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .agent-type-link {
+      font-size: 13px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: var(--transition);
+    }
+
+    .agent-type-card:hover .agent-type-link {
+      color: var(--text-secondary);
+    }
+
+    .agent-select-bottom {
+      margin-top: 56px;
+      padding-top: 32px;
+      border-top: 1px solid var(--gray-200);
+    }
+
+    .agent-select-bottom-text {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .agent-select-contact {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .agent-select-contact-btn {
+      padding: 10px 24px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 500;
+      border: 1px solid var(--gray-300);
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition);
+    }
+
+    .agent-select-contact-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    @media (max-width: 768px) {
+      .agent-select-nav {
+        padding: 16px 20px;
+      }
+      .agent-select-title {
+        font-size: 28px;
+      }
+      .agent-select-cards {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      .agent-type-card {
+        padding: 32px 24px;
+      }
+      .agent-type-title {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="agent-select-page">
+    <!-- 顶部导航 -->
+    <div class="agent-select-nav">
+      <a href="index.html" class="agent-select-brand">
+        <div class="agent-select-brand-icon">匠</div>
+        民匠有约
+      </a>
+      <a href="index.html" class="agent-select-back">
+        <span class="icon icon-arrow-left icon-sm"></span>
+        返回首页
+      </a>
+    </div>
+
+    <!-- 主内容区 -->
+    <div class="agent-select-main">
+      <div class="agent-select-content">
+        <div class="agent-select-header">
+          <span class="agent-select-tag">
+            <span class="icon icon-handshake icon-sm"></span>
+            渠道代理合伙人计划
+          </span>
+          <h1 class="agent-select-title">
+            选择您的<span class="agent-select-title-grad">代理身份</span>
+          </h1>
+          <p class="agent-select-desc">根据您的资源和运营模式，选择适合的代理类型，与民匠有约共创事业新篇章</p>
+        </div>
+
+        <div class="agent-select-cards">
+          <!-- 个人代理 -->
+          <a href="agent.html?type=personal" class="agent-type-card personal">
+            <div class="agent-type-icon">
+              <span class="icon icon-user icon-lg icon-white"></span>
+            </div>
+            <h3 class="agent-type-title">个人代理</h3>
+            <div class="agent-type-subtitle">适合个人创业者 · 自由职业者</div>
+            <div class="agent-type-features">
+              <div class="agent-type-feature">
+                <span class="icon icon-check icon-sm"></span>
+                <span>低门槛入驻，快速启动事业</span>
+              </div>
+              <div class="agent-type-feature">
+                <span class="icon icon-check icon-sm"></span>
+                <span>灵活办公，时间自由掌控</span>
+              </div>
+              <div class="agent-type-feature">
+                <span class="icon icon-check icon-sm"></span>
+                <span>推荐奖励 + 流水分成双重收益</span>
+              </div>
+              <div class="agent-type-feature">
+                <span class="icon icon-check icon-sm"></span>
+                <span>总部培训支持，新手快速上手</span>
+              </div>
+            </div>
+            <div class="agent-type-action">
+              <span class="agent-type-btn">
+                立即申请
+                <span class="icon icon-arrow-right icon-sm"></span>
+              </span>
+              <span class="agent-type-link">
+                了解详情
+                <span class="icon icon-arrow-right icon-sm" style="width:12px;height:12px;"></span>
+              </span>
+            </div>
+          </a>
+
+          <!-- 企业代理 -->
+          <a href="agent.html?type=enterprise" class="agent-type-card enterprise">
+            <div class="agent-type-icon">
+              <span class="icon icon-building icon-lg icon-white"></span>
+            </div>
+            <h3 class="agent-type-title">企业代理</h3>
+            <div class="agent-type-subtitle">适合企业客户 · 区域合作伙伴</div>
+            <div class="agent-type-features">
+              <div class="agent-type-feature">
+                <span class="icon icon-check icon-sm"></span>
+                <span>区域独家代理权，市场独享</span>
+              </div>
+              <div class="agent-type-feature">
+                <span class="icon icon-check icon-sm"></span>
+                <span>高达 30% 交易流水分成</span>
+              </div>
+              <div class="agent-type-feature">
+                <span class="icon icon-check icon-sm"></span>
+                <span>全渠道营销支持 + 物料供应</span>
+              </div>
+              <div class="agent-type-feature">
+                <span class="icon icon-check icon-sm"></span>
+                <span>专属客户经理一对一服务</span>
+              </div>
+            </div>
+            <div class="agent-type-action">
+              <span class="agent-type-btn">
+                立即加盟
+                <span class="icon icon-arrow-right icon-sm"></span>
+              </span>
+              <span class="agent-type-link">
+                了解详情
+                <span class="icon icon-arrow-right icon-sm" style="width:12px;height:12px;"></span>
+              </span>
+            </div>
+          </a>
+        </div>
+
+        <!-- 底部联系 -->
+        <div class="agent-select-bottom">
+          <div class="agent-select-bottom-text">不确定选择哪种代理类型？让专业顾问为您解答</div>
+          <div class="agent-select-contact">
+            <a href="contact.html" class="agent-select-contact-btn">
+              <span class="icon icon-phone icon-sm"></span>
+              咨询热线 400-158-7877
+            </a>
+            <a href="contact.html" class="agent-select-contact-btn">
+              <span class="icon icon-mail icon-sm"></span>
+              在线咨询
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

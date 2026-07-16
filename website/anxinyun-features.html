@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>产品功能 - 民匠安心云</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    :root {
+      --brand-primary: #0F52BA;
+      --brand-primary-dark: #0A3A7D;
+      --brand-primary-50: #EEF4FF;
+      --brand-primary-100: #D6E4FF;
+      --brand-grad: linear-gradient(135deg, #0F52BA 0%, #1E90FF 100%);
+      --brand-grad-light: linear-gradient(180deg, #EEF4FF 0%, #FFFFFF 100%);
+    }
+    .page-hero {
+      position: relative;
+      padding: 80px 24px 60px;
+      background: var(--brand-grad-light);
+      overflow: hidden;
+    }
+    .page-hero::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      right: -100px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(19,194,194,0.1) 0%, transparent 60%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .page-hero-inner {
+      max-width: var(--container);
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+    .page-hero-title {
+      font-size: 42px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .page-hero-title-grad {
+      background: var(--brand-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .page-hero-desc {
+      font-size: 17px;
+      color: var(--text-secondary);
+      line-height: 1.75;
+      max-width: 600px;
+      margin: 0 auto 32px;
+    }
+    .brand-cta {
+      background: var(--brand-grad);
+    }
+    .feature-detail-card {
+      background: #fff;
+      border-radius: var(--radius-2xl);
+      padding: 40px;
+      border: 1px solid var(--gray-200);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+      transition: all 0.3s;
+    }
+    .feature-detail-card:hover {
+      box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+      transform: translateY(-4px);
+    }
+    .feature-detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    @media (max-width: 900px) {
+      .feature-detail-grid {
+        grid-template-columns: 1fr;
+      }
+      .page-hero-title { font-size: 32px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="topbar-left">
+        <span>欢迎来到民匠安心云</span>
+        <span class="topbar-divider">|</span>
+        <a href="#">服务商中心</a>
+        <a href="#">开发者中心</a>
+      </div>
+      <div class="topbar-right">
+        <a href="index.html">返回主站</a>
+        <span class="topbar-divider">|</span>
+        <a href="#">服务协议</a>
+        <a href="#">隐私政策</a>
+        <span class="topbar-divider">|</span>
+        <a href="#">简体中文</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <div class="nav-left">
+        <a href="index.html" class="nav-brand">
+          <img src="https://oss.minjiangyouyue.com/mjlogo/logo01.png" alt="民匠安心云" style="height:36px;border-radius:8px;">
+          民匠安心云
+        </a>
+        <div class="nav-links">
+          <a href="anxinyun.html" class="nav-link">首页</a>
+          <a href="anxinyun-features.html" class="nav-link active">产品功能</a>
+          <a href="anxinyun-scenarios.html" class="nav-link">应用场景</a>
+          <a href="anxinyun-tax.html" class="nav-link">技术对接</a>
+          <a href="anxinyun-help.html" class="nav-link">帮助中心</a>
+        </div>
+      </div>
+      <div class="nav-right" id="navRight">
+        <a href="contact.html" class="nav-link-text">联系商务</a>
+        <a href="login.html" class="btn btn-primary" id="navLogin" style="--primary: #0F52BA;">登录平台</a>
+        <div class="user-status" id="userStatus">
+          <div class="user-avatar">用</div>
+          <span class="user-name">企业用户</span>
+          <svg class="user-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2"/></svg>
+          <div class="user-dropdown" id="userDropdown">
+            <div id="verifyBanner" class="verify-banner">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="currentColor" stroke-width="2"/><path d="M12 9v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="17" r="1" fill="currentColor"/></svg>
+              <div>
+                <div class="verify-banner-title">未完成实名认证</div>
+                <div class="verify-banner-desc">完成认证后即可使用全部功能</div>
+              </div>
+            </div>
+            <a href="verify.html" class="user-dropdown-item" id="personalVerifyItem">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
+              <span>个人认证：<span class="verify-name" id="personalVerifyName">未认证</span></span>
+            </a>
+            <a href="verify.html" class="user-dropdown-item" id="enterpriseVerifyItem">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="2"/><polyline points="9 22 9 12 15 12 15 22" stroke="currentColor" stroke-width="2"/></svg>
+              <span>企业认证：<span class="verify-name" id="enterpriseVerifyName">未认证</span></span>
+            </a>
+            <a href="verify.html" class="user-dropdown-item user-dropdown-item-primary" id="verifyLink" style="display:none;">
+              <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span id="verifyLinkText">未认证 去认证</span>
+            </a>
+            <a href="#" class="user-dropdown-item user-dropdown-item-primary" id="enterSystemBtn">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="currentColor" stroke-width="2"/><path d="M12 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+              进入系统
+            </a>
+            <div class="user-dropdown-divider"></div>
+            <button class="user-dropdown-item" id="logoutBtn">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" stroke-width="2"/><polyline points="16 17 21 12 16 7" stroke="currentColor" stroke-width="2"/><line x1="21" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="2"/></svg>
+              退出登录
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="page-hero">
+    <div class="page-hero-inner">
+      <h1 class="page-hero-title">
+        数字化内部管理<br>
+        <span class="page-hero-title-grad">智能高效</span>
+      </h1>
+      <p class="page-hero-desc">
+        民匠安心云提供一站式企业内部管理解决方案，助力企业高效协同，提升管理效率
+      </p>
+    </div>
+  </section>
+
+  <!-- 功能详情 -->
+  <section class="section">
+    <div class="feature-detail-grid">
+      <div class="feature-detail-card reveal">
+        <div style="width: 56px; height: 56px; border-radius: 14px; background: linear-gradient(135deg, #0F52BA, #1E90FF); display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+          <svg viewBox="0 0 24 24" fill="none" width="28" height="28"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#fff" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="#fff" stroke-width="2"/><line x1="16" y1="13" x2="8" y2="13" stroke="#fff" stroke-width="2"/><line x1="16" y1="17" x2="8" y2="17" stroke="#fff" stroke-width="2"/><polyline points="10 9 9 9 8 9" stroke="#fff" stroke-width="2"/></svg>
+        </div>
+        <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 12px;">审批流程管理</h3>
+        <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 16px;">自定义审批模板，可视化流程设计器，灵活配置审批节点，让审批更高效。</p>
+        <ul style="list-style: none; padding: 0;">
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #0F52BA; margin-right: 8px;">&#10003;</span>可视化流程设计器</li>
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #0F52BA; margin-right: 8px;">&#10003;</span>会签、或签、转办模式</li>
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #0F52BA; margin-right: 8px;">&#10003;</span>移动端随时审批</li>
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #0F52BA; margin-right: 8px;">&#10003;</span>审批数据自动归档</li>
+        </ul>
+      </div>
+
+      <div class="feature-detail-card reveal">
+        <div style="width: 56px; height: 56px; border-radius: 14px; background: linear-gradient(135deg, #722ED1, #9254DE); display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+          <svg viewBox="0 0 24 24" fill="none" width="28" height="28"><circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="2"/><polyline points="12 6 12 12 16 14" stroke="#fff" stroke-width="2"/></svg>
+        </div>
+        <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 12px;">考勤打卡管理</h3>
+        <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 16px;">多种打卡方式，智能排班系统，自动生成考勤报表，让考勤管理更轻松。</p>
+        <ul style="list-style: none; padding: 0;">
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #722ED1; margin-right: 8px;">&#10003;</span>GPS/WiFi/人脸打卡</li>
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #722ED1; margin-right: 8px;">&#10003;</span>智能排班系统</li>
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #722ED1; margin-right: 8px;">&#10003;</span>考勤报表自动生成</li>
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #722ED1; margin-right: 8px;">&#10003;</span>异常考勤自动提醒</li>
+        </ul>
+      </div>
+
+      <div class="feature-detail-card reveal">
+        <div style="width: 56px; height: 56px; border-radius: 14px; background: linear-gradient(135deg, #FA8C16, #FF7A45); display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+          <svg viewBox="0 0 24 24" fill="none" width="28" height="28"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="#fff" stroke-width="2"/><polyline points="17 8 12 3 7 8" stroke="#fff" stroke-width="2"/><line x1="12" y1="3" x2="12" y2="15" stroke="#fff" stroke-width="2"/></svg>
+        </div>
+        <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 12px;">组织架构管理</h3>
+        <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 16px;">可视化组织架构图，员工档案管理，企业通讯录，人员异动全流程管理。</p>
+        <ul style="list-style: none; padding: 0;">
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #FA8C16; margin-right: 8px;">&#10003;</span>可视化组织架构</li>
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #FA8C16; margin-right: 8px;">&#10003;</span>员工电子档案</li>
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #FA8C16; margin-right: 8px;">&#10003;</span>企业通讯录</li>
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #FA8C16; margin-right: 8px;">&#10003;</span>入转调离全流程</li>
+        </ul>
+      </div>
+
+      <div class="feature-detail-card reveal">
+        <div style="width: 56px; height: 56px; border-radius: 14px; background: linear-gradient(135deg, #1677FF, #4096FF); display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+          <svg viewBox="0 0 24 24" fill="none" width="28" height="28"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="#fff" stroke-width="2"/><circle cx="8.5" cy="7" r="4" stroke="#fff" stroke-width="2"/><line x1="20" y1="8" x2="20" y2="14" stroke="#fff" stroke-width="2"/><line x1="23" y1="11" x2="17" y2="11" stroke="#fff" stroke-width="2"/></svg>
+        </div>
+        <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 12px;">任务协作管理</h3>
+        <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 16px;">任务创建、分配、跟进、汇报，支持项目看板，团队协作更高效。</p>
+        <ul style="list-style: none; padding: 0;">
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #1677FF; margin-right: 8px;">&#10003;</span>任务分配与跟进</li>
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #1677FF; margin-right: 8px;">&#10003;</span>项目看板视图</li>
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #1677FF; margin-right: 8px;">&#10003;</span>进度实时同步</li>
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #1677FF; margin-right: 8px;">&#10003;</span>团队协同办公</li>
+        </ul>
+      </div>
+
+      <div class="feature-detail-card reveal">
+        <div style="width: 56px; height: 56px; border-radius: 14px; background: linear-gradient(135deg, #52C41A, #73D13D); display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+          <svg viewBox="0 0 24 24" fill="none" width="28" height="28"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="#fff" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="#fff" stroke-width="2"/><line x1="16" y1="13" x2="8" y2="13" stroke="#fff" stroke-width="2"/><line x1="16" y1="17" x2="8" y2="17" stroke="#fff" stroke-width="2"/><polyline points="10 9 9 9 8 9" stroke="#fff" stroke-width="2"/></svg>
+        </div>
+        <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 12px;">文件知识管理</h3>
+        <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 16px;">企业知识库、文档在线预览、权限分级管理，文件安全有保障。</p>
+        <ul style="list-style: none; padding: 0;">
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #52C41A; margin-right: 8px;">&#10003;</span>企业知识库建设</li>
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #52C41A; margin-right: 8px;">&#10003;</span>文档在线预览</li>
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #52C41A; margin-right: 8px;">&#10003;</span>权限分级管理</li>
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #52C41A; margin-right: 8px;">&#10003;</span>文件版本控制</li>
+        </ul>
+      </div>
+
+      <div class="feature-detail-card reveal">
+        <div style="width: 56px; height: 56px; border-radius: 14px; background: linear-gradient(135deg, #EB2F96, #F759AB); display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+          <svg viewBox="0 0 24 24" fill="none" width="28" height="28"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#fff" stroke-width="2"/><path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="2"/></svg>
+        </div>
+        <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 12px;">公告通知系统</h3>
+        <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 16px;">企业公告发布、通知推送、阅读回执，确保信息传达无遗漏。</p>
+        <ul style="list-style: none; padding: 0;">
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #EB2F96; margin-right: 8px;">&#10003;</span>公告分类发布</li>
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #EB2F96; margin-right: 8px;">&#10003;</span>多端消息推送</li>
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #EB2F96; margin-right: 8px;">&#10003;</span>阅读回执统计</li>
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #EB2F96; margin-right: 8px;">&#10003;</span>重要通知置顶</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section">
+    <div class="cta-banner brand-cta reveal">
+      <div class="cta-inner">
+        <h2 class="cta-title">开启数字化内部管理</h2>
+        <p class="cta-desc">立即注册，体验民匠安心云全平台服务</p>
+        <div class="cta-actions">
+          <a href="login.html" class="btn btn-white btn-large">免费试用</a>
+          <a href="contact.html" class="btn btn-ghost-white btn-large">联系商务</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="footer-brand">
+            <img src="https://oss.minjiangyouyue.com/mjlogo/logo01.png" alt="民匠安心云" style="height:36px;border-radius:8px;margin-right:8px;">
+            民匠安心云
+          </div>
+          <p class="footer-desc">企业数字化内部管理平台，让企业管理更智能更高效</p>
+        </div>
+        <div>
+          <div class="footer-title">产品服务</div>
+          <ul class="footer-links">
+            <li><a href="anxinyun.html">首页</a></li>
+            <li><a href="anxinyun-features.html">产品功能</a></li>
+            <li><a href="anxinyun-scenarios.html">应用场景</a></li>
+            <li><a href="anxinyun-tax.html">技术对接</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-title">支持</div>
+          <ul class="footer-links">
+            <li><a href="anxinyun-help.html">帮助中心</a></li>
+            <li><a href="#">服务协议</a></li>
+            <li><a href="#">隐私政策</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2024 民匠安心云 版权所有 浙江良巧匠网络科技</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

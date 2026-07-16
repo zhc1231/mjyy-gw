@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>联系我们 - 民匠有约</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="topbar-left">
+        <span>欢迎来到民匠有约</span>
+        <span class="topbar-divider">|</span>
+        <a href="#">服务商中心</a>
+        <a href="#">开发者中心</a>
+      </div>
+      <div class="topbar-right">
+        <a href="#">控制台</a>
+        <span class="topbar-divider">|</span>
+        <a href="#">服务协议</a>
+        <a href="#">隐私政策</a>
+        <span class="topbar-divider">|</span>
+        <a href="#">简体中文</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <div class="nav-left">
+        <a href="index.html" class="nav-brand">
+          <img src="https://oss.minjiangyouyue.com/mjlogo/logo02.png" alt="民匠有约" style="height:36px;border-radius:8px;">
+          民匠有约
+        </a>
+        <div class="nav-links">
+          <a href="index.html" class="nav-link">首页</a>
+          <a href="minjiang.html" class="nav-link">民匠有约</a>
+          <a href="anxinyun.html" class="nav-link">安心云</a>
+          <a href="agent.html" class="nav-link">代理招募</a>
+          <a href="contact.html" class="nav-link active">联系我们</a>
+        </div>
+      </div>
+      <div class="nav-right" id="navRight">
+        <a href="tel:400-158-7877" class="nav-link-text"><span class="icon icon-phone icon-sm"></span> 400-158-7877</a>
+        <a href="login.html" class="btn btn-primary" id="navLogin">登录平台</a>
+        <div class="user-status" id="userStatus">
+          <div class="user-avatar">用</div>
+          <span class="user-name">企业用户</span>
+          <svg class="user-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2"/></svg>
+          <div class="user-dropdown" id="userDropdown">
+            <div id="verifyBanner" class="verify-banner">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="currentColor" stroke-width="2"/><path d="M12 9v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="17" r="1" fill="currentColor"/></svg>
+              <div>
+                <div class="verify-banner-title">未完成实名认证</div>
+                <div class="verify-banner-desc">完成认证后即可使用全部功能</div>
+              </div>
+            </div>
+            <a href="verify.html" class="user-dropdown-item" id="personalVerifyItem">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
+              <span>个人认证：<span class="verify-name" id="personalVerifyName">未认证</span></span>
+            </a>
+            <a href="verify.html" class="user-dropdown-item" id="enterpriseVerifyItem">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="2"/><polyline points="9 22 9 12 15 12 15 22" stroke="currentColor" stroke-width="2"/></svg>
+              <span>企业认证：<span class="verify-name" id="enterpriseVerifyName">未认证</span></span>
+            </a>
+            <a href="verify.html" class="user-dropdown-item user-dropdown-item-primary" id="verifyLink" style="display:none;">
+              <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span id="verifyLinkText">未认证 去认证</span>
+            </a>
+            <a href="#" class="user-dropdown-item user-dropdown-item-primary" id="enterSystemBtn">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="currentColor" stroke-width="2"/><path d="M12 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+              进入系统
+            </a>
+            <div class="user-dropdown-divider"></div>
+            <button class="user-dropdown-item" id="logoutBtn">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" stroke-width="2"/><polyline points="16 17 21 12 16 7" stroke="currentColor" stroke-width="2"/><line x1="21" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="2"/></svg>
+              退出登录
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <header class="page-header" style="background: linear-gradient(180deg, #E6F0FF 0%, #FFFFFF 100%);">
+    <div class="page-header-content reveal">
+      <span class="page-header-tag"><span class="icon icon-phone icon-sm"></span> 我们随时为您服务</span>
+      <h1 class="page-header-title">联系<br><span class="section-title-grad">民匠有约</span></h1>
+      <p class="page-header-desc">多渠道客服支持，7×24 小时全天候为您解答疑惑</p>
+    </div>
+  </header>
+
+  <!-- 联系方式 -->
+  <section class="section">
+    <div class="section-header reveal">
+      <span class="section-tag">联系方式</span>
+      <h2 class="section-title">多种方式<br><span class="section-title-grad">联系我们</span></h2>
+    </div>
+    <div class="product-matrix">
+      <div class="product-card reveal" style="--accent: #1677FF; --accent-bg: #E6F0FF;">
+        <div class="product-card-icon"><span class="icon icon-phone"></span></div>
+        <div class="product-card-title">客服热线</div>
+        <div class="product-card-text" style="font-size: 18px; font-weight: 700; color: var(--primary);">400-158-7877</div>
+        <div class="product-card-text" style="min-height: auto; font-size: 12px;">7×24 小时为您服务</div>
+        <a href="tel:400-158-7877" class="product-card-link">立即拨打 <span class="icon icon-arrow-right icon-sm"></span></a>
+      </div>
+      <div class="product-card reveal" style="--accent: #722ED1; --accent-bg: #F0E6FF;">
+        <div class="product-card-icon"><span class="icon icon-mail"></span></div>
+        <div class="product-card-title">邮箱咨询</div>
+        <div class="product-card-text" style="font-size: 14px; color: var(--purple); font-weight: 500;">service@minjiang.com</div>
+        <div class="product-card-text" style="min-height: auto; font-size: 12px;">24 小时内回复</div>
+        <a href="mailto:service@minjiang.com" class="product-card-link">发送邮件 <span class="icon icon-arrow-right icon-sm"></span></a>
+      </div>
+      <div class="product-card reveal" style="--accent: #13C2C2; --accent-bg: #E6FFFB;">
+        <div class="product-card-icon"><span class="icon icon-message"></span></div>
+        <div class="product-card-title">在线客服</div>
+        <div class="product-card-text">9:00-21:00 在线即时响应</div>
+        <div class="product-card-text" style="min-height: auto; font-size: 12px;">专业顾问 1v1 沟通</div>
+        <a href="#" class="product-card-link">开始咨询 <span class="icon icon-arrow-right icon-sm"></span></a>
+      </div>
+      <div class="product-card reveal" style="--accent: #FA8C16; --accent-bg: #FFF7E6;">
+        <div class="product-card-icon"><span class="icon icon-map-pin"></span></div>
+        <div class="product-card-title">实地到访</div>
+        <div class="product-card-text" style="font-size: 14px; color: var(--orange);">杭州总部</div>
+        <div class="product-card-text" style="min-height: auto; font-size: 12px;">工作日 9:00-18:00</div>
+        <a href="#address" class="product-card-link">查看地址 <span class="icon icon-arrow-right icon-sm"></span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 商务咨询区 -->
+  <section class="section section-soft">
+    <div class="showcase">
+      <div class="reveal">
+        <span class="section-tag">商务合作</span>
+        <h3 class="showcase-content-title">4 大业务 <span class="section-title-grad">对接邮箱</span></h3>
+        <p class="showcase-content-text">对接专项业务，邮件更高效</p>
+        <ul class="showcase-list">
+          <li>企业合作：bd@minjiang.com</li>
+          <li>代理合作：agent@minjiang.com</li>
+          <li>媒体合作：pr@minjiang.com</li>
+          <li>投诉建议：feedback@minjiang.com</li>
+        </ul>
+        <a href="tel:400-158-7877" class="btn btn-primary"><span class="icon icon-phone icon-sm"></span> 400-158-7877</a>
+      </div>
+      <div class="showcase-visual reveal" style="background: linear-gradient(135deg, #E6F0FF, #F0E6FF);">
+        <span class="icon icon-phone icon-white" style="width:80px;height:80px;opacity:0.4;"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 留言表单 -->
+  <section class="section">
+    <div class="section-header reveal">
+      <span class="section-tag">在线留言</span>
+      <h2 class="section-title">给我们 <span class="section-title-grad">留言</span></h2>
+      <p class="section-desc">填写以下表单，专属顾问将在 24 小时内与您联系</p>
+    </div>
+    <div style="max-width: 720px; margin: 0 auto; background: white; border: 1px solid var(--gray-200); border-radius: var(--radius-xl); padding: 40px;" class="reveal">
+      <form>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div class="form-group">
+            <label class="form-label">姓名 <span style="color: var(--red);">*</span></label>
+            <input class="form-input" placeholder="请输入您的姓名" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">公司/组织</label>
+            <input class="form-input" placeholder="请输入公司名称">
+          </div>
+          <div class="form-group">
+            <label class="form-label">手机号 <span style="color: var(--red);">*</span></label>
+            <input class="form-input" placeholder="请输入手机号" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">邮箱</label>
+            <input class="form-input" placeholder="请输入邮箱">
+          </div>
+          <div class="form-group" style="grid-column: span 2;">
+            <label class="form-label">咨询类型 <span style="color: var(--red);">*</span></label>
+            <select class="form-input" required>
+              <option>请选择咨询类型</option>
+              <option>企业合作咨询</option>
+              <option>城市代理申请</option>
+              <option>产品使用咨询</option>
+              <option>媒体合作</option>
+              <option>投诉与建议</option>
+              <option>其他</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">留言内容 <span style="color: var(--red);">*</span></label>
+          <textarea class="form-input" placeholder="请详细描述您的需求或问题" required></textarea>
+        </div>
+        <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; cursor: pointer;">
+          <input type="checkbox" checked>
+          同意接收民匠有约的邮件与短信通知
+        </label>
+        <button type="submit" class="btn btn-primary btn-large btn-block">提交留言</button>
+        <p style="margin-top: 12px; font-size: 12px; color: var(--text-muted); text-align: center;">提交即表示您同意《民匠有约用户协议》和《隐私政策》</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- 地址 -->
+  <section class="section section-soft" id="address">
+    <div class="section-header reveal">
+      <span class="section-tag">公司地址</span>
+      <h2 class="section-title">到访 <span class="section-title-grad">民匠有约</span></h2>
+    </div>
+    <div style="max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px;" class="reveal">
+      <div style="background: white; border: 1px solid var(--gray-200); border-radius: var(--radius-xl); overflow: hidden;">
+        <div style="width: 100%; aspect-ratio: 1.6/1; background: linear-gradient(135deg, #E6F0FF, #F0E6FF); position: relative; overflow: hidden;">
+          <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;">
+            <span class="icon icon-map" style="width:80px;height:80px;opacity:0.4;"></span>
+          </div>
+          <div style="position: absolute; top: 16px; left: 16px; background: white; padding: 8px 16px; border-radius: var(--radius); box-shadow: var(--shadow); font-size: 13px; color: var(--text); font-weight: 500; display: flex; align-items: center; gap: 6px;"><span class="icon icon-map-pin icon-sm" style="color: var(--primary);"></span> 杭州总部</div>
+        </div>
+      </div>
+      <div style="background: white; border: 1px solid var(--gray-200); border-radius: var(--radius-xl); padding: 40px;">
+        <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 20px; color: var(--text);">浙江良巧匠网络科技</h3>
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; gap: 12px; align-items: flex-start;">
+            <div style="width: 36px; height: 36px; background: var(--primary-50); color: var(--primary); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><span class="icon icon-map-pin icon-sm"></span></div>
+            <div>
+              <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 2px;">总部地址</div>
+              <div style="font-size: 14px; color: var(--text);">杭州市钱塘区下沙街道学源街 1366 号</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: flex-start;">
+            <div style="width: 36px; height: 36px; background: rgba(114,46,209,0.1); color: var(--purple); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><span class="icon icon-phone icon-sm"></span></div>
+            <div>
+              <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 2px;">客服热线</div>
+              <div style="font-size: 16px; color: var(--text); font-weight: 600;">400-158-7877</div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">7×24 小时为您服务</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: flex-start;">
+            <div style="width: 36px; height: 36px; background: rgba(19,194,194,0.1); color: var(--cyan); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><span class="icon icon-mail icon-sm"></span></div>
+            <div>
+              <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 2px;">业务邮箱</div>
+              <div style="font-size: 14px; color: var(--text);">service@minjiang.com</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: flex-start;">
+            <div style="width: 36px; height: 36px; background: rgba(250,140,22,0.1); color: var(--orange); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><span class="icon icon-clock icon-sm"></span></div>
+            <div>
+              <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 2px;">工作时间</div>
+              <div style="font-size: 14px; color: var(--text);">周一至周日 9:00-21:00</div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--gray-200); display: flex; gap: 12px;">
+          <a href="tel:400-158-7877" class="btn btn-primary" style="flex: 1;"><span class="icon icon-phone icon-sm"></span> 电话咨询</a>
+          <a href="#" class="btn btn-outline" style="flex: 1;"><span class="icon icon-message icon-sm"></span> 在线咨询</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section">
+    <div class="section-header reveal">
+      <span class="section-tag">常见问题</span>
+      <h2 class="section-title">您可能想 <span class="section-title-grad">了解</span></h2>
+    </div>
+    <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px;" class="reveal">
+      <details style="background: white; border: 1px solid var(--gray-200); border-radius: var(--radius-lg); padding: 20px; cursor: pointer;">
+        <summary style="font-size: 15px; font-weight: 500; color: var(--text); list-style: none; display: flex; justify-content: space-between; align-items: center;">如何成为民匠有约的城市代理？<span style="color: var(--primary); font-size: 20px;">+</span></summary>
+        <p style="margin-top: 12px; font-size: 13px; color: var(--text-secondary); line-height: 1.7;">您可以前往「代理招募」页面提交申请，或直接联系招商经理。我们将在 3-5 个工作日内完成审核，审核通过后会有专人对接签约事宜。</p>
+      </details>
+      <details style="background: white; border: 1px solid var(--gray-200); border-radius: var(--radius-lg); padding: 20px; cursor: pointer;">
+        <summary style="font-size: 15px; font-weight: 500; color: var(--text); list-style: none; display: flex; justify-content: space-between; align-items: center;">民匠有约是免费的吗？<span style="color: var(--primary); font-size: 20px;">+</span></summary>
+        <p style="margin-top: 12px; font-size: 13px; color: var(--text-secondary); line-height: 1.7;">注册与基础功能完全免费。平台仅在交易达成后收取少量技术服务费。详细费率请联系商务咨询。</p>
+      </details>
+      <details style="background: white; border: 1px solid var(--gray-200); border-radius: var(--radius-lg); padding: 20px; cursor: pointer;">
+        <summary style="font-size: 15px; font-weight: 500; color: var(--text); list-style: none; display: flex; justify-content: space-between; align-items: center;">个人接单者如何提现？<span style="color: var(--primary); font-size: 20px;">+</span></summary>
+        <p style="margin-top: 12px; font-size: 13px; color: var(--text-secondary); line-height: 1.7;">任务验收完成后，平台支持实时结算。接单者可通过 APP 提现至微信/支付宝/银行卡，最快 1 小时内到账。</p>
+      </details>
+      <details style="background: white; border: 1px solid var(--gray-200); border-radius: var(--radius-lg); padding: 20px; cursor: pointer;">
+        <summary style="font-size: 15px; font-weight: 500; color: var(--text); list-style: none; display: flex; justify-content: space-between; align-items: center;">安心云包含哪些核心功能？<span style="color: var(--primary); font-size: 20px;">+</span></summary>
+        <p style="margin-top: 12px; font-size: 13px; color: var(--text-secondary); line-height: 1.7;">安心云包含隐患排查、视频监控、安全培训、应急响应、保险理赔、数据大屏等核心能力。</p>
+      </details>
+      <details style="background: white; border: 1px solid var(--gray-200); border-radius: var(--radius-lg); padding: 20px; cursor: pointer;">
+        <summary style="font-size: 15px; font-weight: 500; color: var(--text); list-style: none; display: flex; justify-content: space-between; align-items: center;">如何联系企业合作？<span style="color: var(--primary); font-size: 20px;">+</span></summary>
+        <p style="margin-top: 12px; font-size: 13px; color: var(--text-secondary); line-height: 1.7;">企业合作请联系 bd@minjiang.com，或拨打 400-158-7877 转 1，会有专属客户经理对接。</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section">
+    <div class="cta-banner reveal">
+      <div class="cta-inner">
+        <h2 class="cta-title">立即开启合作</h2>
+        <p class="cta-desc">无论您是企业用户、个人接单者、城市代理或媒体朋友，我们期待与您建立联系</p>
+        <div class="cta-actions">
+          <a href="tel:400-158-7877" class="btn btn-white btn-large"><span class="icon icon-phone icon-sm"></span> 400-158-7877</a>
+          <a href="register.html" class="btn btn-ghost-white btn-large">注册账号</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="footer-brand">
+            <img src="https://oss.minjiangyouyue.com/mjlogo/logo02.png" alt="民匠有约" style="height:36px;border-radius:8px;margin-right:8px;">
+            民匠有约
+          </div>
+          <p class="footer-desc">构建全民共享的智能化服务平台，连接每一次专业服务，让用工更简单，让服务更安心</p>
+          <div class="footer-contact">
+            <div class="footer-contact-row">
+              <span class="icon icon-phone icon-sm"></span>
+              <span class="footer-hotline">400-158-7877</span>
+            </div>
+            <div class="footer-tip">服务时间：周一至周日 9:00-21:00</div>
+            <div><span class="icon icon-mail icon-sm"></span> service@minjiang.com</div>
+            <div><span class="icon icon-map-pin icon-sm"></span> 杭州市钱塘区下沙街道学源街 1366 号</div>
+          </div>
+        </div>
+        <div>
+          <div class="footer-title">产品服务</div>
+          <ul class="footer-links">
+            <li><a href="minjiang.html">民匠有约</a></li>
+            <li><a href="anxinyun.html">安心云</a></li>
+            <li><a href="agent.html">城市代理</a></li>
+            <li><a href="minjiang.html">行业方案</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-title">关于</div>
+          <ul class="footer-links">
+            <li><a href="#">公司介绍</a></li>
+            <li><a href="#">新闻动态</a></li>
+            <li><a href="contact.html">联系我们</a></li>
+            <li><a href="#">诚聘英才</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-title">支持</div>
+          <ul class="footer-links">
+            <li><a href="#">帮助中心</a></li>
+            <li><a href="#">服务协议</a></li>
+            <li><a href="#">隐私政策</a></li>
+            <li><a href="#">投诉建议</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-title">商务合作</div>
+          <ul class="footer-links">
+            <li>企业邮箱：bd@minjiang.com</li>
+            <li>代理合作：agent@minjiang.com</li>
+            <li>媒体合作：pr@minjiang.com</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2024 民匠有约 版权所有 浙江良巧匠网络科技</span>
+        <div>
+          <a href="#">浙ICP备XXXXXXXX号-1</a>
+          <a href="#">浙公网安备XXXXXXXX号</a>
+          <a href="#">电子营业执照</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    // details 折叠图标切换
+    document.querySelectorAll('details').forEach(d => {
+      d.addEventListener('toggle', () => {
+        const span = d.querySelector('summary span');
+        if (span) span.textContent = d.open ? '−' : '+';
+      });
+    });
+  </script>
+
+  <!-- 悬浮侧边栏 -->
+  <div class="float-sidebar">
+    <div class="float-btn float-btn-green" data-panel="panel-kefu">
+      <div class="float-btn-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      </div>
+      <div class="float-btn-text">客服</div>
+    </div>
+    <div class="float-btn float-btn-primary" data-panel="panel-youyue">
+      <div class="float-btn-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>
+      </div>
+      <div class="float-btn-text">有约</div>
+    </div>
+    <div class="float-btn float-btn-dark" data-panel="panel-anxinyun">
+      <div class="float-btn-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
+      </div>
+      <div class="float-btn-text">安心云</div>
+    </div>
+    <div class="float-btn float-btn-orange" data-panel="panel-daili">
+      <div class="float-btn-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+      </div>
+      <div class="float-btn-text">代理</div>
+    </div>
+    <div class="float-btn float-btn-primary" onclick="window.location.href='index.html'">
+      <div class="float-btn-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <div class="float-btn-text">首页</div>
+    </div>
+  </div>
+
+  <div class="float-panel" id="panel-kefu">
+    <div class="float-panel-header float-panel-header-green">
+      <span>在线客服</span>
+      <span class="float-panel-status"><span class="float-panel-status-dot"></span>在线</span>
+    </div>
+    <div class="float-panel-body">
+      <div class="float-panel-qr">
+        <div class="float-panel-qr-box">
+          <img src="https://oss.minjiangyouyue.com/mjlogo/ewm.png" alt="客服二维码" style="width:100%;height:100%;object-fit:contain;border-radius:14px;">
+        </div>
+        <div class="float-panel-qr-tip">扫码添加客服微信</div>
+      </div>
+      <div class="float-panel-links">
+        <a href="consult-chat.html" class="float-panel-link">
+          <div class="float-panel-link-icon" style="background:#E6F4FF;color:#1677FF;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          </div>
+          <div class="float-panel-link-text">
+            <div class="float-panel-link-title">在线咨询</div>
+            <div class="float-panel-link-desc">即时对话，快速响应</div>
+          </div>
+        </a>
+        <a href="tel:400-888-6666" class="float-panel-link">
+          <div class="float-panel-link-icon" style="background:#FFF7E6;color:#FA8C16;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </div>
+          <div class="float-panel-link-text">
+            <div class="float-panel-link-title">电话咨询</div>
+            <div class="float-panel-link-desc">400-888-6666</div>
+          </div>
+        </a>
+      </div>
+      <div class="float-panel-info">
+        <div class="float-panel-info-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>工作日 9:00-18:00</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="float-panel" id="panel-youyue">
+    <div class="float-panel-header float-panel-header-blue">
+      <span>民匠有约</span>
+    </div>
+    <div class="float-panel-body">
+      <p style="font-size:13px;color:#595959;line-height:1.6;margin-bottom:12px;">灵活用工智能撮合平台，提供福运宝、如意宝两大结算方案</p>
+      <div class="float-panel-links">
+        <a href="minjiang.html" class="float-panel-link">
+          <div class="float-panel-link-icon" style="background:#E6F4FF;color:#1677FF;">约</div>
+          <div class="float-panel-link-text">
+            <div class="float-panel-link-title">了解产品</div>
+            <div class="float-panel-link-desc">灵活用工解决方案</div>
+          </div>
+        </a>
+        <a href="minjiang.html#fuyunbao" class="float-panel-link">
+          <div class="float-panel-link-icon" style="background:#F0F5FF;color:#2F54EB;">福</div>
+          <div class="float-panel-link-text">
+            <div class="float-panel-link-title">福运宝</div>
+            <div class="float-panel-link-desc">即时结算方案</div>
+          </div>
+        </a>
+        <a href="minjiang.html#ruyibao" class="float-panel-link">
+          <div class="float-panel-link-icon" style="background:#F9F0FF;color:#722ED1;">如</div>
+          <div class="float-panel-link-text">
+            <div class="float-panel-link-title">如意宝</div>
+            <div class="float-panel-link-desc">周期结算方案</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="float-panel" id="panel-anxinyun">
+    <div class="float-panel-header float-panel-header-dark">
+      <span>民匠安心云</span>
+    </div>
+    <div class="float-panel-body">
+      <p style="font-size:13px;color:#595959;line-height:1.6;margin-bottom:12px;">企业数字化管理平台，审批考勤、组织架构、数据分析一站式搞定</p>
+      <div class="float-panel-links">
+        <a href="anxinyun.html" class="float-panel-link">
+          <div class="float-panel-link-icon" style="background:#E6F0FF;color:#0F52BA;">云</div>
+          <div class="float-panel-link-text">
+            <div class="float-panel-link-title">了解产品</div>
+            <div class="float-panel-link-desc">企业管理解决方案</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="float-panel" id="panel-daili">
+    <div class="float-panel-header float-panel-header-orange">
+      <span>城市代理</span>
+    </div>
+    <div class="float-panel-body">
+      <p style="font-size:13px;color:#595959;line-height:1.6;margin-bottom:12px;">一城一代理，独家权益保障，总部全方位扶持</p>
+      <div class="float-panel-links">
+        <a href="agent.html" class="float-panel-link">
+          <div class="float-panel-link-icon" style="background:#FFF7E6;color:#FA8C16;">代</div>
+          <div class="float-panel-link-text">
+            <div class="float-panel-link-title">了解详情</div>
+            <div class="float-panel-link-desc">城市合伙人招募</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

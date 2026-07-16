@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>登录 - 民匠有约</title>
+  <style>
+    :root {
+      --primary: #1677FF;
+      --primary-dark: #0958D9;
+      --primary-light: #E6F4FF;
+      --text: #1F2329;
+      --text-secondary: #646A73;
+      --text-muted: #8F959E;
+      --gray-50: #F7F8FA;
+      --gray-100: #F2F3F5;
+      --gray-200: #E5E6EB;
+      --gray-300: #C9CDD4;
+      --gray-400: #8F959E;
+      --error: #F53F3F;
+      --error-bg: #FFF2F0;
+      --radius: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+      --transition: all 0.25s ease;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: linear-gradient(135deg, #F0F5FF 0%, #F7F8FA 50%, #FFF 100%);
+      min-height: 100vh;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 1080px;
+      background: #fff;
+      border-radius: var(--radius-xl);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+      display: flex;
+      overflow: hidden;
+      min-height: 680px;
+    }
+
+    .login-left {
+      flex: 1;
+      background: linear-gradient(160deg, #1677FF 0%, #0958D9 60%, #0F52BA 100%);
+      padding: 60px 50px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-left::before {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 50%;
+      top: -200px;
+      right: -200px;
+    }
+
+    .login-left::after {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 50%;
+      bottom: -150px;
+      left: -150px;
+    }
+
+    .left-header {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .left-header img {
+      height: 40px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.15);
+      padding: 4px;
+    }
+
+    .left-header span {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .left-content {
+      position: relative;
+      z-index: 1;
+      max-width: 400px;
+    }
+
+    .left-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 500;
+      margin-bottom: 24px;
+      backdrop-filter: blur(10px);
+    }
+
+    .left-title {
+      font-size: 36px;
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: 16px;
+    }
+
+    .left-title .highlight {
+      background: linear-gradient(135deg, #FFE58F, #FFD666);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .left-desc {
+      font-size: 15px;
+      line-height: 1.8;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 40px;
+    }
+
+    .left-features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .left-feature {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 14px;
+      padding: 18px 16px;
+      transition: all 0.3s ease;
+    }
+
+    .left-feature:hover {
+      background: rgba(255,255,255,0.16);
+      transform: translateY(-2px);
+    }
+
+    .left-feature-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      color: #FFD666;
+    }
+
+    .left-feature-icon svg { width: 18px; height: 18px; fill: currentColor; }
+
+    .left-feature-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .left-feature-desc {
+      font-size: 11px;
+      color: rgba(255,255,255,0.65);
+    }
+
+    .left-footer {
+      position: relative;
+      z-index: 1;
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .login-right {
+      width: 460px;
+      flex-shrink: 0;
+      padding: 60px 50px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    }
+
+    .back-link {
+      position: absolute;
+      top: 24px;
+      right: 32px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 13px;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .back-link:hover { color: var(--primary); }
+
+    .back-link svg { width: 14px; height: 14px; }
+
+    .right-content {
+      width: 100%;
+      max-width: 340px;
+      margin: 0 auto;
+    }
+
+    .login-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 32px;
+      background: var(--gray-50);
+      padding: 4px;
+      border-radius: var(--radius);
+    }
+
+    .login-tab {
+      flex: 1;
+      padding: 10px 16px;
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-radius: 8px;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+
+    .login-tab.active {
+      background: #fff;
+      color: var(--primary);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .login-tab:hover:not(.active) {
+      color: var(--text);
+    }
+
+    .login-panel { display: none; }
+    .login-panel.active { display: block; }
+
+    /* 微信扫码 */
+    .wx-qr-section {
+      text-align: center;
+    }
+
+    .wx-qr-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .wx-qr-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+    }
+
+    .wx-qr-box {
+      width: 220px;
+      height: 220px;
+      margin: 0 auto 20px;
+      padding: 16px;
+      background: #fff;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .wx-qr-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .wx-qr-refresh {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .wx-qr-refresh a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .wx-tips {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+      padding: 12px 16px;
+      background: var(--gray-50);
+      border-radius: var(--radius);
+    }
+
+    .wx-tips svg { width: 16px; height: 16px; color: #52C41A; flex-shrink: 0; }
+
+    /* 账号密码 */
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .input-wrap { position: relative; }
+
+    .input-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray-400);
+      pointer-events: none;
+    }
+
+    .input-icon svg { width: 18px; height: 18px; fill: currentColor; }
+
+    .form-input {
+      width: 100%;
+      height: 48px;
+      padding: 0 14px 0 44px;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--radius);
+      font-size: 14px;
+      color: var(--text);
+      background: #fff;
+      transition: var(--transition);
+      outline: none;
+      font-family: inherit;
+    }
+
+    .form-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(22,119,255,0.08);
+    }
+
+    .form-input::placeholder { color: var(--gray-400); }
+
+    .sms-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .sms-row .input-wrap { flex: 1; }
+
+    .sms-btn {
+      padding: 0 16px;
+      height: 48px;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primary);
+      background: #fff;
+      white-space: nowrap;
+      transition: var(--transition);
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .sms-btn:hover {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .sms-btn:disabled {
+      color: var(--text-muted);
+      cursor: not-allowed;
+      background: var(--gray-50);
+    }
+
+    .form-options {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 8px 0 24px;
+    }
+
+    .checkbox {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .checkbox input {
+      accent-color: var(--primary);
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    .forgot-link {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+
+    .forgot-link:hover { color: var(--primary); }
+
+    .submit-btn {
+      width: 100%;
+      height: 48px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      border-radius: var(--radius);
+      transition: all 0.3s ease;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 16px rgba(22,119,255,0.25);
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: inherit;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(22,119,255,0.32);
+    }
+
+    .submit-spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: none;
+    }
+
+    .submit-btn.loading .submit-spinner { display: inline-block; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .form-footer {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 24px;
+    }
+
+    .form-footer a {
+      color: var(--primary);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .wx-only-btn {
+      width: 100%;
+      height: 48px;
+      background: linear-gradient(135deg, #07C160, #05a350);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      border-radius: var(--radius);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: inherit;
+      margin-top: 20px;
+      text-decoration: none;
+    }
+
+    .wx-only-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(7,193,96,0.3);
+    }
+
+    .wx-only-btn svg { width: 22px; height: 22px; }
+
+    .toast {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: #fff;
+      border: 1px solid var(--gray-200);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      border-radius: var(--radius-lg);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .toast.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+    }
+
+    @media (max-width: 900px) {
+      .login-left { display: none; }
+      .login-right { width: 100%; padding: 40px 32px; }
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 0; }
+      .login-container { border-radius: 0; min-height: 100vh; }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <!-- 左侧介绍 -->
+    <div class="login-left">
+      <div class="left-header">
+        <img src="https://oss.minjiangyouyue.com/mjlogo/logo02.png" alt="民匠有约">
+        <span>民匠有约</span>
+      </div>
+
+      <div class="left-content">
+        <div class="left-tag">
+          <svg viewBox="0 0 24 24" fill="none" width="14" height="14">
+            <path d="M12 19l9 2-9-18-9 18 9-2z" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          企业灵活用工服务平台
+        </div>
+
+        <h1 class="left-title">
+          登录民匠有约<br>
+          <span class="highlight">开启智能用工</span>
+        </h1>
+        <p class="left-desc">
+          5万+ 注册服务者 · 95% 智能匹配率 · 15分钟极速响应<br>
+          为企业提供一站式灵活用工解决方案
+        </p>
+
+        <div class="left-features">
+          <div class="left-feature">
+            <div class="left-feature-icon">
+              <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+            <div class="left-feature-title">AI 智能匹配</div>
+            <div class="left-feature-desc">1 分钟快速发包</div>
+          </div>
+          <div class="left-feature">
+            <div class="left-feature-icon">
+              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"/></svg>
+            </div>
+            <div class="left-feature-title">电子合同</div>
+            <div class="left-feature-desc">在线签署存证</div>
+          </div>
+          <div class="left-feature">
+            <div class="left-feature-icon">
+              <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23" stroke="currentColor" stroke-width="2"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="2"/></svg>
+            </div>
+            <div class="left-feature-title">即时结算</div>
+            <div class="left-feature-desc">T+0 资金到账</div>
+          </div>
+          <div class="left-feature">
+            <div class="left-feature-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2"/></svg>
+            </div>
+            <div class="left-feature-title">全程保障</div>
+            <div class="left-feature-desc">安全合规无忧</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="left-footer">
+        © 2024 民匠有约 · 浙江良巧匠网络科技
+      </div>
+    </div>
+
+    <!-- 右侧登录 -->
+    <div class="login-right">
+      <a href="index.html" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5" stroke="currentColor" stroke-width="2"/><path d="M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2"/></svg>
+        返回首页
+      </a>
+
+      <div class="right-content">
+        <!-- 登录方式切换 -->
+        <div class="login-tabs">
+          <button class="login-tab active" data-panel="wxPanel">微信扫码</button>
+          <button class="login-tab" data-panel="accountPanel">账号密码</button>
+        </div>
+
+        <!-- 微信扫码 -->
+        <div class="login-panel active" id="wxPanel">
+          <div class="wx-qr-section">
+            <div class="wx-qr-title">微信扫码登录</div>
+            <div class="wx-qr-desc">请使用微信扫一扫登录</div>
+            <div class="wx-qr-box">
+              <img src="https://oss.minjiangyouyue.com/mjlogo/ewm.png" alt="微信扫码登录" id="wxQrImg">
+            </div>
+            <div class="wx-qr-refresh">
+              <span>二维码已过期？</span>
+              <a href="javascript:void(0)" onclick="refreshQr()">点击刷新</a>
+            </div>
+            <div class="wx-tips">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><circle cx="12" cy="8" r="1"/></svg>
+              <span>打开微信 → 发现 → 扫一扫</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 账号密码 -->
+        <div class="login-panel" id="accountPanel">
+          <form id="loginForm" novalidate>
+            <div class="form-group">
+              <label class="form-label">手机号 / 邮箱</label>
+              <div class="input-wrap">
+                <span class="input-icon">
+                  <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
+                </span>
+                <input type="text" class="form-input" id="accountInput" placeholder="请输入手机号或邮箱" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">登录密码</label>
+              <div class="input-wrap">
+                <span class="input-icon">
+                  <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="currentColor" stroke-width="2"/></svg>
+                </span>
+                <input type="password" class="form-input" id="passwordInput" placeholder="请输入登录密码" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">短信验证码</label>
+              <div class="sms-row">
+                <div class="input-wrap">
+                  <span class="input-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2"/></svg>
+                  </span>
+                  <input type="text" class="form-input" id="smsInput" placeholder="请输入验证码" maxlength="6" />
+                </div>
+                <button type="button" class="sms-btn" id="smsBtn">获取验证码</button>
+              </div>
+            </div>
+
+            <div class="form-options">
+              <label class="checkbox">
+                <input type="checkbox" id="rememberCheckbox" checked> 记住登录状态
+              </label>
+              <a href="#" class="forgot-link">忘记密码？</a>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">
+              <span class="submit-spinner"></span>
+              <span class="submit-text">登 录</span>
+            </button>
+          </form>
+
+          <div class="form-footer">
+            还没有账号？<a href="register.html">立即注册</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#52C41A" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+    <span id="toastText">登录成功</span>
+  </div>
+
+  <script>
+    // 记录来源平台（用于认证后签署对应合同）
+    (function() {
+      var ref = document.referrer || '';
+      var fromPlatform = 'minjiang';
+      if (ref.indexOf('anxinyun.html') !== -1) fromPlatform = 'anxinyun';
+      else if (ref.indexOf('agent.html') !== -1) fromPlatform = 'agent';
+      else if (ref.indexOf('minjiang.html') !== -1) fromPlatform = 'minjiang';
+      localStorage.setItem('mjyy_from_platform', fromPlatform);
+    })();
+
+    // Tab 切换
+    document.querySelectorAll('.login-tab').forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.login-tab').forEach(function(t) { t.classList.remove('active'); });
+        document.querySelectorAll('.login-panel').forEach(function(p) { p.classList.remove('active'); });
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.panel).classList.add('active');
+      });
+    });
+
+    // 刷新二维码
+    function refreshQr() {
+      var img = document.getElementById('wxQrImg');
+      img.style.opacity = '0.5';
+      setTimeout(function() {
+        img.style.opacity = '1';
+      }, 300);
+      showToast('二维码已刷新');
+    }
+
+    // 表单登录
+    (function() {
+      var form = document.getElementById('loginForm');
+      var submitBtn = document.getElementById('submitBtn');
+      var submitText = submitBtn.querySelector('.submit-text');
+      var smsBtn = document.getElementById('smsBtn');
+      var toast = document.getElementById('toast');
+      var toastText = document.getElementById('toastText');
+
+      function showToast(msg) {
+        toastText.textContent = msg;
+        toast.classList.add('visible');
+        setTimeout(function() { toast.classList.remove('visible'); }, 2500);
+      }
+
+      function setLoading(loading) {
+        if (loading) {
+          submitBtn.classList.add('loading');
+          submitBtn.disabled = true;
+          submitText.textContent = '登录中...';
+        } else {
+          submitBtn.classList.remove('loading');
+          submitBtn.disabled = false;
+          submitText.textContent = '登 录';
+        }
+      }
+
+      smsBtn.addEventListener('click', function() {
+        if (smsBtn.disabled) return;
+        var count = 60;
+        smsBtn.disabled = true;
+        smsBtn.textContent = count + 's';
+        var timer = setInterval(function() {
+          count--;
+          if (count <= 0) {
+            clearInterval(timer);
+            smsBtn.disabled = false;
+            smsBtn.textContent = '获取验证码';
+          } else {
+            smsBtn.textContent = count + 's';
+          }
+        }, 1000);
+      });
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        setLoading(true);
+        setTimeout(function() {
+          setLoading(false);
+          showToast('登录成功');
+          var accountInput = document.getElementById('accountInput');
+          var mobile = accountInput ? accountInput.value.trim() : '';
+          var userData = { mobile: mobile || '13800138000', name: mobile ? (mobile.substring(0, 3) + '****' + mobile.substring(7)) : '微信用户' };
+          localStorage.setItem('mjyy_logged_in', 'true');
+          localStorage.setItem('mjyy_user_data', JSON.stringify(userData));
+          // 检查是否已完成认证，未完成则跳转认证流程
+          var fromPlatform = localStorage.getItem('mjyy_from_platform') || 'minjiang';
+          var platformPages = { minjiang: 'minjiang.html', anxinyun: 'anxinyun.html', agent: 'agent.html' };
+          var targetPage = platformPages[fromPlatform] || 'minjiang.html';
+          var isVerified = localStorage.getItem('mjyy_verify_complete') === 'true';
+          var isContractSigned = localStorage.getItem('mjyy_contract_signed_' + fromPlatform) === 'true';
+          setTimeout(function() {
+            if (isVerified && isContractSigned) {
+              window.location.href = targetPage;
+            } else {
+              localStorage.setItem('mjyy_verify_target', fromPlatform);
+              window.location.href = 'verify.html';
+            }
+          }, 1200);
+        }, 1500);
+      });
+    })();
+  </script>
+</body>
+</html>

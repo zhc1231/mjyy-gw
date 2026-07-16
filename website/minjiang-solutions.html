@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>行业方案 - 民匠有约</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    :root {
+      --brand-primary: #1677FF;
+      --brand-primary-dark: #0958D9;
+      --brand-primary-50: #E6F4FF;
+      --brand-primary-100: #BAE0FF;
+      --brand-grad: linear-gradient(135deg, #1677FF 0%, #4096FF 100%);
+      --brand-grad-light: linear-gradient(180deg, #E6F4FF 0%, #FFFFFF 100%);
+    }
+    .page-hero {
+      position: relative;
+      padding: 80px 24px 60px;
+      background: var(--brand-grad-light);
+      overflow: hidden;
+    }
+    .page-hero::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      right: -100px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(22,119,255,0.1) 0%, transparent 60%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .page-hero-inner {
+      max-width: var(--container);
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+    .page-hero-title {
+      font-size: 42px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .page-hero-title-grad {
+      background: var(--brand-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .page-hero-desc {
+      font-size: 17px;
+      color: var(--text-secondary);
+      line-height: 1.75;
+      max-width: 600px;
+      margin: 0 auto 32px;
+    }
+    .brand-cta {
+      background: var(--brand-grad);
+    }
+    .solution-card {
+      background: #fff;
+      border-radius: var(--radius-2xl);
+      padding: 40px;
+      border: 1px solid var(--gray-200);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+      transition: all 0.3s;
+    }
+    .solution-card:hover {
+      box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+      transform: translateY(-4px);
+    }
+    .solution-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    @media (max-width: 900px) {
+      .solution-grid {
+        grid-template-columns: 1fr;
+      }
+      .page-hero-title { font-size: 32px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="topbar-left">
+        <span>欢迎来到民匠有约</span>
+        <span class="topbar-divider">|</span>
+        <a href="#">服务商中心</a>
+        <a href="#">开发者中心</a>
+      </div>
+      <div class="topbar-right">
+        <a href="index.html">返回主站</a>
+        <span class="topbar-divider">|</span>
+        <a href="#">服务协议</a>
+        <a href="#">隐私政策</a>
+        <span class="topbar-divider">|</span>
+        <a href="#">简体中文</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <div class="nav-left">
+        <a href="index.html" class="nav-brand">
+          <img src="https://oss.minjiangyouyue.com/mjlogo/logo02.png" alt="民匠有约" style="height:36px;border-radius:8px;">
+          民匠有约
+        </a>
+        <div class="nav-links">
+          <a href="minjiang.html" class="nav-link">首页</a>
+          <a href="minjiang-features.html" class="nav-link">服务方案</a>
+          <a href="minjiang-solutions.html" class="nav-link active">行业方案</a>
+          <a href="minjiang-cases.html" class="nav-link">客户案例</a>
+          <a href="minjiang-help.html" class="nav-link">帮助中心</a>
+        </div>
+      </div>
+      <div class="nav-right" id="navRight">
+        <a href="contact.html" class="nav-link-text">联系商务</a>
+        <a href="login.html" class="btn btn-primary" id="navLogin">登录平台</a>
+        <div class="user-status" id="userStatus">
+          <div class="user-avatar">用</div>
+          <span class="user-name">企业用户</span>
+          <svg class="user-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2"/></svg>
+          <div class="user-dropdown" id="userDropdown">
+            <div id="verifyBanner" class="verify-banner">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="currentColor" stroke-width="2"/><path d="M12 9v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="17" r="1" fill="currentColor"/></svg>
+              <div>
+                <div class="verify-banner-title">未完成实名认证</div>
+                <div class="verify-banner-desc">完成认证后即可使用全部功能</div>
+              </div>
+            </div>
+            <a href="verify.html" class="user-dropdown-item" id="personalVerifyItem">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
+              <span>个人认证：<span class="verify-name" id="personalVerifyName">未认证</span></span>
+            </a>
+            <a href="verify.html" class="user-dropdown-item" id="enterpriseVerifyItem">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="2"/><polyline points="9 22 9 12 15 12 15 22" stroke="currentColor" stroke-width="2"/></svg>
+              <span>企业认证：<span class="verify-name" id="enterpriseVerifyName">未认证</span></span>
+            </a>
+            <a href="verify.html" class="user-dropdown-item user-dropdown-item-primary" id="verifyLink" style="display:none;">
+              <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span id="verifyLinkText">未认证 去认证</span>
+            </a>
+            <a href="#" class="user-dropdown-item user-dropdown-item-primary" id="enterSystemBtn">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="currentColor" stroke-width="2"/><path d="M12 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+              进入系统
+            </a>
+            <div class="user-dropdown-divider"></div>
+            <button class="user-dropdown-item" id="logoutBtn">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" stroke-width="2"/><polyline points="16 17 21 12 16 7" stroke="currentColor" stroke-width="2"/><line x1="21" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="2"/></svg>
+              退出登录
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="page-hero">
+    <div class="page-hero-inner">
+      <h1 class="page-hero-title">
+        行业解决方案<br>
+        <span class="page-hero-title-grad">赋能多元场景</span>
+      </h1>
+      <p class="page-hero-desc">
+        深耕零售连锁、物流仓储、物业管理、生产制造等行业，为企业提供定制化灵活用工方案
+      </p>
+    </div>
+  </section>
+
+  <!-- 行业方案 -->
+  <section class="section">
+    <div class="solution-grid">
+      <div class="solution-card reveal">
+        <div style="width: 56px; height: 56px; border-radius: 14px; background: linear-gradient(135deg, #1677FF, #4096FF); display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+          <svg viewBox="0 0 24 24" fill="none" width="28" height="28"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" stroke="#fff" stroke-width="2"/><line x1="3" y1="6" x2="21" y2="6" stroke="#fff" stroke-width="2"/><path d="M16 10a4 4 0 0 1-8 0" stroke="#fff" stroke-width="2"/></svg>
+        </div>
+        <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 12px;">零售连锁</h3>
+        <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 16px;">应对门店客流高峰与促销活动，快速补充临时用工，降低人力成本。</p>
+        <ul style="list-style: none; padding: 0;">
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #1677FF; margin-right: 8px;">&#10003;</span>门店促销临时用工</li>
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #1677FF; margin-right: 8px;">&#10003;</span>节假日客流高峰补人</li>
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #1677FF; margin-right: 8px;">&#10003;</span>多门店统一调度管理</li>
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #1677FF; margin-right: 8px;">&#10003;</span>营业员、理货员快速到岗</li>
+        </ul>
+      </div>
+
+      <div class="solution-card reveal">
+        <div style="width: 56px; height: 56px; border-radius: 14px; background: linear-gradient(135deg, #722ED1, #9254DE); display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+          <svg viewBox="0 0 24 24" fill="none" width="28" height="28"><rect x="1" y="3" width="15" height="13" stroke="#fff" stroke-width="2"/><polygon points="16 8 20 8 23 11 23 16 16 16" stroke="#fff" stroke-width="2"/><circle cx="5.5" cy="18.5" r="2.5" stroke="#fff" stroke-width="2"/><circle cx="18.5" cy="18.5" r="2.5" stroke="#fff" stroke-width="2"/></svg>
+        </div>
+        <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 12px;">物流仓储</h3>
+        <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 16px;">应对电商大促和季节性订单波动，灵活调配分拣、装卸、配送人员。</p>
+        <ul style="list-style: none; padding: 0;">
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #722ED1; margin-right: 8px;">&#10003;</span>大促期间快速增派人手</li>
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #722ED1; margin-right: 8px;">&#10003;</span>分拣、装卸、配送岗位覆盖</li>
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #722ED1; margin-right: 8px;">&#10003;</span>夜班、临时班灵活排班</li>
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #722ED1; margin-right: 8px;">&#10003;</span>按件计费，多劳多得</li>
+        </ul>
+      </div>
+
+      <div class="solution-card reveal">
+        <div style="width: 56px; height: 56px; border-radius: 14px; background: linear-gradient(135deg, #13C2C2, #08979C); display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+          <svg viewBox="0 0 24 24" fill="none" width="28" height="28"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="#fff" stroke-width="2"/><polyline points="9 22 9 12 15 12 15 22" stroke="#fff" stroke-width="2"/></svg>
+        </div>
+        <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 12px;">物业管理</h3>
+        <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 16px;">满足社区、写字楼、园区等物业场景的日常运维和临时服务需求。</p>
+        <ul style="list-style: none; padding: 0;">
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #13C2C2; margin-right: 8px;">&#10003;</span>保洁、保安、维修人员</li>
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #13C2C2; margin-right: 8px;">&#10003;</span>绿化养护、设施维护</li>
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #13C2C2; margin-right: 8px;">&#10003;</span>社区活动临时支援</li>
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #13C2C2; margin-right: 8px;">&#10003;</span>多项目统一管理调度</li>
+        </ul>
+      </div>
+
+      <div class="solution-card reveal">
+        <div style="width: 56px; height: 56px; border-radius: 14px; background: linear-gradient(135deg, #FA8C16, #FF7A45); display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+          <svg viewBox="0 0 24 24" fill="none" width="28" height="28"><path d="M12 2L2 7l10 5 10-5-10-5z" stroke="#fff" stroke-width="2"/><path d="M2 17l10 5 10-5" stroke="#fff" stroke-width="2"/><path d="M2 12l10 5 10-5" stroke="#fff" stroke-width="2"/></svg>
+        </div>
+        <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 12px;">生产制造</h3>
+        <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 16px;">应对订单波动和产线调整，灵活补充操作工、质检员等岗位人员。</p>
+        <ul style="list-style: none; padding: 0;">
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #FA8C16; margin-right: 8px;">&#10003;</span>操作工、质检员快速到岗</li>
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #FA8C16; margin-right: 8px;">&#10003;</span>应对订单波峰波谷</li>
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #FA8C16; margin-right: 8px;">&#10003;</span>产线调整灵活用工</li>
+          <li style="padding: 6px 0; font-size: 14px; color: var(--text-secondary);"><span style="color: #FA8C16; margin-right: 8px;">&#10003;</span>技能培训认证管理</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section">
+    <div class="cta-banner brand-cta reveal">
+      <div class="cta-inner">
+        <h2 class="cta-title">获取专属行业方案</h2>
+        <p class="cta-desc">联系我们的行业专家，为您定制最优用工方案</p>
+        <div class="cta-actions">
+          <a href="contact.html" class="btn btn-white btn-large">联系商务</a>
+          <a href="login.html" class="btn btn-ghost-white btn-large">免费试用</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="footer-brand">
+            <img src="https://oss.minjiangyouyue.com/mjlogo/logo02.png" alt="民匠有约" style="height:36px;border-radius:8px;margin-right:8px;">
+            民匠有约
+          </div>
+          <p class="footer-desc">构建全民共享的智能化服务平台，连接每一次专业服务</p>
+        </div>
+        <div>
+          <div class="footer-title">产品服务</div>
+          <ul class="footer-links">
+            <li><a href="minjiang.html">首页</a></li>
+            <li><a href="minjiang-features.html">产品功能</a></li>
+            <li><a href="minjiang-solutions.html">行业方案</a></li>
+            <li><a href="minjiang-cases.html">客户案例</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-title">支持</div>
+          <ul class="footer-links">
+            <li><a href="minjiang-help.html">帮助中心</a></li>
+            <li><a href="#">服务协议</a></li>
+            <li><a href="#">隐私政策</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2024 民匠有约 版权所有 浙江良巧匠网络科技</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+
+  <!-- 悬浮侧边栏 -->
+  <div class="float-sidebar">
+    <div class="float-btn float-btn-green" data-panel="panel-kefu">
+      <div class="float-btn-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      </div>
+      <div class="float-btn-text">客服</div>
+    </div>
+    <div class="float-btn float-btn-primary" data-panel="panel-youyue">
+      <div class="float-btn-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>
+      </div>
+      <div class="float-btn-text">有约</div>
+    </div>
+    <div class="float-btn float-btn-dark" data-panel="panel-anxinyun">
+      <div class="float-btn-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
+      </div>
+      <div class="float-btn-text">安心云</div>
+    </div>
+    <div class="float-btn float-btn-orange" data-panel="panel-daili">
+      <div class="float-btn-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+      </div>
+      <div class="float-btn-text">代理</div>
+    </div>
+    <div class="float-btn float-btn-primary" onclick="window.location.href='index.html'">
+      <div class="float-btn-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <div class="float-btn-text">首页</div>
+    </div>
+  </div>
+
+  <div class="float-panel" id="panel-kefu">
+    <div class="float-panel-header float-panel-header-green">
+      <span>在线客服</span>
+      <span class="float-panel-status"><span class="float-panel-status-dot"></span>在线</span>
+    </div>
+    <div class="float-panel-body">
+      <div class="float-panel-qr">
+        <div class="float-panel-qr-box">
+          <img src="https://oss.minjiangyouyue.com/mjlogo/ewm.png" alt="客服二维码" style="width:100%;height:100%;object-fit:contain;border-radius:14px;">
+        </div>
+        <div class="float-panel-qr-tip">扫码添加客服微信</div>
+      </div>
+      <div class="float-panel-links">
+        <a href="consult-chat.html" class="float-panel-link">
+          <div class="float-panel-link-icon" style="background:#E6F4FF;color:#1677FF;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          </div>
+          <div class="float-panel-link-text">
+            <div class="float-panel-link-title">在线咨询</div>
+            <div class="float-panel-link-desc">即时对话，快速响应</div>
+          </div>
+        </a>
+        <a href="tel:400-888-6666" class="float-panel-link">
+          <div class="float-panel-link-icon" style="background:#FFF7E6;color:#FA8C16;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </div>
+          <div class="float-panel-link-text">
+            <div class="float-panel-link-title">电话咨询</div>
+            <div class="float-panel-link-desc">400-888-6666</div>
+          </div>
+        </a>
+      </div>
+      <div class="float-panel-info">
+        <div class="float-panel-info-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>工作日 9:00-18:00</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="float-panel" id="panel-youyue">
+    <div class="float-panel-header float-panel-header-blue">
+      <span>民匠有约</span>
+    </div>
+    <div class="float-panel-body">
+      <p style="font-size:13px;color:#595959;line-height:1.6;margin-bottom:12px;">灵活用工智能撮合平台，提供福运宝、如意宝两大结算方案</p>
+      <div class="float-panel-links">
+        <a href="minjiang.html" class="float-panel-link">
+          <div class="float-panel-link-icon" style="background:#E6F4FF;color:#1677FF;">约</div>
+          <div class="float-panel-link-text">
+            <div class="float-panel-link-title">了解产品</div>
+            <div class="float-panel-link-desc">灵活用工解决方案</div>
+          </div>
+        </a>
+        <a href="minjiang.html#fuyunbao" class="float-panel-link">
+          <div class="float-panel-link-icon" style="background:#F0F5FF;color:#2F54EB;">福</div>
+          <div class="float-panel-link-text">
+            <div class="float-panel-link-title">福运宝</div>
+            <div class="float-panel-link-desc">即时结算方案</div>
+          </div>
+        </a>
+        <a href="minjiang.html#ruyibao" class="float-panel-link">
+          <div class="float-panel-link-icon" style="background:#F9F0FF;color:#722ED1;">如</div>
+          <div class="float-panel-link-text">
+            <div class="float-panel-link-title">如意宝</div>
+            <div class="float-panel-link-desc">周期结算方案</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="float-panel" id="panel-anxinyun">
+    <div class="float-panel-header float-panel-header-dark">
+      <span>民匠安心云</span>
+    </div>
+    <div class="float-panel-body">
+      <p style="font-size:13px;color:#595959;line-height:1.6;margin-bottom:12px;">企业数字化管理平台，审批考勤、组织架构、数据分析一站式搞定</p>
+      <div class="float-panel-links">
+        <a href="anxinyun.html" class="float-panel-link">
+          <div class="float-panel-link-icon" style="background:#E6F0FF;color:#0F52BA;">云</div>
+          <div class="float-panel-link-text">
+            <div class="float-panel-link-title">了解产品</div>
+            <div class="float-panel-link-desc">企业管理解决方案</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="float-panel" id="panel-daili">
+    <div class="float-panel-header float-panel-header-orange">
+      <span>城市代理</span>
+    </div>
+    <div class="float-panel-body">
+      <p style="font-size:13px;color:#595959;line-height:1.6;margin-bottom:12px;">一城一代理，独家权益保障，总部全方位扶持</p>
+      <div class="float-panel-links">
+        <a href="agent.html" class="float-panel-link">
+          <div class="float-panel-link-icon" style="background:#FFF7E6;color:#FA8C16;">代</div>
+          <div class="float-panel-link-text">
+            <div class="float-panel-link-title">了解详情</div>
+            <div class="float-panel-link-desc">城市合伙人招募</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

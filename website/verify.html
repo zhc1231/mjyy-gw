@@ -1,0 +1,2165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>实名认证 - 民匠有约</title>
+  <style>
+    :root {
+      --primary: #1677FF;
+      --primary-dark: #0958D9;
+      --primary-light: #E6F4FF;
+      --text: #1F2329;
+      --text-secondary: #646A73;
+      --text-muted: #8F959E;
+      --gray-50: #F7F8FA;
+      --gray-100: #F2F3F5;
+      --gray-200: #E5E6EB;
+      --gray-300: #C9CDD4;
+      --gray-400: #8F959E;
+      --success: #00B42A;
+      --success-light: #E8F8EB;
+      --warning: #FF7D00;
+      --warning-light: #FFF3E8;
+      --error: #F53F3F;
+      --error-bg: #FFF2F0;
+      --radius: 10px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      --transition: all 0.25s ease;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.06);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.08);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--gray-50);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ===== 顶部导航 ===== */
+    .topbar {
+      background: #fff;
+      border-bottom: 1px solid var(--gray-200);
+      height: 64px;
+      display: flex;
+      align-items: center;
+      padding: 0 48px;
+    }
+
+    .topbar-inner {
+      max-width: 1280px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .topbar-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .topbar-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .topbar-exit {
+      color: var(--text-secondary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: var(--transition);
+    }
+
+    .topbar-exit:hover { color: var(--primary); }
+    .topbar-exit svg { width: 14px; height: 14px; }
+
+    .topbar-user {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .topbar-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    /* ===== 步骤条 ===== */
+    .steps-wrap {
+      max-width: 960px;
+      margin: 40px auto 0;
+      padding: 0 24px;
+    }
+
+    .steps {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fff;
+      border-radius: var(--radius-xl);
+      padding: 28px 40px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .step {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+
+    .step:last-child { flex: 0; }
+
+    .step-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--gray-100);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 700;
+      flex-shrink: 0;
+      transition: var(--transition);
+      border: 2px solid transparent;
+      z-index: 2;
+      position: relative;
+    }
+
+    .step-circle svg { width: 18px; height: 18px; fill: currentColor; }
+
+    .step-info {
+      margin-left: 12px;
+      flex-shrink: 0;
+    }
+
+    .step-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+
+    .step-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    .step-line {
+      flex: 1;
+      height: 2px;
+      background: var(--gray-200);
+      margin: 0 12px;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .step.active .step-circle {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 0 0 6px rgba(22,119,255,0.1);
+    }
+
+    .step.active .step-title { color: var(--primary); }
+
+    .step.done .step-circle {
+      background: var(--success);
+      color: #fff;
+    }
+
+    .step.done .step-title { color: var(--success); }
+
+    .step.done .step-line,
+    .step.active .step-line {
+      background: var(--primary);
+    }
+
+    /* ===== 内容区 ===== */
+    .content-wrap {
+      max-width: 960px;
+      margin: 24px auto 60px;
+      padding: 0 24px;
+    }
+
+    .panel {
+      background: #fff;
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      display: none;
+    }
+
+    .panel.active { display: block; }
+
+    .panel-header {
+      padding: 36px 48px 24px;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .panel-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .panel-title-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .panel-title-icon svg { width: 18px; height: 18px; fill: currentColor; }
+
+    .panel-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .panel-body {
+      padding: 36px 48px;
+    }
+
+    .alert {
+      display: flex;
+      gap: 12px;
+      padding: 14px 18px;
+      background: var(--primary-light);
+      border: 1px solid rgba(22,119,255,0.2);
+      border-radius: var(--radius);
+      margin-bottom: 28px;
+      font-size: 13px;
+      color: var(--primary-dark);
+    }
+
+    .alert svg { width: 18px; height: 18px; fill: currentColor; flex-shrink: 0; }
+
+    .alert-success {
+      background: var(--success-light);
+      border-color: rgba(0,180,42,0.2);
+      color: var(--success);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px 24px;
+    }
+
+    .form-grid-full { grid-column: 1 / -1; }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .form-label .required {
+      color: var(--error);
+      margin-right: 2px;
+    }
+
+    .form-input {
+      width: 100%;
+      height: 44px;
+      padding: 0 14px;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      font-size: 14px;
+      color: var(--text);
+      background: #fff;
+      transition: var(--transition);
+      outline: none;
+      font-family: inherit;
+    }
+
+    .form-input::placeholder { color: var(--text-muted); }
+
+    .form-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(22,119,255,0.08);
+    }
+
+    .form-input.error {
+      border-color: var(--error);
+      background: var(--error-bg);
+    }
+
+    .form-input:disabled {
+      background: var(--gray-50);
+      color: var(--text-muted);
+      cursor: not-allowed;
+    }
+
+    .form-input[readonly] {
+      background: var(--gray-50);
+      color: var(--text-secondary);
+    }
+
+    select.form-input {
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238F959E' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      background-size: 14px;
+      padding-right: 36px;
+    }
+
+    .form-error {
+      font-size: 12px;
+      color: var(--error);
+      margin-top: 6px;
+      min-height: 18px;
+    }
+
+    .form-tip {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    /* 上传 */
+    .upload-area {
+      width: 100%;
+      height: 140px;
+      border: 2px dashed var(--gray-200);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--gray-50);
+      cursor: pointer;
+      transition: var(--transition);
+      color: var(--text-muted);
+      font-size: 13px;
+      position: relative;
+    }
+
+    .upload-area:hover {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .upload-area svg { width: 32px; height: 32px; fill: currentColor; }
+
+    .upload-area input[type=file] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .uploaded {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--success-light);
+      border: 1px solid #B7EB8F;
+      border-radius: var(--radius);
+      color: var(--success);
+      font-size: 13px;
+    }
+
+    .uploaded svg { width: 18px; height: 18px; fill: currentColor; }
+
+    /* 平台选择 */
+    .platform-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .platform-option {
+      padding: 20px;
+      border: 2px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+      background: #fff;
+    }
+
+    .platform-option:hover {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .platform-option.selected {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(22,119,255,0.1);
+    }
+
+    .platform-option-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: #fff;
+      margin: 0 auto 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+    }
+
+    .platform-option-icon svg { width: 24px; height: 24px; fill: currentColor; }
+
+    .platform-option-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .platform-option-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* 认证卡片选择 */
+    .auth-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .auth-card {
+      position: relative;
+      padding: 36px 28px;
+      border: 2px solid var(--gray-200);
+      border-radius: var(--radius-xl);
+      cursor: pointer;
+      transition: var(--transition);
+      background: #fff;
+      text-align: center;
+    }
+    .auth-card:hover {
+      border-color: var(--primary);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+    .auth-card.selected {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+    .auth-card-check {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid var(--gray-300);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+    .auth-card-check svg { width: 14px; height: 14px; color: #fff; opacity: 0; transition: var(--transition); }
+    .auth-card.selected .auth-card-check { background: var(--primary); border-color: var(--primary); }
+    .auth-card.selected .auth-card-check svg { opacity: 1; }
+    .auth-card-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 16px;
+      border-radius: 16px;
+      background: var(--primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+    }
+    .auth-card-icon svg { width: 32px; height: 32px; }
+    .auth-card-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+    .auth-card-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+    .auth-card-features {
+      list-style: none;
+      text-align: left;
+      padding: 16px 20px;
+      background: rgba(255,255,255,0.6);
+      border-radius: var(--radius);
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    .auth-card-features li {
+      padding: 4px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .auth-card-features li::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--primary);
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 640px) {
+      .auth-cards { grid-template-columns: 1fr; }
+    }
+
+    /* 认证方式选择 */
+    .auth-type-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .auth-type-option {
+      padding: 28px 24px;
+      border: 2px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+      background: #fff;
+      position: relative;
+    }
+
+    .auth-type-option:hover {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .auth-type-option.selected {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(22,119,255,0.1);
+    }
+
+    .auth-type-option.selected::after {
+      content: '';
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 20px;
+      height: 20px;
+      background: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .auth-type-option.selected::before {
+      content: '';
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid #fff;
+      border-bottom: 2px solid #fff;
+      transform: rotate(-45deg);
+      z-index: 1;
+    }
+
+    .auth-type-icon-wrap {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      background: #fff;
+      margin: 0 auto 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      box-shadow: 0 4px 12px rgba(22,119,255,0.1);
+    }
+
+    .auth-type-icon-wrap svg { width: 28px; height: 28px; }
+
+    .auth-type-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .auth-type-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .auth-type-features {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px dashed var(--gray-200);
+      text-align: left;
+    }
+
+    .auth-type-features h5 {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .auth-type-features ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .auth-type-features li {
+      font-size: 12px;
+      color: var(--text-muted);
+      padding-left: 16px;
+      position: relative;
+      margin-bottom: 4px;
+    }
+
+    .auth-type-features li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 6px;
+      width: 6px;
+      height: 6px;
+      background: var(--primary);
+      border-radius: 50%;
+    }
+
+    /* 合同 */
+    .contract-card {
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .contract-card-header {
+      padding: 20px 24px;
+      background: var(--gray-50);
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .contract-card-title {
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .contract-card-title-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: var(--primary);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .contract-card-title-icon svg { width: 14px; height: 14px; fill: currentColor; }
+
+    .contract-platform-tag {
+      padding: 4px 12px;
+      background: var(--primary);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 500;
+      border-radius: 6px;
+    }
+
+    .contract-body {
+      padding: 24px;
+      max-height: 360px;
+      overflow-y: auto;
+      background: #fff;
+      font-size: 13px;
+      line-height: 1.8;
+      color: var(--text-secondary);
+    }
+
+    .contract-body h4 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 18px 0 8px;
+    }
+
+    .contract-body h4:first-child { margin-top: 0; }
+
+    .contract-body p {
+      margin-bottom: 10px;
+    }
+
+    .contract-body p strong { color: var(--text); }
+
+    .contract-sign-row {
+      padding: 20px 24px;
+      background: var(--gray-50);
+      border-top: 1px solid var(--gray-200);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .contract-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .contract-checkbox input {
+      accent-color: var(--primary);
+      width: 16px;
+      height: 16px;
+    }
+
+    /* 按钮 */
+    .panel-footer {
+      padding: 20px 48px 36px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      border-top: 1px solid var(--gray-100);
+      background: var(--gray-50);
+    }
+
+    .btn {
+      height: 44px;
+      padding: 0 28px;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-family: inherit;
+      text-decoration: none;
+    }
+
+    .btn svg { width: 16px; height: 16px; fill: currentColor; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(22,119,255,0.2);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(22,119,255,0.28);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-default {
+      background: #fff;
+      color: var(--text-secondary);
+      border: 1px solid var(--gray-200);
+    }
+
+    .btn-default:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-lg { height: 48px; padding: 0 36px; font-size: 15px; }
+
+    /* 成功页 */
+    .success-panel {
+      text-align: center;
+      padding: 60px 40px;
+    }
+
+    .success-icon {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: var(--success-light);
+      margin: 0 auto 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--success);
+      animation: successPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .success-icon svg { width: 48px; height: 48px; fill: currentColor; }
+
+    @keyframes successPop {
+      0% { transform: scale(0); }
+      100% { transform: scale(1); }
+    }
+
+    .success-title {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .success-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+    }
+
+    .success-info {
+      display: inline-flex;
+      align-items: center;
+      gap: 28px;
+      padding: 18px 32px;
+      background: var(--gray-50);
+      border-radius: var(--radius-lg);
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .success-info-item {
+      text-align: left;
+    }
+
+    .success-info-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .success-info-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .success-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: #fff;
+      border: 1px solid var(--gray-200);
+      box-shadow: var(--shadow-lg);
+      border-radius: var(--radius-lg);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 2000;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .toast.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .toast-icon svg { width: 14px; height: 14px; }
+
+    .toast.success .toast-icon { background: var(--success-light); color: var(--success); }
+    .toast.error .toast-icon { background: var(--error-bg); color: var(--error); }
+    .toast.warning .toast-icon { background: var(--warning-light); color: var(--warning); }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+
+    .shake { animation: shake 0.4s ease-in-out; }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* 退出确认模态框 */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.45); backdrop-filter: blur(4px);
+      z-index: 3000; display: none; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.25s ease;
+    }
+
+    .modal-overlay.visible { display: flex; opacity: 1; }
+
+    .modal {
+      background: #fff; border-radius: 16px; width: 100%; max-width: 400px;
+      padding: 32px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      transform: scale(0.92) translateY(10px); opacity: 0;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); margin: 0 20px;
+    }
+
+    .modal-overlay.visible .modal { transform: scale(1) translateY(0); opacity: 1; }
+
+    .modal-icon {
+      width: 56px; height: 56px; border-radius: 50%; background: var(--error-bg);
+      color: var(--error); display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+    }
+
+    .modal-icon svg { width: 28px; height: 28px; }
+
+    .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+
+    .modal-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; }
+
+    .modal-actions { display: flex; gap: 12px; justify-content: center; }
+
+    .modal-actions .btn { height: 40px; padding: 0 24px; font-size: 14px; }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #F53F3F, #D9363E); color: #fff;
+      border: none; cursor: pointer; border-radius: var(--radius);
+      font-weight: 600; transition: opacity 0.2s;
+    }
+
+    .btn-danger:hover { opacity: 0.9; }
+
+    /* 响应式 */
+    @media (max-width: 1024px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .platform-options { grid-template-columns: 1fr; }
+      .auth-type-options { grid-template-columns: 1fr; }
+      .panel-header, .panel-body, .panel-footer { padding-left: 24px; padding-right: 24px; }
+      .steps { padding: 20px; }
+      .step-info { display: none; }
+    }
+
+    @media (max-width: 768px) {
+      .topbar { padding: 0 16px; }
+      .content-wrap, .steps-wrap { padding: 0 16px; }
+      .panel-header, .panel-body, .panel-footer { padding-left: 20px; padding-right: 20px; }
+      .panel-title { font-size: 18px; }
+      .success-info { gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <a href="index.html" class="topbar-brand">
+        <img id="topbarLogoImg" src="https://oss.minjiangyouyue.com/mjlogo/logo02.png" alt="logo" style="height:36px;border-radius:8px;">
+        <span class="topbar-title" id="topbarTitleText">民匠有约</span>
+      </a>
+      <div class="topbar-right">
+        <div class="topbar-user" id="topbarUser">
+          <div class="topbar-avatar" id="topbarAvatar">李</div>
+          <span id="topbarName">李经理</span>
+        </div>
+        <a href="javascript:void(0)" class="topbar-exit" id="exitLink">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" stroke-width="2"/><polyline points="16 17 21 12 16 7" stroke="currentColor" stroke-width="2"/><line x1="21" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="2"/></svg>
+          退出
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 步骤条 -->
+  <div class="steps-wrap" id="stepsWrap">
+    <div class="steps">
+      <div class="step active" data-step="1">
+        <div class="step-circle">1</div>
+        <div class="step-info">
+          <div class="step-label">STEP 01</div>
+          <div class="step-title">认证方式</div>
+        </div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step" data-step="2">
+        <div class="step-circle">2</div>
+        <div class="step-info">
+          <div class="step-label">STEP 02</div>
+          <div class="step-title">信息提交</div>
+        </div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step" data-step="3">
+        <div class="step-circle">3</div>
+        <div class="step-info">
+          <div class="step-label">STEP 03</div>
+          <div class="step-title">认证确认</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 内容区 -->
+  <div class="content-wrap">
+    <!-- Step 1: 认证方式选择 -->
+    <div class="panel active" id="panel-select">
+      <div class="panel-header">
+        <h2 class="panel-title">
+          <span class="panel-title-icon">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2"/></svg>
+          </span>
+          选择认证方式
+        </h2>
+        <p class="panel-desc">请选择您的认证方式，个人与企业认证二选一</p>
+      </div>
+      <div class="panel-body">
+        <div class="auth-cards" id="authCards">
+          <div class="auth-card selected" data-type="enterprise">
+            <div class="auth-card-check">
+              <svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="auth-card-icon">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18" stroke="currentColor" stroke-width="2"/><path d="M5 21V7l8-4v18" stroke="currentColor" stroke-width="2"/><path d="M19 21V11l-6-4" stroke="currentColor" stroke-width="2"/></svg>
+            </div>
+            <h3 class="auth-card-title">企业认证</h3>
+            <p class="auth-card-desc">适合公司、企业用户</p>
+            <ul class="auth-card-features">
+              <li>营业执照</li>
+              <li>法人身份证</li>
+              <li>企业银行账户</li>
+              <li>公章/法人签章</li>
+            </ul>
+          </div>
+          <div class="auth-card" data-type="personal">
+            <div class="auth-card-check">
+              <svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="auth-card-icon">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
+            </div>
+            <h3 class="auth-card-title">个人认证</h3>
+            <p class="auth-card-desc">适合个体工商户、个人用户</p>
+            <ul class="auth-card-features">
+              <li>个人身份证</li>
+              <li>个人银行卡</li>
+              <li>手持身份证照片</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="panel-footer">
+        <button class="btn btn-default" id="selectPrev">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5" stroke="currentColor" stroke-width="2"/><path d="M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2"/></svg>
+          返回首页
+        </button>
+        <button class="btn btn-primary" id="selectNext">
+          下一步
+          <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="currentColor" stroke-width="2"/><path d="M12 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 2A: 个人认证表单 -->
+    <div class="panel" id="panel-personal">
+      <div class="panel-header">
+        <h2 class="panel-title">
+          <span class="panel-title-icon">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
+          </span>
+          个人信息认证
+        </h2>
+        <p class="panel-desc">请填写真实的个人信息，完成个人实名认证后即可继续</p>
+      </div>
+      <div class="panel-body">
+        <div class="alert">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <div>身份证信息将经过加密传输，仅用于实名认证核验，民匠有约承诺保护您的隐私安全</div>
+        </div>
+
+        <form id="personalForm" novalidate>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label"><span class="required">*</span>真实姓名</label>
+              <input type="text" class="form-input" id="realName" placeholder="请输入身份证上的姓名" maxlength="20">
+              <div class="form-error" id="realNameError"></div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label"><span class="required">*</span>身份证号</label>
+              <input type="text" class="form-input" id="idNumber" placeholder="请输入18位身份证号码" maxlength="18">
+              <div class="form-error" id="idNumberError"></div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label"><span class="required">*</span>联系手机</label>
+              <input type="tel" class="form-input" id="mobile" placeholder="请输入11位手机号" maxlength="11" readonly>
+              <div class="form-tip">已使用登录账号手机号</div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label"><span class="required">*</span>联系邮箱</label>
+              <input type="email" class="form-input" id="email" placeholder="请输入常用邮箱">
+              <div class="form-error" id="emailError"></div>
+            </div>
+
+            <div class="form-group form-grid-full">
+              <label class="form-label"><span class="required">*</span>所在地区</label>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+                <select class="form-input" id="province">
+                  <option value="">请选择省份</option>
+                </select>
+                <select class="form-input" id="city" disabled>
+                  <option value="">请选择城市</option>
+                </select>
+                <select class="form-input" id="district" disabled>
+                  <option value="">请选择区/县</option>
+                </select>
+              </div>
+              <div class="form-error" id="regionError"></div>
+            </div>
+
+            <div class="form-group form-grid-full">
+              <label class="form-label"><span class="required">*</span>详细地址</label>
+              <input type="text" class="form-input" id="address" placeholder="请输入街道、楼栋等详细信息" maxlength="100">
+              <div class="form-error" id="addressError"></div>
+            </div>
+
+            <div class="form-group form-grid-full">
+              <label class="form-label"><span class="required">*</span>身份证照片（人像面）</label>
+              <div class="upload-area" id="idCardUpload">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <span>点击上传身份证人像面</span>
+                <input type="file" accept="image/*" id="idCardFile">
+              </div>
+              <div class="uploaded" id="idCardUploaded" style="display:none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <span id="idCardFileName">已上传</span>
+                <button type="button" id="idCardRemove" style="margin-left:auto;background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:12px;">重新上传</button>
+              </div>
+              <div class="form-error" id="idCardError"></div>
+            </div>
+
+            <div class="form-group form-grid-full">
+              <label class="form-label"><span class="required">*</span>手持身份证照片</label>
+              <div class="upload-area" id="handIdCardUpload">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <span>点击上传手持身份证照片（需清晰显示人脸和证件信息）</span>
+                <input type="file" accept="image/*" id="handIdCardFile">
+              </div>
+              <div class="uploaded" id="handIdCardUploaded" style="display:none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <span id="handIdCardFileName">已上传</span>
+                <button type="button" id="handIdCardRemove" style="margin-left:auto;background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:12px;">重新上传</button>
+              </div>
+              <div class="form-error" id="handIdCardError"></div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="panel-footer">
+        <button class="btn btn-default" id="personalPrev">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5" stroke="currentColor" stroke-width="2"/><path d="M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2"/></svg>
+          上一步
+        </button>
+        <button class="btn btn-primary" id="personalNext">
+          提交认证信息
+          <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="currentColor" stroke-width="2"/><path d="M12 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 2: 企业认证表单 -->
+    <div class="panel" id="panel-enterprise">
+      <div class="panel-header">
+        <h2 class="panel-title">
+          <span class="panel-title-icon">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18" stroke="currentColor" stroke-width="2"/><path d="M5 21V7l8-4v18" stroke="currentColor" stroke-width="2"/><path d="M19 21V11l-6-4" stroke="currentColor" stroke-width="2"/><line x1="9" y1="9" x2="9" y2="9.01" stroke="currentColor" stroke-width="2"/><line x1="9" y1="12" x2="9" y2="12.01" stroke="currentColor" stroke-width="2"/><line x1="9" y1="15" x2="9" y2="15.01" stroke="currentColor" stroke-width="2"/><line x1="9" y1="18" x2="9" y2="18.01" stroke="currentColor" stroke-width="2"/></svg>
+          </span>
+          企业信息认证
+        </h2>
+        <p class="panel-desc">完成企业信息认证，提交后将进行身份核验</p>
+      </div>
+      <div class="panel-body">
+        <div class="alert">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <div>企业信息需与营业执照保持一致，平台将在1-2个工作日内完成审核</div>
+        </div>
+
+        <form id="enterpriseForm" novalidate>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label"><span class="required">*</span>企业名称</label>
+              <input type="text" class="form-input" id="companyName" placeholder="请输入营业执照上的企业全称">
+              <div class="form-error" id="companyNameError"></div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label"><span class="required">*</span>统一社会信用代码</label>
+              <input type="text" class="form-input" id="creditCode" placeholder="请输入18位统一社会信用代码" maxlength="18">
+              <div class="form-error" id="creditCodeError"></div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label"><span class="required">*</span>法定代表人</label>
+              <input type="text" class="form-input" id="legalPerson" placeholder="请输入企业法人姓名">
+              <div class="form-error" id="legalPersonError"></div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label"><span class="required">*</span>注册资本</label>
+              <input type="text" class="form-input" id="registeredCapital" placeholder="如：100万元">
+              <div class="form-error" id="registeredCapitalError"></div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label"><span class="required">*</span>企业类型</label>
+              <select class="form-input" id="companyType">
+                <option value="">请选择企业类型</option>
+                <option value="有限责任公司">有限责任公司</option>
+                <option value="股份有限公司">股份有限公司</option>
+                <option value="个人独资企业">个人独资企业</option>
+                <option value="合伙企业">合伙企业</option>
+                <option value="个体工商户">个体工商户</option>
+                <option value="其他">其他</option>
+              </select>
+              <div class="form-error" id="companyTypeError"></div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label"><span class="required">*</span>成立日期</label>
+              <input type="date" class="form-input" id="establishDate">
+              <div class="form-error" id="establishDateError"></div>
+            </div>
+
+            <div class="form-group form-grid-full">
+              <label class="form-label"><span class="required">*</span>经营范围</label>
+              <textarea class="form-input" id="businessScope" rows="3" placeholder="请输入企业经营范围" style="height:auto;padding:12px 14px;resize:vertical;"></textarea>
+              <div class="form-error" id="businessScopeError"></div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label"><span class="required">*</span>企业联系人</label>
+              <input type="text" class="form-input" id="contactName" placeholder="请输入企业联系人姓名">
+              <div class="form-error" id="contactNameError"></div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label"><span class="required">*</span>联系人职务</label>
+              <input type="text" class="form-input" id="contactPosition" placeholder="如：HR经理">
+              <div class="form-error" id="contactPositionError"></div>
+            </div>
+
+            <div class="form-group form-grid-full">
+              <label class="form-label"><span class="required">*</span>营业执照</label>
+              <div class="upload-area" id="licenseUpload">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                <span>点击上传营业执照照片（加盖公章）</span>
+                <input type="file" accept="image/*" id="licenseFile">
+              </div>
+              <div class="uploaded" id="licenseUploaded" style="display:none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <span id="licenseFileName">已上传</span>
+                <button type="button" id="licenseRemove" style="margin-left:auto;background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:12px;">重新上传</button>
+              </div>
+              <div class="form-error" id="licenseError"></div>
+            </div>
+
+            <div class="form-group form-grid-full">
+              <label class="form-label"><span class="required">*</span>法人身份证（人像面）</label>
+              <div class="upload-area" id="legalIdUpload">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <span>点击上传法人身份证人像面</span>
+                <input type="file" accept="image/*" id="legalIdFile">
+              </div>
+              <div class="uploaded" id="legalIdUploaded" style="display:none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <span id="legalIdFileName">已上传</span>
+                <button type="button" id="legalIdRemove" style="margin-left:auto;background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:12px;">重新上传</button>
+              </div>
+              <div class="form-error" id="legalIdError"></div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="panel-footer">
+        <button class="btn btn-default" id="enterprisePrev">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5" stroke="currentColor" stroke-width="2"/><path d="M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2"/></svg>
+          上一步
+        </button>
+        <button class="btn btn-primary" id="enterpriseNext">
+          提交认证信息
+          <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="currentColor" stroke-width="2"/><path d="M12 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 3: 认证确认（手机号/人脸认证） -->
+    <div class="panel" id="panel-verify-confirm">
+      <div class="panel-header">
+        <div class="alert alert-success" style="margin-bottom:16px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <div>认证信息已提交，请完成身份核验以继续</div>
+        </div>
+        <h2 class="panel-title">
+          <span class="panel-title-icon">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2"/></svg>
+          </span>
+          身份核验
+        </h2>
+        <p class="panel-desc">请选择以下任一方式完成实名认证核验</p>
+      </div>
+      <div class="panel-body">
+        <div class="auth-cards" id="verifyMethods">
+          <div class="auth-card selected" data-verify="sms">
+            <div class="auth-card-check">
+              <svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="auth-card-icon">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" stroke="currentColor" stroke-width="2"/></svg>
+            </div>
+            <h3 class="auth-card-title">手机号验证</h3>
+            <p class="auth-card-desc">通过短信验证码完成核验</p>
+            <ul class="auth-card-features">
+              <li>接收短信验证码</li>
+              <li>输入6位数字码</li>
+              <li>即时完成核验</li>
+            </ul>
+          </div>
+          <div class="auth-card" data-verify="face">
+            <div class="auth-card-check">
+              <svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="auth-card-icon">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
+            </div>
+            <h3 class="auth-card-title">人脸认证</h3>
+            <p class="auth-card-desc">通过人脸识别完成核验</p>
+            <ul class="auth-card-features">
+              <li>打开摄像头</li>
+              <li>按提示完成动作</li>
+              <li>AI自动核验</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 手机号验证区 -->
+        <div id="smsVerifyArea" style="margin-top:24px;">
+          <div class="form-group" style="max-width:400px;">
+            <label class="form-label">手机号</label>
+            <div class="input-wrap" style="display:flex;gap:10px;">
+              <input type="text" class="form-input" id="verifyMobile" placeholder="请输入手机号" maxlength="11" style="flex:1;" readonly>
+              <button type="button" class="btn btn-primary" id="sendVerifyCode" style="white-space:nowrap;height:48px;padding:0 20px;">获取验证码</button>
+            </div>
+            <div class="form-error" id="verifyMobileError"></div>
+          </div>
+          <div class="form-group" style="max-width:400px;margin-top:16px;">
+            <label class="form-label">验证码</label>
+            <input type="text" class="form-input" id="verifyCodeInput" placeholder="请输入6位验证码" maxlength="6" style="letter-spacing:8px;font-size:18px;text-align:center;">
+            <div class="form-error" id="verifyCodeError"></div>
+          </div>
+        </div>
+
+        <!-- 人脸认证区 -->
+        <div id="faceVerifyArea" style="margin-top:24px;display:none;text-align:center;">
+          <div style="width:280px;height:280px;margin:0 auto;border-radius:16px;background:linear-gradient(135deg,#E6F4FF,#F0F5FF);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;">
+            <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="#1677FF" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <div style="font-size:14px;color:#646A73;">请点击下方按钮开始人脸认证</div>
+            <button type="button" class="btn btn-primary" id="startFaceVerify" style="height:44px;padding:0 28px;">开始人脸认证</button>
+          </div>
+          <div id="faceVerifyResult" style="margin-top:16px;font-size:14px;color:#00B42A;display:none;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#00B42A" stroke-width="3" style="display:inline-block;vertical-align:middle;margin-right:6px;"><polyline points="20 6 9 17 4 12"/></svg>
+            人脸认证已通过
+          </div>
+        </div>
+      </div>
+      <div class="panel-footer">
+        <button class="btn btn-default" id="verifyConfirmPrev">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5" stroke="currentColor" stroke-width="2"/><path d="M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2"/></svg>
+          上一步
+        </button>
+        <button class="btn btn-primary" id="verifyConfirmNext">
+          完成认证
+          <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="currentColor" stroke-width="2"/><path d="M12 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 4: 合同签约 -->
+    <div class="panel" id="panel-contract">
+      <div class="panel-header">
+        <div class="alert alert-success" style="margin-bottom:16px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <div>信息提交成功！请完成合同签约以激活您的账号</div>
+        </div>
+        <h2 class="panel-title">
+          <span class="panel-title-icon">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"/></svg>
+          </span>
+          合同签约
+        </h2>
+        <p class="panel-desc">请仔细阅读合同条款，确认无误后进行电子签约</p>
+      </div>
+      <div class="panel-body">
+        <div class="contract-card">
+          <div class="contract-card-header">
+            <div class="contract-card-title">
+              <span class="contract-card-title-icon">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/></svg>
+              </span>
+              <span id="contractName">民匠企业端服务合作协议</span>
+            </div>
+            <span class="contract-platform-tag" id="contractPlatformTag">民匠企业端</span>
+          </div>
+          <div class="contract-body" id="contractBody">
+            <!-- 合同内容由JS动态生成 -->
+          </div>
+          <div class="contract-sign-row">
+            <label class="contract-checkbox">
+              <input type="checkbox" id="agreeContract"> 我已仔细阅读并同意上述全部合同条款
+            </label>
+            <span style="font-size:12px;color:var(--text-muted);">签约方：<span id="contractParty">待填写</span></span>
+          </div>
+        </div>
+
+        <div class="form-group" style="max-width:480px;">
+          <label class="form-label"><span class="required">*</span>签约密码（短信验证码）</label>
+          <div style="display:flex;gap:12px;">
+            <input type="text" class="form-input" id="signCode" placeholder="请输入6位短信验证码" maxlength="6">
+            <button type="button" class="btn btn-default" id="getSignCode" style="height:44px;white-space:nowrap;">获取验证码</button>
+          </div>
+          <div class="form-error" id="signCodeError"></div>
+        </div>
+      </div>
+      <div class="panel-footer">
+        <button class="btn btn-default" id="contractPrev">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5" stroke="currentColor" stroke-width="2"/><path d="M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2"/></svg>
+          上一步
+        </button>
+        <button class="btn btn-primary btn-lg" id="signSubmit">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2"/></svg>
+          确认签约
+        </button>
+      </div>
+    </div>
+
+    <!-- 成功页 -->
+    <div class="panel" id="panel-success">
+      <div class="success-panel">
+        <div class="success-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <h2 class="success-title">认证签约完成</h2>
+        <p class="success-desc">您已成功完成认证与平台合同签约，欢迎使用民匠有约</p>
+        <div class="success-info">
+          <div class="success-info-item">
+            <div class="success-info-label">签约平台</div>
+            <div class="success-info-value" id="successPlatform">民匠企业端</div>
+          </div>
+          <div class="success-info-item">
+            <div class="success-info-label">认证类型</div>
+            <div class="success-info-value" id="successAuthType">企业认证</div>
+          <div class="success-info-item">
+            <div class="success-info-label">签约方</div>
+            <div class="success-info-value" id="successCompany">-</div>
+          </div>
+          <div class="success-info-item">
+            <div class="success-info-label">签约时间</div>
+            <div class="success-info-value" id="successTime">-</div>
+          </div>
+          <div class="success-info-item">
+            <div class="success-info-label">合同编号</div>
+            <div class="success-info-value" id="successContractNo">-</div>
+          </div>
+        </div>
+        <div class="success-actions">
+          <a href="index.html" class="btn btn-default">返回首页</a>
+          <a href="javascript:void(0)" class="btn btn-primary" id="goPlatform">进入工作台</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <div class="toast-icon" id="toastIcon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <span id="toastText">操作成功</span>
+  </div>
+
+  <!-- 退出确认模态框 -->
+  <div class="modal-overlay" id="logoutModal">
+    <div class="modal">
+      <div class="modal-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+      </div>
+      <h3 class="modal-title">确认退出</h3>
+      <p class="modal-desc">退出后您需要重新登录才能继续使用平台功能</p>
+      <div class="modal-actions">
+        <button class="btn btn-default" id="logoutCancel">取消</button>
+        <button class="btn-danger" id="logoutConfirm">确认退出</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      var isLoggedIn = localStorage.getItem('mjyy_logged_in') === 'true';
+      if (!isLoggedIn) { window.location.href = 'login.html'; return; }
+
+      var userData = JSON.parse(localStorage.getItem('mjyy_user_data') || '{}');
+      var personalData = JSON.parse(localStorage.getItem('mjyy_personal_data') || '{}');
+      var enterpriseData = JSON.parse(localStorage.getItem('mjyy_enterprise_data') || '{}');
+
+      function updateTopbar() {
+        var displayName = '';
+        if (enterpriseData.companyName) displayName = enterpriseData.companyName;
+        else if (personalData.realName) displayName = personalData.realName;
+        else if (userData.mobile) {
+          var m = userData.mobile;
+          displayName = m.substring(0, 3) + '****' + m.substring(7);
+        } else if (userData.name) displayName = userData.name;
+
+        var avatarChar = displayName ? displayName.charAt(0) : '?';
+        document.getElementById('topbarAvatar').textContent = avatarChar;
+        document.getElementById('topbarName').textContent = displayName;
+
+        var logoImg = document.getElementById('topbarLogoImg');
+        var titleText = document.getElementById('topbarTitleText');
+        if (typeof currentPlatform !== 'undefined' && currentPlatform === 'anxinyun') {
+          logoImg.src = 'https://oss.minjiangyouyue.com/mjlogo/logo01.png';
+          titleText.textContent = '民匠安心云';
+        } else if (typeof currentPlatform !== 'undefined' && currentPlatform === 'agent') {
+          logoImg.src = 'https://oss.minjiangyouyue.com/mjlogo/logo02.png';
+          titleText.textContent = '渠道代理';
+        } else {
+          logoImg.src = 'https://oss.minjiangyouyue.com/mjlogo/logo02.png';
+          titleText.textContent = '民匠有约';
+        }
+      }
+      updateTopbar();
+
+      if (userData.mobile) { document.getElementById('mobile').value = userData.mobile; }
+
+      // 当前平台与认证模式
+      var currentPlatform = localStorage.getItem('mjyy_verify_target') || localStorage.getItem('mjyy_from_platform') || 'minjiang';
+      var onlyEnterprise = (currentPlatform === 'minjiang' || currentPlatform === 'anxinyun');
+      var selectedAuthType = onlyEnterprise ? 'enterprise' : (localStorage.getItem('mjyy_auth_type') || 'enterprise');
+      var currentStep = parseInt(localStorage.getItem('mjyy_verify_step') || (onlyEnterprise ? '2' : '1'));
+      var identityVerified = localStorage.getItem('mjyy_identity_verified') === 'true';
+      var contractSigned = localStorage.getItem('mjyy_contract_signed_' + currentPlatform) === 'true' || localStorage.getItem('mjyy_contract_signed') === 'true';
+
+      updateTopbar();
+
+      // 填充已保存数据
+      if (personalData.realName) document.getElementById('realName').value = personalData.realName;
+      if (personalData.idNumber) document.getElementById('idNumber').value = personalData.idNumber;
+      if (personalData.email) document.getElementById('email').value = personalData.email;
+      if (personalData.address) document.getElementById('address').value = personalData.address;
+      if (personalData.idCardFile) {
+        document.getElementById('idCardUpload').style.display = 'none';
+        document.getElementById('idCardUploaded').style.display = 'flex';
+        document.getElementById('idCardFileName').textContent = personalData.idCardFile;
+      }
+      if (personalData.handIdCardFile) {
+        document.getElementById('handIdCardUpload').style.display = 'none';
+        document.getElementById('handIdCardUploaded').style.display = 'flex';
+        document.getElementById('handIdCardFileName').textContent = personalData.handIdCardFile;
+      }
+
+      if (enterpriseData.companyName) document.getElementById('companyName').value = enterpriseData.companyName;
+      if (enterpriseData.creditCode) document.getElementById('creditCode').value = enterpriseData.creditCode;
+      if (enterpriseData.legalPerson) document.getElementById('legalPerson').value = enterpriseData.legalPerson;
+      if (enterpriseData.registeredCapital) document.getElementById('registeredCapital').value = enterpriseData.registeredCapital;
+      if (enterpriseData.companyType) document.getElementById('companyType').value = enterpriseData.companyType;
+      if (enterpriseData.establishDate) document.getElementById('establishDate').value = enterpriseData.establishDate;
+      if (enterpriseData.businessScope) document.getElementById('businessScope').value = enterpriseData.businessScope;
+      if (enterpriseData.contactName) document.getElementById('contactName').value = enterpriseData.contactName;
+      if (enterpriseData.contactPosition) document.getElementById('contactPosition').value = enterpriseData.contactPosition;
+      if (enterpriseData.licenseFile) {
+        document.getElementById('licenseUpload').style.display = 'none';
+        document.getElementById('licenseUploaded').style.display = 'flex';
+        document.getElementById('licenseFileName').textContent = enterpriseData.licenseFile;
+      }
+      if (enterpriseData.legalIdFile) {
+        document.getElementById('legalIdUpload').style.display = 'none';
+        document.getElementById('legalIdUploaded').style.display = 'flex';
+        document.getElementById('legalIdFileName').textContent = enterpriseData.legalIdFile;
+      }
+
+      if (selectedAuthType) {
+        var authCard = document.querySelector('.auth-card[data-type="' + selectedAuthType + '"]');
+        if (authCard) {
+          document.querySelectorAll('.auth-card').forEach(function(c) { c.classList.remove('selected'); });
+          authCard.classList.add('selected');
+        }
+      }
+
+      // 针对民匠有约/安心云：跳过认证方式选择，直接进入企业认证
+      if (onlyEnterprise) {
+        var selectPanel = document.getElementById('panel-select');
+        if (selectPanel) {
+          selectPanel.querySelector('.panel-title').innerHTML = '<span class="panel-title-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18" stroke="currentColor" stroke-width="2"/><path d="M5 21V7l8-4v18" stroke="currentColor" stroke-width="2"/><path d="M19 21V11l-6-4" stroke="currentColor" stroke-width="2"/></svg></span>企业认证';
+          selectPanel.querySelector('.panel-desc').textContent = '请填写企业信息，完成企业实名认证';
+          var authCards = document.getElementById('authCards');
+          if (authCards) authCards.style.display = 'none';
+        }
+        // 步骤条第一步标题改为"企业认证"
+        var step1Title = document.querySelector('.step[data-step="1"] .step-title');
+        if (step1Title) step1Title.textContent = '企业认证';
+      }
+
+      // 退出模态框
+      document.getElementById('exitLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('logoutModal').classList.add('visible');
+      });
+      document.getElementById('logoutCancel').addEventListener('click', function() {
+        document.getElementById('logoutModal').classList.remove('visible');
+      });
+      document.getElementById('logoutConfirm').addEventListener('click', function() {
+        localStorage.removeItem('mjyy_logged_in');
+        localStorage.removeItem('mjyy_user_data');
+        localStorage.removeItem('mjyy_verify_step');
+        localStorage.removeItem('mjyy_personal_data');
+        localStorage.removeItem('mjyy_enterprise_data');
+        localStorage.removeItem('mjyy_contract_signed');
+        localStorage.removeItem('mjyy_contract_signed_minjiang');
+        localStorage.removeItem('mjyy_contract_signed_anxinyun');
+        localStorage.removeItem('mjyy_contract_signed_agent');
+        localStorage.removeItem('mjyy_identity_verified');
+        localStorage.removeItem('mjyy_verify_complete');
+        localStorage.removeItem('mjyy_platform');
+        localStorage.removeItem('mjyy_auth_type');
+        localStorage.removeItem('mjyy_contract_info');
+        localStorage.removeItem('mjyy_verify_target');
+        window.location.href = 'login.html';
+      });
+      document.getElementById('logoutModal').addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('visible');
+      });
+
+      // 步骤切换（3步：选择方式/企业认证、信息提交、认证确认）
+      function gotoStep(step) {
+        currentStep = step;
+        localStorage.setItem('mjyy_verify_step', String(step));
+        var stepsWrap = document.getElementById('stepsWrap');
+        var maxStep = 3;
+        // 显示步骤条
+        if (step <= maxStep) {
+          stepsWrap.style.display = '';
+          document.querySelectorAll('.step').forEach(function(el) {
+            var s = parseInt(el.dataset.step);
+            el.classList.remove('active', 'done');
+            if (s < step) el.classList.add('done');
+            else if (s === step) el.classList.add('active');
+          });
+        }
+        // 成功页：隐藏步骤条
+        else {
+          stepsWrap.style.display = 'none';
+        }
+        document.querySelectorAll('.panel').forEach(function(p) { p.classList.remove('active'); });
+        if (onlyEnterprise) {
+          if (step === 1) document.getElementById('panel-select').classList.add('active');
+          else if (step === 2) document.getElementById('panel-enterprise').classList.add('active');
+          else if (step === 3) {
+            document.getElementById('panel-verify-confirm').classList.add('active');
+            var mobile = personalData.mobile || userData.mobile || '';
+            document.getElementById('verifyMobile').value = mobile;
+          }
+          else if (step === 4) {
+            document.getElementById('panel-success').classList.add('active');
+            showSuccess();
+          }
+        } else {
+          if (step === 1) document.getElementById('panel-select').classList.add('active');
+          else if (step === 2) {
+            if (selectedAuthType === 'personal') document.getElementById('panel-personal').classList.add('active');
+            else document.getElementById('panel-enterprise').classList.add('active');
+          }
+          else if (step === 3) {
+            document.getElementById('panel-verify-confirm').classList.add('active');
+            var mobile2 = personalData.mobile || userData.mobile || '';
+            document.getElementById('verifyMobile').value = mobile2;
+          }
+          else if (step === 4) {
+            document.getElementById('panel-success').classList.add('active');
+            showSuccess();
+          }
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // 认证卡片选择
+      var authCards = document.getElementById('authCards');
+      authCards.addEventListener('click', function(e) {
+        var card = e.target.closest('.auth-card');
+        if (!card) return;
+        authCards.querySelectorAll('.auth-card').forEach(function(c) { c.classList.remove('selected'); });
+        card.classList.add('selected');
+        selectedAuthType = card.dataset.type;
+        localStorage.setItem('mjyy_auth_type', selectedAuthType);
+      });
+
+      // 省市区数据
+      var regions = {
+        '浙江省': {'杭州市': ['西湖区', '上城区', '下城区', '江干区', '拱墅区', '滨江区'], '宁波市': ['海曙区', '江北区', '北仑区']},
+        '广东省': {'深圳市': ['福田区', '罗湖区', '南山区', '宝安区'], '广州市': ['天河区', '越秀区', '海珠区']},
+        '上海市': {'上海市': ['黄浦区', '徐汇区', '长宁区', '静安区', '浦东新区']},
+        '北京市': {'北京市': ['东城区', '西城区', '朝阳区', '海淀区']},
+        '江苏省': {'南京市': ['玄武区', '秦淮区', '建邺区'], '苏州市': ['姑苏区', '工业园区']}
+      };
+      var provinceEl = document.getElementById('province');
+      var cityEl = document.getElementById('city');
+      var districtEl = document.getElementById('district');
+      Object.keys(regions).forEach(function(p) {
+        var opt = document.createElement('option');
+        opt.value = p;
+        opt.textContent = p;
+        provinceEl.appendChild(opt);
+      });
+      provinceEl.addEventListener('change', function() {
+        cityEl.innerHTML = '<option value="">请选择城市</option>';
+        districtEl.innerHTML = '<option value="">请选择区/县</option>';
+        cityEl.disabled = !this.value;
+        districtEl.disabled = true;
+        if (this.value && regions[this.value]) {
+          Object.keys(regions[this.value]).forEach(function(c) {
+            var opt = document.createElement('option');
+            opt.value = c;
+            opt.textContent = c;
+            cityEl.appendChild(opt);
+          });
+        }
+      });
+      cityEl.addEventListener('change', function() {
+        districtEl.innerHTML = '<option value="">请选择区/县</option>';
+        districtEl.disabled = !this.value;
+        var p = provinceEl.value;
+        if (p && regions[p] && regions[p][this.value]) {
+          regions[p][this.value].forEach(function(d) {
+            var opt = document.createElement('option');
+            opt.value = d;
+            opt.textContent = d;
+            districtEl.appendChild(opt);
+          });
+        }
+      });
+      if (personalData.province) {
+        provinceEl.value = personalData.province;
+        provinceEl.dispatchEvent(new Event('change'));
+        if (personalData.city) {
+          setTimeout(function() {
+            cityEl.value = personalData.city;
+            cityEl.dispatchEvent(new Event('change'));
+            if (personalData.district) setTimeout(function() { districtEl.value = personalData.district; }, 50);
+          }, 50);
+        }
+      }
+
+      // 合同内容（根据当前平台）
+      var contracts = {
+        minjiang: { name: '民匠有约 · 灵活用工服务合作协议', platform: '民匠有约',
+          content: '<h4>第一条 合作内容</h4><p>甲方（民匠有约平台）为乙方提供基于灵活用工场景的<strong>智能撮合、电子合同、即时结算、税务代征</strong>等全流程数字化服务。</p><h4>第二条 双方权利与义务</h4><p>2.1 甲方负责为乙方提供稳定、安全、合规的灵活用工撮合服务。</p><p>2.2 乙方应保证所发布任务信息的真实性和合法性。</p><h4>第三条 服务费用与结算</h4><p>3.1 平台服务费按乙方实际发包金额的<strong>5%-8%</strong>阶梯式收取。</p><h4>第四条 合同期限</h4><p>本合同自电子签署之日起生效，有效期<strong>1 年</strong>。</p>' },
+        anxinyun: { name: '安心云平台 · 企业管理工具服务协议', platform: '安心云平台',
+          content: '<h4>第一条 服务内容</h4><p>甲方依托"安心云平台"产品，为乙方提供企业级的<strong>数据监控、风险预警、合规审计</strong>等一站式企业管理工具服务。</p><h4>第二条 服务费用</h4><p>基础版服务费为<strong>¥3,800 元/年</strong>，专业版为 ¥12,800 元/年。</p><h4>第三条 数据安全</h4><p>甲方采用国密 SM4 算法对乙方敏感数据进行加密存储与传输。</p>' },
+        agent: { name: '城市代理合伙人 · 渠道代理合作协议', platform: '城市代理合伙人',
+          content: '<h4>第一条 合作模式</h4><p>甲方授权乙方作为指定区域的<strong>城市代理合伙人</strong>，负责该区域内产品的市场推广、客户开发与本地化服务。</p><h4>第二条 收益分配</h4><p>乙方可享受所辖区域流水的<strong>30% 分成</strong>，达到阶梯考核目标可上调至 35%。</p><h4>第三条 合同期限</h4><p>本合同自电子签署之日起生效，有效期<strong>2 年</strong>。</p>' }
+      };
+
+      function renderContractPreview() {
+        var c = contracts[currentPlatform] || contracts.minjiang;
+        document.getElementById('contractName').textContent = c.name;
+        document.getElementById('contractPlatformTag').textContent = c.platform;
+        document.getElementById('contractBody').innerHTML = c.content;
+        var party = selectedAuthType === 'personal' ? (personalData.realName || '待填写') : (enterpriseData.companyName || '待填写');
+        document.getElementById('contractParty').textContent = party;
+      }
+
+      // 上传控件
+      function setupUpload(uploadEl, fileEl, uploadedEl, fileNameEl, removeEl, errorEl, key, store) {
+        if (!uploadEl || !fileEl || !removeEl) { console.warn('setupUpload missing element for:', key); return; }
+        fileEl.addEventListener('change', function() {
+          if (fileEl.files && fileEl.files[0]) {
+            var name = fileEl.files[0].name;
+            uploadEl.style.display = 'none';
+            uploadedEl.style.display = 'flex';
+            fileNameEl.textContent = name;
+            var data = store === 'personal' ? personalData : enterpriseData;
+            data[key + 'File'] = name;
+            localStorage.setItem('mjyy_' + store + '_data', JSON.stringify(data));
+            clearError(errorEl);
+          }
+        });
+        removeEl.addEventListener('click', function() {
+          uploadEl.style.display = 'flex';
+          uploadedEl.style.display = 'none';
+          fileEl.value = '';
+          var data = store === 'personal' ? personalData : enterpriseData;
+          delete data[key + 'File'];
+          localStorage.setItem('mjyy_' + store + '_data', JSON.stringify(data));
+        });
+      }
+
+      setupUpload(document.getElementById('idCardUpload'), document.getElementById('idCardFile'), document.getElementById('idCardUploaded'), document.getElementById('idCardFileName'), document.getElementById('idCardRemove'), 'idCardError', 'idCard', 'personal');
+      setupUpload(document.getElementById('handIdCardUpload'), document.getElementById('handIdCardFile'), document.getElementById('handIdCardUploaded'), document.getElementById('handIdCardFileName'), document.getElementById('handIdCardRemove'), 'handIdCardError', 'handIdCard', 'personal');
+      setupUpload(document.getElementById('licenseUpload'), document.getElementById('licenseFile'), document.getElementById('licenseUploaded'), document.getElementById('licenseFileName'), document.getElementById('licenseRemove'), 'licenseError', 'license', 'enterprise');
+      setupUpload(document.getElementById('legalIdUpload'), document.getElementById('legalIdFile'), document.getElementById('legalIdUploaded'), document.getElementById('legalIdFileName'), document.getElementById('legalIdRemove'), 'legalIdError', 'legalId', 'enterprise');
+
+      // 表单工具
+      function showError(elId, msg) { var el = document.getElementById(elId); if (el) el.textContent = msg; }
+      function clearError(elId) { var el = document.getElementById(elId); if (el) el.textContent = ''; }
+      function showFieldError(inputId, errorId, msg) { var input = document.getElementById(inputId); if (input) input.classList.add('error'); showError(errorId, msg); }
+      function clearFieldError(inputId, errorId) { var input = document.getElementById(inputId); if (input) input.classList.remove('error'); clearError(errorId); }
+
+      function showToast(message, type) {
+        type = type || 'success';
+        var toast = document.getElementById('toast');
+        var icon = document.getElementById('toastIcon');
+        document.getElementById('toastText').textContent = message;
+        toast.className = 'toast visible ' + type;
+        if (type === 'error') icon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+        else if (type === 'warning') icon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+        else icon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>';
+        setTimeout(function() { toast.classList.remove('visible'); }, 2500);
+      }
+
+      function shakePanel(panelId) { var p = document.getElementById(panelId); p.classList.remove('shake'); void p.offsetWidth; p.classList.add('shake'); setTimeout(function() { p.classList.remove('shake'); }, 400); }
+
+      // 验证：个人认证
+      function validatePersonal() {
+        var ok = true;
+        ['realName', 'idNumber', 'email', 'region', 'address', 'idCard', 'handIdCard'].forEach(function(id) { clearFieldError(id, id + 'Error'); clearError(id + 'Error'); });
+        var realName = document.getElementById('realName').value.trim();
+        if (!realName) { showFieldError('realName', 'realNameError', '请输入真实姓名'); ok = false; }
+        else if (realName.length < 2) { showFieldError('realName', 'realNameError', '姓名至少2个字符'); ok = false; }
+        var idNumber = document.getElementById('idNumber').value.trim();
+        if (!idNumber) { showFieldError('idNumber', 'idNumberError', '请输入身份证号'); ok = false; }
+        else if (!/^\d{17}[\dXx]$/.test(idNumber)) { showFieldError('idNumber', 'idNumberError', '身份证号格式不正确'); ok = false; }
+        var email = document.getElementById('email').value.trim();
+        if (!email) { showFieldError('email', 'emailError', '请输入邮箱'); ok = false; }
+        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showFieldError('email', 'emailError', '邮箱格式不正确'); ok = false; }
+        if (!provinceEl.value || !cityEl.value || !districtEl.value) { showError('regionError', '请选择完整的省/市/区'); ok = false; }
+        var address = document.getElementById('address').value.trim();
+        if (!address) { showFieldError('address', 'addressError', '请输入详细地址'); ok = false; }
+        else if (address.length < 5) { showFieldError('address', 'addressError', '详细地址至少5个字符'); ok = false; }
+        if (!personalData.idCardFile) { showError('idCardError', '请上传身份证人像面照片'); ok = false; }
+        if (!personalData.handIdCardFile) { showError('handIdCardError', '请上传手持身份证照片'); ok = false; }
+        return ok;
+      }
+
+      // 验证：企业认证
+      function validateEnterprise() {
+        var ok = true;
+        var ids = ['companyName', 'creditCode', 'legalPerson', 'registeredCapital', 'companyType', 'establishDate', 'businessScope', 'contactName', 'contactPosition'];
+        ids.forEach(function(id) { clearFieldError(id, id + 'Error'); });
+        var companyName = document.getElementById('companyName').value.trim();
+        if (!companyName) { showFieldError('companyName', 'companyNameError', '请输入企业名称'); ok = false; }
+        var creditCode = document.getElementById('creditCode').value.trim();
+        if (!creditCode) { showFieldError('creditCode', 'creditCodeError', '请输入统一社会信用代码'); ok = false; }
+        else if (!/^[0-9A-HJ-NPQRTUWXY]{18}$/i.test(creditCode)) { showFieldError('creditCode', 'creditCodeError', '信用代码格式不正确'); ok = false; }
+        var legalPerson = document.getElementById('legalPerson').value.trim();
+        if (!legalPerson) { showFieldError('legalPerson', 'legalPersonError', '请输入法定代表人'); ok = false; }
+        var registeredCapital = document.getElementById('registeredCapital').value.trim();
+        if (!registeredCapital) { showFieldError('registeredCapital', 'registeredCapitalError', '请输入注册资本'); ok = false; }
+        var companyType = document.getElementById('companyType').value;
+        if (!companyType) { showFieldError('companyType', 'companyTypeError', '请选择企业类型'); ok = false; }
+        var establishDate = document.getElementById('establishDate').value;
+        if (!establishDate) { showFieldError('establishDate', 'establishDateError', '请选择成立日期'); ok = false; }
+        var businessScope = document.getElementById('businessScope').value.trim();
+        if (!businessScope) { showFieldError('businessScope', 'businessScopeError', '请输入经营范围'); ok = false; }
+        var contactName = document.getElementById('contactName').value.trim();
+        if (!contactName) { showFieldError('contactName', 'contactNameError', '请输入企业联系人'); ok = false; }
+        var contactPosition = document.getElementById('contactPosition').value.trim();
+        if (!contactPosition) { showFieldError('contactPosition', 'contactPositionError', '请输入联系人职务'); ok = false; }
+        if (!enterpriseData.licenseFile) { showError('licenseError', '请上传营业执照照片'); ok = false; }
+        if (!enterpriseData.legalIdFile) { showError('legalIdError', '请上传法人身份证照片'); ok = false; }
+        return ok;
+      }
+
+      // 输入时清除错误
+      ['realName', 'idNumber', 'email', 'address'].forEach(function(id) {
+        document.getElementById(id).addEventListener('input', function() { clearFieldError(id, id + 'Error'); });
+      });
+      ['companyName', 'creditCode', 'legalPerson', 'registeredCapital', 'companyType', 'establishDate', 'businessScope', 'contactName', 'contactPosition'].forEach(function(id) {
+        document.getElementById(id).addEventListener('input', function() { clearFieldError(id, id + 'Error'); });
+        document.getElementById(id).addEventListener('change', function() { clearFieldError(id, id + 'Error'); });
+      });
+
+      // 按钮事件
+      document.getElementById('selectPrev').addEventListener('click', function() { window.location.href = 'index.html'; });
+      document.getElementById('selectNext').addEventListener('click', function() { gotoStep(2); });
+      document.getElementById('personalPrev').addEventListener('click', function() { gotoStep(1); });
+      document.getElementById('personalNext').addEventListener('click', function() {
+        if (!validatePersonal()) { shakePanel('panel-personal'); showToast('请完善表单信息', 'error'); return; }
+        personalData.realName = document.getElementById('realName').value.trim();
+        personalData.idNumber = document.getElementById('idNumber').value.trim();
+        personalData.email = document.getElementById('email').value.trim();
+        personalData.province = provinceEl.value;
+        personalData.city = cityEl.value;
+        personalData.district = districtEl.value;
+        personalData.address = document.getElementById('address').value.trim();
+        personalData.mobile = document.getElementById('mobile').value;
+        localStorage.setItem('mjyy_personal_data', JSON.stringify(personalData));
+        var btn = document.getElementById('personalNext');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> 提交中...';
+        setTimeout(function() {
+          btn.disabled = false;
+          btn.innerHTML = '提交认证信息 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="currentColor" stroke-width="2"/><path d="M12 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>';
+          showToast('个人认证信息提交成功', 'success');
+          updateTopbar();
+          gotoStep(3);
+        }, 1000);
+      });
+      document.getElementById('enterprisePrev').addEventListener('click', function() { gotoStep(onlyEnterprise ? 1 : 1); });
+      document.getElementById('enterpriseNext').addEventListener('click', function() {
+        if (!validateEnterprise()) { shakePanel('panel-enterprise'); showToast('请完善表单信息', 'error'); return; }
+        enterpriseData.companyName = document.getElementById('companyName').value.trim();
+        enterpriseData.creditCode = document.getElementById('creditCode').value.trim();
+        enterpriseData.legalPerson = document.getElementById('legalPerson').value.trim();
+        enterpriseData.registeredCapital = document.getElementById('registeredCapital').value.trim();
+        enterpriseData.companyType = document.getElementById('companyType').value;
+        enterpriseData.establishDate = document.getElementById('establishDate').value;
+        enterpriseData.businessScope = document.getElementById('businessScope').value.trim();
+        enterpriseData.contactName = document.getElementById('contactName').value.trim();
+        enterpriseData.contactPosition = document.getElementById('contactPosition').value.trim();
+        localStorage.setItem('mjyy_enterprise_data', JSON.stringify(enterpriseData));
+        var btn = document.getElementById('enterpriseNext');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> 提交中...';
+        setTimeout(function() {
+          btn.disabled = false;
+          btn.innerHTML = '提交认证信息 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="currentColor" stroke-width="2"/><path d="M12 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>';
+          showToast('企业认证信息提交成功', 'success');
+          updateTopbar();
+          gotoStep(3);
+        }, 1000);
+      });
+
+      // 认证确认面板事件
+      var verifyMethod = 'sms';
+      var verifyMethodsEl = document.getElementById('verifyMethods');
+      verifyMethodsEl.addEventListener('click', function(e) {
+        var card = e.target.closest('.auth-card');
+        if (!card) return;
+        verifyMethodsEl.querySelectorAll('.auth-card').forEach(function(c) { c.classList.remove('selected'); });
+        card.classList.add('selected');
+        verifyMethod = card.dataset.verify;
+        if (verifyMethod === 'sms') {
+          document.getElementById('smsVerifyArea').style.display = 'block';
+          document.getElementById('faceVerifyArea').style.display = 'none';
+        } else {
+          document.getElementById('smsVerifyArea').style.display = 'none';
+          document.getElementById('faceVerifyArea').style.display = 'block';
+        }
+      });
+
+      document.getElementById('sendVerifyCode').addEventListener('click', function() {
+        var btn = this;
+        if (btn.disabled) return;
+        btn.disabled = true;
+        var count = 60;
+        btn.textContent = count + 's';
+        var timer = setInterval(function() {
+          count--;
+          if (count <= 0) { clearInterval(timer); btn.disabled = false; btn.textContent = '获取验证码'; }
+          else btn.textContent = count + 's';
+        }, 1000);
+        showToast('验证码已发送', 'success');
+      });
+
+      document.getElementById('startFaceVerify').addEventListener('click', function() {
+        var btn = this;
+        btn.disabled = true;
+        btn.textContent = '认证中...';
+        setTimeout(function() {
+          document.getElementById('faceVerifyResult').style.display = 'block';
+          btn.textContent = '认证完成';
+          showToast('人脸认证通过', 'success');
+        }, 2000);
+      });
+
+      document.getElementById('verifyConfirmPrev').addEventListener('click', function() { gotoStep(onlyEnterprise ? 2 : 2); });
+      document.getElementById('verifyConfirmNext').addEventListener('click', function() {
+        if (verifyMethod === 'sms') {
+          var code = document.getElementById('verifyCodeInput').value.trim();
+          if (!code) { showToast('请输入验证码', 'warning'); return; }
+          if (!/^\d{6}$/.test(code)) { showToast('请输入6位数字验证码', 'warning'); return; }
+        }
+        localStorage.setItem('mjyy_identity_verified', 'true');
+        showToast('身份核验完成', 'success');
+        setTimeout(function() {
+          window.location.href = 'contract-sign.html?platform=' + currentPlatform;
+        }, 800);
+      });
+
+      document.getElementById('contractPrev').addEventListener('click', function() { gotoStep(onlyEnterprise ? 3 : 3); });
+      // 合同签约的"上一步"按钮文本
+      var contractPrevBtn = document.getElementById('contractPrev');
+      if (contractPrevBtn) {
+        contractPrevBtn.querySelector('span') ? null : null;
+        contractPrevBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5" stroke="currentColor" stroke-width="2"/><path d="M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2"/></svg> 返回修改';
+      }
+      document.getElementById('getSignCode').addEventListener('click', function() {
+        var btn = this;
+        if (btn.disabled) return;
+        btn.disabled = true;
+        var count = 60;
+        btn.textContent = count + 's 后重发';
+        var timer = setInterval(function() {
+          count--;
+          if (count <= 0) { clearInterval(timer); btn.disabled = false; btn.textContent = '获取验证码'; }
+          else btn.textContent = count + 's 后重发';
+        }, 1000);
+        showToast('验证码已发送', 'success');
+      });
+      document.getElementById('signSubmit').addEventListener('click', function() {
+        var agreed = document.getElementById('agreeContract').checked;
+        var code = document.getElementById('signCode').value.trim();
+        if (!agreed) { showToast('请先阅读并同意合同条款', 'warning'); return; }
+        if (!code) { showFieldError('signCode', 'signCodeError', '请输入短信验证码'); return; }
+        if (!/^\d{6}$/.test(code)) { showFieldError('signCode', 'signCodeError', '请输入6位数字验证码'); return; }
+        clearFieldError('signCode', 'signCodeError');
+        var btn = document.getElementById('signSubmit');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> 签约中...';
+        setTimeout(function() {
+          localStorage.setItem('mjyy_contract_signed_' + currentPlatform, 'true');
+          localStorage.setItem('mjyy_verify_complete', 'true');
+          var platformNames = { minjiang: '民匠有约', anxinyun: '安心云平台', agent: '城市代理合伙人' };
+          var contractInfo = {
+            platform: currentPlatform,
+            platformName: platformNames[currentPlatform] || '民匠有约',
+            authType: selectedAuthType,
+            authTypeName: selectedAuthType === 'personal' ? '个人认证' : '企业认证',
+            companyName: enterpriseData.companyName || '',
+            personalName: personalData.realName || '',
+            signTime: new Date().toISOString(),
+            contractNo: 'HT' + Date.now()
+          };
+          localStorage.setItem('mjyy_contract_info', JSON.stringify(contractInfo));
+          btn.disabled = false;
+          btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2"/></svg> 确认签约';
+          showToast('签约成功', 'success');
+          updateTopbar();
+          gotoStep(onlyEnterprise ? 5 : 5);
+        }, 1500);
+      });
+
+      function showSuccess() {
+        var info = JSON.parse(localStorage.getItem('mjyy_contract_info') || '{}');
+        document.getElementById('successPlatform').textContent = info.platformName || '-';
+        document.getElementById('successAuthType').textContent = info.authTypeName || '-';
+        var party = info.authType === 'personal' ? info.personalName || '-' : info.companyName || info.personalName || '-';
+        document.getElementById('successCompany').textContent = party;
+        document.getElementById('successTime').textContent = info.signTime ? new Date(info.signTime).toLocaleString('zh-CN') : '-';
+        document.getElementById('successContractNo').textContent = info.contractNo || '-';
+        var goBtn = document.getElementById('goPlatform');
+        if (info.platform === 'anxinyun') goBtn.href = 'anxinyun.html';
+        else if (info.platform === 'agent') goBtn.href = 'agent.html';
+        else goBtn.href = 'minjiang.html';
+      }
+
+      if (contractSigned) gotoStep(4);
+      else if (identityVerified) {
+        window.location.href = 'contract-sign.html?platform=' + currentPlatform;
+      }
+      else gotoStep(currentStep);
+    })();
+  </script>
+</body>
+</html>

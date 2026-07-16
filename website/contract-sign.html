@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>合同签约 - 民匠有约</title>
+  <style>
+    :root {
+      --primary: #1677FF;
+      --primary-dark: #0958D9;
+      --primary-light: #E6F4FF;
+      --text: #1F2329;
+      --text-secondary: #646A73;
+      --text-muted: #8F959E;
+      --gray-50: #F7F8FA;
+      --gray-100: #F2F3F5;
+      --gray-200: #E5E6EB;
+      --gray-300: #C9CDD4;
+      --gray-400: #8F959E;
+      --success: #00B42A;
+      --success-light: #E8F8EB;
+      --warning: #FF7D00;
+      --warning-light: #FFF3E8;
+      --error: #F53F3F;
+      --error-bg: #FFF2F0;
+      --radius: 10px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      --transition: all 0.25s ease;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.06);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.08);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--gray-50);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ===== 顶部导航 ===== */
+    .topbar {
+      background: #fff;
+      border-bottom: 1px solid var(--gray-200);
+      height: 64px;
+      display: flex;
+      align-items: center;
+      padding: 0 48px;
+    }
+
+    .topbar-inner {
+      max-width: 1280px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .topbar-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .topbar-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .topbar-exit {
+      color: var(--text-secondary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .topbar-exit:hover { color: var(--primary); }
+    .topbar-exit svg { width: 16px; height: 16px; }
+
+    .topbar-user {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .topbar-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    /* ===== 主内容区 ===== */
+    .main-container {
+      max-width: 960px;
+      margin: 40px auto;
+      padding: 0 24px;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .page-header-icon {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 16px;
+      background: var(--primary-light);
+      color: var(--primary);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .page-header-icon svg { width: 28px; height: 28px; }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .page-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .alert {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+    .alert svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; }
+    .alert-success { background: var(--success-light); color: #0A7A20; }
+
+    /* ===== 合同卡片 ===== */
+    .contract-card {
+      background: #fff;
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .contract-card-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--gray-100);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .contract-card-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .contract-card-title-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--primary-light);
+      color: var(--primary);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .contract-card-title-icon svg { width: 16px; height: 16px; }
+
+    .contract-platform-tag {
+      padding: 4px 12px;
+      background: var(--primary-light);
+      color: var(--primary);
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .contract-body {
+      padding: 24px;
+      max-height: 320px;
+      overflow-y: auto;
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+
+    .contract-body h4 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin: 20px 0 10px;
+    }
+    .contract-body h4:first-child { margin-top: 0; }
+
+    .contract-body p { margin-bottom: 8px; }
+    .contract-body p strong { color: var(--text); }
+
+    .contract-sign-row {
+      padding: 16px 24px;
+      border-top: 1px solid var(--gray-100);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .contract-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      color: var(--text-secondary);
+      user-select: none;
+    }
+    .contract-checkbox input {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+      accent-color: var(--primary);
+    }
+
+    /* ===== 表单 ===== */
+    .form-section {
+      background: #fff;
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-md);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group:last-child { margin-bottom: 0; }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .form-label .required { color: var(--error); margin-right: 2px; }
+
+    .form-input {
+      width: 100%;
+      height: 44px;
+      padding: 0 14px;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      font-size: 14px;
+      color: var(--text);
+      background: #fff;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    .form-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+    .form-input.error { border-color: var(--error); }
+    .form-input.error:focus { box-shadow: 0 0 0 3px var(--error-bg); }
+
+    .form-error {
+      font-size: 12px;
+      color: var(--error);
+      margin-top: 6px;
+      min-height: 16px;
+    }
+
+    .input-with-btn {
+      display: flex;
+      gap: 12px;
+    }
+    .input-with-btn .form-input { flex: 1; }
+
+    /* ===== 按钮 ===== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      height: 44px;
+      padding: 0 24px;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .btn svg { width: 16px; height: 16px; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(22, 119, 255, 0.3);
+    }
+
+    .btn-default {
+      background: #fff;
+      color: var(--text-secondary);
+      border: 1px solid var(--gray-200);
+    }
+    .btn-default:hover:not(:disabled) {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-lg {
+      height: 48px;
+      padding: 0 32px;
+      font-size: 15px;
+    }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .form-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* ===== 成功页 ===== */
+    .success-panel {
+      background: #fff;
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      padding: 48px 40px;
+      text-align: center;
+    }
+
+    .success-icon {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 24px;
+      background: var(--success-light);
+      color: var(--success);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .success-icon svg { width: 36px; height: 36px; }
+
+    .success-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .success-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+    }
+
+    .success-info {
+      background: var(--gray-50);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      text-align: left;
+      margin-bottom: 32px;
+    }
+
+    .success-info-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--gray-100);
+      font-size: 14px;
+    }
+    .success-info-item:last-child { border-bottom: none; }
+
+    .success-info-label { color: var(--text-secondary); }
+    .success-info-value { color: var(--text); font-weight: 500; }
+
+    .success-actions {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    /* ===== Toast ===== */
+    .toast {
+      position: fixed;
+      top: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 20px;
+      background: #fff;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      font-size: 14px;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      z-index: 9999;
+    }
+    .toast.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .toast-icon {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .toast-icon svg { width: 20px; height: 20px; }
+    .toast.success .toast-icon { color: var(--success); }
+    .toast.error .toast-icon { color: var(--error); }
+    .toast.warning .toast-icon { color: var(--warning); }
+
+    /* ===== 模态框 ===== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+    .modal-overlay.visible { opacity: 1; pointer-events: auto; }
+
+    .modal {
+      background: #fff;
+      border-radius: var(--radius-xl);
+      padding: 32px 32px 24px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      transform: scale(0.9);
+      transition: transform 0.2s;
+    }
+    .modal-overlay.visible .modal { transform: scale(1); }
+
+    .modal-icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 16px;
+      background: var(--warning-light);
+      color: var(--warning);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-icon svg { width: 24px; height: 24px; }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .modal-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .btn-danger {
+      background: var(--error);
+      color: #fff;
+      border: none;
+      padding: 0 24px;
+      height: 40px;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-danger:hover { background: #D93232; }
+
+    /* ===== 响应式 ===== */
+    @media (max-width: 640px) {
+      .topbar { padding: 0 16px; }
+      .main-container { margin: 20px auto; padding: 0 16px; }
+      .success-panel { padding: 32px 20px; }
+      .success-actions { flex-direction: column; }
+      .success-actions .btn { width: 100%; }
+      .form-actions { flex-direction: column-reverse; }
+      .form-actions .btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <a href="index.html" class="topbar-brand">
+        <img id="topbarLogoImg" src="https://oss.minjiangyouyue.com/mjlogo/logo02.png" alt="logo" style="height:36px;border-radius:8px;">
+        <span class="topbar-title" id="topbarTitleText">民匠有约</span>
+      </a>
+      <div class="topbar-right">
+        <div class="topbar-user" id="topbarUser">
+          <div class="topbar-avatar" id="topbarAvatar">用</div>
+          <span id="topbarName">用户</span>
+        </div>
+        <a href="javascript:void(0)" class="topbar-exit" id="exitLink">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" stroke-width="2"/><polyline points="16 17 21 12 16 7" stroke="currentColor" stroke-width="2"/><line x1="21" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="2"/></svg>
+          退出
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主内容 -->
+  <div class="main-container">
+    <!-- 签约页面 -->
+    <div id="signPage">
+      <div class="page-header">
+        <div class="page-header-icon">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"/></svg>
+        </div>
+        <h1 class="page-title">合同签约</h1>
+        <p class="page-desc">您的认证信息已审核通过，请完成合同签约以激活账号</p>
+      </div>
+
+      <div class="alert alert-success">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 1 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <div>信息提交成功！请完成合同签约以激活您的账号</div>
+      </div>
+
+      <div class="contract-card">
+        <div class="contract-card-header">
+          <div class="contract-card-title">
+            <span class="contract-card-title-icon">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"/></svg>
+            </span>
+            <span id="contractName">民匠企业端服务合作协议</span>
+          </div>
+          <span class="contract-platform-tag" id="contractPlatformTag">民匠企业端</span>
+        </div>
+        <div class="contract-body" id="contractBody">
+        </div>
+        <div class="contract-sign-row">
+          <label class="contract-checkbox">
+            <input type="checkbox" id="agreeContract"> 我已仔细阅读并同意上述全部合同条款
+          </label>
+          <span style="font-size:12px;color:var(--text-muted);">签约方：<span id="contractParty">待填写</span></span>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-group" style="max-width:480px;">
+          <label class="form-label"><span class="required">*</span>签约密码（短信验证码）</label>
+          <div class="input-with-btn">
+            <input type="text" class="form-input" id="signCode" placeholder="请输入6位短信验证码" maxlength="6">
+            <button type="button" class="btn btn-default" id="getSignCode">获取验证码</button>
+          </div>
+          <div class="form-error" id="signCodeError"></div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-default" id="backBtn">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5" stroke="currentColor" stroke-width="2"/><path d="M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2"/></svg>
+          返回修改
+        </button>
+        <button class="btn btn-primary btn-lg" id="signSubmit">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2"/></svg>
+          确认签约
+        </button>
+      </div>
+    </div>
+
+    <!-- 成功页 -->
+    <div id="successPage" style="display:none;">
+      <div class="success-panel">
+        <div class="success-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <h2 class="success-title">签约完成</h2>
+        <p class="success-desc">您已成功完成平台合同签约，欢迎使用</p>
+        <div class="success-info">
+          <div class="success-info-item">
+            <div class="success-info-label">签约平台</div>
+            <div class="success-info-value" id="successPlatform">民匠有约</div>
+          </div>
+          <div class="success-info-item">
+            <div class="success-info-label">签约方</div>
+            <div class="success-info-value" id="successParty">-</div>
+          </div>
+          <div class="success-info-item">
+            <div class="success-info-label">签约时间</div>
+            <div class="success-info-value" id="successTime">-</div>
+          </div>
+          <div class="success-info-item">
+            <div class="success-info-label">合同编号</div>
+            <div class="success-info-value" id="successContractNo">-</div>
+          </div>
+        </div>
+        <div class="success-actions">
+          <a href="index.html" class="btn btn-default">返回首页</a>
+          <a href="javascript:void(0)" class="btn btn-primary" id="goPlatform">进入工作台</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <div class="toast-icon" id="toastIcon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <span id="toastText">操作成功</span>
+  </div>
+
+  <!-- 退出确认模态框 -->
+  <div class="modal-overlay" id="logoutModal">
+    <div class="modal">
+      <div class="modal-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+      </div>
+      <h3 class="modal-title">确认退出</h3>
+      <p class="modal-desc">退出后您需要重新登录才能继续使用平台功能</p>
+      <div class="modal-actions">
+        <button class="btn btn-default" id="logoutCancel">取消</button>
+        <button class="btn-danger" id="logoutConfirm">确认退出</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      var isLoggedIn = localStorage.getItem('mjyy_logged_in') === 'true';
+      if (!isLoggedIn) { window.location.href = 'login.html'; return; }
+
+      var identityVerified = localStorage.getItem('mjyy_identity_verified') === 'true';
+      if (!identityVerified) { window.location.href = 'verify.html'; return; }
+
+      var userData = JSON.parse(localStorage.getItem('mjyy_user_data') || '{}');
+      var personalData = JSON.parse(localStorage.getItem('mjyy_personal_data') || '{}');
+      var enterpriseData = JSON.parse(localStorage.getItem('mjyy_enterprise_data') || '{}');
+
+      function getQueryParam(name) {
+        var params = new URLSearchParams(window.location.search);
+        return params.get(name);
+      }
+
+      var currentPlatform = getQueryParam('platform') || localStorage.getItem('mjyy_verify_target') || localStorage.getItem('mjyy_from_platform') || 'minjiang';
+      var selectedAuthType = localStorage.getItem('mjyy_auth_type') || 'enterprise';
+      var contractSigned = localStorage.getItem('mjyy_contract_signed_' + currentPlatform) === 'true';
+
+      function updateTopbar() {
+        var displayName = '';
+        if (enterpriseData.companyName) displayName = enterpriseData.companyName;
+        else if (personalData.realName) displayName = personalData.realName;
+        else if (userData.mobile) {
+          var m = userData.mobile;
+          displayName = m.substring(0, 3) + '****' + m.substring(7);
+        } else if (userData.name) displayName = userData.name;
+
+        var avatarChar = displayName ? displayName.charAt(0) : '?';
+        document.getElementById('topbarAvatar').textContent = avatarChar;
+        document.getElementById('topbarName').textContent = displayName;
+
+        var logoImg = document.getElementById('topbarLogoImg');
+        var titleText = document.getElementById('topbarTitleText');
+        if (currentPlatform === 'anxinyun') {
+          logoImg.src = 'https://oss.minjiangyouyue.com/mjlogo/logo01.png';
+          titleText.textContent = '民匠安心云';
+          document.documentElement.style.setProperty('--primary', '#0F52BA');
+          document.documentElement.style.setProperty('--primary-dark', '#0A3A7D');
+          document.documentElement.style.setProperty('--primary-light', '#EEF4FF');
+        } else if (currentPlatform === 'agent') {
+          logoImg.src = 'https://oss.minjiangyouyue.com/mjlogo/logo02.png';
+          titleText.textContent = '渠道代理';
+        } else {
+          logoImg.src = 'https://oss.minjiangyouyue.com/mjlogo/logo02.png';
+          titleText.textContent = '民匠有约';
+        }
+      }
+      updateTopbar();
+
+      var contracts = {
+        minjiang: { name: '民匠有约 · 灵活用工服务合作协议', platform: '民匠有约',
+          content: '<h4>第一条 合作内容</h4><p>甲方（民匠有约平台）为乙方提供基于灵活用工场景的<strong>智能撮合、电子合同、即时结算、税务代征</strong>等全流程数字化服务。</p><h4>第二条 双方权利与义务</h4><p>2.1 甲方负责为乙方提供稳定、安全、合规的灵活用工撮合服务。</p><p>2.2 乙方应保证所发布任务信息的真实性和合法性。</p><h4>第三条 服务费用与结算</h4><p>3.1 平台服务费按乙方实际发包金额的<strong>5%-8%</strong>阶梯式收取。</p><h4>第四条 合同期限</h4><p>本合同自电子签署之日起生效，有效期<strong>1 年</strong>。</p>' },
+        anxinyun: { name: '安心云平台 · 企业管理工具服务协议', platform: '安心云平台',
+          content: '<h4>第一条 服务内容</h4><p>甲方依托"安心云平台"产品，为乙方提供企业级的<strong>数据监控、风险预警、合规审计</strong>等一站式企业管理工具服务。</p><h4>第二条 服务费用</h4><p>基础版服务费为<strong>¥3,800 元/年</strong>，专业版为 ¥12,800 元/年。</p><h4>第三条 数据安全</h4><p>甲方采用国密 SM4 算法对乙方敏感数据进行加密存储与传输。</p>' },
+        agent: { name: '城市代理合伙人 · 渠道代理合作协议', platform: '城市代理合伙人',
+          content: '<h4>第一条 合作模式</h4><p>甲方授权乙方作为指定区域的<strong>城市代理合伙人</strong>，负责该区域内产品的市场推广、客户开发与本地化服务。</p><h4>第二条 收益分配</h4><p>乙方可享受所辖区域流水的<strong>30% 分成</strong>，达到阶梯考核目标可上调至 35%。</p><h4>第三条 合同期限</h4><p>本合同自电子签署之日起生效，有效期<strong>2 年</strong>。</p>' }
+      };
+
+      function renderContractPreview() {
+        var c = contracts[currentPlatform] || contracts.minjiang;
+        document.getElementById('contractName').textContent = c.name;
+        document.getElementById('contractPlatformTag').textContent = c.platform;
+        document.getElementById('contractBody').innerHTML = c.content;
+        var party = selectedAuthType === 'personal' ? (personalData.realName || '待填写') : (enterpriseData.companyName || '待填写');
+        document.getElementById('contractParty').textContent = party;
+      }
+      renderContractPreview();
+
+      function showToast(message, type) {
+        type = type || 'success';
+        var toast = document.getElementById('toast');
+        var icon = document.getElementById('toastIcon');
+        document.getElementById('toastText').textContent = message;
+        toast.className = 'toast visible ' + type;
+        if (type === 'error') icon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+        else if (type === 'warning') icon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+        else icon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>';
+        setTimeout(function() { toast.classList.remove('visible'); }, 2500);
+      }
+
+      function showFieldError(inputId, errorId, msg) {
+        var input = document.getElementById(inputId);
+        if (input) input.classList.add('error');
+        var err = document.getElementById(errorId);
+        if (err) err.textContent = msg;
+      }
+
+      function clearFieldError(inputId, errorId) {
+        var input = document.getElementById(inputId);
+        if (input) input.classList.remove('error');
+        var err = document.getElementById(errorId);
+        if (err) err.textContent = '';
+      }
+
+      document.getElementById('signCode').addEventListener('input', function() {
+        clearFieldError('signCode', 'signCodeError');
+      });
+
+      document.getElementById('getSignCode').addEventListener('click', function() {
+        var btn = this;
+        if (btn.disabled) return;
+        btn.disabled = true;
+        var count = 60;
+        btn.textContent = count + 's 后重发';
+        var timer = setInterval(function() {
+          count--;
+          if (count <= 0) { clearInterval(timer); btn.disabled = false; btn.textContent = '获取验证码'; }
+          else btn.textContent = count + 's 后重发';
+        }, 1000);
+        showToast('验证码已发送', 'success');
+      });
+
+      document.getElementById('backBtn').addEventListener('click', function() {
+        window.location.href = 'verify.html';
+      });
+
+      document.getElementById('signSubmit').addEventListener('click', function() {
+        var agreed = document.getElementById('agreeContract').checked;
+        var code = document.getElementById('signCode').value.trim();
+        if (!agreed) { showToast('请先阅读并同意合同条款', 'warning'); return; }
+        if (!code) { showFieldError('signCode', 'signCodeError', '请输入短信验证码'); return; }
+        if (!/^\d{6}$/.test(code)) { showFieldError('signCode', 'signCodeError', '请输入6位数字验证码'); return; }
+        clearFieldError('signCode', 'signCodeError');
+        var btn = document.getElementById('signSubmit');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> 签约中...';
+        setTimeout(function() {
+          localStorage.setItem('mjyy_contract_signed_' + currentPlatform, 'true');
+          localStorage.setItem('mjyy_verify_complete', 'true');
+          var platformNames = { minjiang: '民匠有约', anxinyun: '安心云平台', agent: '城市代理合伙人' };
+          var contractInfo = {
+            platform: currentPlatform,
+            platformName: platformNames[currentPlatform] || '民匠有约',
+            authType: selectedAuthType,
+            authTypeName: selectedAuthType === 'personal' ? '个人认证' : '企业认证',
+            companyName: enterpriseData.companyName || '',
+            personalName: personalData.realName || '',
+            signTime: new Date().toISOString(),
+            contractNo: 'HT' + Date.now()
+          };
+          localStorage.setItem('mjyy_contract_info', JSON.stringify(contractInfo));
+          showSuccess();
+          showToast('签约成功', 'success');
+        }, 1500);
+      });
+
+      function showSuccess() {
+        document.getElementById('signPage').style.display = 'none';
+        document.getElementById('successPage').style.display = 'block';
+        var info = JSON.parse(localStorage.getItem('mjyy_contract_info') || '{}');
+        document.getElementById('successPlatform').textContent = info.platformName || '-';
+        var party = info.authType === 'personal' ? info.personalName || '-' : info.companyName || info.personalName || '-';
+        document.getElementById('successParty').textContent = party;
+        document.getElementById('successTime').textContent = info.signTime ? new Date(info.signTime).toLocaleString('zh-CN') : '-';
+        document.getElementById('successContractNo').textContent = info.contractNo || '-';
+        var goBtn = document.getElementById('goPlatform');
+        if (info.platform === 'anxinyun') goBtn.href = 'anxinyun.html';
+        else if (info.platform === 'agent') goBtn.href = 'agent.html';
+        else goBtn.href = 'minjiang.html';
+      }
+
+      document.getElementById('exitLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('logoutModal').classList.add('visible');
+      });
+      document.getElementById('logoutCancel').addEventListener('click', function() {
+        document.getElementById('logoutModal').classList.remove('visible');
+      });
+      document.getElementById('logoutConfirm').addEventListener('click', function() {
+        localStorage.removeItem('mjyy_logged_in');
+        localStorage.removeItem('mjyy_user_data');
+        localStorage.removeItem('mjyy_verify_step');
+        localStorage.removeItem('mjyy_personal_data');
+        localStorage.removeItem('mjyy_enterprise_data');
+        localStorage.removeItem('mjyy_contract_signed');
+        localStorage.removeItem('mjyy_contract_signed_minjiang');
+        localStorage.removeItem('mjyy_contract_signed_anxinyun');
+        localStorage.removeItem('mjyy_contract_signed_agent');
+        localStorage.removeItem('mjyy_identity_verified');
+        localStorage.removeItem('mjyy_verify_complete');
+        localStorage.removeItem('mjyy_platform');
+        localStorage.removeItem('mjyy_auth_type');
+        localStorage.removeItem('mjyy_contract_info');
+        localStorage.removeItem('mjyy_verify_target');
+        window.location.href = 'login.html';
+      });
+      document.getElementById('logoutModal').addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('visible');
+      });
+
+      if (contractSigned) showSuccess();
+    })();
+  </script>
+</body>
+</html>

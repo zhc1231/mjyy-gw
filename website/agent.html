@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>民匠有约 - 城市代理合伙人计划</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    :root {
+      --brand-primary: #1677FF;
+      --brand-primary-dark: #0958D9;
+      --brand-primary-50: #E6F4FF;
+      --brand-primary-100: #BAE0FF;
+      --brand-grad: linear-gradient(135deg, #1677FF 0%, #4096FF 100%);
+      --brand-grad-light: linear-gradient(180deg, #E6F4FF 0%, #FFFFFF 100%);
+    }
+
+    .page-hero {
+      position: relative;
+      padding: 80px 24px 100px;
+      background: var(--brand-grad-light);
+      overflow: hidden;
+    }
+    .page-hero::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      right: -100px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(22,119,255,0.1) 0%, transparent 60%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .page-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -150px;
+      left: -100px;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(64,150,255,0.08) 0%, transparent 60%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .page-hero-inner {
+      max-width: var(--container);
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .page-hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      background: rgba(22,119,255,0.1);
+      color: var(--brand-primary);
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: var(--radius-full);
+      margin-bottom: 20px;
+      border: 1px solid rgba(22,119,255,0.2);
+    }
+    .page-hero-title {
+      font-size: 48px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.15;
+      margin-bottom: 20px;
+      letter-spacing: -1px;
+    }
+    .page-hero-title-grad {
+      background: var(--brand-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .page-hero-desc {
+      font-size: 17px;
+      color: var(--text-secondary);
+      line-height: 1.75;
+      margin-bottom: 32px;
+      max-width: 520px;
+    }
+    .page-hero-actions {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+    .page-hero-stat-row {
+      display: flex;
+      gap: 40px;
+    }
+    .page-hero-stat-item {
+      text-align: left;
+    }
+    .page-hero-stat-num {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--brand-primary);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .page-hero-stat-label {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .page-hero-visual {
+      position: relative;
+      height: 420px;
+    }
+    .hero-mockup {
+      position: absolute;
+      background: #fff;
+      border-radius: var(--radius-2xl);
+      box-shadow: 0 20px 50px rgba(22,119,255,0.15);
+      border: 1px solid var(--gray-200);
+      overflow: hidden;
+    }
+    .hero-mockup-main {
+      top: 0;
+      left: 0;
+      right: 40px;
+      bottom: 20px;
+      padding: 20px;
+    }
+    .mockup-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--gray-100);
+      margin-bottom: 16px;
+    }
+    .mockup-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .mockup-badge {
+      padding: 3px 10px;
+      background: var(--brand-primary-50);
+      color: var(--brand-primary);
+      font-size: 11px;
+      font-weight: 500;
+      border-radius: var(--radius-full);
+    }
+    .mockup-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .mockup-stat-card {
+      padding: 14px;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, var(--brand-primary-50), #FFF1E0);
+    }
+    .mockup-stat-num {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--brand-primary);
+    }
+    .mockup-stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .mockup-chart {
+      background: var(--gray-50);
+      border-radius: var(--radius);
+      padding: 14px;
+      height: 120px;
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+    }
+    .mockup-bar {
+      flex: 1;
+      background: var(--brand-primary-100);
+      border-radius: 4px 4px 0 0;
+      transition: height 0.3s;
+    }
+    .mockup-bar.primary {
+      background: var(--brand-grad);
+    }
+    .mockup-float {
+      position: absolute;
+      background: #fff;
+      border-radius: var(--radius-xl);
+      padding: 14px 18px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      border: 1px solid var(--gray-100);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .mockup-float-1 {
+      top: 30px;
+      right: 0;
+      animation: floatY 3s ease-in-out infinite;
+    }
+    .mockup-float-2 {
+      bottom: 40px;
+      right: 20px;
+      animation: floatY 3s ease-in-out infinite 1s;
+    }
+    .mockup-float-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+    .mockup-float-icon.orange { background: var(--brand-grad); }
+    .mockup-float-icon.green { background: linear-gradient(135deg, #52C41A, #73D13D); }
+    .mockup-float-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .mockup-float-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    @keyframes floatY {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .section-soft-grad {
+      background: linear-gradient(180deg, #FFFFFF 0%, #F5F9FF 50%, #FFFFFF 100%);
+    }
+
+    .brand-cta {
+      background: var(--brand-grad);
+    }
+
+    .icon-primary-brand {
+      color: var(--brand-primary);
+    }
+
+    @media (max-width: 900px) {
+      .page-hero-inner {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .page-hero-title { font-size: 32px; }
+      .page-hero-visual { height: 320px; }
+      .page-hero-stat-row { gap: 24px; flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="topbar-left">
+        <span>城市代理合伙人计划</span>
+        <span class="topbar-divider">|</span>
+        <a href="#">招商政策</a>
+        <a href="#">合伙人风采</a>
+      </div>
+      <div class="topbar-right">
+        <a href="index.html">返回主站</a>
+        <span class="topbar-divider">|</span>
+        <a href="#">服务协议</a>
+        <a href="#">隐私政策</a>
+        <span class="topbar-divider">|</span>
+        <a href="#">简体中文</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <div class="nav-left">
+        <a href="index.html" class="nav-brand">
+          <div class="nav-brand-icon" style="background: var(--brand-grad);">合</div>
+          渠道代理
+        </a>
+        <div class="nav-links">
+          <a href="#benefits" class="nav-link">收益政策</a>
+          <a href="#advantages" class="nav-link">六大优势</a>
+          <a href="#cases" class="nav-link">合伙人案例</a>
+          <a href="#faq" class="nav-link">常见问题</a>
+        </div>
+      </div>
+      <div class="nav-right" id="navRight">
+        <a href="tel:400-158-7877" class="nav-link-text"><span class="icon icon-phone icon-sm"></span> 400-158-7877</a>
+        <a href="login.html" class="btn btn-primary" id="navLogin" style="--primary: var(--brand-primary);">登录平台</a>
+        <div class="user-status" id="userStatus">
+          <div class="user-avatar">用</div>
+          <span class="user-name">企业用户</span>
+          <svg class="user-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2"/></svg>
+          <div class="user-dropdown" id="userDropdown">
+            <div id="verifyBanner" class="verify-banner">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="currentColor" stroke-width="2"/><path d="M12 9v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="17" r="1" fill="currentColor"/></svg>
+              <div>
+                <div class="verify-banner-title">未完成实名认证</div>
+                <div class="verify-banner-desc">完成认证后即可使用全部功能</div>
+              </div>
+            </div>
+            <a href="verify.html" class="user-dropdown-item" id="personalVerifyItem">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
+              <span>个人认证：<span class="verify-name" id="personalVerifyName">未认证</span></span>
+            </a>
+            <a href="verify.html" class="user-dropdown-item" id="enterpriseVerifyItem">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="2"/><polyline points="9 22 9 12 15 12 15 22" stroke="currentColor" stroke-width="2"/></svg>
+              <span>企业认证：<span class="verify-name" id="enterpriseVerifyName">未认证</span></span>
+            </a>
+            <a href="verify.html" class="user-dropdown-item user-dropdown-item-primary" id="verifyLink" style="display:none;">
+              <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span id="verifyLinkText">未认证 去认证</span>
+            </a>
+            <a href="#" class="user-dropdown-item user-dropdown-item-primary" id="enterSystemBtn">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="currentColor" stroke-width="2"/><path d="M12 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+              进入系统
+            </a>
+            <div class="user-dropdown-divider"></div>
+            <button class="user-dropdown-item" id="logoutBtn">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" stroke-width="2"/><polyline points="16 17 21 12 16 7" stroke="currentColor" stroke-width="2"/><line x1="21" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="2"/></svg>
+              退出登录
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="page-hero">
+    <div class="page-hero-inner">
+      <div class="reveal">
+        <span class="page-hero-tag">
+          <span class="icon icon-handshake icon-sm"></span>
+          城市代理合伙人计划
+        </span>
+        <h1 class="page-hero-title">
+          携手民匠有约<br>
+          <span class="page-hero-title-grad">共创财富未来</span>
+        </h1>
+        <p class="page-hero-desc">
+          加入民匠有约城市合伙人计划，享受区域独家权益、高额流水分成、总部全方位支持，零经验也能轻松创业，与我们共享万亿级灵活用工市场红利
+        </p>
+        <div class="page-hero-actions">
+          <a href="#apply" class="btn btn-primary btn-large" style="--primary: var(--brand-primary);">立即申请</a>
+          <a href="tel:400-158-7877" class="btn btn-outline btn-large"><span class="icon icon-phone icon-sm"></span> 400-158-7877</a>
+        </div>
+        <div class="page-hero-stat-row">
+          <div class="page-hero-stat-item">
+            <div class="page-hero-stat-num">30%+</div>
+            <div class="page-hero-stat-label">最高流水分成</div>
+          </div>
+          <div class="page-hero-stat-item">
+            <div class="page-hero-stat-num">200+</div>
+            <div class="page-hero-stat-label">覆盖城市</div>
+          </div>
+          <div class="page-hero-stat-item">
+            <div class="page-hero-stat-num">1000+</div>
+            <div class="page-hero-stat-label">合伙人</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-hero-visual reveal">
+        <div class="hero-mockup hero-mockup-main">
+          <div class="mockup-header">
+            <div class="mockup-title">
+              <span class="icon icon-bar-chart icon-sm icon-primary-brand"></span>
+              合伙人收益中心
+            </div>
+            <span class="mockup-badge">本月</span>
+          </div>
+          <div class="mockup-stats">
+            <div class="mockup-stat-card">
+              <div class="mockup-stat-num">¥86.5万</div>
+              <div class="mockup-stat-label">本月收益</div>
+            </div>
+            <div class="mockup-stat-card">
+              <div class="mockup-stat-num" style="color: var(--green);">+35.2%</div>
+              <div class="mockup-stat-label">环比增长</div>
+            </div>
+          </div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">近6个月收益趋势</div>
+          <div class="mockup-chart">
+            <div class="mockup-bar" style="height: 30%;"></div>
+            <div class="mockup-bar primary" style="height: 45%;"></div>
+            <div class="mockup-bar" style="height: 55%;"></div>
+            <div class="mockup-bar primary" style="height: 65%;"></div>
+            <div class="mockup-bar" style="height: 75%;"></div>
+            <div class="mockup-bar primary" style="height: 90%;"></div>
+          </div>
+        </div>
+        <div class="mockup-float mockup-float-1">
+          <div class="mockup-float-icon orange">
+            <span class="icon icon-dollar icon-sm"></span>
+          </div>
+          <div>
+            <div class="mockup-float-title">高额分成</div>
+            <div class="mockup-float-sub">最高 30%</div>
+          </div>
+        </div>
+        <div class="mockup-float mockup-float-2">
+          <div class="mockup-float-icon green">
+            <span class="icon icon-award icon-sm"></span>
+          </div>
+          <div>
+            <div class="mockup-float-title">区域独家</div>
+            <div class="mockup-float-sub">一城一代理</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 收益政策 -->
+  <section class="section" id="benefits">
+    <div class="section-header reveal">
+      <span class="section-tag">收益政策</span>
+      <h2 class="section-title">四大收益 <span class="section-title-grad" style="background: linear-gradient(135deg, #FA8C16, #D46B08); -webkit-background-clip: text;">稳赚不赔</span></h2>
+      <p class="section-desc">多元化收益模式，让您的投入获得丰厚回报</p>
+    </div>
+    <div class="product-matrix">
+      <div class="product-card reveal" style="--accent: #FA8C16; --accent-bg: #FFF7E6;">
+        <div class="product-card-icon"><span class="icon icon-dollar"></span></div>
+        <div class="product-card-title">流水分成</div>
+        <div class="product-card-text">交易流水最高 30% 分成，阶梯式递增，GMV 越高分成比例越高</div>
+        <span class="product-card-link">了解详情 <span class="icon icon-arrow-right icon-sm"></span></span>
+      </div>
+      <div class="product-card reveal" style="--accent: #722ED1; --accent-bg: #F0E6FF;">
+        <div class="product-card-icon"><span class="icon icon-users"></span></div>
+        <div class="product-card-title">拉新奖励</div>
+        <div class="product-card-text">成功推荐企业入驻，享受首年服务费 50% 分成，推荐越多收益越多</div>
+        <span class="product-card-link">了解详情 <span class="icon icon-arrow-right icon-sm"></span></span>
+      </div>
+      <div class="product-card reveal" style="--accent: #13C2C2; --accent-bg: #E6FFFB;">
+        <div class="product-card-icon"><span class="icon icon-shield"></span></div>
+        <div class="product-card-title">增值服务</div>
+        <div class="product-card-text">保险、培训、SaaS 工具等增值服务销售，享受 40% 佣金分成</div>
+        <span class="product-card-link">了解详情 <span class="icon icon-arrow-right icon-sm"></span></span>
+      </div>
+      <div class="product-card reveal" style="--accent: #52C41A; --accent-bg: #F6FFED;">
+        <div class="product-card-icon"><span class="icon icon-award"></span></div>
+        <div class="product-card-title">年终奖励</div>
+        <div class="product-card-text">年度业绩达标合伙人，额外享受总部利润分红，最高可达 50 万</div>
+        <span class="product-card-link">了解详情 <span class="icon icon-arrow-right icon-sm"></span></span>
+      </div>
+      <div class="product-card reveal" style="--accent: #1677FF; --accent-bg: #E6F4FF;">
+        <div class="product-card-icon"><span class="icon icon-trending-up"></span></div>
+        <div class="product-card-title">股权期权</div>
+        <div class="product-card-text">优秀合伙人有机会获得总部股权期权，共享公司成长价值</div>
+        <span class="product-card-link">了解详情 <span class="icon icon-arrow-right icon-sm"></span></span>
+      </div>
+      <div class="product-card reveal" style="--accent: #EB2F96; --accent-bg: #FFF0F6;">
+        <div class="product-card-icon"><span class="icon icon-gift"></span></div>
+        <div class="product-card-title">推荐返利</div>
+        <div class="product-card-text">推荐其他城市合伙人成功签约，享受签约奖金+永久流水分成</div>
+        <span class="product-card-link">了解详情 <span class="icon icon-arrow-right icon-sm"></span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 功能展示1 -->
+  <section class="section section-soft-grad">
+    <div class="showcase">
+      <div class="reveal">
+        <span class="section-tag">区域独家</span>
+        <h3 class="showcase-content-title">一城一代理 <br><span class="section-title-grad" style="background: linear-gradient(135deg, #FA8C16, #D46B08); -webkit-background-clip: text;">独家权益保障</span></h3>
+        <p class="showcase-content-text">严格的区域保护政策，每个城市仅授权一家代理商，保障合伙人的独家权益，避免恶性竞争</p>
+        <ul class="showcase-list">
+          <li>区域独家授权，独享城市市场红利</li>
+          <li>总部严格管控，禁止跨区经营</li>
+          <li>优先续约权，长期稳定收益</li>
+          <li>优质城市升级机会，拓展更大版图</li>
+        </ul>
+        <a href="#apply" class="btn btn-primary" style="--primary: var(--brand-primary);">立即申请 <span class="icon icon-arrow-right icon-sm"></span></a>
+      </div>
+      <div class="showcase-visual reveal" style="background: linear-gradient(135deg, #FFF7E6 0%, #FFE7BA 50%, #FFF7E6 100%); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+        <div style="position:absolute;top:15px;left:15px;width:60px;height:60px;border-radius:50%;background:rgba(250,140,22,0.06);"></div>
+        <div style="position:absolute;bottom:15px;right:15px;width:70px;height:70px;border-radius:50%;background:rgba(212,107,8,0.06);"></div>
+        <div style="text-align: center; z-index: 2;">
+          <div style="width:160px;height:160px;border-radius:24px;background:#fff;box-shadow:0 12px 40px rgba(250,140,22,0.15);padding:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:16px;">
+            <svg viewBox="0 0 100 100" width="80" height="80" fill="none">
+              <rect x="10" y="20" width="80" height="60" rx="4" fill="#FA8C16" opacity="0.1"/>
+              <circle cx="50" cy="50" r="15" fill="#FA8C16"/>
+              <circle cx="50" cy="50" r="8" fill="#FFC069"/>
+              <circle cx="25" cy="35" r="6" fill="#FA8C16" opacity="0.5"/>
+              <circle cx="75" cy="35" r="6" fill="#FA8C16" opacity="0.5"/>
+              <circle cx="25" cy="65" r="5" fill="#FA8C16" opacity="0.3"/>
+              <circle cx="75" cy="65" r="5" fill="#FA8C16" opacity="0.3"/>
+              <path d="M30 45 Q50 55 70 45" stroke="#FA8C16" stroke-width="2" fill="none" opacity="0.4"/>
+              <path d="M30 55 Q50 45 70 55" stroke="#FFC069" stroke-width="2" fill="none" opacity="0.3"/>
+            </svg>
+            <div style="margin-top:8px;padding:4px 12px;background:#FFF7E6;border-radius:100px;font-size:10px;color:#FA8C16;font-weight:600;">区域独家</div>
+          </div>
+          <div style="font-size: 48px; font-weight: 900; background: linear-gradient(135deg, #FA8C16, #D46B08); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">一城一代理</div>
+          <div style="font-size: 15px; color: var(--text-secondary); font-weight: 600; margin-top: 4px;">独家权益保障</div>
+          <div style="display:flex;gap:16px;margin-top:12px;">
+            <div style="text-align:center;">
+              <div style="font-size:18px;font-weight:800;color:#FA8C16;">独家</div>
+              <div style="font-size:10px;color:#8C8C8C;">授权</div>
+            </div>
+            <div style="width:1px;height:30px;background:#E8E8E8;"></div>
+            <div style="text-align:center;">
+              <div style="font-size:18px;font-weight:800;color:#FA8C16;">保护</div>
+              <div style="font-size:10px;color:#8C8C8C;">政策</div>
+            </div>
+            <div style="width:1px;height:30px;background:#E8E8E8;"></div>
+            <div style="text-align:center;">
+              <div style="font-size:18px;font-weight:800;color:#FA8C16;">稳定</div>
+              <div style="font-size:10px;color:#8C8C8C;">收益</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 功能展示2 -->
+  <section class="section">
+    <div class="showcase">
+      <div class="showcase-visual reveal" style="background: linear-gradient(135deg, #F0E6FF 0%, #D3ADF7 50%, #F0E6FF 100%); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; order: 2;">
+        <div style="position:absolute;top:15px;right:15px;width:70px;height:70px;border-radius:50%;background:rgba(114,46,209,0.06);"></div>
+        <div style="position:absolute;bottom:15px;left:15px;width:60px;height:60px;border-radius:50%;background:rgba(146,84,222,0.06);"></div>
+        <div style="text-align: center; z-index: 2;">
+          <div style="width:160px;height:160px;border-radius:24px;background:#fff;box-shadow:0 12px 40px rgba(114,46,209,0.15);padding:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:16px;">
+            <svg viewBox="0 0 100 100" width="80" height="80" fill="none">
+              <rect x="15" y="20" width="70" height="55" rx="4" fill="#722ED1" opacity="0.1"/>
+              <rect x="22" y="27" width="56" height="6" rx="2" fill="#722ED1" opacity="0.6"/>
+              <rect x="22" y="38" width="48" height="5" rx="1" fill="#E8E8E8"/>
+              <rect x="22" y="47" width="40" height="5" rx="1" fill="#E8E8E8"/>
+              <rect x="22" y="56" width="52" height="5" rx="1" fill="#E8E8E8"/>
+              <rect x="70" y="15" width="12" height="8" rx="2" fill="#722ED1"/>
+              <rect x="70" y="28" width="12" height="6" rx="2" fill="#9254DE"/>
+              <rect x="70" y="38" width="12" height="6" rx="2" fill="#722ED1" opacity="0.5"/>
+            </svg>
+            <div style="margin-top:8px;padding:4px 12px;background:#F0E6FF;border-radius:100px;font-size:10px;color:#722ED1;font-weight:600;">总部支持</div>
+          </div>
+          <div style="font-size: 48px; font-weight: 900; background: linear-gradient(135deg, #722ED1, #9254DE); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">全方位</div>
+          <div style="font-size: 15px; color: var(--text-secondary); font-weight: 600; margin-top: 4px;">总部扶持体系</div>
+          <div style="display:flex;gap:16px;margin-top:12px;">
+            <div style="text-align:center;">
+              <div style="font-size:18px;font-weight:800;color:#722ED1;">品牌</div>
+              <div style="font-size:10px;color:#8C8C8C;">授权</div>
+            </div>
+            <div style="width:1px;height:30px;background:#E8E8E8;"></div>
+            <div style="text-align:center;">
+              <div style="font-size:18px;font-weight:800;color:#722ED1;">系统</div>
+              <div style="font-size:10px;color:#8C8C8C;">支持</div>
+            </div>
+            <div style="width:1px;height:30px;background:#E8E8E8;"></div>
+            <div style="text-align:center;">
+              <div style="font-size:18px;font-weight:800;color:#722ED1;">培训</div>
+              <div style="font-size:10px;color:#8C8C8C;">赋能</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal" style="order: 1;">
+        <span class="section-tag">总部支持</span>
+        <h3 class="showcase-content-title">全方位扶持 <br><span class="section-title-grad" style="background: linear-gradient(135deg, #FA8C16, #D46B08); -webkit-background-clip: text;">让创业更简单</span></h3>
+        <p class="showcase-content-text">总部提供从品牌、系统、培训、市场到运营的全方位支持，即使零经验也能轻松上手</p>
+        <ul class="showcase-list">
+          <li>品牌授权：统一品牌形象，提升信任度</li>
+          <li>系统支持：全功能 SaaS 系统，持续迭代升级</li>
+          <li>培训体系：从入门到精通，全面培训支持</li>
+          <li>市场推广：营销物料支持，总部品牌背书</li>
+        </ul>
+        <a href="#advantages" class="btn btn-primary" style="--primary: var(--brand-primary);">查看更多 <span class="icon icon-arrow-right icon-sm"></span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 六大优势 -->
+  <section class="section section-soft-grad" id="advantages">
+    <div class="section-header reveal">
+      <span class="section-tag">六大优势</span>
+      <h2 class="section-title">为什么选择 <span class="section-title-grad" style="background: linear-gradient(135deg, #FA8C16, #D46B08); -webkit-background-clip: text;">民匠有约</span></h2>
+      <p class="section-desc">行业领先的灵活用工平台，为您的创业之路保驾护航</p>
+    </div>
+    <div class="feature-grid">
+      <div class="feature-card orange reveal">
+        <div class="feature-icon"><span class="icon icon-handshake"></span></div>
+        <div class="feature-title">品牌授权</div>
+        <div class="feature-text">民匠有约品牌授权使用，统一VI形象，市场拓展更有说服力</div>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon"><span class="icon icon-cpu"></span></div>
+        <div class="feature-title">系统支持</div>
+        <div class="feature-text">提供完整的 SaaS 平台系统，技术持续迭代，功能不断升级</div>
+      </div>
+      <div class="feature-card purple reveal">
+        <div class="feature-icon"><span class="icon icon-book-open"></span></div>
+        <div class="feature-title">培训体系</div>
+        <div class="feature-text">完善的培训体系，从产品知识到销售技巧，全方位赋能合伙人</div>
+      </div>
+      <div class="feature-card cyan reveal">
+        <div class="feature-icon"><span class="icon icon-rocket"></span></div>
+        <div class="feature-title">市场推广</div>
+        <div class="feature-text">总部统一品牌宣传，提供营销物料支持，助力市场快速拓展</div>
+      </div>
+      <div class="feature-card green reveal">
+        <div class="feature-icon"><span class="icon icon-users"></span></div>
+        <div class="feature-title">运营支持</div>
+        <div class="feature-text">一对一客户经理，7x12 小时服务支持，运营问题快速响应</div>
+      </div>
+      <div class="feature-card pink reveal">
+        <div class="feature-icon"><span class="icon icon-shield"></span></div>
+        <div class="feature-title">资源保障</div>
+        <div class="feature-text">总部资源倾斜，优质客户引荐，助力合伙人快速成长</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 申请流程 -->
+  <section class="section">
+    <div class="section-header reveal">
+      <span class="section-tag">申请流程</span>
+      <h2 class="section-title">四步加入 <span class="section-title-grad" style="background: linear-gradient(135deg, #FA8C16, #D46B08); -webkit-background-clip: text;">简单高效</span></h2>
+      <p class="section-desc">从申请到签约，流程简洁透明，快速开启创业之旅</p>
+    </div>
+    <div class="timeline-wrap">
+      <div class="timeline-item reveal">
+        <div class="timeline-num">1</div>
+        <div class="timeline-title">提交申请</div>
+        <div class="timeline-text">在线填写代理申请表，提交基本信息和合作意向</div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-num">2</div>
+        <div class="timeline-title">资质审核</div>
+        <div class="timeline-text">总部 3 个工作日内完成资质审核，电话沟通确认合作意向</div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-num">3</div>
+        <div class="timeline-title">考察签约</div>
+        <div class="timeline-text">邀请到总部实地考察，当面沟通合作细节，正式签约</div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-num">4</div>
+        <div class="timeline-title">正式运营</div>
+        <div class="timeline-text">总部提供全方位启动支持，培训赋能，快速进入运营</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 合伙人案例 -->
+  <section class="section section-soft-grad" id="cases">
+    <div class="section-header reveal">
+      <span class="section-tag">合伙人案例</span>
+      <h2 class="section-title">他们已经成功 <span class="section-title-grad" style="background: linear-gradient(135deg, #FA8C16, #D46B08); -webkit-background-clip: text;">你还在等什么</span></h2>
+      <p class="section-desc">越来越多的创业者加入民匠有约，实现财富梦想</p>
+    </div>
+    <div class="case-grid">
+      <div class="case-card reveal">
+        <div class="case-img" style="background: linear-gradient(135deg, #FFE7BA, #FFD591);">
+          <span class="icon icon-user" style="width:48px;height:48px;color:rgba(0,0,0,0.3);"></span>
+        </div>
+        <div class="case-body">
+          <div class="case-name">杭州 · 张总</div>
+          <div class="case-stats">
+            <div class="case-stat-row">
+              <span class="case-stat-label">年收益</span>
+              <span class="case-stat-value green">200万+</span>
+            </div>
+            <div class="case-stat-row">
+              <span class="case-stat-label">合作时长</span>
+              <span class="case-stat-value">2 年</span>
+            </div>
+          </div>
+          <div class="case-desc">原传统企业HR转型，加入民匠有约后快速打开当地市场，年收益突破 200 万，团队从 3 人发展到 20 人</div>
+        </div>
+      </div>
+      <div class="case-card reveal">
+        <div class="case-img" style="background: linear-gradient(135deg, #BAE0FF, #91D5FF);">
+          <span class="icon icon-building" style="width:48px;height:48px;color:rgba(0,0,0,0.3);"></span>
+        </div>
+        <div class="case-body">
+          <div class="case-name">深圳 · 李总</div>
+          <div class="case-stats">
+            <div class="case-stat-row">
+              <span class="case-stat-label">年收益</span>
+              <span class="case-stat-value green">350万+</span>
+            </div>
+            <div class="case-stat-row">
+              <span class="case-stat-label">合作时长</span>
+              <span class="case-stat-value">3 年</span>
+            </div>
+          </div>
+          <div class="case-desc">原互联网公司销售总监，带团队加入，深耕深圳市场，服务企业 500+，连续两年获得金牌合伙人称号</div>
+        </div>
+      </div>
+      <div class="case-card reveal">
+        <div class="case-img" style="background: linear-gradient(135deg, #D9F7BE, #B7EB8F);">
+          <span class="icon icon-star" style="width:48px;height:48px;color:rgba(0,0,0,0.3);"></span>
+        </div>
+        <div class="case-body">
+          <div class="case-name">成都 · 王总</div>
+          <div class="case-stats">
+            <div class="case-stat-row">
+              <span class="case-stat-label">年收益</span>
+              <span class="case-stat-value green">150万+</span>
+            </div>
+            <div class="case-stat-row">
+              <span class="case-stat-label">合作时长</span>
+              <span class="case-stat-value">1 年半</span>
+            </div>
+          </div>
+          <div class="case-desc">零经验创业者，凭借总部全方位支持，快速上手业务，一年半时间实现年收益 150 万，成功创业</div>
+        </div>
+      </div>
+      <div class="case-card reveal">
+        <div class="case-img" style="background: linear-gradient(135deg, #E6F4FF, #91D5FF);">
+          <span class="icon icon-truck" style="width:48px;height:48px;color:rgba(0,0,0,0.3);"></span>
+        </div>
+        <div class="case-body">
+          <div class="case-name">武汉 · 陈总</div>
+          <div class="case-stats">
+            <div class="case-stat-row">
+              <span class="case-stat-label">年收益</span>
+              <span class="case-stat-value green">280万+</span>
+            </div>
+            <div class="case-stat-row">
+              <span class="case-stat-label">合作时长</span>
+              <span class="case-stat-value">2 年半</span>
+            </div>
+          </div>
+          <div class="case-desc">原物流行业从业者，看准灵活用工市场机遇加入民匠有约，依托总部系统化培训和市场支持，迅速打开武汉三镇市场，服务企业超 300 家，团队扩展至 15 人</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 申请条件 & 表单 -->
+  <section class="section" id="apply">
+    <div class="showcase">
+      <div class="reveal">
+        <span class="section-tag">申请条件</span>
+        <h3 class="showcase-content-title">成为合伙人 <br><span class="section-title-grad" style="background: linear-gradient(135deg, #FA8C16, #D46B08); -webkit-background-clip: text;">只需满足以下条件</span></h3>
+        <ul class="showcase-list">
+          <li>具备本地企业资源或人脉关系</li>
+          <li>50万以上流动资金</li>
+          <li>3-5人运营团队</li>
+          <li>有互联网/SaaS行业经验者优先</li>
+          <li>认可民匠有约品牌理念</li>
+          <li>有创业热情，愿意长期投入</li>
+        </ul>
+        <div style="margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap;">
+          <span class="tag">低门槛</span>
+          <span class="tag">高回报</span>
+          <span class="tag">总部扶持</span>
+          <span class="tag">区域独家</span>
+        </div>
+      </div>
+      <div class="contact-form-card reveal" style="max-width: none;">
+        <div class="contact-form-title">立即申请合伙人</div>
+        <div class="contact-form-desc">提交信息，招商经理将在 24 小时内与您联系</div>
+        <form class="contact-form" onsubmit="event.preventDefault(); alert('提交成功！我们的招商经理将尽快与您联系');">
+          <div class="form-row">
+            <div class="form-item">
+              <label class="form-label">姓名 *</label>
+              <input type="text" class="form-input" placeholder="请输入您的姓名" required>
+            </div>
+            <div class="form-item">
+              <label class="form-label">手机 *</label>
+              <input type="tel" class="form-input" placeholder="请输入手机号码" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-item">
+              <label class="form-label">意向城市 *</label>
+              <select class="form-input">
+                <option>请选择意向城市</option>
+                <option>杭州</option>
+                <option>上海</option>
+                <option>北京</option>
+                <option>深圳</option>
+                <option>广州</option>
+                <option>成都</option>
+                <option>武汉</option>
+                <option>其他</option>
+              </select>
+            </div>
+            <div class="form-item">
+              <label class="form-label">身份类型</label>
+              <select class="form-input">
+                <option>个人代理</option>
+                <option>企业代理</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-item">
+            <label class="form-label">可用资金</label>
+            <select class="form-input">
+              <option>请选择可用资金范围</option>
+              <option>50万以下</option>
+              <option>50-100万</option>
+              <option>100-200万</option>
+              <option>200万以上</option>
+            </select>
+          </div>
+          <div class="form-item">
+            <label class="form-label">留言</label>
+            <textarea class="form-input" rows="3" placeholder="简单介绍一下您的资源和背景..."></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block" style="--primary: var(--brand-primary);">
+            提交申请 <span class="icon icon-arrow-right icon-sm"></span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section section-soft-grad" id="faq">
+    <div class="section-header reveal">
+      <span class="section-tag">常见问题</span>
+      <h2 class="section-title">你可能想知道</h2>
+    </div>
+    <div class="faq-wrap reveal">
+      <div class="faq-item">
+        <div class="faq-q">成为城市代理需要什么条件？</div>
+        <div class="faq-a">需要具备本地企业资源或人脉关系、50万以上流动资金、3-5人运营团队，有互联网/SaaS行业经验者优先。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">区域代理有什么保护政策？</div>
+        <div class="faq-a">我们实行严格的区域保护政策，每个区域仅授权一家代理商，保障合伙人的独家权益。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">分成比例是如何计算的？</div>
+        <div class="faq-a">交易流水分成最高可达30%，根据区域GMV阶梯递增；推广拉新、增值服务还有额外奖励。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">总部提供哪些支持？</div>
+        <div class="faq-a">总部提供品牌授权、系统支持、培训体系、市场推广物料、一对一客户经理等全方位支持。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section">
+    <div class="cta-banner brand-cta reveal">
+      <div class="cta-inner">
+        <h2 class="cta-title">携手民匠有约，共创财富未来</h2>
+        <p class="cta-desc">加入我们的合伙人计划，让每一次合作都成为新事业的开端</p>
+        <div class="cta-actions">
+          <a href="#apply" class="btn btn-white btn-large">立即申请</a>
+          <a href="tel:400-158-7877" class="btn btn-ghost-white btn-large"><span class="icon icon-phone icon-sm"></span> 400-158-7877</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="footer-brand">
+            <div class="footer-brand-icon" style="background: var(--brand-grad);">合</div>
+            渠道代理
+          </div>
+          <p class="footer-desc">民匠有约城市代理合伙人计划，与您携手共创财富未来，共享万亿级灵活用工市场红利</p>
+          <div class="footer-contact">
+            <div class="footer-contact-row">
+              <span class="icon icon-phone icon-sm"></span>
+              <span class="footer-hotline">400-158-7877</span>
+            </div>
+            <div class="footer-tip">招商热线：周一至周日 9:00-21:00</div>
+            <div><span class="icon icon-mail icon-sm"></span> agent@minjiang.com</div>
+            <div><span class="icon icon-map-pin icon-sm"></span> 杭州市钱塘区下沙街道学源街 1366 号</div>
+          </div>
+        </div>
+        <div>
+          <div class="footer-title">产品服务</div>
+          <ul class="footer-links">
+            <li><a href="agent.html">城市代理</a></li>
+            <li><a href="#benefits">收益政策</a></li>
+            <li><a href="#advantages">六大优势</a></li>
+            <li><a href="#cases">合伙人案例</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-title">合作支持</div>
+          <ul class="footer-links">
+            <li><a href="#">品牌授权</a></li>
+            <li><a href="#">系统支持</a></li>
+            <li><a href="#">培训体系</a></li>
+            <li><a href="#">市场推广</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-title">支持</div>
+          <ul class="footer-links">
+            <li><a href="#faq">常见问题</a></li>
+            <li><a href="#">服务协议</a></li>
+            <li><a href="#">隐私政策</a></li>
+            <li><a href="contact.html">投诉建议</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-title">招商合作</div>
+          <ul class="footer-links">
+            <li>招商热线：400-158-7877</li>
+            <li>代理邮箱：agent@minjiang.com</li>
+            <li>总部地址：杭州钱塘区</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2024 民匠有约 版权所有 浙江良巧匠网络科技</span>
+        <div>
+          <a href="#">浙ICP备XXXXXXXX号-1</a>
+          <a href="#">浙公网安备XXXXXXXX号</a>
+          <a href="#">电子营业执照</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 悬浮侧边栏 -->
+  <div class="float-sidebar">
+    <!-- 客服 -->
+    <div class="float-btn float-btn-green" data-panel="panel-kefu">
+      <div class="float-btn-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      </div>
+      <div class="float-btn-text">客服</div>
+    </div>
+
+    <!-- 民匠有约 -->
+    <div class="float-btn float-btn-primary" data-panel="panel-youyue">
+      <div class="float-btn-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>
+      </div>
+      <div class="float-btn-text">有约</div>
+    </div>
+
+    <!-- 民匠安心云 -->
+    <div class="float-btn float-btn-dark" data-panel="panel-anxinyun">
+      <div class="float-btn-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
+      </div>
+      <div class="float-btn-text">安心云</div>
+    </div>
+
+    <!-- 代理商 -->
+    <div class="float-btn float-btn-orange" data-panel="panel-daili">
+      <div class="float-btn-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+      </div>
+      <div class="float-btn-text">代理</div>
+    </div>
+
+    <!-- 首页 -->
+    <div class="float-btn float-btn-primary" onclick="window.location.href='index.html'">
+      <div class="float-btn-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <div class="float-btn-text">首页</div>
+    </div>
+  </div>
+
+  <!-- 悬浮面板（独立于侧边栏） -->
+  <div class="float-panel" id="panel-kefu">
+    <div class="float-panel-header float-panel-header-green">
+      <span>在线客服</span>
+      <span class="float-panel-status"><span class="float-panel-status-dot"></span>在线</span>
+    </div>
+    <div class="float-panel-body">
+      <div class="float-panel-qr">
+        <div class="float-panel-qr-box">
+          <img src="https://oss.minjiangyouyue.com/mjlogo/ewm.png" alt="客服二维码" style="width:100%;height:100%;object-fit:contain;border-radius:14px;">
+        </div>
+        <div class="float-panel-qr-tip">扫码添加客服微信</div>
+      </div>
+      <div class="float-panel-links">
+        <a href="consult-chat.html" class="float-panel-link">
+          <div class="float-panel-link-icon" style="background:#E6F4FF;color:#1677FF;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          </div>
+          <div class="float-panel-link-text">
+            <div class="float-panel-link-title">在线咨询</div>
+            <div class="float-panel-link-desc">即时对话，快速响应</div>
+          </div>
+        </a>
+        <a href="tel:400-888-6666" class="float-panel-link">
+          <div class="float-panel-link-icon" style="background:#FFF7E6;color:#FA8C16;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </div>
+          <div class="float-panel-link-text">
+            <div class="float-panel-link-title">电话咨询</div>
+            <div class="float-panel-link-desc">400-888-6666</div>
+          </div>
+        </a>
+      </div>
+      <div class="float-panel-info">
+        <div class="float-panel-info-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>工作日 9:00-18:00</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="float-panel" id="panel-youyue">
+    <div class="float-panel-header float-panel-header-blue"><span>民匠有约</span></div>
+    <div class="float-panel-body">
+      <p style="font-size:13px;color:#595959;line-height:1.6;margin-bottom:12px;">灵活用工智能撮合平台，提供福运宝、如意宝两大结算方案</p>
+      <div class="float-panel-links">
+        <a href="minjiang.html" class="float-panel-link"><div class="float-panel-link-icon" style="background:#E6F4FF;color:#1677FF;">约</div><div class="float-panel-link-text"><div class="float-panel-link-title">了解产品</div><div class="float-panel-link-desc">灵活用工解决方案</div></div></a>
+        <a href="minjiang.html#fuyunbao" class="float-panel-link"><div class="float-panel-link-icon" style="background:#F0F5FF;color:#2F54EB;">福</div><div class="float-panel-link-text"><div class="float-panel-link-title">福运宝</div><div class="float-panel-link-desc">即时结算方案</div></div></a>
+        <a href="minjiang.html#ruyibao" class="float-panel-link"><div class="float-panel-link-icon" style="background:#F9F0FF;color:#722ED1;">如</div><div class="float-panel-link-text"><div class="float-panel-link-title">如意宝</div><div class="float-panel-link-desc">周期结算方案</div></div></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="float-panel" id="panel-anxinyun">
+    <div class="float-panel-header float-panel-header-dark"><span>民匠安心云</span></div>
+    <div class="float-panel-body">
+      <p style="font-size:13px;color:#595959;line-height:1.6;margin-bottom:12px;">企业数字化管理平台，审批考勤、组织架构、数据分析一站式搞定</p>
+      <div class="float-panel-links">
+        <a href="anxinyun.html" class="float-panel-link"><div class="float-panel-link-icon" style="background:#E6F0FF;color:#0F52BA;">云</div><div class="float-panel-link-text"><div class="float-panel-link-title">了解产品</div><div class="float-panel-link-desc">企业管理解决方案</div></div></a>
+        <a href="anxinyun.html#features" class="float-panel-link"><div class="float-panel-link-icon" style="background:#E6FFFB;color:#13C2C2;">功</div><div class="float-panel-link-text"><div class="float-panel-link-title">功能特性</div><div class="float-panel-link-desc">审批考勤组织架构</div></div></a>
+        <a href="anxinyun.html#pricing" class="float-panel-link"><div class="float-panel-link-icon" style="background:#FFF7E6;color:#FA8C16;">价</div><div class="float-panel-link-text"><div class="float-panel-link-title">版本价格</div><div class="float-panel-link-desc">多版本可选</div></div></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="float-panel" id="panel-daili">
+    <div class="float-panel-header float-panel-header-orange"><span>城市代理合伙人</span></div>
+    <div class="float-panel-body">
+      <p style="font-size:13px;color:#595959;line-height:1.6;margin-bottom:12px;">一城一代理独家权益，全方位总部扶持，零经验也能轻松创业</p>
+      <div class="float-panel-links">
+        <a href="agent.html" class="float-panel-link"><div class="float-panel-link-icon" style="background:#FFF7E6;color:#FA8C16;">代</div><div class="float-panel-link-text"><div class="float-panel-link-title">了解计划</div><div class="float-panel-link-desc">合伙人加盟政策</div></div></a>
+        <a href="agent.html#cases" class="float-panel-link"><div class="float-panel-link-icon" style="background:#F6FFED;color:#52C41A;">案</div><div class="float-panel-link-text"><div class="float-panel-link-title">合伙人案例</div><div class="float-panel-link-desc">成功故事分享</div></div></a>
+        <a href="agent.html#join" class="float-panel-link"><div class="float-panel-link-icon" style="background:#FFF0F6;color:#EB2F96;">加</div><div class="float-panel-link-text"><div class="float-panel-link-title">立即加盟</div><div class="float-panel-link-desc">申请成为合伙人</div></div></a>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+
+<div class="modal-overlay" id="logoutModal">
+  <div class="modal">
+    <div class="modal-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+        <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+    </div>
+    <h3 class="modal-title">确认退出</h3>
+    <p class="modal-desc">退出后您需要重新登录才能继续使用平台功能</p>
+    <div class="modal-actions">
+      <button class="btn btn-default" id="logoutCancel">取消</button>
+      <button class="btn-danger" id="logoutConfirm">确认退出</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>
