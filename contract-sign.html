@@ -759,6 +759,11 @@
       }
       updateTopbar();
 
+      var backBtn = document.getElementById('backBtn');
+      if (currentPlatform !== 'agent') {
+        backBtn.style.display = 'none';
+      }
+
       var contracts = {
         minjiang: { name: '民匠有约 · 灵活用工服务合作协议', platform: '民匠有约',
           content: '<h4>第一条 合作内容</h4><p>甲方（民匠有约平台）为乙方提供基于灵活用工场景的<strong>智能撮合、电子合同、即时结算、税务代征</strong>等全流程数字化服务。</p><h4>第二条 双方权利与义务</h4><p>2.1 甲方负责为乙方提供稳定、安全、合规的灵活用工撮合服务。</p><p>2.2 乙方应保证所发布任务信息的真实性和合法性。</p><h4>第三条 服务费用与结算</h4><p>3.1 平台服务费按乙方实际发包金额的<strong>5%-8%</strong>阶梯式收取。</p><h4>第四条 合同期限</h4><p>本合同自电子签署之日起生效，有效期<strong>1 年</strong>。</p>' },
