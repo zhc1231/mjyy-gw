@@ -2624,6 +2624,18 @@ select.form-input {
   margin: 6px 0;
 }
 
+.user-dropdown-group {
+  padding: 4px 0;
+}
+
+.user-dropdown-group-title {
+  padding: 6px 16px 4px;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
 .verify-banner {
   padding: 12px 16px;
   background: linear-gradient(135deg, #FFF7E6, #FFE7BA);

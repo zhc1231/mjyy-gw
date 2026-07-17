@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>身份与权限 - 民匠有约</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    :root {
+      --brand-primary: #1677FF;
+      --brand-primary-dark: #0958D9;
+      --brand-primary-50: #E6F4FF;
+      --brand-primary-100: #BAE0FF;
+      --sidebar-width: 240px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #f5f6f7;
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ===== 顶部导航 ===== */
+    .topbar {
+      background: #fff;
+      border-bottom: 1px solid var(--gray-200);
+      height: 64px;
+      display: flex;
+      align-items: center;
+      padding: 0 48px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+    }
+
+    .topbar-inner {
+      max-width: 1280px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .topbar-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .topbar-back {
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .topbar-back:hover { color: var(--brand-primary); }
+
+    .topbar-user {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .topbar-user:hover {
+      background: var(--gray-100);
+    }
+
+    .topbar-user:hover .user-dropdown,
+    .topbar-user:focus-within .user-dropdown {
+      display: block;
+    }
+
+    .topbar-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--brand-primary-50);
+      color: var(--brand-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .topbar-name {
+      font-size: 14px;
+      color: var(--text);
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .topbar-chevron {
+      width: 14px;
+      height: 14px;
+      color: var(--text-muted);
+      transition: transform 0.2s;
+    }
+
+    .topbar-user:hover .topbar-chevron {
+      transform: rotate(180deg);
+    }
+
+    /* ===== 用户下拉菜单（阿里云风格） ===== */
+    .user-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 280px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      border: 1px solid var(--gray-200);
+      z-index: 1001;
+      display: none;
+      overflow: hidden;
+    }
+
+    .user-dropdown-header {
+      padding: 16px;
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-dropdown-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--brand-primary-50);
+      color: var(--brand-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .user-dropdown-info { flex: 1; min-width: 0; }
+
+    .user-dropdown-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 2px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .user-dropdown-id {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .user-dropdown-tags {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .user-dropdown-tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--brand-primary-50);
+      color: var(--brand-primary);
+      font-weight: 500;
+    }
+
+    .user-dropdown-tag.verified {
+      background: #E8F8EB;
+      color: #00B42A;
+    }
+
+    .user-dropdown-body {
+      padding: 8px 0;
+    }
+
+    .user-dropdown-group {
+      padding: 4px 0;
+    }
+
+    .user-dropdown-group-title {
+      padding: 8px 16px 4px;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .user-dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      border: none;
+      background: none;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+      transition: background 0.2s;
+    }
+
+    .user-dropdown-item:hover {
+      background: var(--gray-100);
+      color: var(--text);
+    }
+
+    .user-dropdown-item svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .user-dropdown-item-primary {
+      color: var(--brand-primary);
+      font-weight: 500;
+    }
+
+    .user-dropdown-divider {
+      height: 1px;
+      background: var(--gray-200);
+      margin: 8px 0;
+    }
+
+    .user-dropdown-footer {
+      padding: 12px 16px;
+      border-top: 1px solid var(--gray-200);
+    }
+
+    .user-dropdown-logout {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding: 8px;
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      background: #fff;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .user-dropdown-logout:hover {
+      border-color: var(--brand-primary);
+      color: var(--brand-primary);
+      background: var(--brand-primary-50);
+    }
+
+    /* ===== 页面主体布局 ===== */
+    .page-layout {
+      display: flex;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding-top: 64px;
+      min-height: 100vh;
+    }
+
+    /* ===== 左侧边栏 ===== */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: #fff;
+      border-right: 1px solid var(--gray-200);
+      position: fixed;
+      top: 64px;
+      bottom: 0;
+      left: calc((100vw - 1280px) / 2);
+      overflow-y: auto;
+      padding: 16px 0;
+    }
+
+    .sidebar-menu { list-style: none; }
+
+    .sidebar-item { position: relative; }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px 10px 24px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .sidebar-link:hover {
+      color: var(--brand-primary);
+      background: var(--brand-primary-50);
+    }
+
+    .sidebar-link.active {
+      color: var(--brand-primary);
+      background: var(--brand-primary-50);
+      font-weight: 600;
+      border-right: 3px solid var(--brand-primary);
+    }
+
+    .sidebar-link svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-arrow {
+      margin-left: auto;
+      width: 14px;
+      height: 14px;
+      transition: transform 0.2s;
+    }
+
+    .sidebar-item.open .sidebar-arrow {
+      transform: rotate(90deg);
+    }
+
+    .sidebar-submenu {
+      list-style: none;
+      display: none;
+      background: #fafafa;
+      padding: 4px 0;
+    }
+
+    .sidebar-item.open .sidebar-submenu {
+      display: block;
+    }
+
+    .sidebar-submenu .sidebar-link {
+      padding-left: 52px;
+      font-size: 13px;
+    }
+
+    .sidebar-divider {
+      height: 1px;
+      background: var(--gray-200);
+      margin: 12px 16px;
+    }
+
+    .sidebar-section-title {
+      padding: 8px 16px 8px 24px;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* ===== 主内容区 ===== */
+    .main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      padding: 24px 32px 40px;
+      min-width: 0;
+    }
+
+    .page-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .page-breadcrumb a { color: var(--text-muted); text-decoration: none; }
+    .page-breadcrumb a:hover { color: var(--brand-primary); }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+
+    /* ===== 卡片组件 ===== */
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid var(--gray-200);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .card-body { padding: 20px; }
+
+    /* ===== 信息列表 ===== */
+    .info-list { display: flex; flex-direction: column; gap: 16px; }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .info-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .info-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .info-label svg {
+      width: 18px;
+      height: 18px;
+      color: var(--text-muted);
+    }
+
+    .info-value {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .info-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: #E8F8EB;
+      color: #00B42A;
+    }
+
+    .info-status.pending {
+      background: #FFF3E8;
+      color: #FF7D00;
+    }
+
+    .info-action {
+      font-size: 13px;
+      color: var(--brand-primary);
+      text-decoration: none;
+    }
+
+    .info-action:hover { text-decoration: underline; }
+
+    /* ===== 权限概览网格 ===== */
+    .permission-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .permission-item {
+      padding: 20px;
+      border: 1px solid var(--gray-200);
+      border-radius: 10px;
+      transition: all 0.2s;
+    }
+
+    .permission-item:hover {
+      border-color: var(--brand-primary);
+      box-shadow: 0 4px 16px rgba(22,119,255,0.1);
+    }
+
+    .permission-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--brand-primary-50);
+      color: var(--brand-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .permission-icon svg { width: 20px; height: 20px; }
+
+    .permission-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .permission-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* ===== 成员表格 ===== */
+    .member-table-wrap { overflow-x: auto; }
+
+    .member-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .member-table th,
+    .member-table td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .member-table th {
+      background: #fafafa;
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 13px;
+    }
+
+    .member-table tbody tr:hover { background: #fafafa; }
+
+    .member-empty {
+      padding: 40px 16px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .member-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .member-action {
+      color: var(--brand-primary);
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .member-action:hover { text-decoration: underline; }
+
+    .member-action.danger { color: #F53F3F; }
+
+    /* ===== 按钮 ===== */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: var(--brand-primary);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .btn-primary:hover { background: var(--brand-primary-dark); }
+
+    /* ===== 空状态 ===== */
+    .empty-state {
+      padding: 48px 20px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .empty-state-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 16px;
+      background: var(--gray-100);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+    }
+
+    .empty-state-icon svg { width: 28px; height: 28px; }
+
+    .empty-state-text {
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    /* ===== 响应式 ===== */
+    @media (max-width: 1280px) {
+      .sidebar { left: 0; }
+    }
+
+    @media (max-width: 768px) {
+      .topbar { padding: 0 16px; }
+      .page-layout { flex-direction: column; }
+      .sidebar {
+        position: relative;
+        top: 0;
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--gray-200);
+      }
+      .main-content { margin-left: 0; padding: 16px; }
+      .permission-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <a href="index.html" class="topbar-brand">
+        <img src="https://oss.minjiangyouyue.com/mjlogo/logo02.png" alt="logo" style="height:36px;border-radius:8px;">
+        <span class="topbar-title">账号中心</span>
+      </a>
+      <div class="topbar-right">
+        <a href="javascript:history.back()" class="topbar-back">
+          <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M19 12H5" stroke="currentColor" stroke-width="2"/><path d="M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2"/></svg>
+          返回
+        </a>
+        <div class="topbar-user" id="topbarUser">
+          <div class="topbar-avatar" id="topbarAvatar">用</div>
+          <span class="topbar-name" id="topbarName">用户</span>
+          <svg class="topbar-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2"/></svg>
+          <div class="user-dropdown" id="userDropdown">
+            <div class="user-dropdown-header">
+              <div class="user-dropdown-avatar" id="dropdownAvatar">用</div>
+              <div class="user-dropdown-info">
+                <div class="user-dropdown-name" id="dropdownName">用户</div>
+                <div class="user-dropdown-id" id="dropdownId">账号ID：--</div>
+                <div class="user-dropdown-tags" id="dropdownTags">
+                  <span class="user-dropdown-tag" id="authTag">未认证</span>
+                </div>
+              </div>
+            </div>
+            <div class="user-dropdown-body">
+              <div class="user-dropdown-group">
+                <div class="user-dropdown-group-title">账号管理</div>
+                <a href="account-center.html" class="user-dropdown-item">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="2"/><polyline points="9 22 9 12 15 12 15 22" stroke="currentColor" stroke-width="2"/></svg>
+                  账号中心
+                </a>
+                <a href="account-realname.html" class="user-dropdown-item">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
+                  实名信息
+                </a>
+                <a href="account-security.html" class="user-dropdown-item">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/></svg>
+                  账号安全
+                </a>
+                <a href="account-permission.html" class="user-dropdown-item active">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2"/><path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2"/></svg>
+                  身份与权限
+                </a>
+              </div>
+              <div class="user-dropdown-divider"></div>
+              <div class="user-dropdown-group">
+                <div class="user-dropdown-group-title">费用与资产</div>
+                <a href="account-billing.html" class="user-dropdown-item">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"/></svg>
+                  发票 / 合同 / 订单 / 卡券
+                </a>
+              </div>
+              <div class="user-dropdown-divider"></div>
+              <div class="user-dropdown-group">
+                <a href="verify.html" class="user-dropdown-item user-dropdown-item-primary" id="verifyLink">
+                  <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <span id="verifyLinkText">去实名认证</span>
+                </a>
+                <a href="#" class="user-dropdown-item user-dropdown-item-primary" id="enterSystemBtn">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="currentColor" stroke-width="2"/><path d="M12 5l7 7-7 7" stroke="currentColor" stroke-width="2"/></svg>
+                  进入系统
+                </a>
+              </div>
+            </div>
+            <div class="user-dropdown-footer">
+              <button class="user-dropdown-logout" id="logoutBtn">
+                <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" stroke-width="2"/><polyline points="16 17 21 12 16 7" stroke="currentColor" stroke-width="2"/><line x1="21" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="2"/></svg>
+                退出登录
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 页面主体 -->
+  <div class="page-layout">
+    <!-- 左侧边栏 -->
+    <aside class="sidebar">
+      <ul class="sidebar-menu">
+        <li class="sidebar-item">
+          <a href="account-center.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="2"/><polyline points="9 22 9 12 15 12 15 22" stroke="currentColor" stroke-width="2"/></svg>
+            账号中心
+          </a>
+        </li>
+        <li class="sidebar-divider"></li>
+        <li class="sidebar-section-title">我的主体</li>
+        <li class="sidebar-item open">
+          <a class="sidebar-link">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
+            实名信息
+            <svg class="sidebar-arrow" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2"/></svg>
+          </a>
+          <ul class="sidebar-submenu">
+            <li><a href="account-realname.html" class="sidebar-link">个人实名信息</a></li>
+            <li><a href="account-realname.html" class="sidebar-link">企业实名信息</a></li>
+          </ul>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="2"/></svg>
+            资金账户
+          </a>
+        </li>
+        <li class="sidebar-divider"></li>
+        <li class="sidebar-section-title">我的账号</li>
+        <li class="sidebar-item">
+          <a href="account-security.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/></svg>
+            账号安全
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2"/></svg>
+            地址和联系人
+          </a>
+        </li>
+        <li class="sidebar-divider"></li>
+        <li class="sidebar-section-title">权限管理</li>
+        <li class="sidebar-item">
+          <a href="account-permission.html" class="sidebar-link active">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2"/><path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2"/></svg>
+            身份与权限
+          </a>
+        </li>
+        <li class="sidebar-divider"></li>
+        <li class="sidebar-section-title">费用与资产</li>
+        <li class="sidebar-item open">
+          <a class="sidebar-link">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"/></svg>
+            发票 / 合同 / 订单
+            <svg class="sidebar-arrow" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2"/></svg>
+          </a>
+          <ul class="sidebar-submenu">
+            <li><a href="account-billing.html?tab=invoice" class="sidebar-link">发票管理</a></li>
+            <li><a href="account-billing.html?tab=contract" class="sidebar-link">合同管理</a></li>
+            <li><a href="account-billing.html?tab=order" class="sidebar-link">订单管理</a></li>
+            <li><a href="account-billing.html?tab=coupon" class="sidebar-link">卡券管理</a></li>
+          </ul>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+      <div class="page-breadcrumb">
+        <a href="account-center.html">账号中心</a>
+        <span>/</span>
+        <span>身份与权限</span>
+      </div>
+      <h1 class="page-title">身份与权限</h1>
+
+      <!-- 当前身份 -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">当前身份</div>
+        </div>
+        <div class="card-body">
+          <div class="info-list">
+            <div class="info-item">
+              <div class="info-label">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2"/><path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2"/></svg>
+                用户角色
+              </div>
+              <div class="info-value">
+                <span>主账号管理员</span>
+              </div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
+                认证主体
+              </div>
+              <div class="info-value" id="identitySubject">--</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2"/><polyline points="22 4 12 14.01 9 11.01" stroke="currentColor" stroke-width="2"/></svg>
+                认证状态
+              </div>
+              <div class="info-value">
+                <span class="info-status" id="identityStatus">未认证</span>
+              </div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/></svg>
+                AccessKey
+              </div>
+              <div class="info-value">
+                <span id="accesskeyStatus">未创建</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 权限概览 -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">权限概览</div>
+        </div>
+        <div class="card-body">
+          <div class="permission-grid">
+            <div class="permission-item">
+              <div class="permission-icon">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="2"/><polyline points="9 22 9 12 15 12 15 22" stroke="currentColor" stroke-width="2"/></svg>
+              </div>
+              <div class="permission-title">账号管理</div>
+              <div class="permission-desc">查看并管理账号基础信息</div>
+            </div>
+            <div class="permission-item">
+              <div class="permission-icon">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
+              </div>
+              <div class="permission-title">实名认证</div>
+              <div class="permission-desc">个人/企业实名信息管理</div>
+            </div>
+            <div class="permission-item">
+              <div class="permission-icon">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="2"/></svg>
+              </div>
+              <div class="permission-title">费用管理</div>
+              <div class="permission-desc">账户余额与资金流水</div>
+            </div>
+            <div class="permission-item">
+              <div class="permission-icon">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"/></svg>
+              </div>
+              <div class="permission-title">发票管理</div>
+              <div class="permission-desc">发票申请与邮寄信息</div>
+            </div>
+            <div class="permission-item">
+              <div class="permission-icon">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"/></svg>
+              </div>
+              <div class="permission-title">合同管理</div>
+              <div class="permission-desc">合同签署与下载</div>
+            </div>
+            <div class="permission-item">
+              <div class="permission-icon">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" stroke="currentColor" stroke-width="2"/><line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="2"/></svg>
+              </div>
+              <div class="permission-title">订单管理</div>
+              <div class="permission-desc">订单查询与续费</div>
+            </div>
+            <div class="permission-item">
+              <div class="permission-icon">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2"/><path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2"/></svg>
+              </div>
+              <div class="permission-title">成员管理</div>
+              <div class="permission-desc">成员账号与权限分配</div>
+            </div>
+            <div class="permission-item">
+              <div class="permission-icon">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/></svg>
+              </div>
+              <div class="permission-title">安全设置</div>
+              <div class="permission-desc">密码、手机与登录保护</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 成员管理 -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">成员管理</div>
+          <button class="btn-primary" id="addMemberBtn">
+            <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/><line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/></svg>
+            添加成员
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="member-table-wrap">
+            <table class="member-table">
+              <thead>
+                <tr>
+                  <th>成员账号</th>
+                  <th>角色</th>
+                  <th>加入时间</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="4">
+                    <div class="member-empty">暂无成员账号</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- AccessKey 管理 -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">AccessKey 管理</div>
+          <button class="btn-primary" id="createAccesskeyBtn">
+            <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/><line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/></svg>
+            创建 AccessKey
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="empty-state">
+            <div class="empty-state-icon">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/></svg>
+            </div>
+            <div class="empty-state-text">暂无 AccessKey</div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    (function() {
+      var isLoggedIn = localStorage.getItem('mjyy_logged_in') === 'true';
+      if (!isLoggedIn) { window.location.href = 'login.html'; return; }
+
+      var userData = JSON.parse(localStorage.getItem('mjyy_user_data') || '{}');
+      var personalData = JSON.parse(localStorage.getItem('mjyy_personal_data') || '{}');
+      var enterpriseData = JSON.parse(localStorage.getItem('mjyy_enterprise_data') || '{}');
+      var identityVerified = localStorage.getItem('mjyy_identity_verified') === 'true';
+      var selectedAuthType = localStorage.getItem('mjyy_auth_type') || 'enterprise';
+
+      function maskMobile(m) {
+        if (!m || m.length < 11) return m || '--';
+        return m.substring(0, 3) + '****' + m.substring(7);
+      }
+
+      function maskId(id) {
+        if (!id) return '--';
+        return id.substring(0, 4) + '****' + id.substring(id.length - 4);
+      }
+
+      var displayName = '';
+      if (enterpriseData.companyName) displayName = enterpriseData.companyName;
+      else if (personalData.realName) displayName = personalData.realName;
+      else if (userData.mobile) displayName = maskMobile(userData.mobile);
+      else if (userData.name) displayName = userData.name;
+      else displayName = '用户';
+
+      var avatarChar = displayName ? displayName.charAt(0) : '用';
+      var accountId = userData.mobile || userData.accountId || 'MJ' + Date.now().toString().slice(-8);
+
+      document.getElementById('topbarAvatar').textContent = avatarChar;
+      document.getElementById('topbarName').textContent = displayName;
+      document.getElementById('dropdownAvatar').textContent = avatarChar;
+      document.getElementById('dropdownName').textContent = displayName;
+      document.getElementById('dropdownId').textContent = '账号ID：' + maskId(accountId);
+
+      var authTag = document.getElementById('authTag');
+      var verifyLink = document.getElementById('verifyLink');
+      var verifyLinkText = document.getElementById('verifyLinkText');
+
+      if (identityVerified) {
+        authTag.textContent = '已认证';
+        authTag.classList.add('verified');
+        verifyLink.style.display = 'none';
+      } else {
+        authTag.textContent = selectedAuthType === 'personal' ? '个人未认证' : '企业未认证';
+        verifyLinkText.textContent = selectedAuthType === 'personal' ? '去个人认证' : '去企业认证';
+      }
+
+      var identitySubject = document.getElementById('identitySubject');
+      var identityStatus = document.getElementById('identityStatus');
+
+      if (selectedAuthType === 'personal') {
+        identitySubject.textContent = personalData.realName || '未填写';
+      } else {
+        identitySubject.textContent = enterpriseData.companyName || '未填写';
+      }
+
+      if (identityVerified) {
+        identityStatus.textContent = '已认证';
+        identityStatus.classList.remove('pending');
+      } else {
+        identityStatus.textContent = '未认证';
+        identityStatus.classList.add('pending');
+      }
+
+      document.getElementById('addMemberBtn').addEventListener('click', function() {
+        alert('添加成员功能即将上线');
+      });
+
+      document.getElementById('createAccesskeyBtn').addEventListener('click', function() {
+        alert('创建 AccessKey 功能即将上线');
+      });
+
+      document.getElementById('enterSystemBtn').addEventListener('click', function(e) {
+        e.preventDefault();
+        var fromPlatform = localStorage.getItem('mjyy_from_platform') || 'minjiang';
+        if (fromPlatform === 'anxinyun') window.location.href = 'anxinyun.html';
+        else if (fromPlatform === 'agent') window.location.href = 'agent.html';
+        else window.location.href = 'minjiang.html';
+      });
+
+      document.getElementById('logoutBtn').addEventListener('click', function() {
+        localStorage.clear();
+        window.location.href = 'login.html';
+      });
+    })();
+  </script>
+</body>
+</html>
