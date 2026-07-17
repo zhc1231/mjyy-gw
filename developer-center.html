@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>开发者中心 - 民匠有约</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    :root {
+      --brand-primary: #1677FF;
+      --brand-primary-dark: #0958D9;
+      --brand-primary-50: #E6F4FF;
+    }
+    .page-hero {
+      position: relative;
+      padding: 80px 24px 60px;
+      background: linear-gradient(180deg, #E6F4FF 0%, #FFFFFF 100%);
+    }
+    .page-hero-inner {
+      max-width: var(--container);
+      margin: 0 auto;
+      text-align: center;
+    }
+    .page-hero-title {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    .page-hero-desc {
+      font-size: 15px;
+      color: var(--text-secondary);
+    }
+    .content-wrap {
+      max-width: var(--container);
+      margin: 40px auto;
+      padding: 0 24px;
+    }
+    .dev-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .dev-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 32px;
+      border: 1px solid var(--gray-200);
+      transition: all 0.3s;
+    }
+    .dev-card:hover {
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+    .dev-card-icon {
+      width: 56px;
+      height: 56px;
+      margin-bottom: 20px;
+      border-radius: 14px;
+      background: var(--brand-primary-50);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .dev-card-icon svg {
+      width: 24px;
+      height: 24px;
+      color: var(--brand-primary);
+    }
+    .dev-card-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .dev-card-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    .dev-card-link {
+      font-size: 14px;
+      color: var(--brand-primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .dev-card-link:hover {
+      text-decoration: underline;
+    }
+    .api-section {
+      background: #fff;
+      border-radius: 16px;
+      padding: 40px;
+      border: 1px solid var(--gray-200);
+      margin-top: 32px;
+    }
+    .api-section h2 {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 24px;
+    }
+    .api-list {
+      display: grid;
+      gap: 16px;
+    }
+    .api-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      background: var(--gray-50);
+      border-radius: 10px;
+      transition: all 0.2s;
+    }
+    .api-item:hover {
+      background: var(--brand-primary-50);
+    }
+    .api-name {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text);
+    }
+    .api-method {
+      font-size: 12px;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+    .api-method.get {
+      background: #E8FFEA;
+      color: #00B42A;
+    }
+    .api-method.post {
+      background: #E6F4FF;
+      color: #1677FF;
+    }
+    .api-method.put {
+      background: #FFF7E6;
+      color: #FF7D00;
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="topbar-left">
+        <span>欢迎来到民匠有约</span>
+        <span class="topbar-divider">|</span>
+        <a href="service-center.html">服务商中心</a>
+        <a href="developer-center.html" style="color:var(--brand-primary);font-weight:500;">开发者中心</a>
+      </div>
+      <div class="topbar-right">
+        <a href="index.html">返回主站</a>
+        <span class="topbar-divider">|</span>
+        <a href="agreement.html">服务协议</a>
+        <span class="topbar-divider">|</span>
+        <a href="privacy.html">隐私政策</a>
+        <span class="topbar-divider">|</span>
+        <a href="#">简体中文</a>
+      </div>
+    </div>
+  </div>
+
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <div class="nav-left">
+        <a href="index.html" class="nav-brand">
+          <img src="https://oss.minjiangyouyue.com/mjlogo/logo02.png" alt="民匠有约" style="height:36px;border-radius:8px;">
+          民匠有约
+        </a>
+        <div class="nav-links">
+          <a href="minjiang.html" class="nav-link">首页</a>
+          <a href="minjiang-features.html" class="nav-link">服务方案</a>
+          <a href="minjiang-solutions.html" class="nav-link">行业方案</a>
+          <a href="minjiang-cases.html" class="nav-link">客户案例</a>
+          <a href="minjiang-help.html" class="nav-link">帮助中心</a>
+        </div>
+      </div>
+      <div class="nav-right" id="navRight"></div>
+    </div>
+  </nav>
+
+  <section class="page-hero">
+    <div class="page-hero-inner">
+      <h1 class="page-hero-title">开发者中心</h1>
+      <p class="page-hero-desc">接入民匠有约API，快速构建灵活用工解决方案</p>
+    </div>
+  </section>
+
+  <div class="content-wrap">
+    <div class="dev-grid">
+      <div class="dev-card">
+        <div class="dev-card-icon">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z" stroke="currentColor" stroke-width="2"/></svg>
+        </div>
+        <div class="dev-card-title">API文档</div>
+        <div class="dev-card-desc">详细的API接口文档，包含接口说明、参数定义、返回示例</div>
+        <a href="#" class="dev-card-link">查看文档 →</a>
+      </div>
+      <div class="dev-card">
+        <div class="dev-card-icon">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M17 20h5v-2a3 3 0 0 0-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 0 1 5.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 0 1 9.288 0M15 7a3 3 0 1 1-6 0 3 3 0 0 1 6 0zm6 3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM7 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0z" stroke="currentColor" stroke-width="2"/></svg>
+        </div>
+        <div class="dev-card-title">SDK下载</div>
+        <div class="dev-card-desc">支持多种语言的SDK，快速集成到您的应用中</div>
+        <a href="#" class="dev-card-link">下载SDK →</a>
+      </div>
+      <div class="dev-card">
+        <div class="dev-card-icon">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" stroke="currentColor" stroke-width="2"/></svg>
+        </div>
+        <div class="dev-card-title">测试环境</div>
+        <div class="dev-card-desc">提供完整的测试环境，支持接口调试和功能验证</div>
+        <a href="#" class="dev-card-link">进入测试 →</a>
+      </div>
+      <div class="dev-card">
+        <div class="dev-card-icon">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M19 11H5m14 0a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2m14 0V9a2 2 0 0 0-2-2M5 11V9a2 2 0 0 1 2-2m0 0V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2M7 7h10" stroke="currentColor" stroke-width="2"/></svg>
+        </div>
+        <div class="dev-card-title">接入指南</div>
+        <div class="dev-card-desc">从注册到上线的完整接入流程和最佳实践</div>
+        <a href="#" class="dev-card-link">开始接入 →</a>
+      </div>
+    </div>
+
+    <div class="api-section">
+      <h2>热门API接口</h2>
+      <div class="api-list">
+        <div class="api-item">
+          <span class="api-name">获取服务列表</span>
+          <span class="api-method get">GET</span>
+        </div>
+        <div class="api-item">
+          <span class="api-name">创建订单</span>
+          <span class="api-method post">POST</span>
+        </div>
+        <div class="api-item">
+          <span class="api-name">查询订单状态</span>
+          <span class="api-method get">GET</span>
+        </div>
+        <div class="api-item">
+          <span class="api-name">更新订单</span>
+          <span class="api-method put">PUT</span>
+        </div>
+        <div class="api-item">
+          <span class="api-name">获取结算明细</span>
+          <span class="api-method get">GET</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <img src="https://oss.minjiangyouyue.com/mjlogo/logo02.png" alt="民匠有约" style="height:40px;border-radius:8px;">
+          <div class="footer-brand-text">
+            <div style="font-weight:600;font-size:16px;">民匠有约</div>
+            <div style="font-size:12px;color:var(--text-muted);">一站式灵活用工服务平台</div>
+          </div>
+        </div>
+        <div class="footer-links">
+          <div class="footer-link-group">
+            <div class="footer-link-title">服务支持</div>
+            <a href="minjiang-help.html">帮助中心</a>
+            <a href="contact.html">联系我们</a>
+            <a href="developer-center.html">开发者中心</a>
+          </div>
+          <div class="footer-link-group">
+            <div class="footer-link-title">关于我们</div>
+            <a href="about.html">公司介绍</a>
+            <a href="news.html">新闻动态</a>
+            <a href="career.html">诚聘英才</a>
+          </div>
+          <div class="footer-link-group">
+            <div class="footer-link-title">法律条款</div>
+            <a href="agreement.html">服务协议</a>
+            <a href="privacy.html">隐私政策</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="footer-copyright">© 2024 民匠有约. All rights reserved.</div>
+        <div class="footer-info">
+          <span>浙ICP备XXXXXXXX号-1</span>
+          <span>浙公网安备XXXXXXXX号</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  
+<script src="js/main.js"></script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>登录 - 民匠有约</title>
+  <title>子账号登录 - 民匠有约</title>
   <style>
     :root {
       --primary: #1677FF;
@@ -228,110 +228,20 @@
       margin: 0 auto;
     }
 
-    .login-tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 32px;
-      background: var(--gray-50);
-      padding: 4px;
-      border-radius: var(--radius);
-    }
-
-    .login-tab {
-      flex: 1;
-      padding: 10px 16px;
-      border: none;
-      background: transparent;
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-secondary);
-      cursor: pointer;
-      border-radius: 8px;
-      transition: var(--transition);
-      font-family: inherit;
-    }
-
-    .login-tab.active {
-      background: #fff;
-      color: var(--primary);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    }
-
-    .login-tab:hover:not(.active) {
-      color: var(--text);
-    }
-
-    .login-panel { display: none; }
-    .login-panel.active { display: block; }
-
-    /* 微信扫码 */
-    .wx-qr-section {
+    .login-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
       text-align: center;
     }
 
-    .wx-qr-title {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .wx-qr-desc {
-      font-size: 13px;
+    .login-subtitle {
+      font-size: 14px;
       color: var(--text-muted);
-      margin-bottom: 28px;
+      text-align: center;
+      margin-bottom: 32px;
     }
 
-    .wx-qr-box {
-      width: 220px;
-      height: 220px;
-      margin: 0 auto 20px;
-      padding: 16px;
-      background: #fff;
-      border: 1px solid var(--gray-200);
-      border-radius: var(--radius-lg);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .wx-qr-box img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-
-    .wx-qr-refresh {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-bottom: 24px;
-    }
-
-    .wx-qr-refresh a {
-      color: var(--primary);
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    .wx-tips {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      font-size: 12px;
-      color: var(--text-muted);
-      padding: 12px 16px;
-      background: var(--gray-50);
-      border-radius: var(--radius);
-    }
-
-    .wx-tips svg { width: 16px; height: 16px; color: #52C41A; flex-shrink: 0; }
-
-    /* 账号密码 */
     .form-group {
       margin-bottom: 18px;
     }
@@ -497,32 +407,18 @@
       text-decoration: none;
     }
 
-    .wx-only-btn {
-      width: 100%;
-      height: 48px;
-      background: linear-gradient(135deg, #07C160, #05a350);
-      color: #fff;
-      font-size: 15px;
-      font-weight: 700;
-      border-radius: var(--radius);
-      transition: all 0.3s ease;
-      cursor: pointer;
-      border: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      font-family: inherit;
-      margin-top: 20px;
+    .back-to-main {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .back-to-main a {
+      color: var(--primary);
+      font-weight: 600;
       text-decoration: none;
     }
-
-    .wx-only-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(7,193,96,0.3);
-    }
-
-    .wx-only-btn svg { width: 22px; height: 22px; }
 
     .toast {
       position: fixed;
@@ -581,42 +477,42 @@
         </div>
 
         <h1 class="left-title">
-          登录民匠有约<br>
-          <span class="highlight">开启智能用工</span>
+          子账号登录<br>
+          <span class="highlight">协作管理更高效</span>
         </h1>
         <p class="left-desc">
-          5万+ 注册服务者 · 95% 智能匹配率 · 15分钟极速响应<br>
-          为企业提供一站式灵活用工解决方案
+          由主账号统一分配权限，子账号独立登录协作<br>
+          支持多角色、多权限的精细化管理
         </p>
 
         <div class="left-features">
           <div class="left-feature">
             <div class="left-feature-icon">
-              <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2"/></svg>
             </div>
-            <div class="left-feature-title">AI 智能匹配</div>
-            <div class="left-feature-desc">1 分钟快速发包</div>
+            <div class="left-feature-title">权限隔离</div>
+            <div class="left-feature-desc">主子账号权限分离</div>
+          </div>
+          <div class="left-feature">
+            <div class="left-feature-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/></svg>
+            </div>
+            <div class="left-feature-title">安全可控</div>
+            <div class="left-feature-desc">主账号统一管理</div>
           </div>
           <div class="left-feature">
             <div class="left-feature-icon">
               <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"/></svg>
             </div>
-            <div class="left-feature-title">电子合同</div>
-            <div class="left-feature-desc">在线签署存证</div>
+            <div class="left-feature-title">操作留痕</div>
+            <div class="left-feature-desc">全链路日志记录</div>
           </div>
           <div class="left-feature">
             <div class="left-feature-icon">
-              <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23" stroke="currentColor" stroke-width="2"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="2"/></svg>
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M8 12l2 2 4-4" stroke="currentColor" stroke-width="2"/></svg>
             </div>
-            <div class="left-feature-title">即时结算</div>
-            <div class="left-feature-desc">T+0 资金到账</div>
-          </div>
-          <div class="left-feature">
-            <div class="left-feature-icon">
-              <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2"/></svg>
-            </div>
-            <div class="left-feature-title">全程保障</div>
-            <div class="left-feature-desc">安全合规无忧</div>
+            <div class="left-feature-title">灵活配置</div>
+            <div class="left-feature-desc">按需分配角色</div>
           </div>
         </div>
       </div>
@@ -634,87 +530,72 @@
       </a>
 
       <div class="right-content">
-        <!-- 登录方式切换 -->
-        <div class="login-tabs">
-          <button class="login-tab active" data-panel="wxPanel">微信扫码</button>
-          <button class="login-tab" data-panel="accountPanel">账号密码</button>
-        </div>
+        <div class="login-title">子账号登录</div>
+        <div class="login-subtitle">请输入主账号信息及子账号凭证</div>
 
-        <!-- 微信扫码 -->
-        <div class="login-panel active" id="wxPanel">
-          <div class="wx-qr-section">
-            <div class="wx-qr-title">微信扫码登录</div>
-            <div class="wx-qr-desc">请使用微信扫一扫登录</div>
-            <div class="wx-qr-box">
-              <img src="https://oss.minjiangyouyue.com/mjlogo/ewm.png" alt="微信扫码登录" id="wxQrImg">
-            </div>
-            <div class="wx-qr-refresh">
-              <span>二维码已过期？</span>
-              <a href="javascript:void(0)" onclick="refreshQr()">点击刷新</a>
-            </div>
-            <div class="wx-tips">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><circle cx="12" cy="8" r="1"/></svg>
-              <span>打开微信 → 发现 → 扫一扫</span>
+        <form id="subLoginForm" novalidate>
+          <div class="form-group">
+            <label class="form-label">主账号 ID / 手机号</label>
+            <div class="input-wrap">
+              <span class="input-icon">
+                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
+              </span>
+              <input type="text" class="form-input" id="mainAccountInput" placeholder="请输入主账号ID或手机号" />
             </div>
           </div>
-        </div>
 
-        <!-- 账号密码 -->
-        <div class="login-panel" id="accountPanel">
-          <form id="loginForm" novalidate>
-            <div class="form-group">
-              <label class="form-label">手机号 / 邮箱</label>
+          <div class="form-group">
+            <label class="form-label">子账号用户名</label>
+            <div class="input-wrap">
+              <span class="input-icon">
+                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
+              </span>
+              <input type="text" class="form-input" id="subAccountInput" placeholder="请输入子账号用户名" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">登录密码</label>
+            <div class="input-wrap">
+              <span class="input-icon">
+                <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="currentColor" stroke-width="2"/></svg>
+              </span>
+              <input type="password" class="form-input" id="passwordInput" placeholder="请输入登录密码" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">短信验证码</label>
+            <div class="sms-row">
               <div class="input-wrap">
                 <span class="input-icon">
-                  <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
+                  <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2"/></svg>
                 </span>
-                <input type="text" class="form-input" id="accountInput" placeholder="请输入手机号或邮箱" />
+                <input type="text" class="form-input" id="smsInput" placeholder="请输入验证码" maxlength="6" />
               </div>
+              <button type="button" class="sms-btn" id="smsBtn">获取验证码</button>
             </div>
-
-            <div class="form-group">
-              <label class="form-label">登录密码</label>
-              <div class="input-wrap">
-                <span class="input-icon">
-                  <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="currentColor" stroke-width="2"/></svg>
-                </span>
-                <input type="password" class="form-input" id="passwordInput" placeholder="请输入登录密码" />
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">短信验证码</label>
-              <div class="sms-row">
-                <div class="input-wrap">
-                  <span class="input-icon">
-                    <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2"/></svg>
-                  </span>
-                  <input type="text" class="form-input" id="smsInput" placeholder="请输入验证码" maxlength="6" />
-                </div>
-                <button type="button" class="sms-btn" id="smsBtn">获取验证码</button>
-              </div>
-            </div>
-
-            <div class="form-options">
-              <label class="checkbox">
-                <input type="checkbox" id="rememberCheckbox" checked> 记住登录状态
-              </label>
-              <a href="#" class="forgot-link">忘记密码？</a>
-            </div>
-
-            <button type="submit" class="submit-btn" id="submitBtn">
-              <span class="submit-spinner"></span>
-              <span class="submit-text">登 录</span>
-            </button>
-          </form>
-
-          <div class="form-footer">
-            还没有账号？<a href="register.html">立即注册</a>
           </div>
 
-          <div class="form-footer" style="margin-top: 12px;">
-            <a href="sub-login.html" style="color: var(--text-muted); font-weight: 500;">子账号登录 →</a>
+          <div class="form-options">
+            <label class="checkbox">
+              <input type="checkbox" id="rememberCheckbox" checked> 记住登录状态
+            </label>
+            <a href="#" class="forgot-link">忘记密码？</a>
           </div>
+
+          <button type="submit" class="submit-btn" id="submitBtn">
+            <span class="submit-spinner"></span>
+            <span class="submit-text">登 录</span>
+          </button>
+        </form>
+
+        <div class="form-footer">
+          还没有子账号？请联系主账号管理员创建
+        </div>
+
+        <div class="back-to-main">
+          <a href="login.html">← 返回主账号登录</a>
         </div>
       </div>
     </div>
@@ -726,7 +607,7 @@
   </div>
 
   <script>
-    // 记录来源平台（用于认证后签署对应合同）
+    // 记录来源平台
     (function() {
       var ref = document.referrer || '';
       var fromPlatform = 'minjiang';
@@ -736,29 +617,9 @@
       localStorage.setItem('mjyy_from_platform', fromPlatform);
     })();
 
-    // Tab 切换
-    document.querySelectorAll('.login-tab').forEach(function(tab) {
-      tab.addEventListener('click', function() {
-        document.querySelectorAll('.login-tab').forEach(function(t) { t.classList.remove('active'); });
-        document.querySelectorAll('.login-panel').forEach(function(p) { p.classList.remove('active'); });
-        tab.classList.add('active');
-        document.getElementById(tab.dataset.panel).classList.add('active');
-      });
-    });
-
-    // 刷新二维码
-    function refreshQr() {
-      var img = document.getElementById('wxQrImg');
-      img.style.opacity = '0.5';
-      setTimeout(function() {
-        img.style.opacity = '1';
-      }, 300);
-      showToast('二维码已刷新');
-    }
-
     // 表单登录
     (function() {
-      var form = document.getElementById('loginForm');
+      var form = document.getElementById('subLoginForm');
       var submitBtn = document.getElementById('submitBtn');
       var submitText = submitBtn.querySelector('.submit-text');
       var smsBtn = document.getElementById('smsBtn');
@@ -802,28 +663,28 @@
 
       form.addEventListener('submit', function(e) {
         e.preventDefault();
+        var mainAccount = document.getElementById('mainAccountInput').value.trim();
+        var subAccount = document.getElementById('subAccountInput').value.trim();
+        if (!mainAccount) { showToast('请输入主账号ID或手机号'); return; }
+        if (!subAccount) { showToast('请输入子账号用户名'); return; }
+
         setLoading(true);
         setTimeout(function() {
           setLoading(false);
-          showToast('登录成功');
-          var accountInput = document.getElementById('accountInput');
-          var mobile = accountInput ? accountInput.value.trim() : '';
-          var userData = { mobile: mobile || '13800138000', name: mobile ? (mobile.substring(0, 3) + '****' + mobile.substring(7)) : '微信用户' };
+          showToast('子账号登录成功');
+          var userData = { 
+            mobile: mainAccount, 
+            name: subAccount,
+            subAccountName: subAccount
+          };
           localStorage.setItem('mjyy_logged_in', 'true');
           localStorage.setItem('mjyy_user_data', JSON.stringify(userData));
-          // 检查是否已完成认证，未完成则跳转认证流程
+          localStorage.setItem('mjyy_account_type', 'sub');
           var fromPlatform = localStorage.getItem('mjyy_from_platform') || 'minjiang';
           var platformPages = { minjiang: 'minjiang.html', anxinyun: 'anxinyun.html', agent: 'agent.html' };
           var targetPage = platformPages[fromPlatform] || 'minjiang.html';
-          var isVerified = localStorage.getItem('mjyy_verify_complete') === 'true';
-          var isContractSigned = localStorage.getItem('mjyy_contract_signed_' + fromPlatform) === 'true';
           setTimeout(function() {
-            if (isVerified && isContractSigned) {
-              window.location.href = targetPage;
-            } else {
-              localStorage.setItem('mjyy_verify_target', fromPlatform);
-              window.location.href = 'verify.html';
-            }
+            window.location.href = targetPage;
           }, 1200);
         }, 1500);
       });

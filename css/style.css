@@ -7,6 +7,9 @@
   --primary-dark: #0958D9;
   --primary-50: #E6F0FF;
   --primary-100: #CCE0FF;
+  --brand-primary: #1677FF;
+  --brand-primary-dark: #0958D9;
+  --brand-primary-50: #E6F4FF;
 
   --purple: #722ED1;
   --purple-light: #9254DE;
@@ -2527,10 +2530,17 @@ select.form-input {
   gap: 8px;
   position: relative;
   cursor: pointer;
+  padding: 4px 8px;
+  border-radius: var(--radius);
+  transition: background 0.2s;
 }
 
 .user-status.active {
   display: flex;
+}
+
+.user-status:hover {
+  background: var(--gray-100);
 }
 
 .user-avatar {
@@ -2547,6 +2557,14 @@ select.form-input {
   flex-shrink: 0;
 }
 
+.user-name-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  min-width: 0;
+}
+
 .user-name {
   font-size: 14px;
   font-weight: 500;
@@ -2557,38 +2575,279 @@ select.form-input {
   white-space: nowrap;
 }
 
+.user-account-badge {
+  font-size: 10px;
+  padding: 0px 5px;
+  border-radius: 4px;
+  background: var(--primary-50);
+  color: var(--primary);
+  font-weight: 500;
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+.user-account-badge.sub {
+  background: #FFF7E6;
+  color: #FF7D00;
+}
+
+.nav-enter-system {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 16px;
+  border-radius: 6px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  flex-shrink: 0;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+.nav-enter-system:hover {
+  background: var(--primary-dark);
+}
+
 .user-chevron {
   width: 14px;
   height: 14px;
   color: var(--text-muted);
   transition: transform 0.2s;
+  flex-shrink: 0;
 }
 
-.user-status:hover .user-chevron {
+.user-status.open .user-chevron {
   transform: rotate(180deg);
 }
 
+/* ===== TOPBAR USER TRIGGER (统一账户中心风格) ===== */
+.topbar-user {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.topbar-user:hover {
+  background: var(--gray-100);
+}
+
+.topbar-user:hover .topbar-chevron,
+.topbar-user.open .topbar-chevron {
+  transform: rotate(180deg);
+}
+
+.topbar-user:hover .user-dropdown,
+.topbar-user:focus-within .user-dropdown,
+.topbar-user .user-dropdown.open {
+  display: block;
+}
+
+.topbar-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--brand-primary-50);
+  color: var(--brand-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.topbar-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topbar-chevron {
+  width: 14px;
+  height: 14px;
+  color: var(--text-muted);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+/* ===== USER DROPDOWN (统一账户中心风格) ===== */
 .user-dropdown {
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  min-width: 160px;
+  min-width: 280px;
   background: #fff;
-  border-radius: var(--radius-lg);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
   border: 1px solid var(--gray-200);
-  padding: 8px 0;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-4px);
-  transition: all 0.2s ease;
-  z-index: 1000;
+  z-index: 1001;
+  display: none;
+  overflow: hidden;
 }
 
-.user-status:hover .user-dropdown {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
+.user-dropdown.open {
+  display: block;
+}
+
+.user-dropdown-header {
+  padding: 16px;
+  border-bottom: 1px solid var(--gray-200);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-dropdown-header-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.user-dropdown-header-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.user-dropdown-header-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.user-dropdown-header-id {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.user-dropdown-header-tags {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.user-dropdown-header {
+  padding: 16px;
+  border-bottom: 1px solid var(--gray-200);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-dropdown-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--brand-primary-50);
+  color: var(--brand-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.user-dropdown-info { flex: 1; min-width: 0; }
+
+.user-dropdown-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-dropdown-id {
+  font-size: 12px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.user-dropdown-tags {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.user-dropdown-tag {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--brand-primary-50);
+  color: var(--brand-primary);
+  font-weight: 500;
+}
+
+.user-dropdown-tag.verified {
+  background: #E8F8EB;
+  color: #00B42A;
+}
+
+.user-dropdown-tag.pending {
+  background: #FFF7E6;
+  color: #FF7D00;
+}
+
+.user-dropdown-body {
+  padding: 8px 0;
+}
+
+.user-dropdown-footer {
+  padding: 12px 16px;
+  border-top: 1px solid var(--gray-200);
+}
+
+.user-dropdown-logout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--gray-300);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.user-dropdown-logout:hover {
+  border-color: var(--brand-primary);
+  color: var(--brand-primary);
+  background: var(--brand-primary-50);
 }
 
 .user-dropdown-item {
@@ -2596,32 +2855,32 @@ select.form-input {
   align-items: center;
   gap: 10px;
   padding: 10px 16px;
-  font-size: 14px;
-  color: var(--text);
+  font-size: 13px;
+  color: var(--text-secondary);
   text-decoration: none;
-  transition: background 0.15s;
-  cursor: pointer;
   border: none;
   background: none;
+  cursor: pointer;
   width: 100%;
-  font-family: inherit;
+  text-align: left;
+  transition: background 0.2s;
 }
 
 .user-dropdown-item:hover {
-  background: var(--gray-50);
+  background: var(--gray-100);
+  color: var(--text);
 }
 
 .user-dropdown-item svg {
   width: 16px;
   height: 16px;
-  color: var(--text-muted);
   flex-shrink: 0;
 }
 
 .user-dropdown-divider {
   height: 1px;
   background: var(--gray-200);
-  margin: 6px 0;
+  margin: 8px 0;
 }
 
 .user-dropdown-group {
@@ -2629,7 +2888,7 @@ select.form-input {
 }
 
 .user-dropdown-group-title {
-  padding: 6px 16px 4px;
+  padding: 8px 16px 4px;
   font-size: 12px;
   color: var(--text-muted);
   font-weight: 500;
@@ -2643,7 +2902,6 @@ select.form-input {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin: -8px 0 0;
 }
 
 .verify-banner svg {
@@ -2669,16 +2927,8 @@ select.form-input {
 }
 
 .user-dropdown-item-primary {
-  color: var(--primary);
+  color: var(--brand-primary);
   font-weight: 500;
-}
-
-.user-dropdown-item-primary svg {
-  color: var(--primary);
-}
-
-.user-dropdown-item-primary:hover {
-  background: var(--primary-light);
 }
 
 /* ===== 退出确认模态框 ===== */

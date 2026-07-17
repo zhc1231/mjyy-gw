@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>账号中心 - 民匠有约</title>
+  <title>资金账户 - 民匠有约</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
     :root {
@@ -664,6 +664,127 @@
       .overview-hero { flex-direction: column; align-items: flex-start; }
       .overview-hero-actions { width: 100%; }
     }
+
+    /* ===== 资金账户专用样式 ===== */
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .balance-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .balance-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .balance-label {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .balance-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .balance-value.primary {
+      color: var(--brand-primary);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--brand-primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--brand-primary-dark);
+    }
+
+    .btn-secondary {
+      background: #fff;
+      color: var(--brand-primary);
+      border: 1px solid var(--brand-primary);
+    }
+
+    .btn-secondary:hover {
+      background: var(--brand-primary-50);
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .data-table th,
+    .data-table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--gray-200);
+      font-size: 14px;
+    }
+
+    .data-table th {
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: var(--gray-50);
+    }
+
+    .data-table tbody tr:hover {
+      background: var(--gray-50);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: #E8F8EB;
+      color: #00B42A;
+    }
+
+    .status-badge.pending {
+      background: #FFF3E8;
+      color: #FF7D00;
+    }
+
+    @media (max-width: 768px) {
+      .balance-grid { grid-template-columns: 1fr; }
+      .btn-group { width: 100%; }
+      .btn { flex: 1; }
+    }
   </style>
 </head>
 <body>
@@ -755,7 +876,7 @@
     <aside class="sidebar">
       <ul class="sidebar-menu">
         <li class="sidebar-item">
-          <a href="account-center.html" class="sidebar-link active">
+          <a href="account-center.html" class="sidebar-link">
             <svg viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="2"/><polyline points="9 22 9 12 15 12 15 22" stroke="currentColor" stroke-width="2"/></svg>
             账号中心
           </a>
@@ -774,7 +895,7 @@
           </ul>
         </li>
         <li class="sidebar-item">
-          <a href="account-wallet.html" class="sidebar-link">
+          <a href="account-wallet.html" class="sidebar-link active">
             <svg viewBox="0 0 24 24" fill="none"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="2"/></svg>
             资金账户
           </a>
@@ -820,175 +941,102 @@
 
     <!-- 主内容区 -->
     <main class="main-content">
-      <div class="page-breadcrumb">
-        <span>账号中心</span>
-        <span>/</span>
-        <span>概览</span>
-      </div>
-      <h1 class="page-title">账号中心</h1>
+      <div class="breadcrumb">账号中心 <span>/</span> 资金账户</div>
+      <h1 class="page-title">资金账户</h1>
 
-      <!-- 概览头部 -->
-      <div class="overview-hero">
-        <div class="overview-hero-avatar" id="heroAvatar">用</div>
-        <div class="overview-hero-info">
-          <div class="overview-hero-name" id="heroName">用户</div>
-          <div class="overview-hero-meta">
-            <span>账号ID：<span id="heroId">--</span></span>
-            <span>注册时间：<span id="heroRegTime">2024-01-01</span></span>
-            <span>上次登录：<span id="heroLastLogin">--</span></span>
+      <!-- 余额概览 -->
+      <div class="card">
+        <div class="card-body">
+          <div class="balance-grid">
+            <div class="balance-item">
+              <div class="balance-label">可用余额</div>
+              <div class="balance-value primary">¥ 12,580.00</div>
+            </div>
+            <div class="balance-item">
+              <div class="balance-label">冻结金额</div>
+              <div class="balance-value">¥ 0.00</div>
+            </div>
+            <div class="balance-item">
+              <div class="balance-label">累计收入</div>
+              <div class="balance-value">¥ 156,800.00</div>
+            </div>
           </div>
-          <div class="overview-hero-tags" id="heroTags">
-            <span class="overview-hero-tag" id="heroAuthTag">未实名认证</span>
-            <span class="overview-hero-tag">个人用户</span>
-          </div>
-        </div>
-        <div class="overview-hero-actions">
-          <a href="verify.html" class="btn-light" id="heroVerifyBtn">去认证</a>
-          <a href="account-security.html" class="btn-light">账号安全</a>
         </div>
       </div>
 
-      <!-- 我的主体 -->
+      <!-- 快捷操作 -->
       <div class="card">
         <div class="card-header">
-          <div class="card-title">我的主体</div>
-          <a href="account-realname.html" class="info-action">查看详情</a>
+          <div class="card-title">快捷操作</div>
         </div>
         <div class="card-body">
-          <div class="info-list">
-            <div class="info-item">
-              <div class="info-label">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
-                当前认证主体
-              </div>
-              <div class="info-value">
-                <span id="subjectName">--</span>
-                <span class="info-status" id="subjectStatus">未认证</span>
-                <a href="verify.html" class="info-action" id="subjectAction">去认证</a>
-              </div>
-            </div>
-            <div class="info-item">
-              <div class="info-label">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="2"/><polyline points="9 22 9 12 15 12 15 22" stroke="currentColor" stroke-width="2"/></svg>
-                认证类型
-              </div>
-              <div class="info-value" id="authTypeName">未选择</div>
-            </div>
-            <div class="info-item">
-              <div class="info-label">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2"/><polyline points="22 4 12 14.01 9 11.01" stroke="currentColor" stroke-width="2"/></svg>
-                认证状态
-              </div>
-              <div class="info-value">
-                <span id="authStateText">未认证</span>
-                <a href="account-realname.html" class="info-action">查看</a>
-              </div>
-            </div>
+          <div class="btn-group">
+            <button class="btn btn-primary" onclick="alert('功能开发中')">充值</button>
+            <button class="btn btn-secondary" onclick="alert('功能开发中')">提现</button>
           </div>
         </div>
       </div>
 
-      <!-- 我的账号 -->
+      <!-- 交易记录 -->
       <div class="card">
         <div class="card-header">
-          <div class="card-title">我的账号</div>
-          <a href="account-security.html" class="info-action">管理</a>
+          <div class="card-title">交易记录</div>
         </div>
         <div class="card-body">
-          <div class="info-list">
-            <div class="info-item">
-              <div class="info-label">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" stroke-width="2"/><polyline points="22,6 12,13 2,6" stroke="currentColor" stroke-width="2"/></svg>
-                登录邮箱
-              </div>
-              <div class="info-value">
-                <span id="emailValue">未设置</span>
-                <a href="account-security.html" class="info-action">设置</a>
-              </div>
-            </div>
-            <div class="info-item">
-              <div class="info-label">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" stroke="currentColor" stroke-width="2"/></svg>
-                安全手机号
-              </div>
-              <div class="info-value">
-                <span id="mobileValue">--</span>
-                <span class="info-status">已验证</span>
-                <a href="account-security.html" class="info-action">修改</a>
-              </div>
-            </div>
-            <div class="info-item">
-              <div class="info-label">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M19 11H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
-                登录密码
-              </div>
-              <div class="info-value">
-                <span>已设置</span>
-                <a href="account-security.html" class="info-action">修改</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 身份与权限 -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">身份与权限</div>
-          <a href="account-permission.html" class="info-action">管理</a>
-        </div>
-        <div class="card-body">
-          <div class="info-list">
-            <div class="info-item">
-              <div class="info-label">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2"/><path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2"/></svg>
-                当前角色
-              </div>
-              <div class="info-value">
-                <span>主账号管理员</span>
-                <a href="account-permission.html" class="info-action">查看权限</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 快捷入口 -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">常用功能</div>
-        </div>
-        <div class="card-body">
-          <div class="quick-grid">
-            <a href="account-realname.html" class="quick-card">
-              <div class="quick-icon">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
-              </div>
-              <div class="quick-title">实名认证</div>
-              <div class="quick-desc">个人/企业实名信息</div>
-            </a>
-            <a href="account-security.html" class="quick-card">
-              <div class="quick-icon">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/></svg>
-              </div>
-              <div class="quick-title">账号安全</div>
-              <div class="quick-desc">密码/手机/邮箱</div>
-            </a>
-            <a href="account-billing.html" class="quick-card">
-              <div class="quick-icon">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"/></svg>
-              </div>
-              <div class="quick-title">发票合同</div>
-              <div class="quick-desc">发票/合同/订单</div>
-            </a>
-            <a href="account-permission.html" class="quick-card">
-              <div class="quick-icon">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2"/><path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2"/></svg>
-              </div>
-              <div class="quick-title">身份权限</div>
-              <div class="quick-desc">角色与权限管理</div>
-            </a>
-          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>交易时间</th>
+                <th>交易类型</th>
+                <th>交易金额</th>
+                <th>余额</th>
+                <th>状态</th>
+                <th>备注</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>2024-06-15 14:32:00</td>
+                <td>充值</td>
+                <td style="color: #00B42A;">+ ¥ 5,000.00</td>
+                <td>¥ 12,580.00</td>
+                <td><span class="status-badge">成功</span></td>
+                <td>在线充值</td>
+              </tr>
+              <tr>
+                <td>2024-06-14 09:15:22</td>
+                <td>订单结算</td>
+                <td style="color: #00B42A;">+ ¥ 3,200.00</td>
+                <td>¥ 7,580.00</td>
+                <td><span class="status-badge">成功</span></td>
+                <td>订单 #20240614001</td>
+              </tr>
+              <tr>
+                <td>2024-06-13 16:45:10</td>
+                <td>提现</td>
+                <td style="color: #FF4D4F;">- ¥ 2,000.00</td>
+                <td>¥ 4,380.00</td>
+                <td><span class="status-badge">成功</span></td>
+                <td>提现至工商银行</td>
+              </tr>
+              <tr>
+                <td>2024-06-12 11:20:05</td>
+                <td>退款</td>
+                <td style="color: #00B42A;">+ ¥ 180.00</td>
+                <td>¥ 6,380.00</td>
+                <td><span class="status-badge">成功</span></td>
+                <td>订单退款 #20240611003</td>
+              </tr>
+              <tr>
+                <td>2024-06-10 08:00:00</td>
+                <td>充值</td>
+                <td style="color: #00B42A;">+ ¥ 10,000.00</td>
+                <td>¥ 6,200.00</td>
+                <td><span class="status-badge pending">处理中</span></td>
+                <td>银行转账</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </main>
@@ -1025,13 +1073,17 @@
       var avatarChar = displayName ? displayName.charAt(0) : '用';
       var accountId = userData.mobile || userData.accountId || 'MJ' + Date.now().toString().slice(-8);
 
-      document.getElementById('topbarAvatar').textContent = avatarChar;
-      document.getElementById('topbarName').textContent = displayName;
-      document.getElementById('dropdownAvatar').textContent = avatarChar;
-      document.getElementById('dropdownName').textContent = displayName;
-      document.getElementById('dropdownId').textContent = '账号ID：' + maskId(accountId);
+      var topbarAvatar = document.getElementById('topbarAvatar');
+      if (topbarAvatar) topbarAvatar.textContent = avatarChar;
+      var topbarName = document.getElementById('topbarName');
+      if (topbarName) topbarName.textContent = displayName;
+      var dropdownAvatar = document.getElementById('dropdownAvatar');
+      if (dropdownAvatar) dropdownAvatar.textContent = avatarChar;
+      var dropdownName = document.getElementById('dropdownName');
+      if (dropdownName) dropdownName.textContent = displayName;
+      var dropdownId = document.getElementById('dropdownId');
+      if (dropdownId) dropdownId.textContent = '账号ID：' + maskId(accountId);
 
-      // 账号类型标签
       var accountType = localStorage.getItem('mjyy_account_type') || 'main';
       var typeText = accountType === 'sub' ? '子账号' : '主账号';
       var topbarBadge = document.getElementById('topbarBadge');
@@ -1047,14 +1099,20 @@
         dropdownBadge.style.color = accountType === 'sub' ? '#FF7D00' : 'var(--brand-primary)';
       }
 
-      document.getElementById('heroAvatar').textContent = avatarChar;
-      document.getElementById('heroName').textContent = displayName;
-      document.getElementById('heroId').textContent = maskId(accountId);
-      document.getElementById('mobileValue').textContent = maskMobile(userData.mobile || personalData.mobile || '--');
+      var heroAvatar = document.getElementById('heroAvatar');
+      if (heroAvatar) heroAvatar.textContent = avatarChar;
+      var heroName = document.getElementById('heroName');
+      if (heroName) heroName.textContent = displayName;
+      var heroId = document.getElementById('heroId');
+      if (heroId) heroId.textContent = maskId(accountId);
+      var mobileValue = document.getElementById('mobileValue');
+      if (mobileValue) mobileValue.textContent = maskMobile(userData.mobile || personalData.mobile || '--');
 
       var regTime = userData.regTime || '2024-01-01';
-      document.getElementById('heroRegTime').textContent = regTime;
-      document.getElementById('heroLastLogin').textContent = new Date().toLocaleString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+      var heroRegTime = document.getElementById('heroRegTime');
+      if (heroRegTime) heroRegTime.textContent = regTime;
+      var heroLastLogin = document.getElementById('heroLastLogin');
+      if (heroLastLogin) heroLastLogin.textContent = new Date().toLocaleString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
 
       var authTag = document.getElementById('authTag');
       var heroAuthTag = document.getElementById('heroAuthTag');
@@ -1068,33 +1126,30 @@
       var subjectAction = document.getElementById('subjectAction');
 
       if (identityVerified) {
-        authTag.textContent = '已认证';
-        authTag.classList.add('verified');
-        heroAuthTag.textContent = selectedAuthType === 'personal' ? '个人认证' : '企业认证';
-        authStateText.textContent = '认证通过';
-        subjectStatus.textContent = '已认证';
-        subjectStatus.classList.remove('pending');
-        verifyLink.style.display = 'none';
-        heroVerifyBtn.style.display = 'none';
-        subjectAction.style.display = 'none';
+        if (authTag) { authTag.textContent = '已认证'; authTag.classList.add('verified'); }
+        if (heroAuthTag) heroAuthTag.textContent = selectedAuthType === 'personal' ? '个人认证' : '企业认证';
+        if (authStateText) authStateText.textContent = '认证通过';
+        if (subjectStatus) { subjectStatus.textContent = '已认证'; subjectStatus.classList.remove('pending'); }
+        if (verifyLink) verifyLink.style.display = 'none';
+        if (heroVerifyBtn) heroVerifyBtn.style.display = 'none';
+        if (subjectAction) subjectAction.style.display = 'none';
       } else {
-        authTag.textContent = selectedAuthType === 'personal' ? '个人未认证' : '企业未认证';
-        heroAuthTag.textContent = selectedAuthType === 'personal' ? '个人未认证' : '企业未认证';
-        authStateText.textContent = '未认证';
-        subjectStatus.textContent = '未认证';
-        subjectStatus.classList.add('pending');
-        verifyLinkText.textContent = selectedAuthType === 'personal' ? '去个人认证' : '去企业认证';
+        if (authTag) authTag.textContent = selectedAuthType === 'personal' ? '个人未认证' : '企业未认证';
+        if (heroAuthTag) heroAuthTag.textContent = selectedAuthType === 'personal' ? '个人未认证' : '企业未认证';
+        if (authStateText) authStateText.textContent = '未认证';
+        if (subjectStatus) { subjectStatus.textContent = '未认证'; subjectStatus.classList.add('pending'); }
+        if (verifyLinkText) verifyLinkText.textContent = selectedAuthType === 'personal' ? '去个人认证' : '去企业认证';
       }
 
       if (selectedAuthType === 'personal') {
-        authTypeName.textContent = '个人认证';
-        subjectName.textContent = personalData.realName || '未填写';
+        if (authTypeName) authTypeName.textContent = '个人认证';
+        if (subjectName) subjectName.textContent = personalData.realName || '未填写';
       } else {
-        authTypeName.textContent = '企业认证';
-        subjectName.textContent = enterpriseData.companyName || '未填写';
+        if (authTypeName) authTypeName.textContent = '企业认证';
+        if (subjectName) subjectName.textContent = enterpriseData.companyName || '未填写';
       }
 
-      // info-item 整行点击跳转
+
       document.querySelectorAll('.info-item').forEach(function(item) {
         item.addEventListener('click', function(e) {
           if (e.target.closest('a')) return;
@@ -1104,6 +1159,15 @@
           }
         });
       });
+
+      var heroAvatarEl = document.getElementById('heroAvatar');
+      if (heroAvatarEl) {
+        heroAvatarEl.style.cursor = 'pointer';
+        heroAvatarEl.title = '点击更换头像';
+        heroAvatarEl.addEventListener('click', function() {
+          alert('头像上传功能开发中，敬请期待');
+        });
+      }
 
       // Dynamic parent highlight based on active child
       document.querySelectorAll('.sidebar-item').forEach(function(item) {
@@ -1120,9 +1184,8 @@
         var submenu = parent.querySelector('.sidebar-submenu');
         if (submenu) {
           link.addEventListener('click', function(e) {
-            // Don't toggle if clicking a direct link (with href)
             if (link.getAttribute('href') && link.getAttribute('href') !== '#') {
-              return; // Let it navigate
+              return;
             }
             e.preventDefault();
             parent.classList.toggle('open');
@@ -1134,7 +1197,33 @@
         }
       });
 
-      // topbar 下拉展开/退出登录/进入系统 统一由 main.js 处理
+      // 下拉菜单点击展开（修复 style.css 冲突）
+      var topbarUser = document.getElementById('topbarUser');
+      var userDropdown = document.getElementById('userDropdown');
+      if (topbarUser && userDropdown) {
+        topbarUser.addEventListener('click', function(e) {
+          if (e.target.closest('.nav-enter-system')) return;
+          e.stopPropagation();
+          var isOpen = userDropdown.style.display === 'block';
+          userDropdown.style.display = isOpen ? 'none' : 'block';
+        });
+        document.addEventListener('click', function() {
+          userDropdown.style.display = 'none';
+        });
+      }
+
+      // 进入系统按钮
+      var enterBtn = document.getElementById('navEnterSystem');
+      if (enterBtn) {
+        enterBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          var fromPlatform = localStorage.getItem('mjyy_from_platform') || 'minjiang';
+          if (fromPlatform === 'anxinyun') window.location.href = 'anxinyun.html';
+          else if (fromPlatform === 'agent') window.location.href = 'agent.html';
+          else window.location.href = 'minjiang.html';
+        });
+      }
     })();
   </script>
   <script src="js/main.js"></script>

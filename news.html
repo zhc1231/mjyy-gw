@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>新闻动态 - 民匠有约</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    :root {
+      --brand-primary: #1677FF;
+      --brand-primary-dark: #0958D9;
+      --brand-primary-50: #E6F4FF;
+    }
+    .page-hero {
+      position: relative;
+      padding: 80px 24px 60px;
+      background: linear-gradient(180deg, #E6F4FF 0%, #FFFFFF 100%);
+    }
+    .page-hero-inner {
+      max-width: var(--container);
+      margin: 0 auto;
+      text-align: center;
+    }
+    .page-hero-title {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    .page-hero-desc {
+      font-size: 15px;
+      color: var(--text-secondary);
+    }
+    .content-wrap {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 24px;
+    }
+    .news-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .news-item {
+      display: flex;
+      gap: 20px;
+      padding: 24px;
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid var(--gray-200);
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .news-item:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    }
+    .news-date {
+      flex-shrink: 0;
+      width: 80px;
+      text-align: center;
+      padding: 12px;
+      background: var(--brand-primary-50);
+      border-radius: 8px;
+    }
+    .news-date-day {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--brand-primary);
+    }
+    .news-date-month {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .news-content {
+      flex: 1;
+    }
+    .news-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .news-summary {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="topbar-left">
+        <span>欢迎来到民匠有约</span>
+        <span class="topbar-divider">|</span>
+        <a href="service-center.html">服务商中心</a>
+        <a href="developer-center.html">开发者中心</a>
+      </div>
+      <div class="topbar-right">
+        <a href="index.html">返回主站</a>
+        <span class="topbar-divider">|</span>
+        <a href="agreement.html">服务协议</a>
+        <span class="topbar-divider">|</span>
+        <a href="privacy.html">隐私政策</a>
+        <span class="topbar-divider">|</span>
+        <a href="#">简体中文</a>
+      </div>
+    </div>
+  </div>
+
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <div class="nav-left">
+        <a href="index.html" class="nav-brand">
+          <img src="https://oss.minjiangyouyue.com/mjlogo/logo02.png" alt="民匠有约" style="height:36px;border-radius:8px;">
+          民匠有约
+        </a>
+        <div class="nav-links">
+          <a href="minjiang.html" class="nav-link">首页</a>
+          <a href="minjiang-features.html" class="nav-link">服务方案</a>
+          <a href="minjiang-solutions.html" class="nav-link">行业方案</a>
+          <a href="minjiang-cases.html" class="nav-link">客户案例</a>
+          <a href="minjiang-help.html" class="nav-link">帮助中心</a>
+        </div>
+      </div>
+      <div class="nav-right" id="navRight"></div>
+    </div>
+  </nav>
+
+  <section class="page-hero">
+    <div class="page-hero-inner">
+      <h1 class="page-hero-title">新闻动态</h1>
+      <p class="page-hero-desc">了解民匠有约最新动态和行业资讯</p>
+    </div>
+  </section>
+
+  <div class="content-wrap">
+    <div class="news-list">
+      <div class="news-item">
+        <div class="news-date">
+          <div class="news-date-day">15</div>
+          <div class="news-date-month">7月</div>
+        </div>
+        <div class="news-content">
+          <div class="news-title">民匠有约完成A轮融资，估值达10亿元</div>
+          <div class="news-summary">民匠有约宣布完成A轮融资，本轮融资由XX资本领投，XX基金跟投，融资额达XX万元。融资资金将用于技术研发和市场拓展。</div>
+        </div>
+      </div>
+      <div class="news-item">
+        <div class="news-date">
+          <div class="news-date-day">10</div>
+          <div class="news-date-month">7月</div>
+        </div>
+        <div class="news-content">
+          <div class="news-title">民匠有约与XX集团达成战略合作</div>
+          <div class="news-summary">民匠有约与XX集团正式签署战略合作协议，双方将在灵活用工领域展开深度合作，共同推动行业发展。</div>
+        </div>
+      </div>
+      <div class="news-item">
+        <div class="news-date">
+          <div class="news-date-day">5</div>
+          <div class="news-date-month">7月</div>
+        </div>
+        <div class="news-content">
+          <div class="news-title">民匠有约用户突破50万</div>
+          <div class="news-summary">民匠有约平台用户数量正式突破50万大关，成为灵活用工领域的领先平台之一。</div>
+        </div>
+      </div>
+      <div class="news-item">
+        <div class="news-date">
+          <div class="news-date-day">28</div>
+          <div class="news-date-month">6月</div>
+        </div>
+        <div class="news-content">
+          <div class="news-title">民匠有约推出全新服务方案</div>
+          <div class="news-summary">民匠有约正式发布全新服务方案，涵盖更多行业场景，为用户提供更全面的灵活用工解决方案。</div>
+        </div>
+      </div>
+      <div class="news-item">
+        <div class="news-date">
+          <div class="news-date-day">20</div>
+          <div class="news-date-month">6月</div>
+        </div>
+        <div class="news-content">
+          <div class="news-title">民匠有约入选XX创新企业榜单</div>
+          <div class="news-summary">民匠有约凭借创新的商业模式和卓越的服务质量，成功入选XX创新企业榜单。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <img src="https://oss.minjiangyouyue.com/mjlogo/logo02.png" alt="民匠有约" style="height:40px;border-radius:8px;">
+          <div class="footer-brand-text">
+            <div style="font-weight:600;font-size:16px;">民匠有约</div>
+            <div style="font-size:12px;color:var(--text-muted);">一站式灵活用工服务平台</div>
+          </div>
+        </div>
+        <div class="footer-links">
+          <div class="footer-link-group">
+            <div class="footer-link-title">服务支持</div>
+            <a href="minjiang-help.html">帮助中心</a>
+            <a href="contact.html">联系我们</a>
+            <a href="developer-center.html">开发者中心</a>
+          </div>
+          <div class="footer-link-group">
+            <div class="footer-link-title">关于我们</div>
+            <a href="about.html">公司介绍</a>
+            <a href="news.html">新闻动态</a>
+            <a href="career.html">诚聘英才</a>
+          </div>
+          <div class="footer-link-group">
+            <div class="footer-link-title">法律条款</div>
+            <a href="agreement.html">服务协议</a>
+            <a href="privacy.html">隐私政策</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="footer-copyright">© 2024 民匠有约. All rights reserved.</div>
+        <div class="footer-info">
+          <span>浙ICP备XXXXXXXX号-1</span>
+          <span>浙公网安备XXXXXXXX号</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  
+<script src="js/main.js"></script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>账号中心 - 民匠有约</title>
+  <title>地址和联系人 - 账号中心</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
     :root {
@@ -24,7 +24,6 @@
       line-height: 1.6;
     }
 
-    /* ===== 顶部导航 ===== */
     .topbar {
       background: #fff;
       border-bottom: 1px solid var(--gray-200);
@@ -131,7 +130,6 @@
       transform: rotate(180deg);
     }
 
-    /* ===== 用户下拉菜单（阿里云风格） ===== */
     .user-dropdown {
       position: absolute;
       top: calc(100% + 8px);
@@ -144,8 +142,6 @@
       z-index: 1001;
       display: none;
       overflow: hidden;
-      opacity: 1;
-      visibility: visible;
     }
 
     .user-dropdown-header {
@@ -252,11 +248,6 @@
       flex-shrink: 0;
     }
 
-    .user-dropdown-item-primary {
-      color: var(--brand-primary);
-      font-weight: 500;
-    }
-
     .user-dropdown-divider {
       height: 1px;
       background: var(--gray-200);
@@ -290,7 +281,6 @@
       background: var(--brand-primary-50);
     }
 
-    /* ===== 页面主体布局 ===== */
     .page-layout {
       display: flex;
       max-width: 1280px;
@@ -299,7 +289,6 @@
       min-height: 100vh;
     }
 
-    /* ===== 左侧边栏 ===== */
     .sidebar {
       width: var(--sidebar-width);
       background: #fff;
@@ -340,16 +329,11 @@
       border-right: 3px solid var(--brand-primary);
     }
 
-    /* Parent menu highlight when child is active */
     .sidebar-item.has-active > .sidebar-link {
       color: var(--brand-primary);
       background: var(--brand-primary-50);
       font-weight: 600;
       border-right: 3px solid var(--brand-primary);
-    }
-
-    .sidebar-item.has-active > .sidebar-link .sidebar-arrow {
-      transform: rotate(90deg);
     }
 
     .sidebar-link svg {
@@ -398,7 +382,6 @@
       font-weight: 500;
     }
 
-    /* ===== 主内容区 ===== */
     .main-content {
       flex: 1;
       margin-left: var(--sidebar-width);
@@ -415,7 +398,9 @@
       margin-bottom: 20px;
     }
 
+    .page-breadcrumb a { color: var(--text-muted); text-decoration: none; }
     .page-breadcrumb a:hover { color: var(--brand-primary); }
+    .page-breadcrumb span:last-child { color: var(--text-secondary); }
 
     .page-title {
       font-size: 24px;
@@ -423,7 +408,32 @@
       margin-bottom: 24px;
     }
 
-    /* ===== 卡片组件 ===== */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .tab {
+      padding: 10px 16px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .tab:hover { color: var(--brand-primary); }
+
+    .tab.active {
+      color: var(--brand-primary);
+      border-bottom-color: var(--brand-primary);
+      font-weight: 600;
+    }
+
     .card {
       background: #fff;
       border-radius: 12px;
@@ -447,204 +457,281 @@
 
     .card-body { padding: 20px; }
 
-    /* ===== 概览头部 ===== */
-    .overview-hero {
-      background: linear-gradient(135deg, var(--brand-primary) 0%, #4096FF 100%);
-      border-radius: 12px;
-      padding: 28px;
-      color: #fff;
-      margin-bottom: 24px;
-      display: flex;
-      align-items: center;
-      gap: 20px;
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
     }
 
-    .overview-hero-avatar {
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
-      font-weight: 600;
-      flex-shrink: 0;
-      border: 3px solid rgba(255,255,255,0.3);
+    .data-table th,
+    .data-table td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--gray-100);
     }
 
-    .overview-hero-info { flex: 1; }
-
-    .overview-hero-name {
-      font-size: 22px;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-
-    .overview-hero-meta {
-      font-size: 13px;
-      opacity: 0.9;
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    .overview-hero-tags {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    .overview-hero-tag {
-      padding: 4px 12px;
-      background: rgba(255,255,255,0.2);
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 500;
-    }
-
-    .overview-hero-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .btn-light {
-      padding: 8px 16px;
-      background: rgba(255,255,255,0.95);
-      color: var(--brand-primary);
-      border-radius: 6px;
-      font-size: 13px;
-      font-weight: 500;
-      text-decoration: none;
-      text-align: center;
-      transition: all 0.2s;
-    }
-
-    .btn-light:hover {
-      background: #fff;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-
-    /* ===== 信息列表 ===== */
-    .info-list { display: flex; flex-direction: column; gap: 16px; }
-
-    .info-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 0;
-      border-bottom: 1px solid var(--gray-200);
-      cursor: pointer;
-      transition: background 0.15s;
-      margin: 0 -16px;
-      padding-left: 16px;
-      padding-right: 16px;
-      border-radius: 6px;
-    }
-
-    .info-item:hover {
-      background: var(--gray-50);
-    }
-
-    .info-item:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
-    }
-
-    .info-label {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    .data-table th {
+      background: #fafafa;
       color: var(--text-secondary);
-      font-size: 14px;
+      font-weight: 600;
+      font-size: 13px;
     }
 
-    .info-label svg {
-      width: 18px;
-      height: 18px;
-      color: var(--text-muted);
-    }
+    .data-table tbody tr:hover { background: #fafafa; }
 
-    .info-value {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 14px;
-      color: var(--text);
-    }
+    .data-table td { color: var(--text); }
 
-    .info-status {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 12px;
-      padding: 2px 8px;
-      border-radius: 4px;
-      background: #E8F8EB;
-      color: #00B42A;
-    }
-
-    .info-status.pending {
-      background: #FFF3E8;
-      color: #FF7D00;
-    }
-
-    .info-action {
+    .table-action {
       font-size: 13px;
       color: var(--brand-primary);
       text-decoration: none;
+      margin-right: 10px;
     }
 
-    .info-action:hover { text-decoration: underline; }
+    .table-action:hover { text-decoration: underline; }
 
-    /* ===== 快捷入口 ===== */
-    .quick-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
+    .empty-tip {
+      padding: 48px 20px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
     }
 
-    .quick-card {
-      padding: 20px;
-      border: 1px solid var(--gray-200);
-      border-radius: 10px;
-      text-decoration: none;
-      transition: all 0.2s;
-    }
-
-    .quick-card:hover {
-      border-color: var(--brand-primary);
-      box-shadow: 0 4px 16px rgba(22,119,255,0.1);
-    }
-
-    .quick-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
+    .header-action-btn {
+      padding: 6px 16px;
+      border-radius: 6px;
+      border: 1px solid var(--brand-primary);
       background: var(--brand-primary-50);
       color: var(--brand-primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 12px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .header-action-btn:hover {
+      background: var(--brand-primary);
+      color: #fff;
     }
 
-    .quick-icon svg { width: 20px; height: 20px; }
+    .address-card {
+      padding: 16px;
+      border: 1px solid var(--gray-200);
+      border-radius: 10px;
+      margin-bottom: 16px;
+      position: relative;
+      transition: all 0.2s;
+    }
 
-    .quick-title {
+    .address-card:hover {
+      border-color: var(--brand-primary);
+      box-shadow: 0 2px 8px rgba(22,119,255,0.08);
+    }
+
+    .address-card.default {
+      border-color: var(--brand-primary);
+      background: var(--brand-primary-50);
+    }
+
+    .address-tag {
+      display: inline-block;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--brand-primary);
+      color: #fff;
+      font-weight: 500;
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+
+    .address-name {
       font-size: 14px;
       font-weight: 600;
       color: var(--text);
       margin-bottom: 4px;
     }
 
-    .quick-desc {
-      font-size: 12px;
-      color: var(--text-muted);
+    .address-phone {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
     }
 
-    /* ===== 响应式 ===== */
+    .address-detail {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .address-actions {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      display: flex;
+      gap: 12px;
+    }
+
+    .contact-card {
+      padding: 16px;
+      border: 1px solid var(--gray-200);
+      border-radius: 10px;
+      margin-bottom: 16px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .contact-card:hover {
+      border-color: var(--brand-primary);
+      box-shadow: 0 2px 8px rgba(22,119,255,0.08);
+    }
+
+    .contact-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--brand-primary-50);
+      color: var(--brand-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .contact-info { flex: 1; min-width: 0; }
+
+    .contact-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .contact-role {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .contact-phone {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .contact-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal-content {
+      background: #fff;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 520px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-title { font-size: 16px; font-weight: 600; color: var(--text); }
+
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      background: var(--gray-100);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-body { padding: 24px; }
+
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 8px; }
+    .form-label .required { color: #F5222D; margin-left: 2px; }
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--gray-300);
+      border-radius: 8px;
+      font-size: 14px;
+      color: var(--text);
+      background: #fff;
+      transition: border-color 0.2s;
+      font-family: inherit;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--brand-primary);
+      box-shadow: 0 0 0 3px var(--brand-primary-50);
+    }
+    .form-textarea { min-height: 80px; resize: vertical; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--gray-200);
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .btn-secondary {
+      padding: 8px 20px;
+      border-radius: 6px;
+      border: 1px solid var(--gray-300);
+      background: #fff;
+      color: var(--text);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover { background: var(--gray-100); }
+
+    .btn-primary {
+      padding: 8px 20px;
+      border-radius: 6px;
+      border: none;
+      background: var(--brand-primary);
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary:hover { background: var(--brand-primary-dark); }
+
     @media (max-width: 1280px) {
       .sidebar { left: 0; }
     }
@@ -660,14 +747,13 @@
         border-bottom: 1px solid var(--gray-200);
       }
       .main-content { margin-left: 0; padding: 16px; }
-      .quick-grid { grid-template-columns: repeat(2, 1fr); }
-      .overview-hero { flex-direction: column; align-items: flex-start; }
-      .overview-hero-actions { width: 100%; }
+      .tabs { flex-wrap: wrap; }
+      .form-row, .form-row-3 { grid-template-columns: 1fr; }
+      .address-actions, .contact-actions { position: static; margin-top: 12px; }
     }
   </style>
 </head>
 <body>
-  <!-- 顶部导航 -->
   <div class="topbar">
     <div class="topbar-inner">
       <a href="index.html" class="topbar-brand">
@@ -703,7 +789,7 @@
             <div class="user-dropdown-body">
               <div class="user-dropdown-group">
                 <div class="user-dropdown-group-title">账号管理</div>
-                <a href="account-center.html" class="user-dropdown-item active">
+                <a href="account-center.html" class="user-dropdown-item">
                   <svg viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="2"/><polyline points="9 22 9 12 15 12 15 22" stroke="currentColor" stroke-width="2"/></svg>
                   账号中心
                 </a>
@@ -725,14 +811,7 @@
                 <div class="user-dropdown-group-title">费用与资产</div>
                 <a href="account-billing.html" class="user-dropdown-item">
                   <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"/></svg>
-                  发票 / 合同 / 订单 / 卡券
-                </a>
-              </div>
-              <div class="user-dropdown-divider"></div>
-              <div class="user-dropdown-group">
-                <a href="verify.html" class="user-dropdown-item user-dropdown-item-primary" id="verifyLink">
-                  <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <span id="verifyLinkText">去实名认证</span>
+                  发票 / 合同 / 订单
                 </a>
               </div>
             </div>
@@ -749,20 +828,18 @@
     </div>
   </div>
 
-  <!-- 页面主体 -->
   <div class="page-layout">
-    <!-- 左侧边栏 -->
     <aside class="sidebar">
       <ul class="sidebar-menu">
         <li class="sidebar-item">
-          <a href="account-center.html" class="sidebar-link active">
+          <a href="account-center.html" class="sidebar-link">
             <svg viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="2"/><polyline points="9 22 9 12 15 12 15 22" stroke="currentColor" stroke-width="2"/></svg>
             账号中心
           </a>
         </li>
         <li class="sidebar-divider"></li>
         <li class="sidebar-section-title">我的主体</li>
-        <li class="sidebar-item open">
+        <li class="sidebar-item">
           <a class="sidebar-link">
             <svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
             实名信息
@@ -788,7 +865,7 @@
           </a>
         </li>
         <li class="sidebar-item">
-          <a href="account-address.html" class="sidebar-link">
+          <a href="account-address.html" class="sidebar-link active">
             <svg viewBox="0 0 24 24" fill="none"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2"/></svg>
             地址和联系人
           </a>
@@ -803,7 +880,7 @@
         </li>
         <li class="sidebar-divider"></li>
         <li class="sidebar-section-title">费用与资产</li>
-        <li class="sidebar-item open">
+        <li class="sidebar-item">
           <a class="sidebar-link">
             <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"/></svg>
             发票 / 合同 / 订单
@@ -818,180 +895,212 @@
       </ul>
     </aside>
 
-    <!-- 主内容区 -->
     <main class="main-content">
       <div class="page-breadcrumb">
-        <span>账号中心</span>
+        <a href="account-center.html">账号中心</a>
         <span>/</span>
-        <span>概览</span>
+        <span>地址和联系人</span>
       </div>
-      <h1 class="page-title">账号中心</h1>
+      <h1 class="page-title">地址和联系人</h1>
 
-      <!-- 概览头部 -->
-      <div class="overview-hero">
-        <div class="overview-hero-avatar" id="heroAvatar">用</div>
-        <div class="overview-hero-info">
-          <div class="overview-hero-name" id="heroName">用户</div>
-          <div class="overview-hero-meta">
-            <span>账号ID：<span id="heroId">--</span></span>
-            <span>注册时间：<span id="heroRegTime">2024-01-01</span></span>
-            <span>上次登录：<span id="heroLastLogin">--</span></span>
-          </div>
-          <div class="overview-hero-tags" id="heroTags">
-            <span class="overview-hero-tag" id="heroAuthTag">未实名认证</span>
-            <span class="overview-hero-tag">个人用户</span>
-          </div>
-        </div>
-        <div class="overview-hero-actions">
-          <a href="verify.html" class="btn-light" id="heroVerifyBtn">去认证</a>
-          <a href="account-security.html" class="btn-light">账号安全</a>
-        </div>
+      <div class="tabs" id="addressTabs">
+        <a class="tab active" data-tab="address" href="account-address.html?tab=address">收货地址</a>
+        <a class="tab" data-tab="contact" href="account-address.html?tab=contact">联系人</a>
       </div>
 
-      <!-- 我的主体 -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">我的主体</div>
-          <a href="account-realname.html" class="info-action">查看详情</a>
-        </div>
-        <div class="card-body">
-          <div class="info-list">
-            <div class="info-item">
-              <div class="info-label">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
-                当前认证主体
+      <div class="tab-panel" id="panel-address">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">收货地址</div>
+            <button class="header-action-btn" id="addAddressBtn">添加地址</button>
+          </div>
+          <div class="card-body">
+            <div id="addressList">
+              <div class="address-card default">
+                <span class="address-tag">默认地址</span>
+                <div class="address-name">张三</div>
+                <div class="address-phone">138****8888</div>
+                <div class="address-detail">浙江省杭州市西湖区文三路123号科技大厦15楼1501室</div>
+                <div class="address-actions">
+                  <a href="#" class="table-action">编辑</a>
+                  <a href="#" class="table-action">删除</a>
+                </div>
               </div>
-              <div class="info-value">
-                <span id="subjectName">--</span>
-                <span class="info-status" id="subjectStatus">未认证</span>
-                <a href="verify.html" class="info-action" id="subjectAction">去认证</a>
+              <div class="address-card">
+                <div class="address-name">李四</div>
+                <div class="address-phone">139****9999</div>
+                <div class="address-detail">上海市浦东新区张江高科技园区碧波路888号</div>
+                <div class="address-actions">
+                  <a href="#" class="table-action">设为默认</a>
+                  <a href="#" class="table-action">编辑</a>
+                  <a href="#" class="table-action">删除</a>
+                </div>
               </div>
-            </div>
-            <div class="info-item">
-              <div class="info-label">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="2"/><polyline points="9 22 9 12 15 12 15 22" stroke="currentColor" stroke-width="2"/></svg>
-                认证类型
-              </div>
-              <div class="info-value" id="authTypeName">未选择</div>
-            </div>
-            <div class="info-item">
-              <div class="info-label">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2"/><polyline points="22 4 12 14.01 9 11.01" stroke="currentColor" stroke-width="2"/></svg>
-                认证状态
-              </div>
-              <div class="info-value">
-                <span id="authStateText">未认证</span>
-                <a href="account-realname.html" class="info-action">查看</a>
+              <div class="address-card">
+                <div class="address-name">王五</div>
+                <div class="address-phone">137****7777</div>
+                <div class="address-detail">广东省深圳市南山区科技园南区深南大道9999号</div>
+                <div class="address-actions">
+                  <a href="#" class="table-action">设为默认</a>
+                  <a href="#" class="table-action">编辑</a>
+                  <a href="#" class="table-action">删除</a>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- 我的账号 -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">我的账号</div>
-          <a href="account-security.html" class="info-action">管理</a>
-        </div>
-        <div class="card-body">
-          <div class="info-list">
-            <div class="info-item">
-              <div class="info-label">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" stroke-width="2"/><polyline points="22,6 12,13 2,6" stroke="currentColor" stroke-width="2"/></svg>
-                登录邮箱
-              </div>
-              <div class="info-value">
-                <span id="emailValue">未设置</span>
-                <a href="account-security.html" class="info-action">设置</a>
-              </div>
-            </div>
-            <div class="info-item">
-              <div class="info-label">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" stroke="currentColor" stroke-width="2"/></svg>
-                安全手机号
-              </div>
-              <div class="info-value">
-                <span id="mobileValue">--</span>
-                <span class="info-status">已验证</span>
-                <a href="account-security.html" class="info-action">修改</a>
-              </div>
-            </div>
-            <div class="info-item">
-              <div class="info-label">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M19 11H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
-                登录密码
-              </div>
-              <div class="info-value">
-                <span>已设置</span>
-                <a href="account-security.html" class="info-action">修改</a>
-              </div>
-            </div>
+      <div class="tab-panel" id="panel-contact">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">联系人</div>
+            <button class="header-action-btn" id="addContactBtn">添加联系人</button>
           </div>
-        </div>
-      </div>
-
-      <!-- 身份与权限 -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">身份与权限</div>
-          <a href="account-permission.html" class="info-action">管理</a>
-        </div>
-        <div class="card-body">
-          <div class="info-list">
-            <div class="info-item">
-              <div class="info-label">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2"/><path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2"/></svg>
-                当前角色
+          <div class="card-body">
+            <div id="contactList">
+              <div class="contact-card">
+                <div class="contact-avatar">张</div>
+                <div class="contact-info">
+                  <div class="contact-name">张三</div>
+                  <div class="contact-role">技术负责人</div>
+                  <div class="contact-phone">138****8888</div>
+                </div>
+                <div class="contact-actions">
+                  <a href="#" class="table-action">编辑</a>
+                  <a href="#" class="table-action">删除</a>
+                </div>
               </div>
-              <div class="info-value">
-                <span>主账号管理员</span>
-                <a href="account-permission.html" class="info-action">查看权限</a>
+              <div class="contact-card">
+                <div class="contact-avatar">李</div>
+                <div class="contact-info">
+                  <div class="contact-name">李四</div>
+                  <div class="contact-role">财务负责人</div>
+                  <div class="contact-phone">139****9999</div>
+                </div>
+                <div class="contact-actions">
+                  <a href="#" class="table-action">编辑</a>
+                  <a href="#" class="table-action">删除</a>
+                </div>
+              </div>
+              <div class="contact-card">
+                <div class="contact-avatar">王</div>
+                <div class="contact-info">
+                  <div class="contact-name">王五</div>
+                  <div class="contact-role">采购专员</div>
+                  <div class="contact-phone">137****7777</div>
+                </div>
+                <div class="contact-actions">
+                  <a href="#" class="table-action">编辑</a>
+                  <a href="#" class="table-action">删除</a>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 快捷入口 -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">常用功能</div>
-        </div>
-        <div class="card-body">
-          <div class="quick-grid">
-            <a href="account-realname.html" class="quick-card">
-              <div class="quick-icon">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
-              </div>
-              <div class="quick-title">实名认证</div>
-              <div class="quick-desc">个人/企业实名信息</div>
-            </a>
-            <a href="account-security.html" class="quick-card">
-              <div class="quick-icon">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/></svg>
-              </div>
-              <div class="quick-title">账号安全</div>
-              <div class="quick-desc">密码/手机/邮箱</div>
-            </a>
-            <a href="account-billing.html" class="quick-card">
-              <div class="quick-icon">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"/></svg>
-              </div>
-              <div class="quick-title">发票合同</div>
-              <div class="quick-desc">发票/合同/订单</div>
-            </a>
-            <a href="account-permission.html" class="quick-card">
-              <div class="quick-icon">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2"/><path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2"/></svg>
-              </div>
-              <div class="quick-title">身份权限</div>
-              <div class="quick-desc">角色与权限管理</div>
-            </a>
           </div>
         </div>
       </div>
     </main>
+  </div>
+
+  <div class="modal-overlay" id="addressModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title" id="addressModalTitle">添加地址</div>
+        <button class="modal-close" id="closeAddressModal">
+          <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M18 6L6 18" stroke="currentColor" stroke-width="2"/><path d="M6 6l12 12" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">收件人 <span class="required">*</span></label>
+          <input type="text" class="form-input" id="addressName" placeholder="请输入收件人姓名">
+        </div>
+        <div class="form-group">
+          <label class="form-label">联系电话 <span class="required">*</span></label>
+          <input type="text" class="form-input" id="addressPhone" placeholder="请输入联系电话">
+        </div>
+        <div class="form-row-3">
+          <div class="form-group">
+            <label class="form-label">省 <span class="required">*</span></label>
+            <select class="form-select" id="addressProvince">
+              <option value="">请选择省份</option>
+              <option value="浙江省">浙江省</option>
+              <option value="上海市">上海市</option>
+              <option value="广东省">广东省</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">市 <span class="required">*</span></label>
+            <select class="form-select" id="addressCity">
+              <option value="">请选择城市</option>
+              <option value="杭州市">杭州市</option>
+              <option value="上海市">上海市</option>
+              <option value="深圳市">深圳市</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">区/县 <span class="required">*</span></label>
+            <select class="form-select" id="addressDistrict">
+              <option value="">请选择区/县</option>
+              <option value="西湖区">西湖区</option>
+              <option value="浦东新区">浦东新区</option>
+              <option value="南山区">南山区</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">详细地址 <span class="required">*</span></label>
+          <textarea class="form-textarea" id="addressDetail" placeholder="请输入详细地址"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">
+            <input type="checkbox" id="addressDefault" style="margin-right: 8px;">
+            设为默认地址
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="cancelAddressBtn">取消</button>
+        <button class="btn-primary" id="saveAddressBtn">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="contactModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title" id="contactModalTitle">添加联系人</div>
+        <button class="modal-close" id="closeContactModal">
+          <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M18 6L6 18" stroke="currentColor" stroke-width="2"/><path d="M6 6l12 12" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">姓名 <span class="required">*</span></label>
+          <input type="text" class="form-input" id="contactName" placeholder="请输入联系人姓名">
+        </div>
+        <div class="form-group">
+          <label class="form-label">职务 <span class="required">*</span></label>
+          <input type="text" class="form-input" id="contactRole" placeholder="请输入职务">
+        </div>
+        <div class="form-group">
+          <label class="form-label">联系电话 <span class="required">*</span></label>
+          <input type="text" class="form-input" id="contactPhone" placeholder="请输入联系电话">
+        </div>
+        <div class="form-group">
+          <label class="form-label">电子邮箱</label>
+          <input type="email" class="form-input" id="contactEmail" placeholder="请输入电子邮箱">
+        </div>
+        <div class="form-group">
+          <label class="form-label">备注</label>
+          <textarea class="form-textarea" id="contactRemark" placeholder="请输入备注信息"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="cancelContactBtn">取消</button>
+        <button class="btn-primary" id="saveContactBtn">保存</button>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -1005,124 +1114,13 @@
       var identityVerified = localStorage.getItem('mjyy_identity_verified') === 'true';
       var selectedAuthType = localStorage.getItem('mjyy_auth_type') || 'enterprise';
 
-      function maskMobile(m) {
-        if (!m || m.length < 11) return m || '--';
-        return m.substring(0, 3) + '****' + m.substring(7);
-      }
-
-      function maskId(id) {
-        if (!id) return '--';
-        return id.substring(0, 4) + '****' + id.substring(id.length - 4);
-      }
-
-      var displayName = '';
-      if (enterpriseData.companyName) displayName = enterpriseData.companyName;
-      else if (personalData.realName) displayName = personalData.realName;
-      else if (userData.mobile) displayName = maskMobile(userData.mobile);
-      else if (userData.name) displayName = userData.name;
-      else displayName = '用户';
-
-      var avatarChar = displayName ? displayName.charAt(0) : '用';
-      var accountId = userData.mobile || userData.accountId || 'MJ' + Date.now().toString().slice(-8);
-
-      document.getElementById('topbarAvatar').textContent = avatarChar;
-      document.getElementById('topbarName').textContent = displayName;
-      document.getElementById('dropdownAvatar').textContent = avatarChar;
-      document.getElementById('dropdownName').textContent = displayName;
-      document.getElementById('dropdownId').textContent = '账号ID：' + maskId(accountId);
-
-      // 账号类型标签
-      var accountType = localStorage.getItem('mjyy_account_type') || 'main';
-      var typeText = accountType === 'sub' ? '子账号' : '主账号';
-      var topbarBadge = document.getElementById('topbarBadge');
-      var dropdownBadge = document.getElementById('dropdownBadge');
-      if (topbarBadge) {
-        topbarBadge.textContent = typeText;
-        topbarBadge.style.background = accountType === 'sub' ? '#FFF7E6' : 'var(--brand-primary-50)';
-        topbarBadge.style.color = accountType === 'sub' ? '#FF7D00' : 'var(--brand-primary)';
-      }
-      if (dropdownBadge) {
-        dropdownBadge.textContent = typeText;
-        dropdownBadge.style.background = accountType === 'sub' ? '#FFF7E6' : 'var(--brand-primary-50)';
-        dropdownBadge.style.color = accountType === 'sub' ? '#FF7D00' : 'var(--brand-primary)';
-      }
-
-      document.getElementById('heroAvatar').textContent = avatarChar;
-      document.getElementById('heroName').textContent = displayName;
-      document.getElementById('heroId').textContent = maskId(accountId);
-      document.getElementById('mobileValue').textContent = maskMobile(userData.mobile || personalData.mobile || '--');
-
-      var regTime = userData.regTime || '2024-01-01';
-      document.getElementById('heroRegTime').textContent = regTime;
-      document.getElementById('heroLastLogin').textContent = new Date().toLocaleString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
-
-      var authTag = document.getElementById('authTag');
-      var heroAuthTag = document.getElementById('heroAuthTag');
-      var subjectName = document.getElementById('subjectName');
-      var subjectStatus = document.getElementById('subjectStatus');
-      var authTypeName = document.getElementById('authTypeName');
-      var authStateText = document.getElementById('authStateText');
-      var verifyLink = document.getElementById('verifyLink');
-      var verifyLinkText = document.getElementById('verifyLinkText');
-      var heroVerifyBtn = document.getElementById('heroVerifyBtn');
-      var subjectAction = document.getElementById('subjectAction');
-
-      if (identityVerified) {
-        authTag.textContent = '已认证';
-        authTag.classList.add('verified');
-        heroAuthTag.textContent = selectedAuthType === 'personal' ? '个人认证' : '企业认证';
-        authStateText.textContent = '认证通过';
-        subjectStatus.textContent = '已认证';
-        subjectStatus.classList.remove('pending');
-        verifyLink.style.display = 'none';
-        heroVerifyBtn.style.display = 'none';
-        subjectAction.style.display = 'none';
-      } else {
-        authTag.textContent = selectedAuthType === 'personal' ? '个人未认证' : '企业未认证';
-        heroAuthTag.textContent = selectedAuthType === 'personal' ? '个人未认证' : '企业未认证';
-        authStateText.textContent = '未认证';
-        subjectStatus.textContent = '未认证';
-        subjectStatus.classList.add('pending');
-        verifyLinkText.textContent = selectedAuthType === 'personal' ? '去个人认证' : '去企业认证';
-      }
-
-      if (selectedAuthType === 'personal') {
-        authTypeName.textContent = '个人认证';
-        subjectName.textContent = personalData.realName || '未填写';
-      } else {
-        authTypeName.textContent = '企业认证';
-        subjectName.textContent = enterpriseData.companyName || '未填写';
-      }
-
-      // info-item 整行点击跳转
-      document.querySelectorAll('.info-item').forEach(function(item) {
-        item.addEventListener('click', function(e) {
-          if (e.target.closest('a')) return;
-          var action = item.querySelector('.info-action');
-          if (action && action.href) {
-            window.location.href = action.href;
-          }
-        });
-      });
-
-      // Dynamic parent highlight based on active child
-      document.querySelectorAll('.sidebar-item').forEach(function(item) {
-        if (item.querySelector('.sidebar-submenu .sidebar-link.active')) {
-          item.classList.add('has-active');
-          var arrow = item.querySelector('.sidebar-arrow');
-          if (arrow) arrow.style.transform = 'rotate(90deg)';
-        }
-      });
-
-      // Sidebar parent menu expand/collapse
       document.querySelectorAll('.sidebar-item > .sidebar-link').forEach(function(link) {
         var parent = link.parentElement;
         var submenu = parent.querySelector('.sidebar-submenu');
         if (submenu) {
           link.addEventListener('click', function(e) {
-            // Don't toggle if clicking a direct link (with href)
             if (link.getAttribute('href') && link.getAttribute('href') !== '#') {
-              return; // Let it navigate
+              return;
             }
             e.preventDefault();
             parent.classList.toggle('open');
@@ -1134,7 +1132,105 @@
         }
       });
 
-      // topbar 下拉展开/退出登录/进入系统 统一由 main.js 处理
+      function getTabFromUrl() {
+        var params = new URLSearchParams(window.location.search);
+        return params.get('tab') || 'address';
+      }
+
+      function switchTab(tab) {
+        var tabs = document.querySelectorAll('#addressTabs .tab');
+        var panels = document.querySelectorAll('.tab-panel');
+        tabs.forEach(function(t) {
+          t.classList.toggle('active', t.getAttribute('data-tab') === tab);
+        });
+        panels.forEach(function(p) {
+          p.style.display = p.id === 'panel-' + tab ? 'block' : 'none';
+        });
+      }
+
+      var currentTab = getTabFromUrl();
+      switchTab(currentTab);
+
+      document.getElementById('addressTabs').addEventListener('click', function(e) {
+        var target = e.target.closest('.tab');
+        if (!target) return;
+        e.preventDefault();
+        var tab = target.getAttribute('data-tab');
+        history.replaceState(null, '', 'account-address.html?tab=' + tab);
+        switchTab(tab);
+      });
+
+      var addressModal = document.getElementById('addressModal');
+      var addAddressBtn = document.getElementById('addAddressBtn');
+      var closeAddressModal = document.getElementById('closeAddressModal');
+      var cancelAddressBtn = document.getElementById('cancelAddressBtn');
+      var saveAddressBtn = document.getElementById('saveAddressBtn');
+
+      function openAddressModal() {
+        if (addressModal) addressModal.classList.add('open');
+      }
+      function closeAddressModalFn() {
+        if (addressModal) addressModal.classList.remove('open');
+      }
+
+      if (addAddressBtn) addAddressBtn.addEventListener('click', openAddressModal);
+      if (closeAddressModal) closeAddressModal.addEventListener('click', closeAddressModalFn);
+      if (cancelAddressBtn) cancelAddressBtn.addEventListener('click', closeAddressModalFn);
+      if (addressModal) {
+        addressModal.addEventListener('click', function(e) {
+          if (e.target === addressModal) closeAddressModalFn();
+        });
+      }
+      if (saveAddressBtn) {
+        saveAddressBtn.addEventListener('click', function() {
+          var name = document.getElementById('addressName').value.trim();
+          var phone = document.getElementById('addressPhone').value.trim();
+          var province = document.getElementById('addressProvince').value;
+          var city = document.getElementById('addressCity').value;
+          var district = document.getElementById('addressDistrict').value;
+          var detail = document.getElementById('addressDetail').value.trim();
+          if (!name) { alert('请输入收件人姓名'); return; }
+          if (!phone) { alert('请输入联系电话'); return; }
+          if (!province || !city || !district) { alert('请选择省市区'); return; }
+          if (!detail) { alert('请输入详细地址'); return; }
+          alert('地址已保存');
+          closeAddressModalFn();
+        });
+      }
+
+      var contactModal = document.getElementById('contactModal');
+      var addContactBtn = document.getElementById('addContactBtn');
+      var closeContactModal = document.getElementById('closeContactModal');
+      var cancelContactBtn = document.getElementById('cancelContactBtn');
+      var saveContactBtn = document.getElementById('saveContactBtn');
+
+      function openContactModal() {
+        if (contactModal) contactModal.classList.add('open');
+      }
+      function closeContactModalFn() {
+        if (contactModal) contactModal.classList.remove('open');
+      }
+
+      if (addContactBtn) addContactBtn.addEventListener('click', openContactModal);
+      if (closeContactModal) closeContactModal.addEventListener('click', closeContactModalFn);
+      if (cancelContactBtn) cancelContactBtn.addEventListener('click', closeContactModalFn);
+      if (contactModal) {
+        contactModal.addEventListener('click', function(e) {
+          if (e.target === contactModal) closeContactModalFn();
+        });
+      }
+      if (saveContactBtn) {
+        saveContactBtn.addEventListener('click', function() {
+          var name = document.getElementById('contactName').value.trim();
+          var role = document.getElementById('contactRole').value.trim();
+          var phone = document.getElementById('contactPhone').value.trim();
+          if (!name) { alert('请输入联系人姓名'); return; }
+          if (!role) { alert('请输入职务'); return; }
+          if (!phone) { alert('请输入联系电话'); return; }
+          alert('联系人已保存');
+          closeContactModalFn();
+        });
+      }
     })();
   </script>
   <script src="js/main.js"></script>
