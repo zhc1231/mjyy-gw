@@ -2614,6 +2614,25 @@ select.form-input {
   background: var(--primary-dark);
 }
 
+.footer-bottom .nav-enter-system {
+  background: transparent;
+  color: rgba(255,255,255,0.85);
+  border: 1px solid rgba(255,255,255,0.3);
+}
+
+.footer-bottom .nav-enter-system:hover,
+.cta-banner .nav-enter-system:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.5);
+  color: #fff;
+}
+
+.cta-banner .nav-enter-system {
+  background: transparent;
+  color: rgba(255,255,255,0.9);
+  border: 1px solid rgba(255,255,255,0.4);
+}
+
 .user-chevron {
   width: 14px;
   height: 14px;
