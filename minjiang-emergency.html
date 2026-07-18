@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>智慧应急 - 民匠有约</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    :root {
+      --brand-primary: #1677FF;
+      --brand-primary-dark: #0958D9;
+      --brand-primary-50: #E6F4FF;
+      --brand-primary-100: #BAE0FF;
+      --brand-grad: linear-gradient(135deg, #1677FF 0%, #4096FF 100%);
+      --brand-grad-light: linear-gradient(180deg, #E6F4FF 0%, #FFFFFF 100%);
+      --emergency-red: #F53F3F;
+      --emergency-orange: #FF7D00;
+      --emergency-bg: linear-gradient(135deg, #FFF2F0 0%, #FFFFFF 50%, #FFF7E6 100%);
+      --train-blue: #1677FF;
+      --fire-orange: #FA8C16;
+      --safety-green: #52C41A;
+    }
+
+    .page-hero {
+      position: relative;
+      padding: 80px 24px 100px;
+      background: var(--emergency-bg);
+      overflow: hidden;
+    }
+    .page-hero::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      right: -100px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(245,63,63,0.08) 0%, transparent 60%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .page-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -150px;
+      left: -100px;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(255,125,0,0.06) 0%, transparent 60%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .page-hero-inner {
+      max-width: var(--container);
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .page-hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      background: rgba(245,63,63,0.08);
+      color: var(--emergency-red);
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: var(--radius-full);
+      margin-bottom: 20px;
+      border: 1px solid rgba(245,63,63,0.2);
+    }
+    .page-hero-title {
+      font-size: 48px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.15;
+      margin-bottom: 20px;
+      letter-spacing: -1px;
+    }
+    .page-hero-title-grad {
+      background: linear-gradient(135deg, #F53F3F 0%, #FF7D00 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .page-hero-desc {
+      font-size: 17px;
+      color: var(--text-secondary);
+      line-height: 1.75;
+      margin-bottom: 32px;
+      max-width: 520px;
+    }
+    .page-hero-actions {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+    .page-hero-stat-row {
+      display: flex;
+      gap: 40px;
+    }
+    .page-hero-stat-item {
+      text-align: left;
+    }
+    .page-hero-stat-num {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--emergency-red);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .page-hero-stat-label {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .page-hero-visual {
+      position: relative;
+      height: 420px;
+    }
+    .hero-mockup {
+      position: absolute;
+      background: #fff;
+      border-radius: var(--radius-2xl);
+      box-shadow: 0 20px 50px rgba(245,63,63,0.12);
+      border: 1px solid var(--gray-200);
+      overflow: hidden;
+    }
+    .hero-mockup-main {
+      top: 0;
+      left: 0;
+      right: 40px;
+      bottom: 20px;
+      padding: 20px;
+    }
+    .mockup-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--gray-100);
+      margin-bottom: 16px;
+    }
+    .mockup-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .mockup-badge {
+      padding: 3px 10px;
+      background: #FFF2F0;
+      color: var(--emergency-red);
+      font-size: 11px;
+      font-weight: 500;
+      border-radius: var(--radius-full);
+    }
+    .mockup-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .mockup-stat-card {
+      padding: 14px;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, #FFF2F0, #FFF7E6);
+    }
+    .mockup-stat-num {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--emergency-red);
+    }
+    .mockup-stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .mockup-chart {
+      background: var(--gray-50);
+      border-radius: var(--radius);
+      padding: 14px;
+      height: 120px;
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+    }
+    .mockup-bar {
+      flex: 1;
+      background: #FFD8BF;
+      border-radius: 4px 4px 0 0;
+      transition: height 0.3s;
+    }
+    .mockup-bar.primary {
+      background: linear-gradient(135deg, #F53F3F, #FF7D00);
+    }
+    .mockup-float {
+      position: absolute;
+      background: #fff;
+      border-radius: var(--radius-xl);
+      padding: 14px 18px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      border: 1px solid var(--gray-100);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .mockup-float-1 {
+      top: 30px;
+      right: 0;
+      animation: floatY 3s ease-in-out infinite;
+    }
+    .mockup-float-2 {
+      bottom: 40px;
+      right: 20px;
+      animation: floatY 3s ease-in-out infinite 1s;
+    }
+    .mockup-float-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+    .mockup-float-icon.red { background: linear-gradient(135deg, #F53F3F, #FF7D00); }
+    .mockup-float-icon.green { background: linear-gradient(135deg, #52C41A, #73D13D); }
+    .mockup-float-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .mockup-float-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    @keyframes floatY {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .section-soft-grad {
+      background: linear-gradient(180deg, #FFFFFF 0%, #F7F9FC 50%, #FFFFFF 100%);
+    }
+
+    .brand-cta {
+      background: linear-gradient(135deg, #F53F3F 0%, #FF7D00 100%);
+    }
+
+    .icon-primary-brand {
+      color: var(--emergency-red);
+    }
+
+    /* 三大板块卡片 */
+    .emergency-main-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+      max-width: var(--container);
+      margin: 0 auto;
+    }
+    .emergency-main-card {
+      background: #fff;
+      border-radius: var(--radius-2xl);
+      padding: 0;
+      border: 1px solid var(--gray-200);
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .emergency-main-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.08);
+    }
+    .emergency-main-card-header {
+      padding: 28px 28px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .emergency-main-card-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .emergency-main-card-icon.train {
+      background: linear-gradient(135deg, #E6F4FF, #BAE0FF);
+      color: var(--train-blue);
+    }
+    .emergency-main-card-icon.fire {
+      background: linear-gradient(135deg, #FFF7E6, #FFD591);
+      color: var(--fire-orange);
+    }
+    .emergency-main-card-icon.safety {
+      background: linear-gradient(135deg, #E8FFEA, #B7EB8F);
+      color: var(--safety-green);
+    }
+    .emergency-main-card-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .emergency-main-card-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* 子功能列表 */
+    .emergency-sub-list {
+      padding: 0 28px 28px;
+    }
+    .emergency-sub-item {
+      padding: 14px 16px;
+      background: var(--gray-50);
+      border-radius: var(--radius);
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s ease;
+    }
+    .emergency-sub-item:hover {
+      background: var(--gray-100);
+    }
+    .emergency-sub-item:last-child {
+      margin-bottom: 0;
+    }
+    .emergency-sub-item-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+    }
+    .emergency-sub-item-status {
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      font-weight: 500;
+    }
+    .emergency-sub-item-status.done {
+      background: #E8FFEA;
+      color: var(--safety-green);
+    }
+    .emergency-sub-item-status.working {
+      background: #FFF7E6;
+      color: var(--fire-orange);
+    }
+
+    /* 嵌套子功能 */
+    .emergency-sub-nested {
+      margin-top: 8px;
+      padding-left: 16px;
+      border-left: 2px solid var(--gray-300);
+    }
+    .emergency-sub-nested-item {
+      padding: 8px 0;
+      font-size: 13px;
+      color: var(--text-secondary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .emergency-sub-nested-item-title {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .emergency-sub-nested-item-title::before {
+      content: '';
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--gray-400);
+    }
+
+    /* 安全生产详情 */
+    .safety-detail-section {
+      max-width: var(--container);
+      margin: 0 auto;
+    }
+    .safety-detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .safety-detail-card {
+      background: #fff;
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      border: 1px solid var(--gray-200);
+    }
+    .safety-detail-card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .safety-detail-card-title svg {
+      width: 18px;
+      height: 18px;
+      color: var(--safety-green);
+    }
+    .safety-detail-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .safety-detail-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      background: var(--gray-50);
+      border-radius: var(--radius);
+    }
+    .safety-detail-item-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: #E8FFEA;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--safety-green);
+    }
+    .safety-detail-item-icon svg {
+      width: 16px;
+      height: 16px;
+    }
+    .safety-detail-item-text {
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    /* 第三方支撑 */
+    .third-party-section {
+      max-width: var(--container);
+      margin: 0 auto;
+    }
+    .third-party-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .third-party-card {
+      background: #fff;
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      border: 1px solid var(--gray-200);
+      text-align: center;
+    }
+    .third-party-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, #F0F5FF, #E6F4FF);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 14px;
+      color: var(--brand-primary);
+    }
+    .third-party-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+    .third-party-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .third-party-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 900px) {
+      .page-hero-inner {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .page-hero-title { font-size: 32px; }
+      .page-hero-visual { height: 320px; }
+      .page-hero-stat-row { gap: 24px; flex-wrap: wrap; }
+      .emergency-main-grid { grid-template-columns: 1fr; }
+      .safety-detail-grid { grid-template-columns: 1fr; }
+      .third-party-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <div class="nav-left">
+        <a href="index.html" class="nav-brand">
+          <img src="https://oss.minjiangyouyue.com/mjlogo/logo02.png" alt="民匠有约" style="height:36px;border-radius:8px;">
+          民匠有约
+        </a>
+        <div class="nav-links">
+          <a href="minjiang.html" class="nav-link">首页</a>
+          <a href="minjiang-emergency.html" class="nav-link active">智慧应急</a>
+          <a href="minjiang-features.html" class="nav-link">服务方案</a>
+          <a href="minjiang-solutions.html" class="nav-link">行业方案</a>
+          <a href="minjiang-cases.html" class="nav-link">客户案例</a>
+          <a href="minjiang-help.html" class="nav-link">帮助中心</a>
+        </div>
+      </div>
+      <div class="nav-right" id="navRight"></div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="page-hero">
+    <div class="page-hero-inner">
+      <div class="reveal">
+        <span class="page-hero-tag">
+          <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="currentColor" stroke-width="2"/><line x1="12" y1="9" x2="12" y2="13" stroke="currentColor" stroke-width="2"/><line x1="12" y1="17" x2="12.01" y2="17" stroke="currentColor" stroke-width="2"/></svg>
+          智慧应急管理平台
+        </span>
+        <h1 class="page-hero-title">
+          智慧应急<br>
+          <span class="page-hero-title-grad">安全无忧</span>
+        </h1>
+        <p class="page-hero-desc">
+          集成特种作业技能培训、动火作业管理、安全生产监控三大核心模块，构建全流程智能化应急管理体系，助力企业安全生产
+        </p>
+        <div class="page-hero-actions">
+          <a href="login.html" class="btn btn-primary btn-large">立即开通</a>
+          <a href="#features" class="btn btn-outline btn-large">了解方案</a>
+        </div>
+        <div class="page-hero-stat-row">
+          <div class="page-hero-stat-item">
+            <div class="page-hero-stat-num">10万+</div>
+            <div class="page-hero-stat-label">培训人次</div>
+          </div>
+          <div class="page-hero-stat-item">
+            <div class="page-hero-stat-num">5000+</div>
+            <div class="page-hero-stat-label">动火作业</div>
+          </div>
+          <div class="page-hero-stat-item">
+            <div class="page-hero-stat-num">99.8%</div>
+            <div class="page-hero-stat-label">隐患识别率</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-hero-visual reveal">
+        <div class="hero-mockup hero-mockup-main">
+          <div class="mockup-header">
+            <div class="mockup-title">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              应急管理指挥中心
+            </div>
+            <span class="mockup-badge">实时监控</span>
+          </div>
+          <div class="mockup-stats">
+            <div class="mockup-stat-card">
+              <div class="mockup-stat-num">186</div>
+              <div class="mockup-stat-label">今日监控任务</div>
+            </div>
+            <div class="mockup-stat-card">
+              <div class="mockup-stat-num" style="color: var(--safety-green);">0</div>
+              <div class="mockup-stat-label">安全隐患</div>
+            </div>
+          </div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">近24小时监控趋势</div>
+          <div class="mockup-chart">
+            <div class="mockup-bar" style="height: 30%;"></div>
+            <div class="mockup-bar primary" style="height: 60%;"></div>
+            <div class="mockup-bar" style="height: 45%;"></div>
+            <div class="mockup-bar primary" style="height: 80%;"></div>
+            <div class="mockup-bar" style="height: 55%;"></div>
+            <div class="mockup-bar primary" style="height: 90%;"></div>
+            <div class="mockup-bar" style="height: 70%;"></div>
+            <div class="mockup-bar primary" style="height: 95%;"></div>
+          </div>
+        </div>
+        <div class="mockup-float mockup-float-1">
+          <div class="mockup-float-icon red">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div>
+            <div class="mockup-float-title">培训完成</div>
+            <div class="mockup-float-sub">今日已完成 234 人次</div>
+          </div>
+        </div>
+        <div class="mockup-float mockup-float-2">
+          <div class="mockup-float-icon green">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div>
+            <div class="mockup-float-title">隐患已排除</div>
+            <div class="mockup-float-sub">本月排除 156 项</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 核心功能模块 -->
+  <section class="section section-soft-grad" id="features">
+    <div class="section-header reveal">
+      <span class="section-tag">核心能力</span>
+      <h2 class="section-title">智慧应急 <span class="page-hero-title-grad">三大核心模块</span></h2>
+      <p class="section-desc">覆盖特种作业培训、动火作业管理、安全生产监控全流程，构建智能化安全管理体系</p>
+    </div>
+    <div class="emergency-main-grid">
+      <!-- 特种作业技能培训 -->
+      <div class="emergency-main-card reveal">
+        <div class="emergency-main-card-header">
+          <div class="emergency-main-card-icon train">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div>
+            <div class="emergency-main-card-title">特种作业技能培训</div>
+            <div class="emergency-main-card-desc">在线学习与考核一体化</div>
+          </div>
+        </div>
+        <div class="emergency-sub-list">
+          <div class="emergency-sub-item">
+            <div class="emergency-sub-item-title">在线视频学习</div>
+            <span class="emergency-sub-item-status done">已完成</span>
+          </div>
+          <div class="emergency-sub-nested">
+            <div class="emergency-sub-nested-item">
+              <span>自有题库</span>
+              <span style="font-size:11px;color:var(--safety-green);">已完成</span>
+            </div>
+          </div>
+          <div class="emergency-sub-item">
+            <div class="emergency-sub-item-title">刷题练习</div>
+            <span class="emergency-sub-item-status working">对接中</span>
+          </div>
+          <div class="emergency-sub-nested">
+            <div class="emergency-sub-nested-item">
+              <span>已更换服务商对接中</span>
+              <span style="font-size:11px;color:var(--fire-orange);">进行中</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 动火作业 -->
+      <div class="emergency-main-card reveal">
+        <div class="emergency-main-card-header">
+          <div class="emergency-main-card-icon fire">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div>
+            <div class="emergency-main-card-title">动火作业</div>
+            <div class="emergency-main-card-desc">事前作业规范管理</div>
+          </div>
+        </div>
+        <div class="emergency-sub-list">
+          <div class="emergency-sub-item">
+            <div class="emergency-sub-item-title">事前作业规范</div>
+            <span class="emergency-sub-item-status done">已完成</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 安全生产 -->
+      <div class="emergency-main-card reveal">
+        <div class="emergency-main-card-header">
+          <div class="emergency-main-card-icon safety">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          </div>
+          <div>
+            <div class="emergency-main-card-title">安全生产</div>
+            <div class="emergency-main-card-desc">在线检测与隐患排查</div>
+          </div>
+        </div>
+        <div class="emergency-sub-list">
+          <div class="emergency-sub-item">
+            <div class="emergency-sub-item-title">在线检测</div>
+            <span class="emergency-sub-item-status done">已完成</span>
+          </div>
+          <div class="emergency-sub-nested">
+            <div class="emergency-sub-nested-item">
+              <span>拍照/视频安全隐患排查及预警</span>
+              <span style="font-size:11px;color:var(--safety-green);">已完成</span>
+            </div>
+            <div class="emergency-sub-nested-item">
+              <span>监控设备接入安全隐患识别</span>
+              <span style="font-size:11px;color:var(--safety-green);">已完成</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 安全生产详情 -->
+  <section class="section">
+    <div class="section-header reveal">
+      <span class="section-tag">安全生产</span>
+      <h2 class="section-title">在线检测 <span class="page-hero-title-grad">智能识别</span></h2>
+      <p class="section-desc">基于AI技术的安全隐患自动识别，实现拍照/视频排查与设备接入监控双重保障</p>
+    </div>
+    <div class="safety-detail-section">
+      <div class="safety-detail-grid">
+        <div class="safety-detail-card reveal">
+          <div class="safety-detail-card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+            拍照/视频安全隐患排查及预警
+          </div>
+          <div class="safety-detail-list">
+            <div class="safety-detail-item">
+              <div class="safety-detail-item-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              </div>
+              <div class="safety-detail-item-text">AI智能图像识别，自动检测安全隐患</div>
+            </div>
+            <div class="safety-detail-item">
+              <div class="safety-detail-item-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+              </div>
+              <div class="safety-detail-item-text">实时预警推送，及时处理安全风险</div>
+            </div>
+            <div class="safety-detail-item">
+              <div class="safety-detail-item-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19v-6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2zm0 0V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v10m-6 0a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2m0 0V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2z"/></svg>
+              </div>
+              <div class="safety-detail-item-text">隐患排查记录，形成闭环管理</div>
+            </div>
+          </div>
+        </div>
+        <div class="safety-detail-card reveal">
+          <div class="safety-detail-card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            监控设备接入安全隐患识别
+          </div>
+          <div class="safety-detail-list">
+            <div class="safety-detail-item">
+              <div class="safety-detail-item-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div class="safety-detail-item-text">支持主流监控设备接入</div>
+            </div>
+            <div class="safety-detail-item">
+              <div class="safety-detail-item-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+              </div>
+              <div class="safety-detail-item-text">AI视频分析，自动识别隐患</div>
+            </div>
+            <div class="safety-detail-item">
+              <div class="safety-detail-item-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+              </div>
+              <div class="safety-detail-item-text">智能告警，快速响应处置</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 第三方支撑 -->
+  <section class="section section-soft-grad">
+    <div class="section-header reveal">
+      <span class="section-tag">技术支撑</span>
+      <h2 class="section-title">第三方支撑 <span class="page-hero-title-grad">智能识别</span></h2>
+      <p class="section-desc">整合领先AI技术与设备厂商，为安全隐患识别提供强大技术支持</p>
+    </div>
+    <div class="third-party-section">
+      <div class="third-party-grid">
+        <div class="third-party-card reveal">
+          <div class="third-party-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2z"/></svg>
+          </div>
+          <div class="third-party-title">千问大数据模型</div>
+          <div class="third-party-desc">百度千问大模型提供强大AI识别能力</div>
+        </div>
+        <div class="third-party-card reveal">
+          <div class="third-party-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 20h5v-2a3 3 0 0 0-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 0 1 5.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 0 1 9.288 0M15 7a3 3 0 1 1-6 0 3 3 0 0 1 6 0zm6 3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM7 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/></svg>
+          </div>
+          <div class="third-party-title">共达地</div>
+          <div class="third-party-desc">AI视觉识别技术，精准检测安全隐患</div>
+        </div>
+        <div class="third-party-card reveal">
+          <div class="third-party-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+          </div>
+          <div class="third-party-title">萤石云</div>
+          <div class="third-party-desc">海康威视旗下视频监控平台，稳定可靠</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section brand-cta" style="padding: 80px 24px; text-align: center;">
+    <div class="reveal">
+      <h2 style="font-size: 36px; font-weight: 800; color: #fff; margin-bottom: 16px;">开启智慧应急管理</h2>
+      <p style="font-size: 17px; color: rgba(255,255,255,0.85); margin-bottom: 32px; max-width: 560px; margin-left: auto; margin-right: auto;">
+        立即开通智慧应急服务，集成培训、作业、监控三大模块，全方位保障企业安全生产
+      </p>
+      <div style="display: flex; gap: 16px; justify-content: center;">
+        <a href="login.html" class="btn btn-white btn-large">免费开通</a>
+        <a href="contact.html" class="btn btn-ghost-white btn-large">咨询方案</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="footer-brand">
+            <img src="https://oss.minjiangyouyue.com/mjlogo/logo02.png" alt="民匠有约" style="height:36px;border-radius:8px;">
+            民匠有约
+          </div>
+          <p class="footer-desc">构建全民共享的智能化服务平台，连接每一次专业服务，让用工更简单，让服务更安心</p>
+          <div class="footer-contact">
+            <div class="footer-contact-row">
+              <span class="icon icon-phone icon-sm"></span>
+              <span class="footer-hotline">400-158-7877</span>
+            </div>
+            <div class="footer-tip">服务时间：周一至周日 9:00-21:00</div>
+            <div><span class="icon icon-mail icon-sm"></span> service@minjiang.com</div>
+            <div><span class="icon icon-map-pin icon-sm"></span> 杭州市钱塘区下沙街道学源街 1366 号</div>
+          </div>
+        </div>
+        <div>
+          <div class="footer-title">产品服务</div>
+          <ul class="footer-links">
+            <li><a href="minjiang.html">首页</a></li>
+            <li><a href="minjiang-emergency.html">智慧应急</a></li>
+            <li><a href="minjiang-features.html">产品功能</a></li>
+            <li><a href="minjiang-solutions.html">行业方案</a></li>
+            <li><a href="minjiang-cases.html">客户案例</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-title">解决方案</div>
+          <ul class="footer-links">
+            <li><a href="minjiang-solutions.html">零售连锁</a></li>
+            <li><a href="minjiang-solutions.html">物流仓储</a></li>
+            <li><a href="minjiang-solutions.html">物业管理</a></li>
+            <li><a href="minjiang-solutions.html">生产制造</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-title">支持</div>
+          <ul class="footer-links">
+            <li><a href="minjiang-help.html">帮助中心</a></li>
+            <li><a href="agreement.html">服务协议</a></li>
+            <li><a href="privacy.html">隐私政策</a></li>
+            <li><a href="contact.html">投诉建议</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-title">商务合作</div>
+          <ul class="footer-links">
+            <li>企业邮箱：bd@minjiang.com</li>
+            <li>代理合作：agent@minjiang.com</li>
+            <li>媒体合作：pr@minjiang.com</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2024 民匠有约 版权所有 浙江良巧匠网络科技</span>
+        <div>
+          <a href="#">浙ICP备XXXXXXXX号-1</a>
+          <a href="#">浙公网安备XXXXXXXX号</a>
+          <a href="#">电子营业执照</a>
+        </div>
+        <a href="#" class="nav-enter-system" id="navEnterSystem">进入系统</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 悬浮侧边栏 -->
+  <div class="float-sidebar">
+    <div class="float-btn float-btn-green" data-panel="panel-kefu">
+      <div class="float-btn-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      </div>
+      <div class="float-btn-text">客服</div>
+    </div>
+    <div class="float-btn float-btn-primary" data-panel="panel-youyue">
+      <div class="float-btn-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>
+      </div>
+      <div class="float-btn-text">有约</div>
+    </div>
+    <div class="float-btn float-btn-dark" data-panel="panel-anxinyun">
+      <div class="float-btn-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
+      </div>
+      <div class="float-btn-text">安心云</div>
+    </div>
+    <div class="float-btn float-btn-orange" data-panel="panel-daili">
+      <div class="float-btn-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+      </div>
+      <div class="float-btn-text">代理</div>
+    </div>
+    <div class="float-btn float-btn-primary" onclick="window.location.href='minjiang.html'">
+      <div class="float-btn-icon">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <div class="float-btn-text">首页</div>
+    </div>
+  </div>
+
+  <!-- 悬浮面板 -->
+  <div class="float-panel" id="panel-kefu">
+    <div class="float-panel-header float-panel-header-green">
+      <span>在线客服</span>
+      <span class="float-panel-status"><span class="float-panel-status-dot"></span>在线</span>
+    </div>
+    <div class="float-panel-body">
+      <div class="float-panel-qr">
+        <div class="float-panel-qr-box">
+          <img src="https://oss.minjiangyouyue.com/mjlogo/ewm.png" alt="客服二维码" style="width:100%;height:100%;object-fit:contain;border-radius:14px;">
+        </div>
+        <div class="float-panel-qr-tip">扫码添加客服微信</div>
+      </div>
+      <div class="float-panel-links">
+        <a href="consult-chat.html" class="float-panel-link">
+          <div class="float-panel-link-icon" style="background:#E6F4FF;color:#1677FF;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          </div>
+          <div class="float-panel-link-text">
+            <div class="float-panel-link-title">在线咨询</div>
+            <div class="float-panel-link-desc">即时对话，快速响应</div>
+          </div>
+        </a>
+        <a href="tel:400-888-6666" class="float-panel-link">
+          <div class="float-panel-link-icon" style="background:#FFF7E6;color:#FA8C16;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </div>
+          <div class="float-panel-link-text">
+            <div class="float-panel-link-title">电话咨询</div>
+            <div class="float-panel-link-desc">400-888-6666</div>
+          </div>
+        </a>
+      </div>
+      <div class="float-panel-info">
+        <div class="float-panel-info-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>工作日 9:00-18:00</span>
+        </div>
+        <a href="#" class="nav-enter-system" id="navEnterSystem">进入系统</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="float-panel" id="panel-youyue">
+    <div class="float-panel-header float-panel-header-blue">
+      <span>民匠有约</span>
+    </div>
+    <div class="float-panel-body">
+      <p style="font-size:13px;color:#595959;line-height:1.6;margin-bottom:12px;">灵活用工智能撮合平台，提供福运宝、如意宝两大结算方案</p>
+      <div class="float-panel-links">
+        <a href="minjiang.html" class="float-panel-link">
+          <div class="float-panel-link-icon" style="background:#E6F4FF;color:#1677FF;">约</div>
+          <div class="float-panel-link-text">
+            <div class="float-panel-link-title">了解产品</div>
+            <div class="float-panel-link-desc">灵活用工解决方案</div>
+          </div>
+        </a>
+        <a href="minjiang.html#fuyunbao" class="float-panel-link">
+          <div class="float-panel-link-icon" style="background:#F0F5FF;color:#2F54EB;">福</div>
+          <div class="float-panel-link-text">
+            <div class="float-panel-link-title">福运宝</div>
+            <div class="float-panel-link-desc">即时结算方案</div>
+          </div>
+        </a>
+        <a href="minjiang.html#ruyibao" class="float-panel-link">
+          <div class="float-panel-link-icon" style="background:#F9F0FF;color:#722ED1;">如</div>
+          <div class="float-panel-link-text">
+            <div class="float-panel-link-title">如意宝</div>
+            <div class="float-panel-link-desc">周期结算方案</div>
+          </div>
+        </a>
+        <a href="minjiang-emergency.html" class="float-panel-link">
+          <div class="float-panel-link-icon" style="background:#FFF2F0;color:#F53F3F;">急</div>
+          <div class="float-panel-link-text">
+            <div class="float-panel-link-title">智慧应急</div>
+            <div class="float-panel-link-desc">安全管理解决方案</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="float-panel" id="panel-anxinyun">
+    <div class="float-panel-header float-panel-header-dark">
+      <span>民匠安心云</span>
+    </div>
+    <div class="float-panel-body">
+      <p style="font-size:13px;color:#595959;line-height:1.6;margin-bottom:12px;">企业数字化管理平台，审批考勤、组织架构、数据分析一站式搞定</p>
+      <div class="float-panel-links">
+        <a href="anxinyun.html" class="float-panel-link">
+          <div class="float-panel-link-icon" style="background:#E6F0FF;color:#0F52BA;">云</div>
+          <div class="float-panel-link-text">
+            <div class="float-panel-link-title">了解产品</div>
+            <div class="float-panel-link-desc">企业管理解决方案</div>
+          </div>
+        </a>
+        <a href="anxinyun.html#features" class="float-panel-link">
+          <div class="float-panel-link-icon" style="background:#E6FFFB;color:#13C2C2;">功</div>
+          <div class="float-panel-link-text">
+            <div class="float-panel-link-title">功能特性</div>
+            <div class="float-panel-link-desc">审批考勤组织架构</div>
+          </div>
+        </a>
+        <a href="anxinyun.html#pricing" class="float-panel-link">
+          <div class="float-panel-link-icon" style="background:#FFF7E6;color:#FA8C16;">价</div>
+          <div class="float-panel-link-text">
+            <div class="float-panel-link-title">版本价格</div>
+            <div class="float-panel-link-desc">多版本可选</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="float-panel" id="panel-daili">
+    <div class="float-panel-header float-panel-header-orange">
+      <span>渠道代理</span>
+    </div>
+    <div class="float-panel-body">
+      <p style="font-size:13px;color:#595959;line-height:1.6;margin-bottom:12px;">城市合伙人计划，高额流水分成，总部全方位支持</p>
+      <div class="float-panel-links">
+        <a href="agent.html" class="float-panel-link">
+          <div class="float-panel-link-icon" style="background:#FFF7E6;color:#FA8C16;">代</div>
+          <div class="float-panel-link-text">
+            <div class="float-panel-link-title">代理政策</div>
+            <div class="float-panel-link-desc">城市合伙人计划</div>
+          </div>
+        </a>
+        <a href="contact.html" class="float-panel-link">
+          <div class="float-panel-link-icon" style="background:#E8FFEA;color:#52C41A;">联</div>
+          <div class="float-panel-link-text">
+            <div class="float-panel-link-title">商务合作</div>
+            <div class="float-panel-link-desc">诚邀合作伙伴</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
