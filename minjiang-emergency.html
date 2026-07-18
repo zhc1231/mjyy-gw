@@ -16,6 +16,9 @@
       --emergency-red: #F53F3F;
       --emergency-orange: #FF7D00;
       --emergency-bg: linear-gradient(135deg, #FFF2F0 0%, #FFFFFF 50%, #FFF7E6 100%);
+      --train-blue: #1677FF;
+      --fire-orange: #FA8C16;
+      --safety-green: #52C41A;
     }
 
     .page-hero {
@@ -254,146 +257,225 @@
       color: var(--emergency-red);
     }
 
-    /* 应急功能卡片 */
-    .emergency-feature-grid {
+    /* 三大板块卡片 */
+    .emergency-main-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
+      gap: 28px;
       max-width: var(--container);
       margin: 0 auto;
     }
-    .emergency-feature-card {
+    .emergency-main-card {
       background: #fff;
-      border-radius: var(--radius-xl);
-      padding: 32px;
+      border-radius: var(--radius-2xl);
+      padding: 0;
       border: 1px solid var(--gray-200);
-      transition: all 0.3s ease;
-      position: relative;
       overflow: hidden;
+      transition: all 0.3s ease;
     }
-    .emergency-feature-card:hover {
+    .emergency-main-card:hover {
       transform: translateY(-6px);
-      box-shadow: 0 12px 40px rgba(245,63,63,0.1);
-      border-color: rgba(245,63,63,0.2);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.08);
     }
-    .emergency-feature-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(135deg, #F53F3F, #FF7D00);
-    }
-    .emergency-feature-icon {
-      width: 56px;
-      height: 56px;
-      border-radius: var(--radius);
-      background: linear-gradient(135deg, #FFF2F0, #FFF7E6);
+    .emergency-main-card-header {
+      padding: 28px 28px 20px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      margin-bottom: 20px;
-      color: var(--emergency-red);
+      gap: 14px;
     }
-    .emergency-feature-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 10px;
-    }
-    .emergency-feature-text {
-      font-size: 14px;
-      color: var(--text-secondary);
-      line-height: 1.7;
-    }
-
-    /* 应急场景 */
-    .scenario-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 24px;
-      max-width: var(--container);
-      margin: 0 auto;
-    }
-    .scenario-card {
-      background: #fff;
-      border-radius: var(--radius-xl);
-      padding: 32px;
-      border: 1px solid var(--gray-200);
-      display: flex;
-      gap: 20px;
-      align-items: flex-start;
-      transition: all 0.3s ease;
-    }
-    .scenario-card:hover {
-      border-color: rgba(245,63,63,0.2);
-      box-shadow: 0 8px 32px rgba(245,63,63,0.08);
-    }
-    .scenario-icon {
-      width: 48px;
-      height: 48px;
+    .emergency-main-card-icon {
+      width: 52px;
+      height: 52px;
       border-radius: var(--radius);
-      background: linear-gradient(135deg, #FFF2F0, #FFF7E6);
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      color: var(--emergency-red);
     }
-    .scenario-title {
-      font-size: 16px;
+    .emergency-main-card-icon.train {
+      background: linear-gradient(135deg, #E6F4FF, #BAE0FF);
+      color: var(--train-blue);
+    }
+    .emergency-main-card-icon.fire {
+      background: linear-gradient(135deg, #FFF7E6, #FFD591);
+      color: var(--fire-orange);
+    }
+    .emergency-main-card-icon.safety {
+      background: linear-gradient(135deg, #E8FFEA, #B7EB8F);
+      color: var(--safety-green);
+    }
+    .emergency-main-card-title {
+      font-size: 20px;
       font-weight: 700;
       color: var(--text);
-      margin-bottom: 6px;
     }
-    .scenario-desc {
-      font-size: 14px;
-      color: var(--text-secondary);
-      line-height: 1.7;
+    .emergency-main-card-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 2px;
     }
 
-    /* 流程 */
-    .process-steps {
+    /* 功能特性列表 */
+    .feature-func-list {
+      padding: 0 28px 28px;
       display: flex;
-      gap: 16px;
-      max-width: 900px;
-      margin: 0 auto;
+      flex-direction: column;
+      gap: 10px;
     }
-    .process-step {
-      flex: 1;
-      text-align: center;
-      position: relative;
+    .feature-func-item {
+      display: flex;
+      gap: 12px;
+      padding: 14px;
+      background: var(--gray-50);
+      border-radius: var(--radius);
+      transition: all 0.2s ease;
+      align-items: flex-start;
     }
-    .process-step:not(:last-child)::after {
-      content: '';
-      position: absolute;
-      top: 24px;
-      right: -20px;
-      width: 40px;
-      height: 2px;
-      background: linear-gradient(90deg, var(--emergency-red), var(--emergency-orange));
+    .feature-func-item:hover {
+      background: #fff;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      transform: translateX(2px);
     }
-    .process-step-num {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #F53F3F, #FF7D00);
-      color: #fff;
+    .feature-func-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
-      font-weight: 700;
-      margin: 0 auto 16px;
+      flex-shrink: 0;
     }
-    .process-step-title {
+    .feature-func-icon.train { background: #E6F4FF; color: var(--train-blue); }
+    .feature-func-icon.fire { background: #FFF7E6; color: var(--fire-orange); }
+    .feature-func-icon.safety { background: #E8FFEA; color: var(--safety-green); }
+    .feature-func-content {
+      flex: 1;
+    }
+    .feature-func-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .feature-func-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .feature-func-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 6px;
+      padding: 2px 8px;
+      background: #fff;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-full);
+    }
+
+    /* 安全生产详情 */
+    .safety-detail-section {
+      max-width: var(--container);
+      margin: 0 auto;
+    }
+    .safety-detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .safety-detail-card {
+      background: #fff;
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      border: 1px solid var(--gray-200);
+    }
+    .safety-detail-card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .safety-detail-card-title svg {
+      width: 18px;
+      height: 18px;
+      color: var(--safety-green);
+    }
+    .safety-detail-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .safety-detail-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      background: var(--gray-50);
+      border-radius: var(--radius);
+    }
+    .safety-detail-item-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: #E8FFEA;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--safety-green);
+    }
+    .safety-detail-item-icon svg {
+      width: 16px;
+      height: 16px;
+    }
+    .safety-detail-item-text {
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    /* 第三方支撑 */
+    .third-party-section {
+      max-width: var(--container);
+      margin: 0 auto;
+    }
+    .third-party-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .third-party-card {
+      background: #fff;
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      border: 1px solid var(--gray-200);
+      text-align: center;
+    }
+    .third-party-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, #F0F5FF, #E6F4FF);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 14px;
+      color: var(--brand-primary);
+    }
+    .third-party-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+    .third-party-title {
       font-size: 15px;
       font-weight: 600;
       color: var(--text);
       margin-bottom: 6px;
     }
-    .process-step-desc {
+    .third-party-desc {
       font-size: 13px;
       color: var(--text-muted);
     }
@@ -406,18 +488,9 @@
       .page-hero-title { font-size: 32px; }
       .page-hero-visual { height: 320px; }
       .page-hero-stat-row { gap: 24px; flex-wrap: wrap; }
-      .emergency-feature-grid { grid-template-columns: 1fr; }
-      .scenario-grid { grid-template-columns: 1fr; }
-      .process-steps { flex-direction: column; }
-      .process-step:not(:last-child)::after {
-        top: auto;
-        bottom: -20px;
-        right: 50%;
-        transform: translateX(50%);
-        width: 2px;
-        height: 40px;
-        background: linear-gradient(180deg, var(--emergency-red), var(--emergency-orange));
-      }
+      .emergency-main-grid { grid-template-columns: 1fr; }
+      .safety-detail-grid { grid-template-columns: 1fr; }
+      .third-party-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -433,10 +506,10 @@
         </a>
         <div class="nav-links">
           <a href="minjiang.html" class="nav-link">首页</a>
+          <a href="minjiang-emergency.html" class="nav-link active">智慧应急</a>
           <a href="minjiang-features.html" class="nav-link">服务方案</a>
           <a href="minjiang-solutions.html" class="nav-link">行业方案</a>
           <a href="minjiang-cases.html" class="nav-link">客户案例</a>
-          <a href="minjiang-emergency.html" class="nav-link active">智慧应急</a>
           <a href="minjiang-help.html" class="nav-link">帮助中心</a>
         </div>
       </div>
@@ -450,14 +523,14 @@
       <div class="reveal">
         <span class="page-hero-tag">
           <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="currentColor" stroke-width="2"/><line x1="12" y1="9" x2="12" y2="13" stroke="currentColor" stroke-width="2"/><line x1="12" y1="17" x2="12.01" y2="17" stroke="currentColor" stroke-width="2"/></svg>
-          应急用工数字化解决方案
+          智慧应急管理平台
         </span>
         <h1 class="page-hero-title">
-          突发用工需求<br>
-          <span class="page-hero-title-grad">15分钟极速响应</span>
+          智慧应急<br>
+          <span class="page-hero-title-grad">安全无忧</span>
         </h1>
         <p class="page-hero-desc">
-          针对企业突发用工、应急抢修、季节性高峰等场景，民匠有约智慧应急系统提供快速响应、精准匹配、即时到岗的一站式应急用工服务
+          集成特种作业技能培训、动火作业管理、安全生产监控三大核心模块，构建全流程智能化应急管理体系，助力企业安全生产
         </p>
         <div class="page-hero-actions">
           <a href="login.html" class="btn btn-primary btn-large">立即开通</a>
@@ -465,16 +538,16 @@
         </div>
         <div class="page-hero-stat-row">
           <div class="page-hero-stat-item">
-            <div class="page-hero-stat-num">15分钟</div>
-            <div class="page-hero-stat-label">平均响应时效</div>
+            <div class="page-hero-stat-num">10万+</div>
+            <div class="page-hero-stat-label">培训人次</div>
           </div>
           <div class="page-hero-stat-item">
-            <div class="page-hero-stat-num">2万+</div>
-            <div class="page-hero-stat-label">应急服务者</div>
+            <div class="page-hero-stat-num">5000+</div>
+            <div class="page-hero-stat-label">动火作业</div>
           </div>
           <div class="page-hero-stat-item">
-            <div class="page-hero-stat-num">99.2%</div>
-            <div class="page-hero-stat-label">应急到岗率</div>
+            <div class="page-hero-stat-num">99.8%</div>
+            <div class="page-hero-stat-label">隐患识别率</div>
           </div>
         </div>
       </div>
@@ -484,21 +557,21 @@
           <div class="mockup-header">
             <div class="mockup-title">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-              应急调度指挥中心
+              应急管理指挥中心
             </div>
-            <span class="mockup-badge">实时预警</span>
+            <span class="mockup-badge">实时监控</span>
           </div>
           <div class="mockup-stats">
             <div class="mockup-stat-card">
               <div class="mockup-stat-num">186</div>
-              <div class="mockup-stat-label">今日应急订单</div>
+              <div class="mockup-stat-label">今日监控任务</div>
             </div>
             <div class="mockup-stat-card">
-              <div class="mockup-stat-num" style="color: var(--emergency-orange);">12分钟</div>
-              <div class="mockup-stat-label">平均匹配时长</div>
+              <div class="mockup-stat-num" style="color: var(--safety-green);">0</div>
+              <div class="mockup-stat-label">安全隐患</div>
             </div>
           </div>
-          <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">近24小时应急响应趋势</div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">近24小时监控趋势</div>
           <div class="mockup-chart">
             <div class="mockup-bar" style="height: 30%;"></div>
             <div class="mockup-bar primary" style="height: 60%;"></div>
@@ -515,8 +588,8 @@
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
           </div>
           <div>
-            <div class="mockup-float-title">订单已响应</div>
-            <div class="mockup-float-sub">张师傅 · 8分钟前</div>
+            <div class="mockup-float-title">培训完成</div>
+            <div class="mockup-float-sub">今日已完成 234 人次</div>
           </div>
         </div>
         <div class="mockup-float mockup-float-2">
@@ -524,109 +597,222 @@
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
           </div>
           <div>
-            <div class="mockup-float-title">人员已到位</div>
-            <div class="mockup-float-sub">李师傅 · 刚刚</div>
+            <div class="mockup-float-title">隐患已排除</div>
+            <div class="mockup-float-sub">本月排除 156 项</div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 核心功能 -->
+  <!-- 核心功能模块 -->
   <section class="section section-soft-grad" id="features">
     <div class="section-header reveal">
       <span class="section-tag">核心能力</span>
-      <h2 class="section-title">智慧应急 <span class="page-hero-title-grad">六大核心功能</span></h2>
-      <p class="section-desc">从需求发起到人员到岗，全流程数字化管理，让应急用工不再焦虑</p>
+      <h2 class="section-title">智慧应急 <span class="page-hero-title-grad">三大核心模块</span></h2>
+      <p class="section-desc">覆盖特种作业培训、动火作业管理、安全生产监控全流程，构建智能化安全管理体系</p>
     </div>
-    <div class="emergency-feature-grid">
-      <div class="emergency-feature-card reveal">
-        <div class="emergency-feature-icon">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+    <div class="emergency-main-grid">
+      <!-- 特种作业技能培训 -->
+      <div class="emergency-main-card reveal">
+        <div class="emergency-main-card-header">
+          <div class="emergency-main-card-icon train">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div>
+            <div class="emergency-main-card-title">特种作业技能培训</div>
+            <div class="emergency-main-card-desc">在线学习与考核一体化</div>
+          </div>
         </div>
-        <div class="emergency-feature-title">一键急速发单</div>
-        <div class="emergency-feature-text">紧急需求一键发布，系统自动识别优先级，跳过常规审核流程，直接进入匹配队列</div>
+        <div class="feature-func-list">
+          <div class="feature-func-item">
+            <div class="feature-func-icon train">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+            </div>
+            <div class="feature-func-content">
+              <div class="feature-func-title">在线视频学习</div>
+              <div class="feature-func-desc">涵盖电工、焊工、高处作业等特种作业类别，系统化视频课程随时学习</div>
+              <span class="feature-func-tag">自有题库</span>
+            </div>
+          </div>
+          <div class="feature-func-item">
+            <div class="feature-func-icon train">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            </div>
+            <div class="feature-func-content">
+              <div class="feature-func-title">刷题练习</div>
+              <div class="feature-func-desc">海量真题模拟练习，智能错题本，针对性强化薄弱知识点</div>
+            </div>
+          </div>
+          <div class="feature-func-item">
+            <div class="feature-func-icon train">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div class="feature-func-content">
+              <div class="feature-func-title">在线考核认证</div>
+              <div class="feature-func-desc">标准化在线考试系统，自动阅卷评分，实时生成考核成绩</div>
+            </div>
+          </div>
+          <div class="feature-func-item">
+            <div class="feature-func-icon train">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div class="feature-func-content">
+              <div class="feature-func-title">证书电子化管理</div>
+              <div class="feature-func-desc">考核通过自动颁发电子证书，支持在线查验、下载、归档管理</div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="emergency-feature-card reveal">
-        <div class="emergency-feature-icon">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+
+      <!-- 动火作业 -->
+      <div class="emergency-main-card reveal">
+        <div class="emergency-main-card-header">
+          <div class="emergency-main-card-icon fire">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div>
+            <div class="emergency-main-card-title">动火作业</div>
+            <div class="emergency-main-card-desc">事前作业规范管理</div>
+          </div>
         </div>
-        <div class="emergency-feature-title">15分钟响应承诺</div>
-        <div class="emergency-feature-text">建立应急服务者专属池，签约2万+应急预备人员，承诺15分钟内完成首次响应</div>
+        <div class="feature-func-list">
+          <div class="feature-func-item">
+            <div class="feature-func-icon fire">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            </div>
+            <div class="feature-func-content">
+              <div class="feature-func-title">事前作业规范</div>
+              <div class="feature-func-desc">标准化动火作业前规范流程，明确安全要求与作业条件</div>
+            </div>
+          </div>
+          <div class="feature-func-item">
+            <div class="feature-func-icon fire">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+            </div>
+            <div class="feature-func-content">
+              <div class="feature-func-title">作业申请审批</div>
+              <div class="feature-func-desc">线上提交动火申请，多级审批流程，确保作业合规可控</div>
+            </div>
+          </div>
+          <div class="feature-func-item">
+            <div class="feature-func-icon fire">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </div>
+            <div class="feature-func-content">
+              <div class="feature-func-title">现场监护管理</div>
+              <div class="feature-func-desc">指定监护人实时监管，作业过程可追溯，异常情况即时上报</div>
+            </div>
+          </div>
+          <div class="feature-func-item">
+            <div class="feature-func-icon fire">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div class="feature-func-content">
+              <div class="feature-func-title">作业完成确认</div>
+              <div class="feature-func-desc">作业完成后现场确认，清理检查无误后闭环归档</div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="emergency-feature-card reveal">
-        <div class="emergency-feature-icon">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+
+      <!-- 安全生产 -->
+      <div class="emergency-main-card reveal">
+        <div class="emergency-main-card-header">
+          <div class="emergency-main-card-icon safety">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          </div>
+          <div>
+            <div class="emergency-main-card-title">安全生产</div>
+            <div class="emergency-main-card-desc">在线检测与隐患排查</div>
+          </div>
         </div>
-        <div class="emergency-feature-title">AI 智能调度</div>
-        <div class="emergency-feature-text">基于地理位置、技能标签、实时状态进行多维度匹配，确保最合适的人员最快到达</div>
-      </div>
-      <div class="emergency-feature-card reveal">
-        <div class="emergency-feature-icon">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        <div class="feature-func-list">
+          <div class="feature-func-item">
+            <div class="feature-func-icon safety">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            </div>
+            <div class="feature-func-content">
+              <div class="feature-func-title">在线检测</div>
+              <div class="feature-func-desc">实时在线安全检测，自动识别生产作业中的安全隐患</div>
+              <span class="feature-func-tag">拍照/视频排查</span>
+              <span class="feature-func-tag">监控设备识别</span>
+            </div>
+          </div>
+          <div class="feature-func-item">
+            <div class="feature-func-icon safety">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div class="feature-func-content">
+              <div class="feature-func-title">隐患排查治理</div>
+              <div class="feature-func-desc">发现-上报-整改-验收闭环管理，建立企业安全隐患台账</div>
+            </div>
+          </div>
+          <div class="feature-func-item">
+            <div class="feature-func-icon safety">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <div class="feature-func-content">
+              <div class="feature-func-title">安全风险预警</div>
+              <div class="feature-func-desc">基于数据分析的智能预警，提前识别潜在风险并推送告警</div>
+            </div>
+          </div>
+          <div class="feature-func-item">
+            <div class="feature-func-icon safety">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            <div class="feature-func-content">
+              <div class="feature-func-title">应急响应处置</div>
+              <div class="feature-func-desc">突发事件快速响应，标准化应急预案，降低事故损失</div>
+            </div>
+          </div>
         </div>
-        <div class="emergency-feature-title">实时轨迹追踪</div>
-        <div class="emergency-feature-text">服务人员位置实时共享，企业可随时查看人员动向，精准预估到达时间</div>
-      </div>
-      <div class="emergency-feature-card reveal">
-        <div class="emergency-feature-icon">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        </div>
-        <div class="emergency-feature-title">安全合规保障</div>
-        <div class="emergency-feature-text">应急用工同样享受电子合同、商业保险、背景核查等全套合规保障，用工无忧</div>
-      </div>
-      <div class="emergency-feature-card reveal">
-        <div class="emergency-feature-icon">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        </div>
-        <div class="emergency-feature-title">数据预警分析</div>
-        <div class="emergency-feature-text">基于历史数据分析，提前预警用工高峰，帮助企业做好人员储备和应急预案</div>
       </div>
     </div>
   </section>
 
-  <!-- 适用场景 -->
+  <!-- 应用场景 -->
   <section class="section">
     <div class="section-header reveal">
       <span class="section-tag">应用场景</span>
-      <h2 class="section-title">覆盖多种 <span class="page-hero-title-grad">应急用工场景</span></h2>
-      <p class="section-desc">无论是突发抢修、季节性爆发还是临时项目，都能快速找到合适的服务人员</p>
+      <h2 class="section-title">覆盖多种 <span class="page-hero-title-grad">应急安全场景</span></h2>
+      <p class="section-desc">从特种作业培训到生产安全监控，全方位保障企业安全生产</p>
     </div>
-    <div class="scenario-grid">
-      <div class="scenario-card reveal">
-        <div class="scenario-icon">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+    <div style="max-width: var(--container); margin: 0 auto; display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;">
+      <div class="scenario-card reveal" style="background:#fff;border-radius:var(--radius-xl);padding:32px;border:1px solid var(--gray-200);display:flex;gap:20px;align-items:flex-start;transition:all 0.3s ease;">
+        <div style="width:48px;height:48px;border-radius:var(--radius);background:linear-gradient(135deg,#E6F4FF,#BAE0FF);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--train-blue);">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
         </div>
         <div>
-          <div class="scenario-title">设备故障抢修</div>
-          <div class="scenario-desc">生产线突发故障、设备损坏等紧急维修场景，快速匹配具备对应技能的维修工程师，保障生产连续性</div>
+          <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;">特种作业人员培训</div>
+          <div style="font-size:14px;color:var(--text-secondary);line-height:1.7;">电工、焊工、高处作业等特种作业人员的技能培训与考核认证，确保作业人员持证上岗</div>
         </div>
       </div>
-      <div class="scenario-card reveal">
-        <div class="scenario-icon">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        </div>
-        <div>
-          <div class="scenario-title">季节性用工高峰</div>
-          <div class="scenario-desc">电商大促、节假日高峰期、农业采摘季等季节性用工爆发，提前储备或即时调配大量灵活用工人员</div>
-        </div>
-      </div>
-      <div class="scenario-card reveal">
-        <div class="scenario-icon">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-        </div>
-        <div>
-          <div class="scenario-title">临时项目支援</div>
-          <div class="scenario-desc">新项目启动、临时活动执行、展会支援等短期高强度用工需求，快速组建项目团队</div>
-        </div>
-      </div>
-      <div class="scenario-card reveal">
-        <div class="scenario-icon">
+      <div class="scenario-card reveal" style="background:#fff;border-radius:var(--radius-xl);padding:32px;border:1px solid var(--gray-200);display:flex;gap:20px;align-items:flex-start;transition:all 0.3s ease;">
+        <div style="width:48px;height:48px;border-radius:var(--radius);background:linear-gradient(135deg,#FFF7E6,#FFD591);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--fire-orange);">
           <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </div>
         <div>
-          <div class="scenario-title">突发事件应对</div>
-          <div class="scenario-desc">自然灾害、公共卫生事件、安全事故等突发事件后的应急清理、物资搬运、秩序维护等用工需求</div>
+          <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;">动火作业管理</div>
+          <div style="font-size:14px;color:var(--text-secondary);line-height:1.7;">焊接、切割等动火作业的申请、审批、监护全流程数字化管理，杜绝违规动火</div>
+        </div>
+      </div>
+      <div class="scenario-card reveal" style="background:#fff;border-radius:var(--radius-xl);padding:32px;border:1px solid var(--gray-200);display:flex;gap:20px;align-items:flex-start;transition:all 0.3s ease;">
+        <div style="width:48px;height:48px;border-radius:var(--radius);background:linear-gradient(135deg,#E8FFEA,#B7EB8F);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--safety-green);">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        </div>
+        <div>
+          <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;">生产现场安全监控</div>
+          <div style="font-size:14px;color:var(--text-secondary);line-height:1.7;">工厂车间、建筑工地等生产现场的实时安全监控，AI智能识别安全隐患并及时预警</div>
+        </div>
+      </div>
+      <div class="scenario-card reveal" style="background:#fff;border-radius:var(--radius-xl);padding:32px;border:1px solid var(--gray-200);display:flex;gap:20px;align-items:flex-start;transition:all 0.3s ease;">
+        <div style="width:48px;height:48px;border-radius:var(--radius);background:linear-gradient(135deg,#FFF2F0,#FFD8BF);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--emergency-red);">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div>
+          <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;">安全隐患排查治理</div>
+          <div style="font-size:14px;color:var(--text-secondary);line-height:1.7;">定期安全隐患排查、整改、验收闭环管理，建立企业安全管理档案</div>
         </div>
       </div>
     </div>
@@ -636,29 +822,152 @@
   <section class="section section-soft-grad">
     <div class="section-header reveal">
       <span class="section-tag">服务流程</span>
-      <h2 class="section-title">四步完成 <span class="page-hero-title-grad">应急用工调度</span></h2>
-      <p class="section-desc">简洁高效的应急服务流程，从发单到到岗最快仅需15分钟</p>
+      <h2 class="section-title">五步构建 <span class="page-hero-title-grad">安全管理体系</span></h2>
+      <p class="section-desc">从需求接入到持续优化，提供全流程智能化安全管理服务</p>
     </div>
-    <div class="process-steps">
-      <div class="process-step reveal">
-        <div class="process-step-num">1</div>
-        <div class="process-step-title">一键发单</div>
-        <div class="process-step-desc">填写需求，标记为紧急，系统自动提升优先级</div>
+    <div style="max-width:1100px;margin:0 auto;display:flex;gap:16px;">
+      <div class="reveal" style="flex:1;text-align:center;position:relative;">
+        <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#1677FF,#4096FF);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;margin:0 auto 16px;">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        </div>
+        <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px;">需求接入</div>
+        <div style="font-size:13px;color:var(--text-muted);">了解企业安全管理需求，制定个性化方案</div>
       </div>
-      <div class="process-step reveal">
-        <div class="process-step-num">2</div>
-        <div class="process-step-title">智能匹配</div>
-        <div class="process-step-desc">AI算法在应急人员池中快速筛选最合适人选</div>
+      <div class="reveal" style="flex:1;text-align:center;position:relative;">
+        <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#1677FF,#4096FF);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;margin:0 auto 16px;">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px;">系统部署</div>
+        <div style="font-size:13px;color:var(--text-muted);">快速部署智慧应急系统，完成设备接入调试</div>
       </div>
-      <div class="process-step reveal">
-        <div class="process-step-num">3</div>
-        <div class="process-step-title">即时响应</div>
-        <div class="process-step-desc">服务人员接单确认，实时共享位置，快速出发</div>
+      <div class="reveal" style="flex:1;text-align:center;position:relative;">
+        <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#1677FF,#4096FF);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;margin:0 auto 16px;">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px;">培训上线</div>
+        <div style="font-size:13px;color:var(--text-muted);">人员培训考核认证，建立企业安全人才库</div>
       </div>
-      <div class="process-step reveal">
-        <div class="process-step-num">4</div>
-        <div class="process-step-title">到岗履约</div>
-        <div class="process-step-desc">到达打卡，开始服务，完工结算，全程可追溯</div>
+      <div class="reveal" style="flex:1;text-align:center;position:relative;">
+        <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#1677FF,#4096FF);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;margin:0 auto 16px;">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px;">实时监控</div>
+        <div style="font-size:13px;color:var(--text-muted);">7×24小时安全监控，隐患智能识别预警</div>
+      </div>
+      <div class="reveal" style="flex:1;text-align:center;position:relative;">
+        <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#1677FF,#4096FF);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;margin:0 auto 16px;">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px;">持续优化</div>
+        <div style="font-size:13px;color:var(--text-muted);">数据分析报告，持续改进安全管理水平</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 核心优势 -->
+  <section class="section">
+    <div class="section-header reveal">
+      <span class="section-tag">核心优势</span>
+      <h2 class="section-title">为什么选择 <span class="page-hero-title-grad">智慧应急</span></h2>
+      <p class="section-desc">专业、智能、高效，为企业安全生产保驾护航</p>
+    </div>
+    <div style="max-width:var(--container);margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:24px;">
+      <div class="reveal" style="background:#fff;border-radius:var(--radius-xl);padding:28px;border:1px solid var(--gray-200);text-align:center;">
+        <div style="width:56px;height:56px;border-radius:var(--radius);background:linear-gradient(135deg,#E6F4FF,#BAE0FF);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;color:var(--train-blue);">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <div style="font-size:32px;font-weight:800;color:var(--train-blue);margin-bottom:4px;">10万+</div>
+        <div style="font-size:14px;color:var(--text);font-weight:600;margin-bottom:4px;">培训人次</div>
+        <div style="font-size:12px;color:var(--text-muted);">累计服务特种作业人员</div>
+      </div>
+      <div class="reveal" style="background:#fff;border-radius:var(--radius-xl);padding:28px;border:1px solid var(--gray-200);text-align:center;">
+        <div style="width:56px;height:56px;border-radius:var(--radius);background:linear-gradient(135deg,#FFF7E6,#FFD591);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;color:var(--fire-orange);">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div style="font-size:32px;font-weight:800;color:var(--fire-orange);margin-bottom:4px;">5000+</div>
+        <div style="font-size:14px;color:var(--text);font-weight:600;margin-bottom:4px;">动火作业</div>
+        <div style="font-size:12px;color:var(--text-muted);">累计管理动火作业次数</div>
+      </div>
+      <div class="reveal" style="background:#fff;border-radius:var(--radius-xl);padding:28px;border:1px solid var(--gray-200);text-align:center;">
+        <div style="width:56px;height:56px;border-radius:var(--radius);background:linear-gradient(135deg,#E8FFEA,#B7EB8F);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;color:var(--safety-green);">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        </div>
+        <div style="font-size:32px;font-weight:800;color:var(--safety-green);margin-bottom:4px;">99.8%</div>
+        <div style="font-size:14px;color:var(--text);font-weight:600;margin-bottom:4px;">隐患识别率</div>
+        <div style="font-size:12px;color:var(--text-muted);">AI智能识别准确率</div>
+      </div>
+      <div class="reveal" style="background:#fff;border-radius:var(--radius-xl);padding:28px;border:1px solid var(--gray-200);text-align:center;">
+        <div style="width:56px;height:56px;border-radius:var(--radius);background:linear-gradient(135deg,#FFF2F0,#FFD8BF);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;color:var(--emergency-red);">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div style="font-size:32px;font-weight:800;color:var(--emergency-red);margin-bottom:4px;">7×24</div>
+        <div style="font-size:14px;color:var(--text);font-weight:600;margin-bottom:4px;">全天候监控</div>
+        <div style="font-size:12px;color:var(--text-muted);">不间断安全监控服务</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 安全生产详情 -->
+  <section class="section">
+    <div class="section-header reveal">
+      <span class="section-tag">安全生产</span>
+      <h2 class="section-title">在线检测 <span class="page-hero-title-grad">智能识别</span></h2>
+      <p class="section-desc">基于AI技术的安全隐患自动识别，实现拍照/视频排查与设备接入监控双重保障</p>
+    </div>
+    <div class="safety-detail-section">
+      <div class="safety-detail-grid">
+        <div class="safety-detail-card reveal">
+          <div class="safety-detail-card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+            拍照/视频安全隐患排查及预警
+          </div>
+          <div class="safety-detail-list">
+            <div class="safety-detail-item">
+              <div class="safety-detail-item-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              </div>
+              <div class="safety-detail-item-text">AI智能图像识别，自动检测安全隐患</div>
+            </div>
+            <div class="safety-detail-item">
+              <div class="safety-detail-item-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+              </div>
+              <div class="safety-detail-item-text">实时预警推送，及时处理安全风险</div>
+            </div>
+            <div class="safety-detail-item">
+              <div class="safety-detail-item-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19v-6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2zm0 0V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v10m-6 0a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2m0 0V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2z"/></svg>
+              </div>
+              <div class="safety-detail-item-text">隐患排查记录，形成闭环管理</div>
+            </div>
+          </div>
+        </div>
+        <div class="safety-detail-card reveal">
+          <div class="safety-detail-card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            监控设备接入安全隐患识别
+          </div>
+          <div class="safety-detail-list">
+            <div class="safety-detail-item">
+              <div class="safety-detail-item-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div class="safety-detail-item-text">支持主流监控设备接入</div>
+            </div>
+            <div class="safety-detail-item">
+              <div class="safety-detail-item-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+              </div>
+              <div class="safety-detail-item-text">AI视频分析，自动识别隐患</div>
+            </div>
+            <div class="safety-detail-item">
+              <div class="safety-detail-item-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+              </div>
+              <div class="safety-detail-item-text">智能告警，快速响应处置</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -666,9 +975,9 @@
   <!-- CTA -->
   <section class="section brand-cta" style="padding: 80px 24px; text-align: center;">
     <div class="reveal">
-      <h2 style="font-size: 36px; font-weight: 800; color: #fff; margin-bottom: 16px;">开启智慧应急用工服务</h2>
+      <h2 style="font-size: 36px; font-weight: 800; color: #fff; margin-bottom: 16px;">开启智慧应急管理</h2>
       <p style="font-size: 17px; color: rgba(255,255,255,0.85); margin-bottom: 32px; max-width: 560px; margin-left: auto; margin-right: auto;">
-        立即开通智慧应急服务，让企业突发用工不再焦虑，15分钟极速响应，随时待命
+        立即开通智慧应急服务，集成培训、作业、监控三大模块，全方位保障企业安全生产
       </p>
       <div style="display: flex; gap: 16px; justify-content: center;">
         <a href="login.html" class="btn btn-white btn-large">免费开通</a>
@@ -701,10 +1010,10 @@
           <div class="footer-title">产品服务</div>
           <ul class="footer-links">
             <li><a href="minjiang.html">首页</a></li>
+            <li><a href="minjiang-emergency.html">智慧应急</a></li>
             <li><a href="minjiang-features.html">产品功能</a></li>
             <li><a href="minjiang-solutions.html">行业方案</a></li>
             <li><a href="minjiang-cases.html">客户案例</a></li>
-            <li><a href="minjiang-emergency.html">智慧应急</a></li>
           </ul>
         </div>
         <div>
@@ -772,7 +1081,7 @@
       </div>
       <div class="float-btn-text">代理</div>
     </div>
-    <div class="float-btn float-btn-primary" onclick="window.location.href='index.html'">
+    <div class="float-btn float-btn-primary" onclick="window.location.href='minjiang.html'">
       <div class="float-btn-icon">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       </div>
@@ -855,7 +1164,7 @@
           <div class="float-panel-link-icon" style="background:#FFF2F0;color:#F53F3F;">急</div>
           <div class="float-panel-link-text">
             <div class="float-panel-link-title">智慧应急</div>
-            <div class="float-panel-link-desc">15分钟极速响应</div>
+            <div class="float-panel-link-desc">安全管理解决方案</div>
           </div>
         </a>
       </div>
@@ -896,30 +1205,23 @@
 
   <div class="float-panel" id="panel-daili">
     <div class="float-panel-header float-panel-header-orange">
-      <span>城市代理合伙人</span>
+      <span>渠道代理</span>
     </div>
     <div class="float-panel-body">
-      <p style="font-size:13px;color:#595959;line-height:1.6;margin-bottom:12px;">一城一代理独家权益，全方位总部扶持，零经验也能轻松创业</p>
+      <p style="font-size:13px;color:#595959;line-height:1.6;margin-bottom:12px;">城市合伙人计划，高额流水分成，总部全方位支持</p>
       <div class="float-panel-links">
         <a href="agent.html" class="float-panel-link">
           <div class="float-panel-link-icon" style="background:#FFF7E6;color:#FA8C16;">代</div>
           <div class="float-panel-link-text">
-            <div class="float-panel-link-title">了解计划</div>
-            <div class="float-panel-link-desc">合伙人加盟政策</div>
+            <div class="float-panel-link-title">代理政策</div>
+            <div class="float-panel-link-desc">城市合伙人计划</div>
           </div>
         </a>
-        <a href="agent.html#cases" class="float-panel-link">
-          <div class="float-panel-link-icon" style="background:#F6FFED;color:#52C41A;">案</div>
+        <a href="contact.html" class="float-panel-link">
+          <div class="float-panel-link-icon" style="background:#E8FFEA;color:#52C41A;">联</div>
           <div class="float-panel-link-text">
-            <div class="float-panel-link-title">合伙人案例</div>
-            <div class="float-panel-link-desc">成功故事分享</div>
-          </div>
-        </a>
-        <a href="agent.html#join" class="float-panel-link">
-          <div class="float-panel-link-icon" style="background:#FFF0F6;color:#EB2F96;">加</div>
-          <div class="float-panel-link-text">
-            <div class="float-panel-link-title">立即加盟</div>
-            <div class="float-panel-link-desc">申请成为合伙人</div>
+            <div class="float-panel-link-title">商务合作</div>
+            <div class="float-panel-link-desc">诚邀合作伙伴</div>
           </div>
         </a>
       </div>
@@ -927,22 +1229,5 @@
   </div>
 
   <script src="js/main.js"></script>
-
-<div class="modal-overlay" id="logoutModal">
-  <div class="modal">
-    <div class="modal-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-        <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
-      </svg>
-    </div>
-    <h3 class="modal-title">确认退出</h3>
-    <p class="modal-desc">退出后您需要重新登录才能继续使用平台功能</p>
-    <div class="modal-actions">
-      <button class="btn btn-default" id="logoutCancel">取消</button>
-      <button class="btn-danger" id="logoutConfirm">确认退出</button>
-    </div>
-  </div>
-</div>
 </body>
 </html>
