@@ -1,0 +1,10 @@
+flowchart LR
+  OWNER["主账号登录->用户管理/成员管理"] --> ADD["点击+添加成员按钮"]
+  ADD --> FORM["填写表单<br/>(1)用户名4-16位<br/>(2)姓名<br/>(3)手机号唯一<br/>(4)初始密码短信下发<br/>(5)授权范围勾选"]
+  FORM --> V{"字段校验通过?"}
+  V -- "否" --> ERR["提示具体字段错误"] --> FORM
+  V -- "是" --> SAVE["保存账号+生成邀请链接"]
+  SAVE --> INVITE["发送短信/邮件给子账号"]
+  INVITE --> NEWSUB["新子账号创建成功<br/>状态=已启用<br/>类型=子账号<br/>授权=按勾选"]
+  style OWNER fill:#0C9A74,color:#fff
+  style NEWSUB fill:#E6F1FF,color:#2765D9

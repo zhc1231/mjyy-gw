@@ -3337,7 +3337,7 @@ select.form-input {
   font-size: 15px;
   font-weight: 600;
   color: var(--text);
-  margin-bottom: 2px;
+  margin-bottom: 4px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -3349,6 +3349,7 @@ select.form-input {
   display: flex;
   align-items: center;
   gap: 4px;
+  margin-bottom: 6px;
 }
 
 .user-dropdown-tags {
@@ -3361,7 +3362,7 @@ select.form-input {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-top: 6px;
+  margin-top: 4px;
   flex-wrap: wrap;
 }
 

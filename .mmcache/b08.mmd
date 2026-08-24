@@ -1,0 +1,14 @@
+flowchart LR
+  OWNER["主账号 Owner"] --> PERM["控制台 权限管理<br/>三款SaaS开关+模块级授权"]
+  PERM --> A1["开关A 民匠有约SaaS<br/>项目管理 劳务合同 电子签章 出勤 工资代发 物料领用"]
+  PERM --> A2["开关B 代理商SaaS<br/>城市代理 需求发布 撮合匹配 报价管理 供应商结算"]
+  PERM --> A3["开关C 安心云SaaS<br/>财税记账 发票管理 银行流水 工资台账 个税申报"]
+
+  A1 --> UI1["子账号效果<br/>-进入平台按钮按开关渲染<br/>-菜单裁剪<br/>-模块URL拦截"]
+  A2 --> UI2["子账号效果 同上"]
+  A3 --> UI3["子账号效果 同上"]
+
+  style OWNER fill:#0C9A74,color:#fff
+  style A1 fill:#EAF0FC,color:#1F3FA8
+  style A2 fill:#FFF4D9,color:#A87700
+  style A3 fill:#E7F8F0,color:#085A3F

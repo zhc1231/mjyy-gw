@@ -1,0 +1,15 @@
+flowchart TB
+  U["自然人:手机号 138****8800"]
+  U -- "在A是主账号 Owner" --> E1["企业A:上海安心云科技"]
+  U -- "在B是子账号 授权:民匠有约+代理商" --> E2["企业B:南京民匠劳务"]
+  U -- "在C是子账号 授权:安心云SaaS只读" --> E3["企业C:苏州蓝领人力"]
+
+  SW["右上角账号下拉->切换企业"]
+  U --- SW
+  SW --> S1["切换企业A -> 主账号权限"] --> E1
+  SW --> S2["切换企业B -> 子账号授权B范围"] --> E2
+  SW --> S3["切换企业C -> 子账号授权C范围"] --> E3
+
+  style E1 fill:#0C9A74,color:#fff
+  style E2 fill:#EAF0FC,color:#1F3FA8
+  style E3 fill:#FFF1E5,color:#7A3800

@@ -1,0 +1,913 @@
+
+===== [account-center] https://zhc1231.github.io/mjyy-gw/account-center.html =====
+{
+  "topbar": [
+    {
+      "cls": "topbar",
+      "id": "",
+      "tag": "div",
+      "text": "控制台\n        \n        \n          首页\n     ",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 60,
+      "visible": true
+    }
+  ],
+  "topbarBrand": [
+    {
+      "cls": "topbar-brand",
+      "id": "",
+      "tag": "a",
+      "text": "控制台",
+      "x": 40,
+      "y": 13,
+      "w": 96,
+      "h": 34,
+      "visible": true
+    }
+  ],
+  "topbarBreadcrumb": [
+    {
+      "cls": "topbar-breadcrumb",
+      "id": "",
+      "tag": "div",
+      "text": "首页\n          /\n          控制台\n          /",
+      "x": 156,
+      "y": 24,
+      "w": 148,
+      "h": 13,
+      "visible": true
+    }
+  ],
+  "topbarBcCurrent": [
+    {
+      "cls": "topbar-bc-current",
+      "id": "",
+      "tag": "span",
+      "text": "产品中心",
+      "x": 252,
+      "y": 24,
+      "w": 52,
+      "h": 13,
+      "visible": true
+    }
+  ],
+  "sidebar": [
+    {
+      "cls": "sidebar",
+      "id": "",
+      "tag": "aside",
+      "text": "产品\n      \n        \n          \n          ",
+      "x": 0,
+      "y": 60,
+      "w": 240,
+      "h": 840,
+      "visible": true
+    }
+  ],
+  "sidebarActive": [
+    {
+      "cls": "sidebar-link active",
+      "id": "",
+      "tag": "a",
+      "text": "产品中心",
+      "x": 8,
+      "y": 109,
+      "w": 223,
+      "h": 40,
+      "visible": true
+    }
+  ],
+  "pageContent": [
+    {
+      "cls": "main-content",
+      "id": "",
+      "tag": "main",
+      "text": "产品中心\n          选择下方产品进入对应工作台，首次使用需完成签约。\n",
+      "x": 240,
+      "y": 60,
+      "w": 1200,
+      "h": 840,
+      "visible": true
+    }
+  ],
+  "pageHeader": [
+    {
+      "cls": "page-title",
+      "id": "",
+      "tag": "div",
+      "text": "产品中心",
+      "x": 272,
+      "y": 84,
+      "w": 312,
+      "h": 29,
+      "visible": true
+    }
+  ],
+  "pageSubtitle": [
+    {
+      "cls": "page-subtitle",
+      "id": "",
+      "tag": "div",
+      "text": "选择下方产品进入对应工作台，首次使用需完成签约。",
+      "x": 272,
+      "y": 117,
+      "w": 312,
+      "h": 21,
+      "visible": true
+    }
+  ],
+  "pcProductSection": [],
+  "pcSectionTitle": [],
+  "pcSectionDesc": [],
+  "authPrompt": [],
+  "authPromptTitle": [],
+  "authPromptDesc": [],
+  "authPromptBtns": [],
+  "brandArea": [
+    {
+      "cls": "pc-brand-area brand-minjiang",
+      "id": "",
+      "tag": "div",
+      "text": "未开通",
+      "x": 294,
+      "y": 493,
+      "w": 351,
+      "h": 88,
+      "visible": true
+    },
+    {
+      "cls": "pc-brand-area brand-anxinyun",
+      "id": "",
+      "tag": "div",
+      "text": "未开通",
+      "x": 665,
+      "y": 493,
+      "w": 351,
+      "h": 88,
+      "visible": true
+    },
+    {
+      "cls": "pc-brand-area brand-agent",
+      "id": "",
+      "tag": "div",
+      "text": "未开通",
+      "x": 1035,
+      "y": 493,
+      "w": 351,
+      "h": 88,
+      "visible": true
+    }
+  ],
+  "brandCard": [],
+  "brandName": [],
+  "brandBadge": [],
+  "brandAction": [],
+  "allBtn": [
+    {
+      "cls": "",
+      "id": "authPromptLater",
+      "tag": "button",
+      "text": "稍后再说",
+      "x": 552,
+      "y": 509,
+      "w": 163,
+      "h": 44,
+      "visible": true
+    },
+    {
+      "cls": "",
+      "id": "authPromptGo",
+      "tag": "button",
+      "text": "去认证",
+      "x": 727,
+      "y": 509,
+      "w": 161,
+      "h": 44,
+      "visible": true
+    }
+  ],
+  "allH": [
+    {
+      "cls": "",
+      "id": "",
+      "tag": "h3",
+      "text": "完成企业认证",
+      "x": 552,
+      "y": 427,
+      "w": 336,
+      "h": 29,
+      "visible": true
+    }
+  ],
+  "__doc__": {
+    "scrollW": 1440,
+    "scrollH": 900
+  }
+}
+
+===== [account-user] https://zhc1231.github.io/mjyy-gw/account-user.html =====
+{
+  "topbar": [
+    {
+      "cls": "topbar",
+      "id": "",
+      "tag": "div",
+      "text": "控制台\n        \n        \n          首页\n     ",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 60,
+      "visible": true
+    }
+  ],
+  "topbarBrand": [
+    {
+      "cls": "topbar-brand",
+      "id": "",
+      "tag": "a",
+      "text": "控制台",
+      "x": 40,
+      "y": 13,
+      "w": 96,
+      "h": 34,
+      "visible": true
+    }
+  ],
+  "topbarBreadcrumb": [
+    {
+      "cls": "topbar-breadcrumb",
+      "id": "",
+      "tag": "div",
+      "text": "首页\n          /\n          控制台\n          /",
+      "x": 156,
+      "y": 24,
+      "w": 148,
+      "h": 13,
+      "visible": true
+    }
+  ],
+  "topbarBcCurrent": [
+    {
+      "cls": "topbar-bc-current",
+      "id": "",
+      "tag": "span",
+      "text": "用户管理",
+      "x": 252,
+      "y": 24,
+      "w": 52,
+      "h": 13,
+      "visible": true
+    }
+  ],
+  "sidebar": [
+    {
+      "cls": "sidebar",
+      "id": "",
+      "tag": "aside",
+      "text": "产品\n      \n        \n          \n          ",
+      "x": 0,
+      "y": 60,
+      "w": 240,
+      "h": 840,
+      "visible": true
+    }
+  ],
+  "sidebarActive": [
+    {
+      "cls": "sidebar-link active",
+      "id": "",
+      "tag": "a",
+      "text": "用户管理",
+      "x": 8,
+      "y": 521,
+      "w": 223,
+      "h": 40,
+      "visible": true
+    }
+  ],
+  "pageContent": [
+    {
+      "cls": "main-content",
+      "id": "",
+      "tag": "main",
+      "text": "用户管理\n      \n      \n        \n          成员",
+      "x": 240,
+      "y": 60,
+      "w": 1200,
+      "h": 840,
+      "visible": true
+    }
+  ],
+  "pageTitle": [
+    {
+      "cls": "page-title",
+      "id": "",
+      "tag": "h1",
+      "text": "用户管理",
+      "x": 272,
+      "y": 84,
+      "w": 1136,
+      "h": 38,
+      "visible": true
+    }
+  ],
+  "pageDesc": [],
+  "addMemberBtn": [
+    {
+      "cls": "btn-primary",
+      "id": "addMemberBtn",
+      "tag": "button",
+      "text": "添加成员",
+      "x": 1283,
+      "y": 163,
+      "w": 104,
+      "h": 34,
+      "visible": true
+    },
+    {
+      "cls": "btn-primary",
+      "id": "addMemberConfirm",
+      "tag": "button",
+      "text": "确认添加",
+      "x": 835,
+      "y": 681,
+      "w": 81,
+      "h": 35,
+      "visible": true
+    }
+  ],
+  "searchForm": [],
+  "searchInput": [
+    {
+      "cls": "form-input",
+      "id": "memberAccount",
+      "tag": "input",
+      "text": "",
+      "x": 524,
+      "y": 324,
+      "w": 188,
+      "h": 36,
+      "visible": true
+    },
+    {
+      "cls": "form-input",
+      "id": "memberName",
+      "tag": "input",
+      "text": "",
+      "x": 728,
+      "y": 324,
+      "w": 188,
+      "h": 36,
+      "visible": true
+    },
+    {
+      "cls": "form-input",
+      "id": "memberPhone",
+      "tag": "input",
+      "text": "",
+      "x": 524,
+      "y": 442,
+      "w": 392,
+      "h": 36,
+      "visible": true
+    }
+  ],
+  "searchBtn": [],
+  "resetBtn": [
+    {
+      "cls": "btn-default",
+      "id": "addMemberCancel",
+      "tag": "button",
+      "text": "取消",
+      "x": 768,
+      "y": 681,
+      "w": 58,
+      "h": 35,
+      "visible": true
+    }
+  ],
+  "table": [
+    {
+      "cls": "member-table",
+      "id": "memberMainTable",
+      "tag": "table",
+      "text": "用户名\n                    成员姓名\n           ",
+      "x": 294,
+      "y": 234,
+      "w": 910,
+      "h": 105,
+      "visible": true
+    },
+    {
+      "cls": "member-table-actions-table",
+      "id": "memberActionsTable",
+      "tag": "table",
+      "text": "操作\n                \n                  系统",
+      "x": 1147,
+      "y": 234,
+      "w": 240,
+      "h": 105,
+      "visible": true
+    }
+  ],
+  "tableHead": [
+    {
+      "cls": "",
+      "id": "",
+      "tag": "th",
+      "text": "用户名",
+      "x": 294,
+      "y": 234,
+      "w": 220,
+      "h": 49,
+      "visible": true
+    },
+    {
+      "cls": "",
+      "id": "",
+      "tag": "th",
+      "text": "成员姓名",
+      "x": 514,
+      "y": 234,
+      "w": 140,
+      "h": 49,
+      "visible": true
+    },
+    {
+      "cls": "",
+      "id": "",
+      "tag": "th",
+      "text": "手机号",
+      "x": 654,
+      "y": 234,
+      "w": 140,
+      "h": 49,
+      "visible": true
+    },
+    {
+      "cls": "",
+      "id": "",
+      "tag": "th",
+      "text": "角色",
+      "x": 794,
+      "y": 234,
+      "w": 160,
+      "h": 49,
+      "visible": true
+    },
+    {
+      "cls": "",
+      "id": "",
+      "tag": "th",
+      "text": "加入时间",
+      "x": 954,
+      "y": 234,
+      "w": 140,
+      "h": 49,
+      "visible": true
+    },
+    {
+      "cls": "",
+      "id": "",
+      "tag": "th",
+      "text": "状态",
+      "x": 1094,
+      "y": 234,
+      "w": 110,
+      "h": 49,
+      "visible": true
+    },
+    {
+      "cls": "",
+      "id": "",
+      "tag": "th",
+      "text": "操作",
+      "x": 1147,
+      "y": 234,
+      "w": 240,
+      "h": 49,
+      "visible": true
+    }
+  ],
+  "tableBody": [
+    {
+      "cls": "",
+      "id": "",
+      "tag": "tr",
+      "text": "李138****8888李主账号\n                    李主账",
+      "x": 294,
+      "y": 283,
+      "w": 910,
+      "h": 56,
+      "visible": true
+    }
+  ],
+  "tableFirstTd": [
+    {
+      "cls": "",
+      "id": "",
+      "tag": "td",
+      "text": "李138****8888李主账号",
+      "x": 294,
+      "y": 283,
+      "w": 220,
+      "h": 56,
+      "visible": true
+    },
+    {
+      "cls": "",
+      "id": "",
+      "tag": "td",
+      "text": "系统默认，不可操作",
+      "x": 1147,
+      "y": 283,
+      "w": 240,
+      "h": 56,
+      "visible": true
+    }
+  ],
+  "pagination": [
+    {
+      "cls": "pagination",
+      "id": "",
+      "tag": "div",
+      "text": "共 1 条记录\n          \n            \n        ",
+      "x": 273,
+      "y": 376,
+      "w": 1134,
+      "h": 52,
+      "visible": true
+    }
+  ],
+  "paginationBtn": [
+    {
+      "cls": "pagination-btn",
+      "id": "",
+      "tag": "button",
+      "text": "上一页",
+      "x": 1241,
+      "y": 392,
+      "w": 61,
+      "h": 32,
+      "visible": true
+    },
+    {
+      "cls": "pagination-btn active",
+      "id": "",
+      "tag": "button",
+      "text": "1",
+      "x": 1308,
+      "y": 392,
+      "w": 32,
+      "h": 32,
+      "visible": true
+    },
+    {
+      "cls": "pagination-btn",
+      "id": "",
+      "tag": "button",
+      "text": "下一页",
+      "x": 1346,
+      "y": 392,
+      "w": 61,
+      "h": 32,
+      "visible": true
+    }
+  ],
+  "modal": [
+    {
+      "cls": "modal member-modal",
+      "id": "",
+      "tag": "div",
+      "text": "添加成员\n        \n          \n        \n      ",
+      "x": 470,
+      "y": 182,
+      "w": 499,
+      "h": 577,
+      "visible": true
+    },
+    {
+      "cls": "modal member-modal",
+      "id": "",
+      "tag": "div",
+      "text": "",
+      "x": 470,
+      "y": 420,
+      "w": 499,
+      "h": 100,
+      "visible": true
+    }
+  ],
+  "allBtn": [
+    {
+      "cls": "btn-primary",
+      "id": "addMemberBtn",
+      "tag": "button",
+      "text": "添加成员",
+      "x": 1283,
+      "y": 163,
+      "w": 104,
+      "h": 34,
+      "visible": true
+    },
+    {
+      "cls": "pagination-btn",
+      "id": "",
+      "tag": "button",
+      "text": "上一页",
+      "x": 1241,
+      "y": 392,
+      "w": 61,
+      "h": 32,
+      "visible": true
+    },
+    {
+      "cls": "pagination-btn active",
+      "id": "",
+      "tag": "button",
+      "text": "1",
+      "x": 1308,
+      "y": 392,
+      "w": 32,
+      "h": 32,
+      "visible": true
+    },
+    {
+      "cls": "pagination-btn",
+      "id": "",
+      "tag": "button",
+      "text": "下一页",
+      "x": 1346,
+      "y": 392,
+      "w": 61,
+      "h": 32,
+      "visible": true
+    },
+    {
+      "cls": "modal-close",
+      "id": "addMemberClose",
+      "tag": "button",
+      "text": "",
+      "x": 893,
+      "y": 230,
+      "w": 27,
+      "h": 27,
+      "visible": true
+    },
+    {
+      "cls": "btn-default",
+      "id": "addMemberCancel",
+      "tag": "button",
+      "text": "取消",
+      "x": 768,
+      "y": 681,
+      "w": 58,
+      "h": 35,
+      "visible": true
+    },
+    {
+      "cls": "btn-primary",
+      "id": "addMemberConfirm",
+      "tag": "button",
+      "text": "确认添加",
+      "x": 835,
+      "y": 681,
+      "w": 81,
+      "h": 35,
+      "visible": true
+    }
+  ],
+  "__doc__": {
+    "scrollW": 1440,
+    "scrollH": 900
+  }
+}
+
+===== [account-message] https://zhc1231.github.io/mjyy-gw/account-message.html =====
+{
+  "topbar": [
+    {
+      "cls": "topbar",
+      "id": "",
+      "tag": "div",
+      "text": "控制台\n        \n        \n          首页\n     ",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 60,
+      "visible": true
+    }
+  ],
+  "topbarBrand": [
+    {
+      "cls": "topbar-brand",
+      "id": "",
+      "tag": "a",
+      "text": "控制台",
+      "x": 40,
+      "y": 13,
+      "w": 96,
+      "h": 34,
+      "visible": true
+    }
+  ],
+  "topbarBreadcrumb": [
+    {
+      "cls": "topbar-breadcrumb",
+      "id": "",
+      "tag": "div",
+      "text": "首页\n          /\n          控制台\n          /",
+      "x": 156,
+      "y": 24,
+      "w": 148,
+      "h": 13,
+      "visible": true
+    }
+  ],
+  "topbarBcCurrent": [
+    {
+      "cls": "topbar-bc-current",
+      "id": "",
+      "tag": "span",
+      "text": "消息中心",
+      "x": 252,
+      "y": 24,
+      "w": 52,
+      "h": 13,
+      "visible": true
+    }
+  ],
+  "sidebar": [],
+  "sidebarActive": [],
+  "pageContent": [
+    {
+      "cls": "main-content",
+      "id": "",
+      "tag": "div",
+      "text": "消息中心\n        \n          \n            \n  ",
+      "x": 0,
+      "y": 60,
+      "w": 1440,
+      "h": 1104,
+      "visible": true
+    }
+  ],
+  "msgPageTitle": [
+    {
+      "cls": "msg-page-title",
+      "id": "",
+      "tag": "div",
+      "text": "消息中心",
+      "x": 40,
+      "y": 84,
+      "w": 88,
+      "h": 35,
+      "visible": true
+    }
+  ],
+  "msgTabs": [
+    {
+      "cls": "msg-tabs",
+      "id": "msgTabs",
+      "tag": "div",
+      "text": "全部 8\n        \n        \n          未读 3\n  ",
+      "x": 40,
+      "y": 140,
+      "w": 1360,
+      "h": 44,
+      "visible": true
+    }
+  ],
+  "msgTab": [
+    {
+      "cls": "msg-tab active",
+      "id": "",
+      "tag": "div",
+      "text": "全部 8",
+      "x": 40,
+      "y": 140,
+      "w": 92,
+      "h": 44,
+      "visible": true
+    },
+    {
+      "cls": "msg-tab",
+      "id": "",
+      "tag": "div",
+      "text": "未读 3",
+      "x": 132,
+      "y": 140,
+      "w": 92,
+      "h": 44,
+      "visible": true
+    },
+    {
+      "cls": "msg-tab",
+      "id": "",
+      "tag": "div",
+      "text": "系统 2",
+      "x": 224,
+      "y": 140,
+      "w": 92,
+      "h": 44,
+      "visible": true
+    },
+    {
+      "cls": "msg-tab",
+      "id": "",
+      "tag": "div",
+      "text": "业务 2",
+      "x": 316,
+      "y": 140,
+      "w": 92,
+      "h": 44,
+      "visible": true
+    },
+    {
+      "cls": "msg-tab",
+      "id": "",
+      "tag": "div",
+      "text": "活动 2",
+      "x": 409,
+      "y": 140,
+      "w": 92,
+      "h": 44,
+      "visible": true
+    }
+  ],
+  "msgList": [
+    {
+      "cls": "msg-list",
+      "id": "msgListContainer",
+      "tag": "div",
+      "text": "📋企业审核通过业务您提交的\"浙江良巧匠\"企业认证已通过审核10分钟前🔔系统维",
+      "x": 40,
+      "y": 204,
+      "w": 1360,
+      "h": 844,
+      "visible": true
+    }
+  ],
+  "msgItem": [],
+  "msgItemIcon": [],
+  "msgItemContent": [],
+  "msgItemTitle": [],
+  "msgItemDesc": [],
+  "msgItemTime": [],
+  "markAllReadBtn": [
+    {
+      "cls": "btn btn-outline",
+      "id": "markAllReadBtn",
+      "tag": "button",
+      "text": "全部已读",
+      "x": 1180,
+      "y": 84,
+      "w": 105,
+      "h": 36,
+      "visible": true
+    }
+  ],
+  "clearReadBtn": [
+    {
+      "cls": "btn btn-outline",
+      "id": "clearReadBtn",
+      "tag": "button",
+      "text": "清除已读",
+      "x": 1295,
+      "y": 84,
+      "w": 105,
+      "h": 36,
+      "visible": true
+    }
+  ],
+  "allBtn": [
+    {
+      "cls": "btn btn-outline",
+      "id": "markAllReadBtn",
+      "tag": "button",
+      "text": "全部已读",
+      "x": 1180,
+      "y": 84,
+      "w": 105,
+      "h": 36,
+      "visible": true
+    },
+    {
+      "cls": "btn btn-outline",
+      "id": "clearReadBtn",
+      "tag": "button",
+      "text": "清除已读",
+      "x": 1295,
+      "y": 84,
+      "w": 105,
+      "h": 36,
+      "visible": true
+    }
+  ],
+  "__doc__": {
+    "scrollW": 1440,
+    "scrollH": 1164
+  }
+}

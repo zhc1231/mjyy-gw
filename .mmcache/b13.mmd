@@ -1,0 +1,8 @@
+flowchart LR
+  U["任意控制台页 点击面包屑任一项"] --> W{"点击哪一级?"}
+  W -- "第1级 首页" --> H["index.html 官网首页"]
+  W -- "第2级 控制台" --> C["account-center.html 产品中心"]
+  W -- "第3级 当前页名" --> P["刷新或锚定回页顶"]
+  style H fill:#FF7A16,color:#fff
+  style C fill:#2A6DF4,color:#fff
+  style P fill:#0C9A74,color:#fff

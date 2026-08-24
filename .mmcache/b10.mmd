@@ -1,0 +1,12 @@
+flowchart TD
+  A["子账号U登录企业E想打开产品P"] --> L1{"L1企业层开关<br/>E是否已开通P?"}
+  L1 -- "否" --> N1["提示:企业尚未开通P<br/>跳转产品中心卡片 显示联系开通"]
+  L1 -- "是" --> L2{"L2用户层开关<br/>主账号是否给U勾选P?"}
+  L2 -- "未勾选" --> N2["产品中心卡片:进入平台置灰<br/>菜单:不出现P的模块"]
+  L2 -- "已勾选" --> L3{"L3模块层开关<br/>想访问的模块M被勾选?"}
+  L3 -- "未勾选" --> N3["模块级URL拦截 或 菜单不渲染M"]
+  L3 -- "已勾选" --> Y["正常进入P的模块M页面"]
+  style Y fill:#0C9A74,color:#fff
+  style N1 fill:#FFE9E6,color:#A83019
+  style N2 fill:#FFF4D9,color:#A87700
+  style N3 fill:#FFF1E5,color:#7A3800

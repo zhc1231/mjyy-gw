@@ -1,0 +1,11 @@
+flowchart TD
+  A["主账号或授权子账号 在合同管理发起<br/>新建劳务合同/分包合同"] --> T["选模板或上传PDF"]
+  T --> B["填签署方:企业+工人/供应商+签署顺序"]
+  B --> SEAL{"需要企业章?<br/>(金额>=5w或模板强制)"}
+  SEAL -- "是" --> SMS2["主账号短信二次验证->企业章/法人章自动盖章"]
+  SEAL -- "否" --> FREE["跳过企业章->只走个人签署"]
+  SMS2 --> SIGN["各方按顺序签署<br/>电子签:短信链接+微信签"]
+  FREE --> SIGN
+  SIGN --> STORE["签署完成PDF存证<br/>写入合同台账+归档键"]
+  style A fill:#2A6DF4,color:#fff
+  style STORE fill:#0C9A74,color:#fff

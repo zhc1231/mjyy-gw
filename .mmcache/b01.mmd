@@ -1,0 +1,10 @@
+flowchart LR
+  BC["面包屑:首页/控制台/当前页"]
+  BC --> H["首页 -> index.html 官网首页"]
+  BC --> C["控制台 -> account-center.html 产品中心"]
+  BC --> P["当前页 -> 无跳转或刷新当前页"]
+  P --> P1["企业信息:不点击或刷新"]
+  P --> P2["用户管理/成员管理:末级不点击"]
+  style H fill:#FF7A16,color:#fff
+  style C fill:#2A6DF4,color:#fff
+  style P fill:#0C9A74,color:#fff

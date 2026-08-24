@@ -1,0 +1,9 @@
+flowchart TD
+  A["主账号点击 移出 某子账号"] --> DLG["二次确认弹窗<br/>-标题:确定要移除此用户名?<br/>-正文:风险操作 谨慎处理 无法恢复<br/>该子账号将失去企业全部产品访问<br/>已签署合同历史签名保留<br/>-确认移除按钮:红色"]
+  DLG --> OK{"点击确认移除?"}
+  OK -- "否 关闭或点X" --> RET["状态不变 返回列表"]
+  OK -- "是" --> EXEC["执行移除<br/>账号类型不变<br/>授权全部收回<br/>企业关联解除"]
+  EXEC --> REC["写入操作日志 操作人+时间+对象"]
+  style DLG fill:#FFF4D9,color:#A87700
+  style EXEC fill:#FFE9E6,color:#A83019
+  style RET fill:#E7F8F0,color:#085A3F

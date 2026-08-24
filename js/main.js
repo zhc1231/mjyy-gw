@@ -557,14 +557,65 @@
     // 子账号：显示当前分配的项目名称（格式：产品名·项目名，多个项目逗号分隔）
     // 显示条件：enterprise-role 判定为子账号 或 全局 accountType 为子账号（任一命中就展示）
     // 注意：页面上可能同时存在 global/nav 两个 user-dropdown，所以按容器批量写，避免 getElementById 只命中第一个
+    // 注入项目标签 CSS（仅首次）
+    if (!document.getElementById('__projChipCss')) {
+      var st = document.createElement('style');
+      st.id = '__projChipCss';
+      st.textContent = [
+        '.user-dropdown-project-chip{display:inline-flex;align-items:center;gap:4px;margin-top:8px;margin-bottom:2px;padding:4px 10px;border-radius:6px;background:linear-gradient(135deg,var(--brand-primary-50,#EFF6FF) 0%,#F0F9FF 100%);border:1px solid var(--brand-primary-100,#DBEAFE);font-size:12px;line-height:1.2;max-width:100%;box-sizing:border-box;}',
+        '.user-dropdown-project-chip .chip-icon{display:inline-flex;align-items:center;color:var(--brand-primary,#3B82F6);flex-shrink:0;}',
+        '.user-dropdown-project-chip .chip-label{color:var(--brand-primary,#3B82F6);font-weight:500;white-space:nowrap;}',
+        '.user-dropdown-project-chip .chip-sep{color:var(--text-tertiary,#9CA3AF);margin:0 1px;font-weight:400;}',
+        '.user-dropdown-project-chip .chip-name{color:var(--text-primary,#111827);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}',
+        '.user-dropdown-project-chip:hover{background:linear-gradient(135deg,var(--brand-primary-100,#DBEAFE) 0%,#E0F2FE 100%);border-color:var(--brand-primary-300,#93C5FD);}',
+        '.user-dropdown-project-chip:hover .chip-icon{color:var(--brand-primary-600,#2563EB);}',
+        '@media (max-width:480px){.user-dropdown-project-chip .chip-label{display:none;}.user-dropdown-project-chip .chip-sep{display:none;}}'
+      ].join('');
+      document.head.appendChild(st);
+    }
+
     var showProjectAsSub = roleIsSub || (accountType === 'sub');
     var projectEls = document.querySelectorAll('#dropdownProject, .user-dropdown-project');
-    function renderProjectForAll(text) {
+    function renderProjectForAll(label, name) {
       if (!projectEls || !projectEls.length) return;
       projectEls.forEach(function (el) {
-        if (text) { el.textContent = text; el.style.display = 'block'; }
-        else { el.textContent = ''; el.style.display = 'none'; }
+        // 优先使用子元素（新版 chip 结构）
+        var labelEl = el.querySelector('.chip-label');
+        var nameEl = el.querySelector('.chip-name');
+        var sepEl = el.querySelector('.chip-sep');
+        if (labelEl && nameEl) {
+          if (label && name) {
+            labelEl.textContent = label;
+            nameEl.textContent = name;
+            labelEl.style.display = '';
+            sepEl.style.display = '';
+            el.style.display = 'inline-flex';
+          } else if (name) {
+            // 只有项目名，隐藏 label 和 sep
+            labelEl.textContent = '';
+            nameEl.textContent = name;
+            labelEl.style.display = 'none';
+            sepEl.style.display = 'none';
+            el.style.display = 'inline-flex';
+          } else {
+            el.style.display = 'none';
+          }
+        } else {
+          // 旧结构兜底
+          var fullText = [label, name].filter(Boolean).join(' · ');
+          if (fullText) { el.textContent = fullText; el.style.display = 'block'; }
+          else { el.textContent = ''; el.style.display = 'none'; }
+        }
       });
+    }
+    function parseProjectText(text) {
+      if (!text) return { label: '', name: '' };
+      // 支持 "产品·项目" 或 "产品·项目1、项目2" 格式
+      var parts = text.split('·');
+      if (parts.length >= 2) {
+        return { label: parts[0].trim(), name: parts.slice(1).join('·').trim() };
+      }
+      return { label: '', name: text };
     }
     if (showProjectAsSub) {
       try {
@@ -589,17 +640,16 @@
           } catch(e) {}
           if (!projectText) projectText = '民匠有约·杭州地铁保洁项目';
         }
-        renderProjectForAll(projectText);
-      } catch (e) { renderProjectForAll('民匠有约·杭州地铁保洁项目'); }
+        var parsed = parseProjectText(projectText);
+        renderProjectForAll(parsed.label, parsed.name);
+      } catch (e) { var fb2 = parseProjectText('民匠有约·杭州地铁保洁项目'); renderProjectForAll(fb2.label, fb2.name); }
     } else {
-      renderProjectForAll('');
+      renderProjectForAll('', '');
     }
     // 4. 企业id改为"统一社会信用代码"；未认证/新企业去除 统一社会信用代码 / 主账号 / 工商识别号
     var creditCode = getCreditCode();
     var dropdownIdEls = document.querySelectorAll('.user-dropdown-id, .topbar-dropdown-id, .dropdown-id');
     dropdownIdEls.forEach(function(el) {
-      var idTagEl = el.id === 'dropdownId' ? el : null;
-      var parentTags = idTagEl ? idTagEl.parentElement ? idTagEl.parentElement.querySelector('#dropdownMetaRow') : null : null;
       if (hasVerifiedEnterprise && creditCode) {
         el.style.display = '';
         el.textContent = creditCode;
@@ -608,42 +658,6 @@
         el.textContent = '';
       }
     });
-    // 下拉中的 meta row（主账号 / 工商识别号）：未认证统一隐藏
-    var rows = document.querySelectorAll('#dropdownMetaRow, .user-dropdown-tags-row');
-    rows.forEach(function(row) {
-      if (!hasVerifiedEnterprise) { row.style.display = 'none'; return; }
-      row.style.display = 'flex';
-      row.style.flexWrap = 'wrap';
-      row.style.alignItems = 'center';
-      row.style.gap = '6px';
-      // 工商识别号：始终不单独显示
-      row.querySelectorAll('.bizRegNo, .gs-reg-no, .drop-down-gszbh, [data-field="gszsbh"], [data-field="businessRegistrationNumber"], .businessReg, .user-dropdown-business-no').forEach(function(el){ el.style.display='none'; });
-    });
-    // 顶部栏的 topbarAccountBadge：未认证不显示；认证后显示"主账号/子账号"
-    var topbarBadge = document.getElementById('topbarAccountBadge');
-    if (topbarBadge) {
-      if (!hasVerifiedEnterprise) { topbarBadge.style.display = 'none'; }
-      else {
-        topbarBadge.style.display = '';
-        topbarBadge.textContent = typeText;
-        topbarBadge.style.cssText = '';
-        topbarBadge.classList.toggle('sub', roleIsSub);
-      }
-    }
-    // 主账号类型 badge：未认证不显示
-    var allBadges = document.querySelectorAll('.user-account-badge, .topbar-account-badge');
-    allBadges.forEach(function(el) {
-      if (el.id === 'topbarAccountBadge') return;
-      if (!hasVerifiedEnterprise) { el.style.display = 'none'; return; }
-      el.style.display = '';
-      el.textContent = typeText;
-      el.classList.toggle('sub', roleIsSub);
-      if (roleIsSub) { el.style.background = '#FFF7E6'; el.style.color = '#FF7D00'; }
-      else { el.style.background = ''; el.style.color = ''; }
-    });
-
-    // 原账号类型徽章代码已合并到上面；保留向后兼容
-
     // 顶部 chips
     var chipsContainer = document.getElementById('topbarUserChips');
     if (chipsContainer) {
@@ -776,7 +790,6 @@
       <div class="topbar-user-meta" id="topbarUserMeta">
         <span class="topbar-user-name-row">
           <span class="topbar-user-name" id="topbarUserName">企业用户</span>
-          <span class="topbar-account-badge" id="topbarAccountBadge" style="display:none;">主账号</span>
         </span>
         <div class="topbar-user-chips" id="topbarUserChips"></div>
       </div>
@@ -786,12 +799,16 @@
           <div class="user-dropdown-avatar" id="dropdownAvatar">企</div>
           <div class="user-dropdown-info">
             <div class="user-dropdown-name" id="dropdownName">用户</div>
-            <!-- 子账号登录时显示当前项目名称 -->
-            <div class="user-dropdown-project" id="dropdownProject" style="display:none;font-size:12px;color:var(--text-secondary);margin-top:4px;"></div>
-            <!-- 认证通过后才显示：脱敏的统一社会信用代码 + 主账号标签；未认证/新企业不显示 -->
+            <!-- 认证通过后才显示：脱敏的统一社会信用代码；未认证/新企业不显示 -->
             <div class="user-dropdown-id" id="dropdownId" style="display:none;">--</div>
-            <div class="user-dropdown-tags-row" id="dropdownMetaRow" style="display:none;">
-              <span class="user-account-badge" id="dropdownBadge">主账号</span>
+            <!-- 产品名·项目名（单独一行，精致项目标签样式） -->
+            <div class="user-dropdown-project-chip" id="dropdownProject" style="display:none;">
+              <span class="chip-icon">
+                <svg viewBox="0 0 24 24" fill="none" width="12" height="12"><path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-7l-2-2H5a2 2 0 0 0-2 2z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 13h8M8 16h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+              </span>
+              <span class="chip-label" id="dropdownProjectLabel"></span>
+              <span class="chip-sep">·</span>
+              <span class="chip-name" id="dropdownProjectName">加载中...</span>
             </div>
           </div>
         </div>
@@ -912,13 +929,17 @@
           <div class="user-dropdown-header">
             <div class="user-dropdown-avatar" id="dropdownAvatar">用</div>
             <div class="user-dropdown-info">
-              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-                <div class="user-dropdown-name" id="dropdownName">企业用户</div>
-                <span class="user-account-badge" id="dropdownBadge" style="font-size:10px;padding:0 5px;border-radius:4px;background:var(--brand-primary-50);color:var(--brand-primary);font-weight:500;line-height:16px;">主账号</span>
-              </div>
-              <!-- 子账号登录时显示：产品名·项目名（如“民匠有约·杭州地铁保洁项目”） -->
-              <div class="user-dropdown-project" id="dropdownProject" style="display:none;font-size:12px;color:var(--text-secondary);margin-top:4px;"></div>
+              <div class="user-dropdown-name" id="dropdownName">企业用户</div>
               <div class="user-dropdown-id" id="dropdownId">账号ID：--</div>
+              <!-- 子账号登录时显示：产品名·项目名（精致项目标签样式） -->
+              <div class="user-dropdown-project-chip" id="dropdownProject" style="display:none;">
+              <span class="chip-icon">
+                <svg viewBox="0 0 24 24" fill="none" width="12" height="12"><path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-7l-2-2H5a2 2 0 0 0-2 2z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 13h8M8 16h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+              </span>
+              <span class="chip-label" id="dropdownProjectLabel"></span>
+              <span class="chip-sep">·</span>
+              <span class="chip-name" id="dropdownProjectName">加载中...</span>
+            </div>
             </div>
           </div>
           <div class="user-dropdown-body">
@@ -1035,12 +1056,40 @@
     // 子账号项目（按所有下拉容器批量写入，避免 getElementById 只写到第一个）
     var showProjectAsSub = roleIsSub || (accountType === 'sub');
     var projectEls2 = document.querySelectorAll('#dropdownProject, .user-dropdown-project');
-    function renderAllProjects(text) {
+    function renderAllProjects(label, name) {
       if (!projectEls2 || !projectEls2.length) return;
       projectEls2.forEach(function (el) {
-        if (text) { el.textContent = text; el.style.display = 'block'; }
-        else { el.textContent = ''; el.style.display = 'none'; }
+        var labelEl = el.querySelector('.chip-label');
+        var nameEl = el.querySelector('.chip-name');
+        var sepEl = el.querySelector('.chip-sep');
+        if (labelEl && nameEl) {
+          if (label && name) {
+            labelEl.textContent = label;
+            nameEl.textContent = name;
+            labelEl.style.display = '';
+            sepEl.style.display = '';
+            el.style.display = 'inline-flex';
+          } else if (name) {
+            labelEl.textContent = '';
+            nameEl.textContent = name;
+            labelEl.style.display = 'none';
+            sepEl.style.display = 'none';
+            el.style.display = 'inline-flex';
+          } else {
+            el.style.display = 'none';
+          }
+        } else {
+          var fullText = [label, name].filter(Boolean).join(' · ');
+          if (fullText) { el.textContent = fullText; el.style.display = 'block'; }
+          else { el.textContent = ''; el.style.display = 'none'; }
+        }
       });
+    }
+    function parseProjText(text) {
+      if (!text) return { label: '', name: '' };
+      var parts = text.split('·');
+      if (parts.length >= 2) return { label: parts[0].trim(), name: parts.slice(1).join('·').trim() };
+      return { label: '', name: text };
     }
     if (showProjectAsSub) {
       try {
@@ -1063,9 +1112,10 @@
           } catch(e) {}
           if (!projectText) projectText = '民匠有约·杭州地铁保洁项目';
         }
-        renderAllProjects(projectText);
-      } catch (e) { renderAllProjects('民匠有约·杭州地铁保洁项目'); }
-    } else { renderAllProjects(''); }
+        var p2 = parseProjText(projectText);
+        renderAllProjects(p2.label, p2.name);
+      } catch (e) { var fp = parseProjText('民匠有约·杭州地铁保洁项目'); renderAllProjects(fp.label, fp.name); }
+    } else { renderAllProjects('', ''); }
 
     // 4. 企业ID→统一社会信用代码；未认证/新企业去除 统一社会信用代码/主账号/工商识别号
     var creditCode = getCreditCode();
@@ -1088,26 +1138,7 @@
       row.style.gap = '6px';
       row.querySelectorAll('.bizRegNo, .gs-reg-no, .drop-down-gszbh, [data-field="gszsbh"], [data-field="businessRegistrationNumber"], .businessReg, .user-dropdown-business-no').forEach(function(el){ el.style.display='none'; });
     });
-    var topbarBadge = document.getElementById('topbarAccountBadge');
-    if (topbarBadge) {
-      if (!hasVerifiedEnterprise) { topbarBadge.style.display = 'none'; }
-      else {
-        topbarBadge.style.display = '';
-        topbarBadge.textContent = typeText;
-        topbarBadge.style.cssText = '';
-        topbarBadge.classList.toggle('sub', roleIsSub);
-      }
-    }
-    var allBadges = document.querySelectorAll('.user-account-badge, .topbar-account-badge');
-    allBadges.forEach(function(el) {
-      if (el.id === 'topbarAccountBadge') return;
-      if (!hasVerifiedEnterprise) { el.style.display = 'none'; return; }
-      el.style.display = '';
-      el.textContent = typeText;
-      el.classList.toggle('sub', roleIsSub);
-      if (roleIsSub) { el.style.background = '#FFF7E6'; el.style.color = '#FF7D00'; }
-      else { el.style.background = ''; el.style.color = ''; }
-    });
+    // 徽章已移除（不再显示主账号/子账号标签）
 
     // 更新实名认证链接文字
     document.querySelectorAll('#globalVerifyText, #verifyLinkText').forEach(function(el) {
@@ -1336,12 +1367,9 @@
     var enterpriseData = JSON.parse(localStorage.getItem('mjyy_enterprise_data') || '{}');
     var avatarEl = userArea.querySelector('.user-avatar') || userArea.querySelector('.nav-user-avatar');
     var nameEl = userArea.querySelector('.user-name') || userArea.querySelector('.nav-user-name');
-    var badgeEl = userArea.querySelector('.user-account-badge');
-    var topbarBadgeEl = userArea.querySelector('#topbarAccountBadge');
     var dropdownAvatarEl = userDropdown ? userDropdown.querySelector('.user-dropdown-avatar') : null;
     var dropdownNameEl = userDropdown ? userDropdown.querySelector('.user-dropdown-name') : null;
     var dropdownIdEl = userDropdown ? userDropdown.querySelector('.user-dropdown-id') : null;
-    var dropdownBadgeEl = userDropdown ? userDropdown.querySelector('.user-dropdown-info .user-account-badge') : null;
 
     var displayName = '';
     var displayAvatar = '用';
@@ -1369,23 +1397,11 @@
     if (avatarEl) avatarEl.textContent = displayAvatar;
     if (nameEl && displayName) nameEl.textContent = displayName;
 
-    // 账号类型标签（以当前企业 role 优先）
+    // 账号类型标签（仅用于判断是否子账号，不再渲染徽章）
     var accountType = localStorage.getItem('mjyy_account_type') || 'main';
     var roleInfo = getEnterpriseAccountRole(accountType, curEnt);
     var typeText = roleInfo.typeText;
     var roleIsSub = roleInfo.isSub;
-    if (badgeEl) {
-      badgeEl.textContent = typeText;
-      badgeEl.classList.toggle('sub', roleIsSub);
-    }
-    if (topbarBadgeEl) {
-      topbarBadgeEl.textContent = typeText;
-      topbarBadgeEl.classList.toggle('sub', roleIsSub);
-    }
-    if (dropdownBadgeEl) {
-      dropdownBadgeEl.textContent = typeText;
-      dropdownBadgeEl.classList.toggle('sub', roleIsSub);
-    }
 
     // 子账号项目（与 refreshGlobalDropdownCard 保持一致：产品名·项目名）
     // 同时更新：userDropdown 作用域内的项目行 + 全页面所有下拉的项目行（避免 global/nav 两个容器只更新其一）
@@ -1415,16 +1431,39 @@
       } catch (e) { projTextVal = '民匠有约·杭州地铁保洁项目'; }
     }
     // 优先写当前 userDropdown（如果存在且可见）
-    var singleScoped = userDropdown ? userDropdown.querySelectorAll('#dropdownProject, .user-dropdown-project') : null;
-    (singleScoped || []).forEach(function (el) {
-      if (projTextVal) { el.textContent = projTextVal; el.style.display = 'block'; }
-      else { el.textContent = ''; el.style.display = 'none'; }
-    });
-    // 再把页面上所有同名/同class容器一起刷一遍（含global template 的容器）
-    document.querySelectorAll('#dropdownProject, .user-dropdown-project').forEach(function (el) {
-      if (projTextVal) { el.textContent = projTextVal; el.style.display = 'block'; }
-      else { el.textContent = ''; el.style.display = 'none'; }
-    });
+    function writeProjectChip(scope, text) {
+      var els = scope.querySelectorAll('#dropdownProject, .user-dropdown-project');
+      els.forEach(function (el) {
+        var labelEl = el.querySelector('.chip-label');
+        var nameEl = el.querySelector('.chip-name');
+        var sepEl = el.querySelector('.chip-sep');
+        var parsed = (text && text.indexOf('·') >= 0)
+          ? { label: text.split('·')[0].trim(), name: text.split('·').slice(1).join('·').trim() }
+          : { label: '', name: text };
+        if (labelEl && nameEl) {
+          if (parsed.label && parsed.name) {
+            labelEl.textContent = parsed.label;
+            nameEl.textContent = parsed.name;
+            labelEl.style.display = '';
+            sepEl.style.display = '';
+            el.style.display = 'inline-flex';
+          } else if (parsed.name) {
+            labelEl.textContent = '';
+            nameEl.textContent = parsed.name;
+            labelEl.style.display = 'none';
+            sepEl.style.display = 'none';
+            el.style.display = 'inline-flex';
+          } else {
+            el.style.display = 'none';
+          }
+        } else {
+          if (text) { el.textContent = text; el.style.display = 'block'; }
+          else { el.textContent = ''; el.style.display = 'none'; }
+        }
+      });
+    }
+    if (userDropdown) writeProjectChip(userDropdown, projTextVal);
+    writeProjectChip(document, projTextVal);
 
     // 下拉头部信息同步
     if (dropdownAvatarEl) dropdownAvatarEl.textContent = displayAvatar;

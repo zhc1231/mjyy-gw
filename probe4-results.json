@@ -1,0 +1,326 @@
+
+===== https://zhc1231.github.io/mjyy-gw/account-center.html =====
+{
+  "welcome": [],
+  "section_title": [],
+  "card": [],
+  "brand_area": [
+    {
+      "cls": "pc-brand-area brand-minjiang",
+      "id": "",
+      "tag": "div",
+      "text": "未开通",
+      "x": 282,
+      "y": 493,
+      "w": 356,
+      "h": 88,
+      "visible": true
+    },
+    {
+      "cls": "pc-brand-area brand-anxinyun",
+      "id": "",
+      "tag": "div",
+      "text": "未开通",
+      "x": 658,
+      "y": 493,
+      "w": 356,
+      "h": 88,
+      "visible": true
+    },
+    {
+      "cls": "pc-brand-area brand-agent",
+      "id": "",
+      "tag": "div",
+      "text": "未开通",
+      "x": 1034,
+      "y": 493,
+      "w": 356,
+      "h": 88,
+      "visible": true
+    }
+  ],
+  "brand_name": [],
+  "brand_btn": [],
+  "all_h": [
+    {
+      "cls": "",
+      "id": "",
+      "tag": "h3",
+      "text": "完成企业认证",
+      "x": 552,
+      "y": 427,
+      "w": 336,
+      "h": 29,
+      "visible": true
+    }
+  ],
+  "all_btn": [
+    {
+      "cls": "",
+      "id": "authPromptLater",
+      "tag": "button",
+      "text": "稍后再说",
+      "x": 552,
+      "y": 509,
+      "w": 163,
+      "h": 44,
+      "visible": true
+    },
+    {
+      "cls": "",
+      "id": "authPromptGo",
+      "tag": "button",
+      "text": "去认证",
+      "x": 727,
+      "y": 509,
+      "w": 161,
+      "h": 44,
+      "visible": true
+    }
+  ],
+  "main_content": [
+    {
+      "cls": "main-content",
+      "id": "",
+      "tag": "main",
+      "text": "产品中心\n          选择下方产品进入对应工作台，首次使用需完成签约。\n        \n ",
+      "x": 232,
+      "y": 60,
+      "w": 1208,
+      "h": 840,
+      "visible": true
+    }
+  ],
+  "tip": [],
+  "__doc__": {
+    "scrollW": 1440,
+    "scrollH": 900
+  }
+}
+
+===== https://zhc1231.github.io/mjyy-gw/account-user.html =====
+{
+  "search_input": [
+    {
+      "cls": "form-input",
+      "id": "memberAccount",
+      "tag": "input",
+      "text": "",
+      "x": 524,
+      "y": 332,
+      "w": 188,
+      "h": 36,
+      "visible": true
+    },
+    {
+      "cls": "form-input",
+      "id": "memberName",
+      "tag": "input",
+      "text": "",
+      "x": 728,
+      "y": 332,
+      "w": 188,
+      "h": 36,
+      "visible": true
+    },
+    {
+      "cls": "form-input",
+      "id": "memberPhone",
+      "tag": "input",
+      "text": "",
+      "x": 524,
+      "y": 434,
+      "w": 392,
+      "h": 36,
+      "visible": true
+    }
+  ],
+  "search_btn": [],
+  "toolbar_area": [],
+  "all_h": [
+    {
+      "cls": "page-title",
+      "id": "",
+      "tag": "h1",
+      "text": "用户管理",
+      "x": 352,
+      "y": 88,
+      "w": 976,
+      "h": 38,
+      "visible": true
+    }
+  ],
+  "all_btn": [
+    {
+      "cls": "btn-primary",
+      "id": "addMemberBtn",
+      "tag": "button",
+      "text": "添加成员",
+      "x": 1203,
+      "y": 167,
+      "w": 104,
+      "h": 34,
+      "visible": true
+    },
+    {
+      "cls": "pagination-btn",
+      "id": "",
+      "tag": "button",
+      "text": "上一页",
+      "x": 1161,
+      "y": 391,
+      "w": 61,
+      "h": 32,
+      "visible": true
+    },
+    {
+      "cls": "pagination-btn active",
+      "id": "",
+      "tag": "button",
+      "text": "1",
+      "x": 1228,
+      "y": 391,
+      "w": 32,
+      "h": 32,
+      "visible": true
+    },
+    {
+      "cls": "pagination-btn",
+      "id": "",
+      "tag": "button",
+      "text": "下一页",
+      "x": 1266,
+      "y": 391,
+      "w": 61,
+      "h": 32,
+      "visible": true
+    },
+    {
+      "cls": "modal-close",
+      "id": "addMemberClose",
+      "tag": "button",
+      "text": "",
+      "x": 893,
+      "y": 239,
+      "w": 27,
+      "h": 27,
+      "visible": true
+    },
+    {
+      "cls": "btn-default",
+      "id": "addMemberCancel",
+      "tag": "button",
+      "text": "取消",
+      "x": 768,
+      "y": 673,
+      "w": 58,
+      "h": 35,
+      "visible": true
+    },
+    {
+      "cls": "btn-primary",
+      "id": "addMemberConfirm",
+      "tag": "button",
+      "text": "确认添加",
+      "x": 835,
+      "y": 673,
+      "w": 81,
+      "h": 35,
+      "visible": true
+    }
+  ],
+  "table": [
+    {
+      "cls": "member-table",
+      "id": "",
+      "tag": "table",
+      "text": "成员账号\n                  角色\n                  加入时间\n ",
+      "x": 373,
+      "y": 237,
+      "w": 934,
+      "h": 102,
+      "visible": true
+    }
+  ],
+  "tbody_tr": [
+    {
+      "cls": "",
+      "id": "",
+      "tag": "tr",
+      "text": "138****8888\n                  主账号管理员\n             ",
+      "x": 373,
+      "y": 287,
+      "w": 934,
+      "h": 52,
+      "visible": true
+    }
+  ],
+  "all_th": [
+    {
+      "cls": "",
+      "id": "",
+      "tag": "th",
+      "text": "成员账号",
+      "x": 373,
+      "y": 237,
+      "w": 246,
+      "h": 49,
+      "visible": true
+    },
+    {
+      "cls": "",
+      "id": "",
+      "tag": "th",
+      "text": "角色",
+      "x": 619,
+      "y": 237,
+      "w": 263,
+      "h": 49,
+      "visible": true
+    },
+    {
+      "cls": "",
+      "id": "",
+      "tag": "th",
+      "text": "加入时间",
+      "x": 882,
+      "y": 237,
+      "w": 235,
+      "h": 49,
+      "visible": true
+    },
+    {
+      "cls": "",
+      "id": "",
+      "tag": "th",
+      "text": "操作",
+      "x": 1117,
+      "y": 237,
+      "w": 190,
+      "h": 49,
+      "visible": true
+    }
+  ],
+  "all_td": [
+    {
+      "cls": "",
+      "id": "",
+      "tag": "td",
+      "text": "138****8888",
+      "x": 373,
+      "y": 287,
+      "w": 246,
+      "h": 52,
+      "visible": true
+    }
+  ],
+  "status_badge": [],
+  "edit_btn": [],
+  "reset_btn": [],
+  "toggle_btn": [],
+  "remove_btn": [],
+  "__doc__": {
+    "scrollW": 1440,
+    "scrollH": 900
+  }
+}

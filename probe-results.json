@@ -1,0 +1,1625 @@
+
+===== [login-wxPanel] https://zhc1231.github.io/mjyy-gw/login.html =====
+{
+  "loginTabs": [
+    {
+      "cls": "login-tabs",
+      "id": "",
+      "tag": "div",
+      "text": "微信扫码\n          账号密码\n          注册账号",
+      "x": 860,
+      "y": 143,
+      "w": 340,
+      "h": 46,
+      "visible": true
+    }
+  ],
+  "loginTab": [
+    {
+      "cls": "login-tab active",
+      "id": "",
+      "tag": "button",
+      "text": "微信扫码",
+      "x": 864,
+      "y": 147,
+      "w": 105,
+      "h": 38,
+      "visible": true
+    },
+    {
+      "cls": "login-tab",
+      "id": "",
+      "tag": "button",
+      "text": "账号密码",
+      "x": 977,
+      "y": 147,
+      "w": 105,
+      "h": 38,
+      "visible": true
+    },
+    {
+      "cls": "login-tab",
+      "id": "",
+      "tag": "button",
+      "text": "注册账号",
+      "x": 1091,
+      "y": 147,
+      "w": 105,
+      "h": 38,
+      "visible": true
+    }
+  ],
+  "wxPanel": [
+    {
+      "cls": "login-panel active",
+      "id": "wxPanel",
+      "tag": "div",
+      "text": "微信扫码\n            请使用微信扫一扫 → 已注册用户扫码直接进入控",
+      "x": 860,
+      "y": 221,
+      "w": 340,
+      "h": 537,
+      "visible": true
+    }
+  ],
+  "wxQrBox": [
+    {
+      "cls": "wx-qr-box",
+      "id": "",
+      "tag": "div",
+      "text": "",
+      "x": 910,
+      "y": 317,
+      "w": 240,
+      "h": 240,
+      "visible": true
+    }
+  ],
+  "wxQrImg": [
+    {
+      "cls": "",
+      "id": "wxQrImg",
+      "tag": "img",
+      "text": "",
+      "x": 927,
+      "y": 334,
+      "w": 206,
+      "h": 206,
+      "visible": true
+    }
+  ],
+  "wxQrTitle": [
+    {
+      "cls": "wx-qr-title",
+      "id": "",
+      "tag": "div",
+      "text": "微信扫码",
+      "x": 860,
+      "y": 221,
+      "w": 340,
+      "h": 27,
+      "visible": true
+    }
+  ],
+  "wxQrDesc": [
+    {
+      "cls": "wx-qr-desc",
+      "id": "",
+      "tag": "div",
+      "text": "请使用微信扫一扫 → 已注册用户扫码直接进入控制台，新用户扫码进入注册流程",
+      "x": 860,
+      "y": 256,
+      "w": 340,
+      "h": 42,
+      "visible": true
+    }
+  ],
+  "wxTips": [
+    {
+      "cls": "wx-tips",
+      "id": "",
+      "tag": "div",
+      "text": "打开微信 → 发现 → 扫一扫\n              \n         ",
+      "x": 860,
+      "y": 611,
+      "w": 340,
+      "h": 88,
+      "visible": true
+    }
+  ],
+  "wxAgreement": [
+    {
+      "cls": "wx-agreement",
+      "id": "",
+      "tag": "div",
+      "text": "我已阅读并同意《用户协议》和《隐私政策》",
+      "x": 860,
+      "y": 717,
+      "w": 340,
+      "h": 40,
+      "visible": true
+    }
+  ],
+  "loginLeft": [
+    {
+      "cls": "login-left",
+      "id": "",
+      "tag": "div",
+      "text": "民匠有约\n      \n\n      \n        \n          \n",
+      "x": 180,
+      "y": 83,
+      "w": 620,
+      "h": 735,
+      "visible": true
+    }
+  ],
+  "leftHeader": [
+    {
+      "cls": "left-header",
+      "id": "",
+      "tag": "div",
+      "text": "民匠有约",
+      "x": 230,
+      "y": 143,
+      "w": 520,
+      "h": 40,
+      "visible": true
+    }
+  ],
+  "leftTitle": [
+    {
+      "cls": "left-title",
+      "id": "",
+      "tag": "h1",
+      "text": "登录民匠有约\n          开启智能用工",
+      "x": 230,
+      "y": 265,
+      "w": 400,
+      "h": 94,
+      "visible": true
+    }
+  ],
+  "leftFooter": [
+    {
+      "cls": "left-footer",
+      "id": "",
+      "tag": "div",
+      "text": "© 2024 民匠有约 · 浙江良巧匠网络科技",
+      "x": 230,
+      "y": 740,
+      "w": 520,
+      "h": 17,
+      "visible": true
+    }
+  ],
+  "backLink": [
+    {
+      "cls": "back-link",
+      "id": "",
+      "tag": "a",
+      "text": "返回首页",
+      "x": 1158,
+      "y": 107,
+      "w": 70,
+      "h": 18,
+      "visible": true
+    }
+  ],
+  "rightContent": [
+    {
+      "cls": "right-content",
+      "id": "",
+      "tag": "div",
+      "text": "微信扫码\n          账号密码\n          注册账号\n     ",
+      "x": 860,
+      "y": 143,
+      "w": 340,
+      "h": 615,
+      "visible": true
+    }
+  ],
+  "allInput": [
+    {
+      "cls": "",
+      "id": "wxAgreement",
+      "tag": "input",
+      "text": "",
+      "x": 886,
+      "y": 730,
+      "w": 16,
+      "h": 16,
+      "visible": true
+    }
+  ],
+  "allBtn": [
+    {
+      "cls": "login-tab active",
+      "id": "",
+      "tag": "button",
+      "text": "微信扫码",
+      "x": 864,
+      "y": 147,
+      "w": 105,
+      "h": 38,
+      "visible": true
+    },
+    {
+      "cls": "login-tab",
+      "id": "",
+      "tag": "button",
+      "text": "账号密码",
+      "x": 977,
+      "y": 147,
+      "w": 105,
+      "h": 38,
+      "visible": true
+    },
+    {
+      "cls": "login-tab",
+      "id": "",
+      "tag": "button",
+      "text": "注册账号",
+      "x": 1091,
+      "y": 147,
+      "w": 105,
+      "h": 38,
+      "visible": true
+    }
+  ],
+  "allLabel": [
+    {
+      "cls": "checkbox",
+      "id": "",
+      "tag": "label",
+      "text": "我已阅读并同意《用户协议》和《隐私政策》",
+      "x": 886,
+      "y": 727,
+      "w": 288,
+      "h": 20,
+      "visible": true
+    }
+  ],
+  "__doc__": {
+    "scrollW": 1440,
+    "scrollH": 900
+  }
+}
+
+===== [login-accountPanel] https://zhc1231.github.io/mjyy-gw/login.html =====
+{
+  "accountPanel": [
+    {
+      "cls": "login-panel active",
+      "id": "accountPanel",
+      "tag": "div",
+      "text": "用户名 / 手机号\n              \n               ",
+      "x": 860,
+      "y": 256,
+      "w": 340,
+      "h": 466,
+      "visible": true
+    }
+  ],
+  "loginForm": [
+    {
+      "cls": "",
+      "id": "loginForm",
+      "tag": "form",
+      "text": "用户名 / 手机号\n              \n               ",
+      "x": 860,
+      "y": 256,
+      "w": 340,
+      "h": 424,
+      "visible": true
+    }
+  ],
+  "formGroup": [
+    {
+      "cls": "form-group",
+      "id": "",
+      "tag": "div",
+      "text": "用户名 / 手机号",
+      "x": 860,
+      "y": 256,
+      "w": 340,
+      "h": 74,
+      "visible": true
+    },
+    {
+      "cls": "form-group",
+      "id": "",
+      "tag": "div",
+      "text": "登录密码",
+      "x": 860,
+      "y": 348,
+      "w": 340,
+      "h": 74,
+      "visible": true
+    },
+    {
+      "cls": "form-group",
+      "id": "",
+      "tag": "div",
+      "text": "短信验证码\n              \n                \n  ",
+      "x": 860,
+      "y": 440,
+      "w": 340,
+      "h": 74,
+      "visible": true
+    }
+  ],
+  "formLabel": [
+    {
+      "cls": "form-label",
+      "id": "",
+      "tag": "label",
+      "text": "用户名 / 手机号",
+      "x": 860,
+      "y": 256,
+      "w": 340,
+      "h": 18,
+      "visible": true
+    },
+    {
+      "cls": "form-label",
+      "id": "",
+      "tag": "label",
+      "text": "登录密码",
+      "x": 860,
+      "y": 348,
+      "w": 340,
+      "h": 18,
+      "visible": true
+    },
+    {
+      "cls": "form-label",
+      "id": "",
+      "tag": "label",
+      "text": "短信验证码",
+      "x": 860,
+      "y": 440,
+      "w": 340,
+      "h": 18,
+      "visible": true
+    }
+  ],
+  "inputWrap": [
+    {
+      "cls": "input-wrap",
+      "id": "",
+      "tag": "div",
+      "text": "",
+      "x": 860,
+      "y": 282,
+      "w": 340,
+      "h": 48,
+      "visible": true
+    },
+    {
+      "cls": "input-wrap",
+      "id": "",
+      "tag": "div",
+      "text": "",
+      "x": 860,
+      "y": 374,
+      "w": 340,
+      "h": 48,
+      "visible": true
+    },
+    {
+      "cls": "input-wrap",
+      "id": "",
+      "tag": "div",
+      "text": "",
+      "x": 860,
+      "y": 466,
+      "w": 231,
+      "h": 48,
+      "visible": true
+    }
+  ],
+  "formInput": [
+    {
+      "cls": "form-input",
+      "id": "accountInput",
+      "tag": "input",
+      "text": "",
+      "x": 860,
+      "y": 282,
+      "w": 340,
+      "h": 48,
+      "visible": true
+    },
+    {
+      "cls": "form-input",
+      "id": "passwordInput",
+      "tag": "input",
+      "text": "",
+      "x": 860,
+      "y": 374,
+      "w": 340,
+      "h": 48,
+      "visible": true
+    },
+    {
+      "cls": "form-input",
+      "id": "smsInput",
+      "tag": "input",
+      "text": "",
+      "x": 860,
+      "y": 466,
+      "w": 231,
+      "h": 48,
+      "visible": true
+    }
+  ],
+  "smsRow": [
+    {
+      "cls": "sms-row",
+      "id": "",
+      "tag": "div",
+      "text": "获取验证码",
+      "x": 860,
+      "y": 466,
+      "w": 340,
+      "h": 48,
+      "visible": true
+    }
+  ],
+  "smsBtn": [
+    {
+      "cls": "sms-btn",
+      "id": "smsBtn",
+      "tag": "button",
+      "text": "获取验证码",
+      "x": 1101,
+      "y": 466,
+      "w": 99,
+      "h": 48,
+      "visible": true
+    }
+  ],
+  "formOptions": [
+    {
+      "cls": "form-options",
+      "id": "",
+      "tag": "div",
+      "text": "记住登录状态\n              \n              忘记密码",
+      "x": 860,
+      "y": 532,
+      "w": 340,
+      "h": 18,
+      "visible": true
+    }
+  ],
+  "rememberCheckbox": [
+    {
+      "cls": "",
+      "id": "rememberCheckbox",
+      "tag": "input",
+      "text": "",
+      "x": 860,
+      "y": 533,
+      "w": 16,
+      "h": 16,
+      "visible": true
+    }
+  ],
+  "loginAgreement": [
+    {
+      "cls": "login-agreement",
+      "id": "",
+      "tag": "div",
+      "text": "我已阅读并同意《用户协议》和《隐私政策》",
+      "x": 860,
+      "y": 574,
+      "w": 340,
+      "h": 40,
+      "visible": true
+    }
+  ],
+  "submitBtn": [
+    {
+      "cls": "submit-btn",
+      "id": "submitBtn",
+      "tag": "button",
+      "text": "登 录",
+      "x": 860,
+      "y": 632,
+      "w": 340,
+      "h": 48,
+      "visible": true
+    }
+  ],
+  "formFooter": [
+    {
+      "cls": "form-footer",
+      "id": "",
+      "tag": "div",
+      "text": "还没有账号？立即注册",
+      "x": 860,
+      "y": 704,
+      "w": 340,
+      "h": 18,
+      "visible": true
+    }
+  ],
+  "__doc__": {
+    "scrollW": 1440,
+    "scrollH": 900
+  }
+}
+
+===== [login-registerPanel] https://zhc1231.github.io/mjyy-gw/login.html =====
+{
+  "registerPanel": [
+    {
+      "cls": "login-panel active",
+      "id": "registerPanel",
+      "tag": "div",
+      "text": "手机号\n              \n                \n    ",
+      "x": 860,
+      "y": 239,
+      "w": 340,
+      "h": 500,
+      "visible": true
+    }
+  ],
+  "formGroup": [
+    {
+      "cls": "form-group",
+      "id": "",
+      "tag": "div",
+      "text": "手机号",
+      "x": 860,
+      "y": 239,
+      "w": 340,
+      "h": 74,
+      "visible": true
+    },
+    {
+      "cls": "form-group",
+      "id": "",
+      "tag": "div",
+      "text": "短信验证码\n              \n                \n  ",
+      "x": 860,
+      "y": 331,
+      "w": 340,
+      "h": 74,
+      "visible": true
+    },
+    {
+      "cls": "form-group",
+      "id": "",
+      "tag": "div",
+      "text": "登录密码",
+      "x": 860,
+      "y": 423,
+      "w": 340,
+      "h": 74,
+      "visible": true
+    },
+    {
+      "cls": "form-group",
+      "id": "",
+      "tag": "div",
+      "text": "确认密码",
+      "x": 860,
+      "y": 515,
+      "w": 340,
+      "h": 74,
+      "visible": true
+    }
+  ],
+  "formLabel": [
+    {
+      "cls": "form-label",
+      "id": "",
+      "tag": "label",
+      "text": "手机号",
+      "x": 860,
+      "y": 239,
+      "w": 340,
+      "h": 18,
+      "visible": true
+    },
+    {
+      "cls": "form-label",
+      "id": "",
+      "tag": "label",
+      "text": "短信验证码",
+      "x": 860,
+      "y": 331,
+      "w": 340,
+      "h": 18,
+      "visible": true
+    },
+    {
+      "cls": "form-label",
+      "id": "",
+      "tag": "label",
+      "text": "登录密码",
+      "x": 860,
+      "y": 423,
+      "w": 340,
+      "h": 18,
+      "visible": true
+    },
+    {
+      "cls": "form-label",
+      "id": "",
+      "tag": "label",
+      "text": "确认密码",
+      "x": 860,
+      "y": 515,
+      "w": 340,
+      "h": 18,
+      "visible": true
+    }
+  ],
+  "inputWrap": [
+    {
+      "cls": "input-wrap",
+      "id": "",
+      "tag": "div",
+      "text": "",
+      "x": 860,
+      "y": 265,
+      "w": 340,
+      "h": 48,
+      "visible": true
+    },
+    {
+      "cls": "input-wrap",
+      "id": "",
+      "tag": "div",
+      "text": "",
+      "x": 860,
+      "y": 357,
+      "w": 231,
+      "h": 48,
+      "visible": true
+    },
+    {
+      "cls": "input-wrap",
+      "id": "",
+      "tag": "div",
+      "text": "",
+      "x": 860,
+      "y": 449,
+      "w": 340,
+      "h": 48,
+      "visible": true
+    },
+    {
+      "cls": "input-wrap",
+      "id": "",
+      "tag": "div",
+      "text": "",
+      "x": 860,
+      "y": 541,
+      "w": 340,
+      "h": 48,
+      "visible": true
+    }
+  ],
+  "formInput": [
+    {
+      "cls": "form-input",
+      "id": "regPhone",
+      "tag": "input",
+      "text": "",
+      "x": 860,
+      "y": 265,
+      "w": 340,
+      "h": 48,
+      "visible": true
+    },
+    {
+      "cls": "form-input",
+      "id": "regSms",
+      "tag": "input",
+      "text": "",
+      "x": 860,
+      "y": 357,
+      "w": 231,
+      "h": 48,
+      "visible": true
+    },
+    {
+      "cls": "form-input",
+      "id": "regPassword",
+      "tag": "input",
+      "text": "",
+      "x": 860,
+      "y": 449,
+      "w": 340,
+      "h": 48,
+      "visible": true
+    },
+    {
+      "cls": "form-input",
+      "id": "regConfirmPassword",
+      "tag": "input",
+      "text": "",
+      "x": 860,
+      "y": 541,
+      "w": 340,
+      "h": 48,
+      "visible": true
+    }
+  ],
+  "smsRow": [
+    {
+      "cls": "sms-row",
+      "id": "",
+      "tag": "div",
+      "text": "获取验证码",
+      "x": 860,
+      "y": 357,
+      "w": 340,
+      "h": 48,
+      "visible": true
+    }
+  ],
+  "smsBtn": [
+    {
+      "cls": "sms-btn",
+      "id": "regSmsBtn",
+      "tag": "button",
+      "text": "获取验证码",
+      "x": 1101,
+      "y": 357,
+      "w": 99,
+      "h": 48,
+      "visible": true
+    }
+  ],
+  "formOptions": [
+    {
+      "cls": "form-options",
+      "id": "",
+      "tag": "div",
+      "text": "我已阅读并同意《用户协议》和《隐私政策》",
+      "x": 860,
+      "y": 607,
+      "w": 340,
+      "h": 18,
+      "visible": true
+    }
+  ],
+  "regAgreement": [
+    {
+      "cls": "",
+      "id": "regAgreement",
+      "tag": "input",
+      "text": "",
+      "x": 860,
+      "y": 608,
+      "w": 16,
+      "h": 16,
+      "visible": true
+    }
+  ],
+  "regSubmitBtn": [
+    {
+      "cls": "submit-btn",
+      "id": "regSubmitBtn",
+      "tag": "button",
+      "text": "注 册",
+      "x": 860,
+      "y": 649,
+      "w": 340,
+      "h": 48,
+      "visible": true
+    }
+  ],
+  "formFooter": [
+    {
+      "cls": "form-footer",
+      "id": "",
+      "tag": "div",
+      "text": "已有账号？直接登录",
+      "x": 860,
+      "y": 721,
+      "w": 340,
+      "h": 18,
+      "visible": true
+    }
+  ],
+  "__doc__": {
+    "scrollW": 1440,
+    "scrollH": 900
+  }
+}
+
+===== [account-realname] https://zhc1231.github.io/mjyy-gw/account-realname.html?type=enterprise =====
+{
+  "topbar": [
+    {
+      "cls": "topbar",
+      "id": "",
+      "tag": "div",
+      "text": "控制台\n        \n        \n          首页\n     ",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 60,
+      "visible": true
+    }
+  ],
+  "topbarBrand": [
+    {
+      "cls": "topbar-brand",
+      "id": "",
+      "tag": "a",
+      "text": "控制台",
+      "x": 40,
+      "y": 13,
+      "w": 96,
+      "h": 34,
+      "visible": true
+    }
+  ],
+  "topbarBreadcrumb": [
+    {
+      "cls": "topbar-breadcrumb",
+      "id": "",
+      "tag": "div",
+      "text": "首页\n          /\n          控制台\n          /",
+      "x": 156,
+      "y": 24,
+      "w": 148,
+      "h": 13,
+      "visible": true
+    }
+  ],
+  "topbarBcCurrent": [
+    {
+      "cls": "topbar-bc-current",
+      "id": "",
+      "tag": "span",
+      "text": "实名信息",
+      "x": 252,
+      "y": 24,
+      "w": 52,
+      "h": 13,
+      "visible": true
+    }
+  ],
+  "sidebar": [
+    {
+      "cls": "sidebar",
+      "id": "",
+      "tag": "aside",
+      "text": "产品\n      \n        \n          \n          ",
+      "x": 0,
+      "y": 60,
+      "w": 240,
+      "h": 840,
+      "visible": true
+    }
+  ],
+  "sidebarActive": [
+    {
+      "cls": "sidebar-link active",
+      "id": "",
+      "tag": "a",
+      "text": "企业信息",
+      "x": 8,
+      "y": 205,
+      "w": 223,
+      "h": 40,
+      "visible": true
+    }
+  ],
+  "pageContent": [
+    {
+      "cls": "main-content",
+      "id": "",
+      "tag": "main",
+      "text": "企业实名信息\n\n      \n        \n          企业实名信息",
+      "x": 240,
+      "y": 60,
+      "w": 1200,
+      "h": 840,
+      "visible": true
+    }
+  ],
+  "card": [
+    {
+      "cls": "card",
+      "id": "enterpriseCard",
+      "tag": "div",
+      "text": "企业实名信息\n          去认证\n        \n        \n ",
+      "x": 272,
+      "y": 146,
+      "w": 1136,
+      "h": 384,
+      "visible": true
+    }
+  ],
+  "cardHeader": [
+    {
+      "cls": "card-header",
+      "id": "",
+      "tag": "div",
+      "text": "企业实名信息\n          去认证",
+      "x": 273,
+      "y": 147,
+      "w": 1134,
+      "h": 69,
+      "visible": true
+    }
+  ],
+  "cardTitle": [
+    {
+      "cls": "card-title",
+      "id": "",
+      "tag": "div",
+      "text": "企业实名信息",
+      "x": 293,
+      "y": 169,
+      "w": 96,
+      "h": 26,
+      "visible": true
+    }
+  ],
+  "cardBody": [
+    {
+      "cls": "card-body",
+      "id": "",
+      "tag": "div",
+      "text": "企业名称\n              \n              --\n   ",
+      "x": 273,
+      "y": 216,
+      "w": 1134,
+      "h": 314,
+      "visible": true
+    }
+  ],
+  "authBadge": [],
+  "verifyBtn": [
+    {
+      "cls": "btn-primary",
+      "id": "enterpriseVerifyBtn",
+      "tag": "a",
+      "text": "去认证",
+      "x": 1316,
+      "y": 163,
+      "w": 71,
+      "h": 37,
+      "visible": true
+    }
+  ],
+  "infoRow": [],
+  "infoLabel": [
+    {
+      "cls": "info-label",
+      "id": "",
+      "tag": "div",
+      "text": "企业名称",
+      "x": 293,
+      "y": 236,
+      "w": 84,
+      "h": 22,
+      "visible": true
+    },
+    {
+      "cls": "info-label",
+      "id": "",
+      "tag": "div",
+      "text": "统一社会信用代码",
+      "x": 293,
+      "y": 292,
+      "w": 140,
+      "h": 22,
+      "visible": true
+    },
+    {
+      "cls": "info-label",
+      "id": "",
+      "tag": "div",
+      "text": "营业执照",
+      "x": 293,
+      "y": 347,
+      "w": 84,
+      "h": 22,
+      "visible": true
+    },
+    {
+      "cls": "info-label",
+      "id": "",
+      "tag": "div",
+      "text": "法人姓名",
+      "x": 293,
+      "y": 402,
+      "w": 84,
+      "h": 22,
+      "visible": true
+    },
+    {
+      "cls": "info-label",
+      "id": "",
+      "tag": "div",
+      "text": "认证状态",
+      "x": 293,
+      "y": 458,
+      "w": 84,
+      "h": 22,
+      "visible": true
+    }
+  ],
+  "infoValue": [
+    {
+      "cls": "info-value",
+      "id": "enterpriseName",
+      "tag": "div",
+      "text": "--",
+      "x": 1378,
+      "y": 236,
+      "w": 9,
+      "h": 22,
+      "visible": true
+    },
+    {
+      "cls": "info-value",
+      "id": "enterpriseCreditCode",
+      "tag": "div",
+      "text": "--",
+      "x": 1378,
+      "y": 292,
+      "w": 9,
+      "h": 22,
+      "visible": true
+    },
+    {
+      "cls": "info-value",
+      "id": "enterpriseLicense",
+      "tag": "div",
+      "text": "--",
+      "x": 1378,
+      "y": 347,
+      "w": 9,
+      "h": 22,
+      "visible": true
+    },
+    {
+      "cls": "info-value",
+      "id": "enterpriseLegalName",
+      "tag": "div",
+      "text": "--",
+      "x": 1378,
+      "y": 402,
+      "w": 9,
+      "h": 22,
+      "visible": true
+    },
+    {
+      "cls": "info-value",
+      "id": "",
+      "tag": "div",
+      "text": "未认证",
+      "x": 1335,
+      "y": 458,
+      "w": 52,
+      "h": 23,
+      "visible": true
+    }
+  ],
+  "infoStatus": [
+    {
+      "cls": "info-status pending",
+      "id": "enterpriseStatus",
+      "tag": "span",
+      "text": "未认证",
+      "x": 1335,
+      "y": 458,
+      "w": 52,
+      "h": 23,
+      "visible": true
+    }
+  ],
+  "enterpriseName": [
+    {
+      "cls": "info-value",
+      "id": "enterpriseName",
+      "tag": "div",
+      "text": "--",
+      "x": 1378,
+      "y": 236,
+      "w": 9,
+      "h": 22,
+      "visible": true
+    }
+  ],
+  "enterpriseCreditCode": [
+    {
+      "cls": "info-value",
+      "id": "enterpriseCreditCode",
+      "tag": "div",
+      "text": "--",
+      "x": 1378,
+      "y": 292,
+      "w": 9,
+      "h": 22,
+      "visible": true
+    }
+  ],
+  "enterpriseLicense": [
+    {
+      "cls": "info-value",
+      "id": "enterpriseLicense",
+      "tag": "div",
+      "text": "--",
+      "x": 1378,
+      "y": 347,
+      "w": 9,
+      "h": 22,
+      "visible": true
+    }
+  ],
+  "enterpriseLegalName": [
+    {
+      "cls": "info-value",
+      "id": "enterpriseLegalName",
+      "tag": "div",
+      "text": "--",
+      "x": 1378,
+      "y": 402,
+      "w": 9,
+      "h": 22,
+      "visible": true
+    }
+  ],
+  "enterpriseStatus": [
+    {
+      "cls": "info-status pending",
+      "id": "enterpriseStatus",
+      "tag": "span",
+      "text": "未认证",
+      "x": 1335,
+      "y": 458,
+      "w": 52,
+      "h": 23,
+      "visible": true
+    }
+  ],
+  "realnameTip": [
+    {
+      "cls": "realname-tip",
+      "id": "enterpriseTip",
+      "tag": "div",
+      "text": "完成企业实名认证后，可开具企业发票并享受企业专属服务。",
+      "x": 293,
+      "y": 489,
+      "w": 1094,
+      "h": 21,
+      "visible": true
+    }
+  ],
+  "allBtn": [
+    {
+      "cls": "",
+      "id": "authPromptLater",
+      "tag": "button",
+      "text": "稍后再说",
+      "x": 552,
+      "y": 509,
+      "w": 163,
+      "h": 44,
+      "visible": true
+    },
+    {
+      "cls": "",
+      "id": "authPromptGo",
+      "tag": "button",
+      "text": "去认证",
+      "x": 727,
+      "y": 509,
+      "w": 161,
+      "h": 44,
+      "visible": true
+    }
+  ],
+  "__doc__": {
+    "scrollW": 1440,
+    "scrollH": 900
+  }
+}
+
+===== [verify] https://zhc1231.github.io/mjyy-gw/verify.html?type=enterprise =====
+{
+  "topbar": [
+    {
+      "cls": "topbar",
+      "id": "",
+      "tag": "div",
+      "text": "民匠有约\n        \n        \n          \n      ",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 60,
+      "visible": true
+    }
+  ],
+  "contentWrap": [
+    {
+      "cls": "content-wrap",
+      "id": "",
+      "tag": "div",
+      "text": "企业信息认证\n        \n        完成企业信息认证，提交后将进行身",
+      "x": 240,
+      "y": 224,
+      "w": 960,
+      "h": 676,
+      "visible": true
+    }
+  ],
+  "panel": [
+    {
+      "cls": "panel active",
+      "id": "panel-select",
+      "tag": "div",
+      "text": "企业信息认证\n        \n        完成企业信息认证，提交后将进行身",
+      "x": 264,
+      "y": 224,
+      "w": 912,
+      "h": 676,
+      "visible": true
+    }
+  ],
+  "panelHeader": [
+    {
+      "cls": "panel-header",
+      "id": "",
+      "tag": "div",
+      "text": "企业信息认证\n        \n        完成企业信息认证，提交后将进行身",
+      "x": 264,
+      "y": 224,
+      "w": 912,
+      "h": 127,
+      "visible": true
+    }
+  ],
+  "panelTitle": [
+    {
+      "cls": "panel-title",
+      "id": "",
+      "tag": "h2",
+      "text": "企业信息认证",
+      "x": 312,
+      "y": 260,
+      "w": 816,
+      "h": 35,
+      "visible": true
+    }
+  ],
+  "panelDesc": [
+    {
+      "cls": "panel-desc",
+      "id": "",
+      "tag": "p",
+      "text": "完成企业信息认证，提交后将进行身份核验",
+      "x": 312,
+      "y": 303,
+      "w": 816,
+      "h": 22,
+      "visible": true
+    }
+  ],
+  "panelBody": [
+    {
+      "cls": "panel-body",
+      "id": "",
+      "tag": "div",
+      "text": "企业认证\n            适合公司、企业用户\n            \n",
+      "x": 264,
+      "y": 350,
+      "w": 912,
+      "h": 449,
+      "visible": true
+    }
+  ],
+  "authCards": [
+    {
+      "cls": "auth-cards",
+      "id": "authCards",
+      "tag": "div",
+      "text": "企业认证\n            适合公司、企业用户\n            \n",
+      "x": 312,
+      "y": 386,
+      "w": 816,
+      "h": 377,
+      "visible": true
+    }
+  ],
+  "authCard": [
+    {
+      "cls": "auth-card selected",
+      "id": "",
+      "tag": "div",
+      "text": "企业认证\n            适合公司、企业用户\n            \n",
+      "x": 312,
+      "y": 386,
+      "w": 816,
+      "h": 377,
+      "visible": true
+    }
+  ],
+  "authCardTitle": [
+    {
+      "cls": "auth-card-title",
+      "id": "",
+      "tag": "h3",
+      "text": "企业认证",
+      "x": 350,
+      "y": 504,
+      "w": 740,
+      "h": 29,
+      "visible": true
+    }
+  ],
+  "authCardDesc": [
+    {
+      "cls": "auth-card-desc",
+      "id": "",
+      "tag": "p",
+      "text": "适合公司、企业用户",
+      "x": 350,
+      "y": 537,
+      "w": 740,
+      "h": 21,
+      "visible": true
+    }
+  ],
+  "panelFooter": [
+    {
+      "cls": "panel-footer",
+      "id": "",
+      "tag": "div",
+      "text": "返回首页\n        \n        \n          下一步：填写企",
+      "x": 264,
+      "y": 799,
+      "w": 912,
+      "h": 101,
+      "visible": true
+    }
+  ],
+  "btnPrimary": [
+    {
+      "cls": "btn btn-primary",
+      "id": "selectNext",
+      "tag": "button",
+      "text": "下一步：填写企业信息",
+      "x": 910,
+      "y": 820,
+      "w": 218,
+      "h": 44,
+      "visible": true
+    }
+  ],
+  "btnDefault": [
+    {
+      "cls": "btn btn-default",
+      "id": "selectPrev",
+      "tag": "button",
+      "text": "返回首页",
+      "x": 312,
+      "y": 820,
+      "w": 136,
+      "h": 44,
+      "visible": true
+    }
+  ],
+  "allBtn": [
+    {
+      "cls": "btn btn-default",
+      "id": "selectPrev",
+      "tag": "button",
+      "text": "返回首页",
+      "x": 312,
+      "y": 820,
+      "w": 136,
+      "h": 44,
+      "visible": true
+    },
+    {
+      "cls": "btn btn-primary",
+      "id": "selectNext",
+      "tag": "button",
+      "text": "下一步：填写企业信息",
+      "x": 910,
+      "y": 820,
+      "w": 218,
+      "h": 44,
+      "visible": true
+    }
+  ],
+  "__doc__": {
+    "scrollW": 1440,
+    "scrollH": 900
+  }
+}
+
+===== [account-message] https://zhc1231.github.io/mjyy-gw/account-message.html =====
+{
+  "topbar": [
+    {
+      "cls": "topbar",
+      "id": "",
+      "tag": "div",
+      "text": "控制台\n        \n        \n          首页\n     ",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 60,
+      "visible": true
+    }
+  ],
+  "topbarBrand": [
+    {
+      "cls": "topbar-brand",
+      "id": "",
+      "tag": "a",
+      "text": "控制台",
+      "x": 40,
+      "y": 13,
+      "w": 96,
+      "h": 34,
+      "visible": true
+    }
+  ],
+  "topbarBreadcrumb": [
+    {
+      "cls": "topbar-breadcrumb",
+      "id": "",
+      "tag": "div",
+      "text": "首页\n          /\n          控制台\n          /",
+      "x": 156,
+      "y": 24,
+      "w": 148,
+      "h": 13,
+      "visible": true
+    }
+  ],
+  "topbarBcCurrent": [
+    {
+      "cls": "topbar-bc-current",
+      "id": "",
+      "tag": "span",
+      "text": "消息中心",
+      "x": 252,
+      "y": 24,
+      "w": 52,
+      "h": 13,
+      "visible": true
+    }
+  ],
+  "sidebar": [],
+  "msgPageTitle": [
+    {
+      "cls": "msg-page-title",
+      "id": "",
+      "tag": "div",
+      "text": "消息中心",
+      "x": 40,
+      "y": 84,
+      "w": 88,
+      "h": 35,
+      "visible": true
+    }
+  ],
+  "msgTabs": [
+    {
+      "cls": "msg-tabs",
+      "id": "msgTabs",
+      "tag": "div",
+      "text": "全部 8\n        \n        \n          未读 3\n  ",
+      "x": 40,
+      "y": 140,
+      "w": 1360,
+      "h": 44,
+      "visible": true
+    }
+  ],
+  "msgTab": [
+    {
+      "cls": "msg-tab active",
+      "id": "",
+      "tag": "div",
+      "text": "全部 8",
+      "x": 40,
+      "y": 140,
+      "w": 92,
+      "h": 44,
+      "visible": true
+    },
+    {
+      "cls": "msg-tab",
+      "id": "",
+      "tag": "div",
+      "text": "未读 3",
+      "x": 132,
+      "y": 140,
+      "w": 92,
+      "h": 44,
+      "visible": true
+    },
+    {
+      "cls": "msg-tab",
+      "id": "",
+      "tag": "div",
+      "text": "系统 2",
+      "x": 224,
+      "y": 140,
+      "w": 92,
+      "h": 44,
+      "visible": true
+    },
+    {
+      "cls": "msg-tab",
+      "id": "",
+      "tag": "div",
+      "text": "业务 2",
+      "x": 316,
+      "y": 140,
+      "w": 92,
+      "h": 44,
+      "visible": true
+    },
+    {
+      "cls": "msg-tab",
+      "id": "",
+      "tag": "div",
+      "text": "活动 2",
+      "x": 409,
+      "y": 140,
+      "w": 92,
+      "h": 44,
+      "visible": true
+    }
+  ],
+  "msgList": [
+    {
+      "cls": "msg-list",
+      "id": "msgListContainer",
+      "tag": "div",
+      "text": "📋企业审核通过业务您提交的\"浙江良巧匠\"企业认证已通过审核10分钟前🔔系统维",
+      "x": 40,
+      "y": 204,
+      "w": 1360,
+      "h": 844,
+      "visible": true
+    }
+  ],
+  "msgItem": [],
+  "allBtn": [
+    {
+      "cls": "btn btn-outline",
+      "id": "markAllReadBtn",
+      "tag": "button",
+      "text": "全部已读",
+      "x": 1180,
+      "y": 84,
+      "w": 105,
+      "h": 36,
+      "visible": true
+    },
+    {
+      "cls": "btn btn-outline",
+      "id": "clearReadBtn",
+      "tag": "button",
+      "text": "清除已读",
+      "x": 1295,
+      "y": 84,
+      "w": 105,
+      "h": 36,
+      "visible": true
+    }
+  ],
+  "__doc__": {
+    "scrollW": 1440,
+    "scrollH": 1164
+  }
+}

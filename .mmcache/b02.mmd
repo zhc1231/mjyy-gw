@@ -1,0 +1,19 @@
+flowchart TB
+  E["企业:统一社会信用代码唯一"]
+  E --> OWN["主账号 Owner:1个/企业"]
+  E --> S1["子账号 1"]
+  E --> S2["子账号 2"]
+  E --> S3["子账号 3 ... N"]
+
+  OWN --> POW["超级权限集<br/>-企业信息修改/转让<br/>-主账号安全<br/>-添加移除停用子账号<br/>-子账号授权开关<br/>-合同签署/资金划转<br/>-三款SaaS授权开关"]
+
+  S1 --> R1["授权范围例1<br/>-民匠有约 SaaS:全模块<br/>-代理商 SaaS:查看<br/>-安心云 SaaS:未授权<br/>-资金账户:仅充值<br/>-用户管理:查看"]
+  S2 --> R2["授权范围例2<br/>-安心云 SaaS:财税+发票<br/>其他效果<br/>-产品中心卡片变灰<br/>-菜单不在DOM出现"]
+  S3 --> R3["授权范围:自定义任意组合"]
+
+  style OWN fill:#0C9A74,color:#fff
+  style E fill:#1F3FA8,color:#fff
+  style POW fill:#FFF4D9,color:#5C3A00
+  style R1 fill:#EAF0FC,color:#1F3FA8
+  style R2 fill:#E7F8F0,color:#085A3F
+  style R3 fill:#FFF1E5,color:#7A3800
