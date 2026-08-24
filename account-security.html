@@ -22,6 +22,11 @@
       color: var(--text);
       min-height: 100vh;
       line-height: 1.6;
+      /* 强制预留纵向滚动条槽：不管内容长短/是否有8px 纵向滚动条，
+         顶部 max-width:1440 居中的 topbar-inner / logo / 面包屑 / 右上角账户芯片
+         的水平坐标在 12 个左侧菜单页面之间完全一致，不会出现 7~8 像素的左右飘移
+         （用户说"顶部 logo/面包屑/右上角不要有位置偏移"的根因） */
+      overflow-y: scroll;
     }
 
     /* ===== 顶部导航 ===== */
@@ -697,24 +702,22 @@
       padding: 24px 32px 40px;
       min-width: 0;
     }
-
     .page-breadcrumb {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-bottom: 20px;
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; color: var(--text-muted);
+      margin-bottom: 18px;   /* 与产品中心（account-center 官方基线）完全一致 18px，三页之前 20px 的版本这里也同步覆盖 */
     }
-
-    .page-breadcrumb a { color: var(--text-muted); text-decoration: none; }
     .page-breadcrumb a:hover { color: var(--brand-primary); }
 
-    .page-title {
-      font-size: 24px;
-      font-weight: 700;
-      margin-bottom: 24px;
+    .page-title-wrap {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 22px; flex-wrap: wrap; gap: 12px;
     }
+    .page-title { font-size: 24px; font-weight: 700; line-height: 1.2; }
+    .page-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+    .page-actions { display: flex; align-items: center; gap: 10px; }
+
+
 
     /* ===== 卡片组件 ===== */
     .card {
@@ -1059,7 +1062,12 @@
 
     <!-- 主内容区 -->
     <main class="main-content">
-      <h1 class="page-title">账号安全</h1>
+      <div class="page-title-wrap">
+        <div>
+          <div class="page-title">账号安全</div>
+          <div class="page-subtitle">登录密码、手机号、邮箱、登录设备、操作敏感项二次校验与安全日志。</div>
+        </div>
+      </div>
 
       <!-- 安全等级 -->
       <div class="security-level-card" id="securityLevelCard">

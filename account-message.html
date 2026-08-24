@@ -20,6 +20,11 @@
       color: var(--text);
       min-height: 100vh;
       line-height: 1.6;
+      /* 强制预留纵向滚动条槽：不管内容长短/是否有8px 纵向滚动条，
+         顶部 max-width:1440 居中的 topbar-inner / logo / 面包屑 / 右上角账户芯片
+         的水平坐标在 12 个左侧菜单页面之间完全一致，不会出现 7~8 像素的左右飘移
+         （用户说"顶部 logo/面包屑/右上角不要有位置偏移"的根因） */
+      overflow-y: scroll;
     }
 
     /* ===== 顶部导航 ===== */
@@ -425,13 +430,38 @@
     .main-content {
       flex: 1;
       width: 100%;
-      padding: 24px 40px 40px;
+      padding: 24px 32px 40px;
       max-width: 1440px;
       margin: 0 auto;
       min-width: 0;
     }
 
-    /* ===== 消息中心 ===== */
+    /* ===== 消息中心 ===== */    .page-breadcrumb {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; color: var(--text-muted);
+      margin-bottom: 18px;
+    }
+    .page-breadcrumb a:hover { color: var(--brand-primary); }
+
+    .page-title-wrap {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 22px; flex-wrap: wrap; gap: 12px;
+    }
+    .page-title { font-size: 24px; font-weight: 700; line-height: 1.2; }
+    .page-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+    .page-actions { display: flex; align-items: center; gap: 10px; }
+
+    /* 消息中心旧的 msg-page-header 宽度/间距（mb 20）迁移到 page-title-wrap 标准 mb 22，
+       不再使用老的 msg-page-title/msg-page-actions，避免视觉上与 11 个左侧菜单页标题高度/起点不一致。
+       保留 msg-page- 类名仅做 display:none，避免 JavaScript 绑定的 id（markAllReadBtn）
+       和消息列表功能在替换后失效（实际可见标题/按钮走新的 page-title-wrap/page-actions）。*/
+    .msg-page-header { display: none !important; }
+
+    /* main-content 左右内边距 与 11 个左侧菜单页完全一致 24px 32px 40px
+       （旧版 message 使用的是 padding: 24px 40px → 左右 8px 不对齐导致标题起点偏
+        8 像素，虽然 message 没有 sidebar，但 max-width:1440 居中的内边距应与其他页面视觉上一致） */
+
+
     .msg-page-header {
       display: flex;
       align-items: center;
@@ -734,9 +764,12 @@
   <!-- 主内容 -->
   <div class="page-layout">
     <div class="main-content">
-      <div class="msg-page-header">
-        <div class="msg-page-title">消息中心</div>
-        <div class="msg-page-actions">
+      <div class="page-title-wrap">
+        <div>
+          <div class="page-title">消息中心</div>
+          <div class="page-subtitle">系统消息、审批通知、资金变动与安全告警消息统一中心。</div>
+        </div>
+        <div class="page-actions">
           <button class="btn btn-outline" id="markAllReadBtn">
             <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/></svg>
             全部已读
@@ -746,6 +779,10 @@
             清除已读
           </button>
         </div>
+      </div>
+      <div class="msg-page-header" aria-hidden="true">
+        <div class="msg-page-title">消息中心</div>
+        <div class="msg-page-actions"></div>
       </div>
 
       <!-- Tab 筛选 -->
