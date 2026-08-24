@@ -402,8 +402,34 @@
     .search-select { padding:8px 32px 8px 12px; border:1px solid var(--gray-300); border-radius:8px; font-size:14px; background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 10px center; appearance:none; }
 
     /* ===== 表格 ===== */
-    .table-wrap { overflow-x:auto; position:relative; padding-bottom:6px; }
-    table.data-table { width:100%; min-width: 1600px; border-collapse:separate; border-spacing:0; table-layout:auto; writing-mode:horizontal-tb; direction:ltr; }
+    /* 双容器：左侧 table-wrap 负责前 10 列横向滚动（不含操作）；操作列 absolute 盖在右侧独立，不参与滚动条计算 */
+    .table-wrap {
+      overflow-x: auto;
+      overflow-y: visible;
+      position: relative;
+      padding-bottom: 8px;
+      padding-right: 528px; /* 给右侧绝对定位的「操作列」预留空位（滚动条不覆盖此区域） */
+    }
+    /* 操作列容器：在预留的 528px 空位里盖表，不参与滚动 */
+    .table-action-col {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 520px;
+      z-index: 5;
+      background: #fff;
+      box-shadow: -6px 0 10px -6px rgba(0,0,0,0.12);
+      border-radius: 0 10px 10px 0;
+    }
+    .table-action-col table.data-table { min-width: 520px !important; }
+    .table-action-col table.data-table th,
+    .table-action-col table.data-table td {
+      width: 520px; min-width: 520px; max-width: 520px;
+      box-sizing: border-box;
+    }
+    .table-action-col table.data-table tbody tr:last-child td { border-bottom: none; }
+
+    table.data-table { width:100%; min-width: 1180px; border-collapse:separate; border-spacing:0; table-layout:auto; writing-mode:horizontal-tb; direction:ltr; }
     table.data-table thead th,
     table.data-table tbody td {
       writing-mode: horizontal-tb !important;
@@ -420,12 +446,16 @@
       -webkit-line-break: auto !important;
       word-break: keep-all !important;
       overflow-wrap: normal !important;
+      height: 45px;
+      box-sizing: border-box;
     }
     table.data-table td {
       padding:14px 16px; font-size:14px; border-bottom:1px solid var(--gray-100);
       vertical-align:middle; line-height:1.5;
       word-break: keep-all;
       white-space: nowrap;
+      height: 72px;
+      box-sizing: border-box;
     }
     /* 允许换行的特定列：子账号、项目名称、累计划拨 */
     table.data-table td.col-sub,
@@ -440,8 +470,8 @@
       padding:2px 10px; border-radius:4px; font-size:12px; font-weight:500;
       white-space: nowrap; min-height: 20px;
     }
-    /* 列宽保护：按 :nth-child 指定（与表头 11 列对应）
-       1 产品 2 项目编号 3 项目名称 4 负责人 5 电话 6 子账号 7 余额 8 累计划拨 9 状态 10 创建时间 11 操作 */
+    /* 列宽保护：按 :nth-child 指定（与表头 10 列对应）
+       1 产品 2 项目编号 3 项目名称 4 负责人 5 电话 6 子账号 7 余额 8 累计划拨 9 状态 10 创建时间 */
     table.data-table thead tr th:nth-child(1),
     table.data-table tbody tr td:nth-child(1) { min-width: 88px;  width: 88px;  white-space: nowrap; } /* 产品 */
     table.data-table thead tr th:nth-child(2),
@@ -462,22 +492,50 @@
     table.data-table tbody tr td:nth-child(9) { min-width: 80px;  width: 80px;  } /* 状态 */
     table.data-table thead tr th:nth-child(10),
     table.data-table tbody tr td:nth-child(10){ min-width: 156px; width: 156px; } /* 创建时间 */
-    table.data-table thead tr th:nth-child(11),
-    table.data-table tbody tr td:nth-child(11){
-      min-width: 520px; width: 520px; white-space: normal !important; word-break: break-word;
-    } /* 操作（允许折行，按钮折行到下一行也 OK）*/
-    /* 操作列 sticky 到右侧（滚动时固定） */
-    table.data-table thead tr th:last-child,
-    table.data-table tbody tr td:last-child {
-      position: sticky;
-      right: 0;
-      background: #fff;
-      box-shadow: -6px 0 10px -6px rgba(0,0,0,0.10);
-      z-index: 2;
+
+    /* 操作列 sticky 逻辑移除（已拆成独立列，不再需要），保留 hover 背景一致 */
+    .table-action-col table.data-table tr:hover td,
+    .table-action-col table.data-table thead th { background:#fff; }
+    .table-action-col table.data-table thead th { background:var(--gray-50); border-radius: 0 10px 0 0; }
+    .table-action-col table.data-table tbody tr:last-child td { border-radius: 0 0 10px 0; }
+
+    /* 操作列按钮：每 3 个一行，精确换行 */
+    .action-cell {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 0;
+      align-items: center;
+      width: 100%;
+      line-height: 1.4;
     }
-    table.data-table tr:hover td:last-child,
-    table.data-table thead tr:hover th:last-child { background:#fff; }
-    table.data-table thead tr th:last-child { background:var(--gray-50); z-index: 4; }
+    .action-cell .btn-link {
+      /* 每列 3 个：(520 - 16*2 padding - gap) /3 ≈ 156 */
+      flex: 0 0 calc((100% - 0px) / 3);
+      max-width: calc((100% - 0px) / 3);
+      box-sizing: border-box;
+      padding: 4px 2px;
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 13px;
+      border-radius: 4px;
+    }
+    .action-cell .btn-link:hover:not(:disabled) {
+      background: rgba(22, 119, 255, 0.08);
+      text-decoration: none;
+    }
+    .action-cell .btn-link.danger:hover:not(:disabled) { background: rgba(245, 63, 63, 0.08); }
+    .action-cell .btn-link.warning:hover:not(:disabled){ background: rgba(255, 125, 0, 0.08); }
+
+    /* 资金流水表保持原结构（只有 7 列，无操作列，不需要拆） */
+    #recordCard .table-wrap { padding-right: 0; }
+    #recordCard .table-action-col { display: none !important; }
+
     .tag-success { background:#E6FFFB; color:#0C9A74; }
     .tag-warning { background:#FFF7E6; color:#FA8C16; }
     .tag-danger { background:#FFF2F0; color:#F53F3F; }
@@ -748,7 +806,7 @@
           <button class="btn-secondary" onclick="resetSearch()">清空</button>
         </div>
 
-        <div class="table-wrap">
+        <div class="table-wrap" id="projectTableWrap">
           <table class="data-table" id="projectTable">
             <thead>
               <tr>
@@ -762,11 +820,17 @@
                 <th>累计划拨</th>
                 <th>状态</th>
                 <th>创建时间</th>
-                <th>操作</th>
               </tr>
             </thead>
             <tbody id="projectTableBody"></tbody>
           </table>
+          <!-- 独立操作列：不参与横向滚动条（滚动条仅在左 10 列） -->
+          <div class="table-action-col" id="projectActionCol">
+            <table class="data-table">
+              <thead><tr><th>操作</th></tr></thead>
+              <tbody id="projectActionBody"></tbody>
+            </table>
+          </div>
         </div>
 
         <div class="pagination">
@@ -782,7 +846,7 @@
     </div>
 
     <!-- 划拨流水 -->
-    <div class="card">
+    <div class="card" id="recordCard">
       <div class="card-header">
         <div class="card-title">资金划拨流水</div>
         <button class="btn-secondary" id="btnExportRecords" data-action="export-records" type="button" onclick="try{ if(window.exportRecords){ window.exportRecords(); } else { alert('页面初始化未完成，请刷新重试'); } }catch(e){ try{ console.error(e); }catch(x){} try{ alert('导出失败：'+(e.message||e)); }catch(x){} }">
@@ -863,7 +927,13 @@
       <div class="form-group">
         <label class="form-label">初始子账号分配（选填）</label>
         <div id="f_projSubs" class="chips"></div>
-        <div class="form-hint">可后续在列表"子账号"中追加/去除；最多分配 10 个成员</div>
+        <div style="display:flex;gap:8px;align-items:center;margin-top:8px;">
+          <select class="form-select" id="projSubPick" style="flex:1;max-width:320px;">
+            <option value="">— 从子账号池选择成员 —</option>
+          </select>
+          <button class="btn-secondary" type="button" style="padding:8px 14px;" onclick="addProjModalSubDirect()">添加</button>
+          <span class="form-hint" style="margin:0;">最多 10 个；可 x 移除</span>
+        </div>
       </div>
     </div>
     <div class="modal-footer">
@@ -1080,9 +1150,10 @@
     return html;
   }
 
-  // ============ 渲染项目列表 ============
+  // ============ 渲染项目列表（双表：左 10 列 + 独立操作列，滚动条不含操作）============
   function renderProjects(){
     var tbody = $('projectTableBody');
+    var actionBody = $('projectActionBody');
     if(!tbody) return;
     var kw = (($('searchInput').value || '')+'').toLowerCase();
     var st = $('statusFilter').value || '';
@@ -1103,54 +1174,93 @@
       list.push(p);
     }
 
-    var totalCols = 11;
+    var totalCols = 10;
     if(!list.length){
       tbody.innerHTML = '<tr><td colspan="'+totalCols+'"><div class="empty-state"><div class="empty-state-icon">📋</div>暂无符合条件的项目（可清空筛选条件再试）</div></td></tr>';
+      if(actionBody) actionBody.innerHTML = '<tr><td style="height:120px;vertical-align:middle;"><div class="empty-state" style="padding:0;"><div class="empty-state-icon" style="width:32px;height:32px;line-height:32px;font-size:16px;">·</div></div></td></tr>';
       $('paginationInfo').textContent = '共 0 条记录';
+      try{ syncActionHeights(); }catch(e){}
       return;
     }
 
+    // 按钮直接 onclick 调用（不依赖委托），避免脚本初始化异常导致按钮无效
+    function _oc(fn, id){
+      var safe = id.replace(/'/g,"\\'");
+      return 'onclick="try{ event &amp;&amp; event.preventDefault &amp;&amp; event.preventDefault(); }catch(e){} try{ if(window.'+fn+'){ window.'+fn+'(\''+safe+'\'); } else { alert(\'功能未加载完成，请刷新\'); } }catch(e){ try{ alert(\'操作失败:\'+(e.message||e)); }catch(x){} } return false;"';
+    }
+
     var rows = '';
+    var actionRows = '';
     for(var i=0;i<list.length;i++){
       var p = list[i];
       var canStopOrDel = Number(p.balance||0) === 0;
-      // 操作列（data-action + data-id 双属性，兼容 onclick 字符串）
-      var actions = '';
-      actions += '<button class="btn-link" data-action="view-project"   data-id="'+p.id+'" type="button">查看详情</button>';
-      actions += '<button class="btn-link" data-action="edit-project"   data-id="'+p.id+'" type="button">编辑</button>';
-      actions += '<button class="btn-link" data-action="assign-sub"     data-id="'+p.id+'" type="button">子账号分配</button>';
-      actions += '<button class="btn-link" data-action="transfer"       data-id="'+p.id+'" type="button">资金划拨</button>';
-      actions += '<button class="btn-link" data-action="view-records"  data-id="'+p.id+'" type="button">划拨流水</button>';
-      if(p.status==='inactive'){
-        actions += canStopOrDel
-          ? '<button class="btn-link" data-action="enable-project" data-id="'+p.id+'" type="button" style="color:#00B42A;">启用</button>'
-          : '<button class="btn-link" disabled title="项目余额为 0 才能启用">启用</button>';
-      } else {
-        actions += canStopOrDel
-          ? '<button class="btn-link warning" data-action="disable-project" data-id="'+p.id+'" type="button">停用</button>'
-          : '<button class="btn-link" disabled title="项目余额为 0 才能停用">停用</button>';
-      }
-      actions += canStopOrDel
-        ? '<button class="btn-link danger" data-action="delete-project" data-id="'+p.id+'" type="button">删除</button>'
-        : '<button class="btn-link" disabled title="项目余额为 0 才能删除">删除</button>';
 
+      // 左表：前 10 列
       rows += '<tr data-project-id="'+p.id+'">'+
         '<td>'+productTag(p.product)+'</td>'+
         '<td><strong>'+p.id+'</strong></td>'+
         '<td>'+p.name+'</td>'+
         '<td>'+p.owner+'</td>'+
         '<td>'+p.phone+'</td>'+
-        '<td style="min-width:240px;">'+chipsOf(p)+'</td>'+
+        '<td class="col-sub">'+chipsOf(p)+'</td>'+
         '<td><span style="color:var(--brand-primary);font-weight:600;">'+fmtAmount(p.balance)+'</span></td>'+
-        '<td style="font-size:12px;color:var(--text-regular);">入 '+fmtAmount(p.totalIn)+'<br>出 '+fmtAmount(p.totalOut)+'</td>'+
+        '<td class="col-amounts" style="font-size:12px;color:var(--text-regular);">入 '+fmtAmount(p.totalIn)+'<br>出 '+fmtAmount(p.totalOut)+'</td>'+
         '<td>'+statusTag(p.status)+'</td>'+
         '<td style="white-space:nowrap;">'+p.createdAt+'</td>'+
-        '<td style="white-space:normal;min-width:520px;">'+actions+'</td>'+
       '</tr>';
+
+      // 右表：操作列，8 个按钮 → flex-wrap 3 个 1 行（3/3/2）
+      var ab = '';
+      ab += '<button class="btn-link" type="button" '+_oc('viewProjectDetail', p.id)+' data-action="view-project"   data-id="'+p.id+'">查看详情</button>';
+      ab += '<button class="btn-link" type="button" '+_oc('editProject',      p.id)+' data-action="edit-project"   data-id="'+p.id+'">编辑</button>';
+      ab += '<button class="btn-link" type="button" '+_oc('openAssignSubModal',p.id)+' data-action="assign-sub"     data-id="'+p.id+'">子账号分配</button>';
+      ab += '<button class="btn-link" type="button" '+_oc('openTransferModal',p.id)+' data-action="transfer"       data-id="'+p.id+'">资金划拨</button>';
+      ab += '<button class="btn-link" type="button" '+_oc('viewProjectRecords',p.id)+' data-action="view-records"  data-id="'+p.id+'">划拨流水</button>';
+      if(p.status==='inactive'){
+        ab += canStopOrDel
+          ? '<button class="btn-link" type="button" style="color:#00B42A;" '+_oc('enableProject',  p.id)+' data-action="enable-project" data-id="'+p.id+'">启用</button>'
+          : '<button class="btn-link" type="button" disabled title="项目余额为 0 才能启用">启用</button>';
+      } else {
+        ab += canStopOrDel
+          ? '<button class="btn-link warning" type="button" '+_oc('disableProject', p.id)+' data-action="disable-project" data-id="'+p.id+'">停用</button>'
+          : '<button class="btn-link" type="button" disabled title="项目余额为 0 才能停用">停用</button>';
+      }
+      ab += canStopOrDel
+        ? '<button class="btn-link danger" type="button" '+_oc('deleteProject', p.id)+' data-action="delete-project" data-id="'+p.id+'">删除</button>'
+        : '<button class="btn-link" type="button" disabled title="项目余额为 0 才能删除">删除</button>';
+
+      actionRows += '<tr data-project-id="'+p.id+'"><td><div class="action-cell">'+ab+'</div></td></tr>';
     }
     tbody.innerHTML = rows;
+    if(actionBody) actionBody.innerHTML = actionRows;
     $('paginationInfo').textContent = '共 ' + list.length + ' 条记录';
+    // 双表行高同步（防止操作列按钮折行后行高与左表不匹配）
+    try{ syncActionHeights(); }catch(e){}
+    // 50ms 后再同步一次，等待浏览器布局完成
+    try{ setTimeout(syncActionHeights, 50); }catch(e){}
+    try{ setTimeout(syncActionHeights, 200); }catch(e){}
   }
+
+  // 同步左表 tbody 行高 → 操作列对应行 height（因为左/右表独立渲染，默认高度不同步）
+  function syncActionHeights(){
+    try{
+      var left  = document.querySelectorAll('#projectTableBody tr');
+      var right = document.querySelectorAll('#projectActionBody tr');
+      if(!left || !left.length || !right || left.length !== right.length) return;
+      for(var i=0;i<left.length;i++){
+        var lh = left[i].getBoundingClientRect().height;
+        var rh = right[i].getBoundingClientRect().height;
+        var h = Math.max(lh, rh, 72);
+        try{ left[i].style.height  = h + 'px'; }catch(e){}
+        try{ right[i].style.height = h + 'px'; }catch(e){}
+        var lt = left[i].querySelectorAll('td');
+        var rt = right[i].querySelectorAll('td');
+        for(var a=0;a<lt.length;a++){ try{ lt[a].style.height = h + 'px'; }catch(e){} }
+        for(var b=0;b<rt.length;b++){ try{ rt[b].style.height = h + 'px'; }catch(e){} }
+      }
+    }catch(e){ /* ignore */ }
+  }
+  window.syncActionHeights = syncActionHeights;
 
   window.filterProjects = function(){ renderProjects(); };
   window.resetSearch = function(){
@@ -1328,8 +1438,16 @@
       // 编辑态隐藏区：新建时显示
       try{ var ag = $('f_projAmount').closest && $('f_projAmount').closest('.form-group'); if(ag) ag.style.display=''; }catch(e){}
       try{ var sg = $('f_projSubs').closest && $('f_projSubs').closest('.form-group'); if(sg) sg.style.display=''; }catch(e){}
-      try{ var saveBtn = m.querySelector('.modal-footer .btn-primary'); if(saveBtn){ saveBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" width="14" height="14"><polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2"/></svg> 保存'; } }catch(e){}
+      try{ var saveBtn = m.querySelector('.modal-footer .btn-primary'); if(saveBtn){ saveBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" width="14" height="14"><polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2"/></svg> 保存创建'; } }catch(e){}
       _showModal(m);
+      // 打开后：焦点定位 + 重新渲染子账号下拉（等待 DOM 插入）
+      setTimeout(function(){
+        try{
+          var nm = $('f_projName'); if(nm){ nm.focus(); try{ nm.select(); }catch(e){} }
+        }catch(e){}
+        try{ renderProjModalSubs(); }catch(e){}
+        try{ renderProjModalOptions(); }catch(e){}
+      }, 60);
     }catch(err){ try{ console.error(err); }catch(e){} alert('新建项目打开失败：'+(err.message||err)); }
   };
 
@@ -1385,43 +1503,61 @@
   function renderProjModalSubs(){
     var box = $('f_projSubs'); if(!box) return;
     var html = '';
-    for(var i=0;i<projModalSubs.length;i++){
-      var u = findSub(projModalSubs[i]); if(!u) continue;
-      html += '<span class="chip">'
-            + '<span class="chip-avatar">'+(u.name||'').charAt(0)+'</span>'
-            + '<span class="chip-name" title="'+(u.role||'')+' · '+u.phone+'">'+u.name+'</span>'
-            + '<span class="chip-close" onclick="removeProjModalSub(\''+u.id+'\')">×</span>'
-            + '</span>';
+    if(projModalSubs.length===0){
+      html = '<span style="color:var(--text-muted);font-size:13px;">尚未分配子账号（下方选择成员后点添加）</span>';
+    } else {
+      for(var i=0;i<projModalSubs.length;i++){
+        var u = findSub(projModalSubs[i]); if(!u) continue;
+        html += '<span class="chip">'
+              + '<span class="chip-avatar">'+(u.name||'').charAt(0)+'</span>'
+              + '<span class="chip-name" title="'+(u.role||'')+' · '+u.phone+'">'+u.name+'</span>'
+              + '<span class="chip-close" onclick="removeProjModalSub(\''+u.id+'\')" title="移除">×</span>'
+              + '</span>';
+      }
     }
-    html += '<button class="chip-add" onclick="addProjModalSub()">+ 添加成员</button>';
     box.innerHTML = html;
+    // 同步刷新下拉候选项（仅剩余可选成员）
+    try{ renderProjModalOptions(); }catch(e){}
   }
+
+  // 刷新「子账号选择下拉」候选项：只显示未加入的成员
+  window.renderProjModalOptions = function(){
+    try{
+      var sel = $('projSubPick'); if(!sel) return;
+      var remain = SUBACCOUNTS.filter(function(u){ return projModalSubs.indexOf(u.id)<0; });
+      var cur = sel.value;
+      var html = '<option value="">— 从子账号池选择成员 —</option>';
+      for(var i=0;i<remain.length;i++){
+        var u = remain[i];
+        html += '<option value="'+u.id+'">'+u.name+' · '+u.role+' · '+u.phone+'</option>';
+      }
+      sel.innerHTML = html;
+      if(projModalSubs.length>=10){ sel.disabled = true; sel.style.opacity = '.6'; }
+      else { sel.disabled = false; sel.style.opacity = ''; }
+    }catch(e){ /* ignore */ }
+  };
 
   window.removeProjModalSub = function(id){
     projModalSubs = projModalSubs.filter(function(x){ return x!==id; });
     renderProjModalSubs();
   };
 
-  window.addProjModalSub = function(){
-    var remain = SUBACCOUNTS.filter(function(u){ return projModalSubs.indexOf(u.id)<0; });
-    if(projModalSubs.length >= 10){ alert('单个项目最多分配 10 个成员'); return; }
-    if(remain.length===0){ alert('没有可分配的子账号了'); return; }
-    var msg = '选择要分配的子账号（输入序号，多个用英文逗号分隔）：\n';
-    for(var i=0;i<remain.length;i++){
-      msg += (i+1)+'. '+remain[i].name+' · '+remain[i].role+' · '+remain[i].phone+'\n';
+  // 从下拉直接选择并添加（替代之前 prompt 流程）
+  window.addProjModalSubDirect = function(){
+    try{
+      if(projModalSubs.length >= 10){ alert('单个项目最多分配 10 个成员'); return; }
+      var sel = $('projSubPick'); if(!sel) return;
+      var v = sel.value || '';
+      if(!v){ alert('请先从下拉中选择一个子账号'); return; }
+      if(projModalSubs.indexOf(v)<0) projModalSubs.push(v);
+      renderProjModalSubs();
+    }catch(e){
+      alert('添加失败：'+(e.message||e));
     }
-    // 使用浏览器内自定义选择：简单 prompt，失败则默认第一个
-    var val = window.prompt(msg, '1');
-    if(val===null) return;
-    var parts = (val+'').split(/[,，]/);
-    for(var k=0;k<parts.length;k++){
-      var idx = parseInt(parts[k],10)-1;
-      if(!isNaN(idx) && idx>=0 && idx<remain.length && projModalSubs.indexOf(remain[idx].id)<0 && projModalSubs.length<10){
-        projModalSubs.push(remain[idx].id);
-      }
-    }
-    renderProjModalSubs();
   };
+
+  // 保留兼容性：若旧 prompt 函数被调用仍不报错，但直接引导用户使用下拉
+  window.addProjModalSub = function(){ window.addProjModalSubDirect(); };
 
   window.saveProject = function(){
     try{
