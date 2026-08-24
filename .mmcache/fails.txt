@@ -1,0 +1,228 @@
+== Block 01 ==
+node_modules/puppeteer-core/lib/puppeteer/node/BrowserLauncher.js:80:28)
+    at async ChromeLauncher.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/ChromeLauncher.js:39:16)
+    at async PuppeteerNode.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/PuppeteerNode.js:124:16)
+    at async run (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:862:19)
+    at async cli (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:374:3)
+
+
+--STDOUT--
+Generating single mermaid chart
+
+
+== Block 02 ==
+node_modules/puppeteer-core/lib/puppeteer/node/BrowserLauncher.js:80:28)
+    at async ChromeLauncher.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/ChromeLauncher.js:39:16)
+    at async PuppeteerNode.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/PuppeteerNode.js:124:16)
+    at async run (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:862:19)
+    at async cli (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:374:3)
+
+
+--STDOUT--
+Generating single mermaid chart
+
+
+== Block 03 ==
+node_modules/puppeteer-core/lib/puppeteer/node/BrowserLauncher.js:80:28)
+    at async ChromeLauncher.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/ChromeLauncher.js:39:16)
+    at async PuppeteerNode.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/PuppeteerNode.js:124:16)
+    at async run (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:862:19)
+    at async cli (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:374:3)
+
+
+--STDOUT--
+Generating single mermaid chart
+
+
+== Block 04 ==
+node_modules/puppeteer-core/lib/puppeteer/node/BrowserLauncher.js:80:28)
+    at async ChromeLauncher.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/ChromeLauncher.js:39:16)
+    at async PuppeteerNode.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/PuppeteerNode.js:124:16)
+    at async run (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:862:19)
+    at async cli (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:374:3)
+
+
+--STDOUT--
+Generating single mermaid chart
+
+
+== Block 05 ==
+node_modules/puppeteer-core/lib/puppeteer/node/BrowserLauncher.js:80:28)
+    at async ChromeLauncher.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/ChromeLauncher.js:39:16)
+    at async PuppeteerNode.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/PuppeteerNode.js:124:16)
+    at async run (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:862:19)
+    at async cli (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:374:3)
+
+
+--STDOUT--
+Generating single mermaid chart
+
+
+== Block 06 ==
+node_modules/puppeteer-core/lib/puppeteer/node/BrowserLauncher.js:80:28)
+    at async ChromeLauncher.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/ChromeLauncher.js:39:16)
+    at async PuppeteerNode.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/PuppeteerNode.js:124:16)
+    at async run (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:862:19)
+    at async cli (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:374:3)
+
+
+--STDOUT--
+Generating single mermaid chart
+
+
+== Block 07 ==
+node_modules/puppeteer-core/lib/puppeteer/node/BrowserLauncher.js:80:28)
+    at async ChromeLauncher.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/ChromeLauncher.js:39:16)
+    at async PuppeteerNode.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/PuppeteerNode.js:124:16)
+    at async run (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:862:19)
+    at async cli (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:374:3)
+
+
+--STDOUT--
+Generating single mermaid chart
+
+
+== Block 08 ==
+node_modules/puppeteer-core/lib/puppeteer/node/BrowserLauncher.js:80:28)
+    at async ChromeLauncher.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/ChromeLauncher.js:39:16)
+    at async PuppeteerNode.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/PuppeteerNode.js:124:16)
+    at async run (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:862:19)
+    at async cli (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:374:3)
+
+
+--STDOUT--
+Generating single mermaid chart
+
+
+== Block 09 ==
+node_modules/puppeteer-core/lib/puppeteer/node/BrowserLauncher.js:80:28)
+    at async ChromeLauncher.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/ChromeLauncher.js:39:16)
+    at async PuppeteerNode.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/PuppeteerNode.js:124:16)
+    at async run (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:862:19)
+    at async cli (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:374:3)
+
+
+--STDOUT--
+Generating single mermaid chart
+
+
+== Block 10 ==
+node_modules/puppeteer-core/lib/puppeteer/node/BrowserLauncher.js:80:28)
+    at async ChromeLauncher.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/ChromeLauncher.js:39:16)
+    at async PuppeteerNode.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/PuppeteerNode.js:124:16)
+    at async run (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:862:19)
+    at async cli (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:374:3)
+
+
+--STDOUT--
+Generating single mermaid chart
+
+
+== Block 11 ==
+node_modules/puppeteer-core/lib/puppeteer/node/BrowserLauncher.js:80:28)
+    at async ChromeLauncher.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/ChromeLauncher.js:39:16)
+    at async PuppeteerNode.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/PuppeteerNode.js:124:16)
+    at async run (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:862:19)
+    at async cli (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:374:3)
+
+
+--STDOUT--
+Generating single mermaid chart
+
+
+== Block 12 ==
+node_modules/puppeteer-core/lib/puppeteer/node/BrowserLauncher.js:80:28)
+    at async ChromeLauncher.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/ChromeLauncher.js:39:16)
+    at async PuppeteerNode.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/PuppeteerNode.js:124:16)
+    at async run (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:862:19)
+    at async cli (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:374:3)
+
+
+--STDOUT--
+Generating single mermaid chart
+
+
+== Block 13 ==
+node_modules/puppeteer-core/lib/puppeteer/node/BrowserLauncher.js:80:28)
+    at async ChromeLauncher.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/ChromeLauncher.js:39:16)
+    at async PuppeteerNode.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/PuppeteerNode.js:124:16)
+    at async run (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:862:19)
+    at async cli (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:374:3)
+
+
+--STDOUT--
+Generating single mermaid chart
+
+
+== Block 14 ==
+node_modules/puppeteer-core/lib/puppeteer/node/BrowserLauncher.js:80:28)
+    at async ChromeLauncher.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/ChromeLauncher.js:39:16)
+    at async PuppeteerNode.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/PuppeteerNode.js:124:16)
+    at async run (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:862:19)
+    at async cli (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:374:3)
+
+
+--STDOUT--
+Generating single mermaid chart
+
+
+== Block 15 ==
+node_modules/puppeteer-core/lib/puppeteer/node/BrowserLauncher.js:80:28)
+    at async ChromeLauncher.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/ChromeLauncher.js:39:16)
+    at async PuppeteerNode.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/PuppeteerNode.js:124:16)
+    at async run (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:862:19)
+    at async cli (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:374:3)
+
+
+--STDOUT--
+Generating single mermaid chart
+
+
+== Block 16 ==
+node_modules/puppeteer-core/lib/puppeteer/node/BrowserLauncher.js:80:28)
+    at async ChromeLauncher.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/ChromeLauncher.js:39:16)
+    at async PuppeteerNode.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/PuppeteerNode.js:124:16)
+    at async run (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:862:19)
+    at async cli (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:374:3)
+
+
+--STDOUT--
+Generating single mermaid chart
+
+
+== Block 17 ==
+node_modules/puppeteer-core/lib/puppeteer/node/BrowserLauncher.js:80:28)
+    at async ChromeLauncher.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/ChromeLauncher.js:39:16)
+    at async PuppeteerNode.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/PuppeteerNode.js:124:16)
+    at async run (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:862:19)
+    at async cli (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:374:3)
+
+
+--STDOUT--
+Generating single mermaid chart
+
+
+== Block 18 ==
+node_modules/puppeteer-core/lib/puppeteer/node/BrowserLauncher.js:80:28)
+    at async ChromeLauncher.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/ChromeLauncher.js:39:16)
+    at async PuppeteerNode.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/PuppeteerNode.js:124:16)
+    at async run (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:862:19)
+    at async cli (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:374:3)
+
+
+--STDOUT--
+Generating single mermaid chart
+
+
+== Block 19 ==
+node_modules/puppeteer-core/lib/puppeteer/node/BrowserLauncher.js:80:28)
+    at async ChromeLauncher.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/ChromeLauncher.js:39:16)
+    at async PuppeteerNode.launch (file:///root/.npm/_npx/668c188756b835f3/node_modules/puppeteer-core/lib/puppeteer/node/PuppeteerNode.js:124:16)
+    at async run (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:862:19)
+    at async cli (file:///root/.npm/_npx/668c188756b835f3/node_modules/@mermaid-js/mermaid-cli/src/index.js:374:3)
+
+
+--STDOUT--
+Generating single mermaid chart
+
+

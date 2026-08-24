@@ -1,0 +1,10 @@
+flowchart TD
+  OWN["主账号登录"] --> UP["用户管理/权限管理<br/>勾选子账号U的三款SaaS模块开关"]
+  UP --> SAVE["保存到:子账号U的授权范围配置"]
+  SAVE --> SYNC["子账号U下次登录或刷新页<br/>产品中心卡片+菜单+模块URL按最新开关渲染"]
+  SYNC --> EX1["例:勾选 民匠有约 全模块<br/>王师傅可见合同管理/出勤/代发"]
+  SYNC --> EX2["例:不勾选 安心云SaaS<br/>李会计的产品中心安心云卡片变灰"]
+  EX1 --> FEED["任何模块级越权访问:统一返回403并提示联系主账号"]
+  EX2 --> FEED
+  style OWN fill:#0C9A74,color:#fff
+  style FEED fill:#FFE9E6,color:#A83019

@@ -1,0 +1,9 @@
+flowchart TD
+  HOME["主/子账号登录->默认进产品中心"] --> CARD{"三款SaaS卡片按钮态"}
+  CARD -- "主账号 Owner" --> P["三张卡 进入平台 都可点击<br/>点击->进入对应SaaS工作台"]
+  CARD -- "子账号" --> PERM{"检查A1/A2/A3开关<br/>产品+模块是否被主账号勾选?"}
+  PERM -- "未勾选对应产品" --> X["卡片 进入平台 置灰 disabled<br/>hover tooltip:请联系主账号授权"]
+  PERM -- "已勾选" --> Y["卡片 进入平台 可点击<br/>进入后菜单按模块开关裁剪"]
+  style P fill:#E6F1FF,color:#2765D9
+  style Y fill:#0C9A74,color:#fff
+  style X fill:#FFE9E6,color:#A83019

@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>项目管理 - 民匠有约</title>
+  <link rel="stylesheet" href="css/style.css?v=1787415385">
+  <style>
+    :root {
+      --brand-primary: #1677FF;
+      --brand-primary-dark: #0958D9;
+      --brand-primary-50: #E6F4FF;
+      --brand-primary-100: #BAE0FF;
+      --sidebar-width: 240px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #f5f6f7; color: var(--text); min-height: 100vh; line-height: 1.6;
+    }
+
+    /* ===== 顶部导航 ===== */
+    .topbar { background: #fff; height: 60px; width: 100%; position: fixed; top:0;left:0;right:0; z-index:1000; padding:0; border-bottom:1px solid var(--gray-200); }
+    .topbar-inner { max-width:1440px; margin:0 auto; padding:0 40px; height:100%; display:flex; align-items:center; justify-content:space-between; }
+    .topbar-brand { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text); }
+    .topbar-title { font-size:17px; font-weight:700; letter-spacing:0.3px; }
+    .topbar-right { display:flex; align-items:center; gap:8px; }
+    .topbar-user { position:relative; display:flex; align-items:center; gap:10px; padding:6px 12px 6px 8px; border-radius:10px; cursor:pointer; background:#fff; border:1px solid var(--gray-200); }
+    .topbar-user:hover { background:var(--gray-50); }
+    .topbar-avatar { width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,#1677FF 0%,#1E88FF 100%); color:#fff; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:600; }
+    .topbar-user-name { font-size:13px; font-weight:600; color:var(--text); }
+    .topbar-user-role { font-size:11px; color:var(--text-secondary); }
+
+    /* ===== 布局 ===== */
+    .layout { display:flex; padding-top:60px; min-height:100vh; }
+    .sidebar { width:var(--sidebar-width); background:#fff; border-right:1px solid var(--gray-200); padding:16px 0; flex-shrink:0; position:fixed; top:60px; bottom:0; left:0; overflow-y:auto; }
+    .main-content { flex:1; margin-left:var(--sidebar-width); padding:28px 36px; min-width:0; }
+
+    .sidebar-section-title { padding:10px 20px 6px; font-size:11px; color:var(--text-placeholder); font-weight:500; letter-spacing:0.5px; text-transform:uppercase; }
+    .sidebar-menu { list-style:none; }
+    .sidebar-menu li a { display:flex; align-items:center; gap:10px; padding:10px 20px; font-size:14px; color:var(--text-regular); text-decoration:none; transition:all .15s; border-left:3px solid transparent; }
+    .sidebar-menu li a svg { width:18px; height:18px; stroke-width:1.8; flex-shrink:0; }
+    .sidebar-menu li a:hover { background:var(--gray-50); color:var(--brand-primary); }
+    .sidebar-menu li a.active { background:var(--brand-primary-50); color:var(--brand-primary); border-left-color:var(--brand-primary); font-weight:500; }
+    .sidebar-divider { height:1px; background:var(--gray-100); margin:12px 16px; }
+
+    .breadcrumb { font-size:13px; color:var(--text-secondary); margin-bottom:4px; }
+    .breadcrumb span { margin:0 6px; color:var(--text-placeholder); }
+    .breadcrumb b { color:var(--text); font-weight:500; }
+    .page-title { font-size:24px; font-weight:700; margin-bottom:20px; }
+
+    /* ===== 卡片 ===== */
+    .card { background:#fff; border-radius:12px; box-shadow:0 1px 3px rgba(0,0,0,0.04); margin-bottom:16px; overflow:hidden; }
+    .card-header { padding:18px 24px; border-bottom:1px solid var(--gray-100); display:flex; align-items:center; justify-content:space-between; }
+    .card-title { font-size:16px; font-weight:600; }
+    .card-body { padding:20px 24px; }
+
+    /* ===== 统计卡片 ===== */
+    .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:16px; }
+    .stat-card { background:#fff; border-radius:12px; padding:20px 24px; box-shadow:0 1px 3px rgba(0,0,0,0.04); }
+    .stat-card-label { font-size:13px; color:var(--text-secondary); margin-bottom:8px; display:flex; align-items:center; gap:6px; }
+    .stat-card-value { font-size:28px; font-weight:700; }
+    .stat-card-sub { font-size:12px; color:var(--text-placeholder); margin-top:4px; }
+    .stat-card.primary .stat-card-value { color:var(--brand-primary); }
+    .stat-card.success .stat-card-value { color:#0C9A74; }
+    .stat-card.warning .stat-card-value { color:#FA8C16; }
+
+    /* ===== 按钮 ===== */
+    .btn-primary { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; background:var(--brand-primary); color:#fff; border:none; border-radius:8px; font-size:14px; font-weight:500; cursor:pointer; transition:all .15s; text-decoration:none; }
+    .btn-primary:hover { background:var(--brand-primary-dark); }
+    .btn-primary svg { width:14px; height:14px; }
+    .btn-secondary { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; background:#fff; color:var(--text); border:1px solid var(--gray-300); border-radius:8px; font-size:14px; cursor:pointer; transition:all .15s; text-decoration:none; }
+    .btn-secondary:hover { border-color:var(--brand-primary); color:var(--brand-primary); }
+    .btn-danger { color:#F53F3F; font-size:13px; cursor:pointer; background:none; border:none; }
+    .btn-danger:hover { text-decoration:underline; }
+    .btn-link { color:var(--brand-primary); font-size:13px; cursor:pointer; background:none; border:none; text-decoration:none; margin-right:12px; }
+    .btn-link:hover { text-decoration:underline; }
+
+    /* ===== 搜索栏 ===== */
+    .search-bar { display:flex; align-items:center; gap:12px; margin-bottom:16px; flex-wrap:wrap; }
+    .search-input { padding:8px 12px; border:1px solid var(--gray-300); border-radius:8px; font-size:14px; width:220px; }
+    .search-input:focus { outline:none; border-color:var(--brand-primary); box-shadow:0 0 0 3px rgba(22,119,255,0.1); }
+    .search-select { padding:8px 32px 8px 12px; border:1px solid var(--gray-300); border-radius:8px; font-size:14px; background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 10px center; appearance:none; }
+
+    /* ===== 表格 ===== */
+    .table-wrap { overflow-x:auto; }
+    table.data-table { width:100%; border-collapse:collapse; }
+    table.data-table th { padding:12px 16px; text-align:left; font-size:13px; color:var(--text-secondary); font-weight:500; background:var(--gray-50); border-bottom:1px solid var(--gray-200); }
+    table.data-table td { padding:14px 16px; font-size:14px; border-bottom:1px solid var(--gray-100); }
+    table.data-table tr:hover td { background:var(--gray-50); }
+    table.data-table .tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:12px; font-weight:500; }
+    .tag-success { background:#E6FFFB; color:#0C9A74; }
+    .tag-warning { background:#FFF7E6; color:#FA8C16; }
+    .tag-danger { background:#FFF2F0; color:#F53F3F; }
+    .tag-info { background:var(--brand-primary-50); color:var(--brand-primary); }
+
+    /* ===== 弹窗 ===== */
+    .modal-overlay { display:none; position:fixed; top:0;left:0;right:0;bottom:0; background:rgba(0,0,0,0.45); z-index:9999; align-items:center; justify-content:center; }
+    .modal-overlay.active { display:flex; }
+    .modal { background:#fff; border-radius:12px; width:560px; max-width:90vw; max-height:90vh; overflow:auto; box-shadow:0 8px 40px rgba(0,0,0,0.15); }
+    .modal-header { padding:20px 24px; border-bottom:1px solid var(--gray-100); display:flex; justify-content:space-between; align-items:center; }
+    .modal-title { font-size:16px; font-weight:600; }
+    .modal-close { cursor:pointer; color:var(--text-placeholder); font-size:22px; background:none; border:none; line-height:1; }
+    .modal-close:hover { color:var(--text); }
+    .modal-body { padding:20px 24px; }
+    .modal-footer { padding:16px 24px; border-top:1px solid var(--gray-100); display:flex; justify-content:flex-end; gap:12px; }
+
+    .form-group { margin-bottom:16px; }
+    .form-label { display:block; font-size:13px; color:var(--text); margin-bottom:6px; font-weight:500; }
+    .form-label .req { color:#F53F3F; }
+    .form-input, .form-select, .form-textarea { width:100%; padding:9px 12px; border:1px solid var(--gray-300); border-radius:8px; font-size:14px; background:#fff; transition:all .15s; }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { outline:none; border-color:var(--brand-primary); box-shadow:0 0 0 3px rgba(22,119,255,0.1); }
+    .form-input:disabled { background:var(--gray-50); color:var(--text-secondary); }
+    .form-hint { font-size:12px; color:var(--text-placeholder); margin-top:4px; }
+    .form-amount { font-size:24px; font-weight:700; color:var(--brand-primary); }
+    .form-amount .currency { font-size:14px; font-weight:500; margin-right:4px; }
+    .quick-amounts { display:flex; gap:8px; margin-top:8px; }
+    .quick-amount-btn { padding:4px 12px; border:1px solid var(--gray-300); border-radius:6px; background:#fff; font-size:13px; cursor:pointer; transition:all .15s; }
+    .quick-amount-btn:hover { border-color:var(--brand-primary); color:var(--brand-primary); }
+
+    /* ===== 划拨记录 ===== */
+    .record-tabs { display:flex; gap:0; margin-bottom:20px; border-bottom:1px solid var(--gray-200); }
+    .record-tab { padding:10px 20px; font-size:14px; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; color:var(--text-secondary); }
+    .record-tab.active { color:var(--brand-primary); border-bottom-color:var(--brand-primary); font-weight:500; }
+
+    .flow-in { color:#0C9A74; font-weight:500; }
+    .flow-out { color:#F53F3F; font-weight:500; }
+
+    /* ===== 分页 ===== */
+    .pagination { display:flex; align-items:center; justify-content:space-between; padding:14px 24px; border-top:1px solid var(--gray-100); }
+    .pagination-info { font-size:13px; color:var(--text-secondary); }
+    .pagination-controls { display:flex; align-items:center; gap:8px; }
+    .pagination-btn { min-width:32px; height:32px; padding:0 10px; border:1px solid var(--gray-300); background:#fff; border-radius:6px; font-size:13px; cursor:pointer; }
+    .pagination-btn:hover { border-color:var(--brand-primary); color:var(--brand-primary); }
+    .pagination-btn.active { background:var(--brand-primary); color:#fff; border-color:var(--brand-primary); }
+    .pagination-btn:disabled { cursor:not-allowed; opacity:0.5; }
+    .pagination-size { padding:6px 10px; border:1px solid var(--gray-300); border-radius:6px; font-size:13px; background:#fff; }
+
+    /* ===== 空状态 ===== */
+    .empty-state { text-align:center; padding:60px 20px; color:var(--text-placeholder); }
+    .empty-state-icon { font-size:48px; margin-bottom:12px; }
+
+    /* ===== 提示条 ===== */
+    .alert-info { padding:12px 16px; background:var(--brand-primary-50); border:1px solid var(--brand-primary-100); border-radius:8px; color:var(--brand-primary); font-size:13px; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+    .alert-warning { padding:12px 16px; background:#FFF7E6; border:1px solid #FFE7BA; border-radius:8px; color:#FA8C16; font-size:13px; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+
+    .hidden { display:none !important; }
+  </style>
+</head>
+<body>
+
+<!-- 顶部导航 -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" class="topbar-brand">
+      <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#1677FF,#0958D9);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px;">民</div>
+      <span class="topbar-title">民匠有约 · 企业控制台</span>
+    </a>
+    <div class="topbar-right">
+      <div class="topbar-user">
+        <div class="topbar-avatar">小</div>
+        <div>
+          <div class="topbar-user-name">合肥天野保洁有限公司</div>
+          <div class="topbar-user-role">主账号 · 小赵</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- 侧边栏 -->
+  <aside class="sidebar">
+    <div class="sidebar-section-title">产品</div>
+    <ul class="sidebar-menu">
+      <li><a href="account-center.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/></svg>
+        产品中心
+      </a></li>
+    </ul>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-title">企业</div>
+    <ul class="sidebar-menu">
+      <li><a href="account-realname.html?type=enterprise" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4" stroke="currentColor" stroke-width="2"/></svg>
+        企业信息
+      </a></li>
+      <li><a href="account-billing.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"/></svg>
+        合同管理
+      </a></li>
+      <li><a href="account-bank.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"/><line x1="2" y1="10" x2="22" y2="10" stroke="currentColor" stroke-width="2"/></svg>
+        账户管理
+      </a></li>
+    </ul>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-title">财务</div>
+    <ul class="sidebar-menu">
+      <li><a href="account-wallet.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="2"/></svg>
+        资金账户
+      </a></li>
+      <li><a href="account-project.html" class="sidebar-link active">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M9 9h6M9 13h4M9 17h5" stroke="currentColor" stroke-width="2"/></svg>
+        项目管理
+      </a></li>
+    </ul>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-title">设置</div>
+    <ul class="sidebar-menu">
+      <li><a href="account-permission.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="currentColor" stroke-width="2"/></svg>
+        权限概览
+      </a></li>
+      <li><a href="account-user.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2"/></svg>
+        用户管理
+      </a></li>
+      <li><a href="account-role.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+        角色管理
+      </a></li>
+      <li><a href="account-security.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/></svg>
+        账号安全
+      </a></li>
+    </ul>
+  </aside>
+
+  <!-- 主内容 -->
+  <main class="main-content">
+    <div class="breadcrumb">控制台 <span>/</span><b>财务</b> <span>/</span>项目管理</div>
+    <h1 class="page-title">项目管理</h1>
+
+    <!-- 统计卡片 -->
+    <div class="stats-row">
+      <div class="stat-card primary">
+        <div class="stat-card-label">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="2"/></svg>
+          企业资金账户余额
+        </div>
+        <div class="stat-card-value">¥128,580.00</div>
+        <div class="stat-card-sub">主账号：MJYY-MAIN</div>
+      </div>
+      <div class="stat-card success">
+        <div class="stat-card-label">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2"/><polyline points="22 4 12 14.01 9 11.01" stroke="currentColor" stroke-width="2"/></svg>
+          项目资金池总额
+        </div>
+        <div class="stat-card-value">¥56,200.00</div>
+        <div class="stat-card-sub">全部项目账户余额合计</div>
+      </div>
+      <div class="stat-card warning">
+        <div class="stat-card-label">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M9 9h6M9 13h4M9 17h5" stroke="currentColor" stroke-width="2"/></svg>
+          项目数量
+        </div>
+        <div class="stat-card-value">3</div>
+        <div class="stat-card-sub">进行中 3 · 已完成 0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18" stroke="currentColor" stroke-width="2"/><polyline points="17 6 23 6 23 12" stroke="currentColor" stroke-width="2"/></svg>
+          本月划拨笔数
+        </div>
+        <div class="stat-card-value">8</div>
+        <div class="stat-card-sub">本月累计 ¥32,000.00</div>
+      </div>
+    </div>
+
+    <!-- 项目列表 -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">项目列表</div>
+        <button class="btn-primary" onclick="openProjectModal()">
+          <svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/><line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/></svg>
+          新建项目
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="search-bar">
+          <input class="search-input" type="text" id="searchInput" placeholder="搜索项目名称/编号/负责人" oninput="filterProjects()">
+          <select class="search-select" id="statusFilter" onchange="filterProjects()">
+            <option value="">全部状态</option>
+            <option value="active">进行中</option>
+            <option value="paused">已暂停</option>
+            <option value="done">已完成</option>
+          </select>
+          <button class="btn-secondary" onclick="resetSearch()">清空</button>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data-table" id="projectTable">
+            <thead>
+              <tr>
+                <th>项目编号</th>
+                <th>项目名称</th>
+                <th>负责人</th>
+                <th>联系电话</th>
+                <th>项目余额</th>
+                <th>累计划拨</th>
+                <th>状态</th>
+                <th>创建时间</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="projectTableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="pagination">
+          <div class="pagination-info" id="paginationInfo">共 3 条记录</div>
+          <div class="pagination-controls">
+            <select class="pagination-size"><option>10条/页</option></select>
+            <button class="pagination-btn" disabled>上一页</button>
+            <button class="pagination-btn active">1</button>
+            <button class="pagination-btn" disabled>下一页</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 划拨流水 -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">资金划拨流水</div>
+        <button class="btn-secondary" onclick="exportRecords()">
+          <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" stroke="currentColor" stroke-width="2"/></svg>
+          导出
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="record-tabs">
+          <div class="record-tab active" onclick="switchTab(this,'all')">全部流水</div>
+          <div class="record-tab" onclick="switchTab(this,'in')">企业→项目（入账）</div>
+          <div class="record-tab" onclick="switchTab(this,'out')">项目→企业（调出）</div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data-table" id="recordTable">
+            <thead>
+              <tr>
+                <th>流水号</th>
+                <th>划拨方向</th>
+                <th>对方账户</th>
+                <th>金额</th>
+                <th>备注</th>
+                <th>操作人</th>
+                <th>状态</th>
+                <th>划拨时间</th>
+              </tr>
+            </thead>
+            <tbody id="recordTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ===== 新建项目弹窗 ===== -->
+<div class="modal-overlay" id="projectModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="projectModalTitle">新建项目</div>
+      <button class="modal-close" onclick="closeProjectModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">项目名称 <span class="req">*</span></label>
+        <input class="form-input" id="f_projName" type="text" placeholder="请输入项目名称" maxlength="50">
+      </div>
+      <div class="form-group">
+        <label class="form-label">项目编号 <span class="req">*</span></label>
+        <input class="form-input" id="f_projCode" type="text" placeholder="如 PRJ-2026-001（自动生成或自定义）">
+        <div class="form-hint">留空将自动生成编号</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">负责人 <span class="req">*</span></label>
+        <input class="form-input" id="f_projOwner" type="text" placeholder="请输入项目负责人姓名">
+      </div>
+      <div class="form-group">
+        <label class="form-label">联系电话 <span class="req">*</span></label>
+        <input class="form-input" id="f_projPhone" type="text" placeholder="请输入负责人手机号">
+      </div>
+      <div class="form-group">
+        <label class="form-label">初始划拨金额</label>
+        <input class="form-input" id="f_projAmount" type="number" placeholder="0.00" min="0" step="0.01">
+        <div class="form-hint">创建后可从企业资金账户划拨到此项目（可选，填0即跳过初始划拨）</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">项目描述</label>
+        <textarea class="form-textarea" id="f_projDesc" rows="3" placeholder="请输入项目描述（选填）"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeProjectModal()">取消</button>
+      <button class="btn-primary" onclick="saveProject()">
+        <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2"/></svg>
+        保存
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 资金划拨弹窗 ===== -->
+<div class="modal-overlay" id="transferModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="transferModalTitle">资金划拨</div>
+      <button class="modal-close" onclick="closeTransferModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="alert-info" id="transferAlert">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><line x1="12" y1="16" x2="12" y2="12" stroke="currentColor" stroke-width="2"/><line x1="12" y1="8" x2="12.01" y2="8" stroke="currentColor" stroke-width="2"/></svg>
+        企业账户与项目账户之间的资金划转，实时到账
+      </div>
+      <div class="form-group">
+        <label class="form-label">转出账户 <span class="req">*</span></label>
+        <select class="form-select" id="f_fromAccount" onchange="updateTransferInfo()"></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">转入账户 <span class="req">*</span></label>
+        <select class="form-select" id="f_toAccount" onchange="updateTransferInfo()"></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">划拨金额 <span class="req">*</span></label>
+        <div class="form-input" style="padding:9px 12px;">
+          <span class="form-amount"><span class="currency">¥</span><input id="f_amount" type="number" placeholder="0.00" min="0.01" step="0.01" style="border:none;outline:none;width:100%;font-size:24px;font-weight:700;color:var(--brand-primary);background:transparent;"></span>
+        </div>
+        <div class="form-hint">可转出最大金额：<span id="maxTransferAmount">¥0.00</span></div>
+        <div class="quick-amounts">
+          <button class="quick-amount-btn" onclick="setQuickAmount(1000)">¥1,000</button>
+          <button class="quick-amount-btn" onclick="setQuickAmount(5000)">¥5,000</button>
+          <button class="quick-amount-btn" onclick="setQuickAmount(10000)">¥10,000</button>
+          <button class="quick-amount-btn" onclick="setQuickAmount(50000)">¥50,000</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">备注</label>
+        <input class="form-input" id="f_transferRemark" type="text" placeholder="请输入划拨备注（选填）" maxlength="100">
+      </div>
+      <div class="form-group">
+        <label class="form-label">安全验证 <span class="req">*</span></label>
+        <div style="display:flex;gap:8px;">
+          <input class="form-input" id="f_transferCode" type="text" placeholder="短信验证码" maxlength="6" style="flex:1;">
+          <button class="btn-secondary" onclick="sendTransferCode()" id="sendCodeBtn">获取验证码</button>
+        </div>
+        <div class="form-hint">验证码将发送至主账号手机号 178****69096</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeTransferModal()">取消</button>
+      <button class="btn-primary" onclick="confirmTransfer()">确认划拨</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 划拨流水详情弹窗 ===== -->
+<div class="modal-overlay" id="recordDetailModal">
+  <div class="modal" style="width:640px;">
+    <div class="modal-header">
+      <div class="modal-title">划拨流水详情</div>
+      <button class="modal-close" onclick="closeRecordDetail()">×</button>
+    </div>
+    <div class="modal-body" id="recordDetailBody"></div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeRecordDetail()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  // ============ Mock 数据 ============
+  var projects = [
+    { id:'PRJ-2026-001', name:'杭州地铁保洁项目', owner:'小赵', phone:'17857069096', balance:28500, totalIn:50000, totalOut:21500, status:'active', createdAt:'2025-08-12 09:19:32', desc:'地铁1号线保洁服务' },
+    { id:'PRJ-2026-002', name:'阿里巴巴园区保洁', owner:'小李', phone:'13912345678', balance:18700, totalIn:30000, totalOut:11300, status:'active', createdAt:'2025-09-01 14:32:18', desc:'园区日常保洁' },
+    { id:'PRJ-2026-003', name:'万达广场安保项目', owner:'小王', phone:'13700123456', balance:9000, totalIn:15000, totalOut:6000, status:'active', createdAt:'2025-10-15 10:08:45', desc:'安保服务外包' }
+  ];
+
+  var records = [
+    { no:'TR20251001001', direction:'in', from:'企业资金账户', to:'杭州地铁保洁项目', amount:20000, remark:'首笔项目资金', operator:'小赵', status:'成功', time:'2025-10-01 10:23:45' },
+    { no:'TR20251008002', direction:'in', from:'企业资金账户', to:'阿里巴巴园区保洁', amount:10000, remark:'月度拨款', operator:'小赵', status:'成功', time:'2025-10-08 15:12:30' },
+    { no:'TR20251012003', direction:'out', from:'杭州地铁保洁项目', to:'企业资金账户', amount:5000, remark:'结余退回', operator:'小李', status:'成功', time:'2025-10-12 09:45:18' },
+    { no:'TR20251015004', direction:'in', from:'企业资金账户', to:'万达广场安保项目', amount:15000, remark:'项目启动资金', operator:'小赵', status:'成功', time:'2025-10-15 10:08:45' },
+    { no:'TR20251020005', direction:'out', from:'阿里巴巴园区保洁', to:'企业资金账户', amount:3000, remark:'经费结余', operator:'小王', status:'成功', time:'2025-10-20 16:30:22' },
+    { no:'TR20251025006', direction:'in', from:'企业资金账户', to:'杭州地铁保洁项目', amount:10000, remark:'追加拨款', operator:'小赵', status:'成功', time:'2025-10-25 11:20:10' },
+    { no:'TR20251101007', direction:'in', from:'企业资金账户', to:'阿里巴巴园区保洁', amount:12000, remark:'月度预算', operator:'小赵', status:'成功', time:'2025-11-01 09:05:33' },
+    { no:'TR20251115008', direction:'out', from:'万达广场安保项目', to:'企业资金账户', amount:1500, remark:'结余回收', operator:'小李', status:'成功', time:'2025-11-15 14:58:47' }
+  ];
+
+  var ENTERPRISE_BALANCE = 128580.00;
+
+  // ============ 渲染项目列表 ============
+  function renderProjects(){
+    var tbody = document.getElementById('projectTableBody');
+    var keyword = (document.getElementById('searchInput').value || '').toLowerCase();
+    var status = document.getElementById('statusFilter').value;
+    var filtered = projects.filter(function(p){
+      var matchKw = !keyword || p.name.toLowerCase().indexOf(keyword)>=0 || p.id.toLowerCase().indexOf(keyword)>=0 || p.owner.toLowerCase().indexOf(keyword)>=0;
+      var matchStatus = !status || p.status===status;
+      return matchKw && matchStatus;
+    });
+    tbody.innerHTML = filtered.map(function(p){
+      return '<tr>' +
+        '<td><strong>' + p.id + '</strong></td>' +
+        '<td>' + p.name + '</td>' +
+        '<td>' + p.owner + '</td>' +
+        '<td>' + p.phone + '</td>' +
+        '<td><span style="color:var(--brand-primary);font-weight:600;">¥' + p.balance.toLocaleString('zh-CN',{minimumFractionDigits:2}) + '</span></td>' +
+        '<td>累计收入 ¥' + p.totalIn.toLocaleString('zh-CN') + ' / 累计调出 ¥' + p.totalOut.toLocaleString('zh-CN') + '</td>' +
+        '<td>' + statusTag(p.status) + '</td>' +
+        '<td>' + p.createdAt + '</td>' +
+        '<td>' +
+          '<button class="btn-link" onclick="openTransferModal(\'' + p.id + '\')">资金划拨</button>' +
+          '<button class="btn-link" onclick="viewProjectRecords(\'' + p.id + '\')">划拨流水</button>' +
+          '<button class="btn-link" style="color:#F53F3F;" onclick="deleteProject(\'' + p.id + '\')">删除</button>' +
+        '</td>' +
+      '</tr>';
+    }).join('') || '<tr><td colspan="9"><div class="empty-state"><div class="empty-state-icon">📋</div>暂无项目</div></td></tr>';
+    document.getElementById('paginationInfo').textContent = '共 ' + filtered.length + ' 条记录';
+  }
+
+  function statusTag(s){
+    if(s==='active') return '<span class="tag tag-success">进行中</span>';
+    if(s==='paused') return '<span class="tag tag-warning">已暂停</span>';
+    return '<span class="tag tag-info">已完成</span>';
+  }
+
+  function filterProjects(){ renderProjects(); }
+  function resetSearch(){ document.getElementById('searchInput').value=''; document.getElementById('statusFilter').value=''; renderProjects(); }
+
+  // ============ 渲染流水 ============
+  var currentTab = 'all';
+  function renderRecords(){
+    var tbody = document.getElementById('recordTableBody');
+    var filtered = records.filter(function(r){
+      if(currentTab==='all') return true;
+      return r.direction===currentTab;
+    });
+    tbody.innerHTML = filtered.map(function(r){
+      var dirTag = r.direction==='in'
+        ? '<span class="tag tag-success">企业→项目 入账</span>'
+        : '<span class="tag tag-warning">项目→企业 调出</span>';
+      var amountClass = r.direction==='in' ? 'flow-in' : 'flow-out';
+      var amountPrefix = r.direction==='in' ? '+' : '-';
+      return '<tr>' +
+        '<td>' + r.no + '</td>' +
+        '<td>' + dirTag + '</td>' +
+        '<td>' + r.from + ' → ' + r.to + '</td>' +
+        '<td class="' + amountClass + '">' + amountPrefix + '¥' + r.amount.toLocaleString('zh-CN',{minimumFractionDigits:2}) + '</td>' +
+        '<td>' + r.remark + '</td>' +
+        '<td>' + r.operator + '</td>' +
+        '<td><span class="tag tag-success">' + r.status + '</span></td>' +
+        '<td>' + r.time + '</td>' +
+      '</tr>';
+    }).join('') || '<tr><td colspan="8"><div class="empty-state"><div class="empty-state-icon">💸</div>暂无划拨记录</div></td></tr>';
+  }
+
+  function switchTab(el, tab){
+    currentTab = tab;
+    document.querySelectorAll('.record-tab').forEach(function(t){ t.classList.remove('active'); });
+    el.classList.add('active');
+    renderRecords();
+  }
+
+  // ============ 新建项目 ============
+  window.openProjectModal = function(){
+    document.getElementById('projectModalTitle').textContent = '新建项目';
+    ['f_projName','f_projCode','f_projOwner','f_projPhone','f_projAmount','f_projDesc'].forEach(function(id){
+      var el = document.getElementById(id); if(el) el.value='';
+    });
+    document.getElementById('projectModal').classList.add('active');
+  };
+
+  window.closeProjectModal = function(){
+    document.getElementById('projectModal').classList.remove('active');
+  };
+
+  window.saveProject = function(){
+    var name = document.getElementById('f_projName').value.trim();
+    var code = document.getElementById('f_projCode').value.trim();
+    var owner = document.getElementById('f_projOwner').value.trim();
+    var phone = document.getElementById('f_projPhone').value.trim();
+    var amount = parseFloat(document.getElementById('f_projAmount').value || '0');
+    var desc = document.getElementById('f_projDesc').value.trim();
+
+    if(!name){ alert('请输入项目名称'); return; }
+    if(!owner){ alert('请输入负责人姓名'); return; }
+    if(!phone){ alert('请输入联系电话'); return; }
+
+    var newCode = code || ('PRJ-' + new Date().getFullYear() + '-' + String(projects.length+1).padStart(3,'0'));
+    var now = new Date();
+    var ts = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0')+' '+
+             String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');
+
+    var p = { id:newCode, name:name, owner:owner, phone:phone, balance:amount||0, totalIn:amount||0, totalOut:0, status:'active', createdAt:ts, desc:desc };
+    projects.push(p);
+
+    // 初始划拨
+    if(amount>0){
+      records.unshift({
+        no:'TR' + now.getFullYear()+String(now.getMonth()).padStart(2,'0')+String(now.getDate()).padStart(2,'0') + String(Math.floor(Math.random()*900)+100),
+        direction:'in', from:'企业资金账户', to:name+'('+newCode+')', amount:amount,
+        remark:'项目启动资金', operator:'当前用户', status:'成功', time:ts
+      });
+      ENTERPRISE_BALANCE -= amount;
+      updateStats();
+    }
+
+    closeProjectModal();
+    renderProjects();
+    renderRecords();
+    alert('项目创建成功' + (amount>0 ? '，已划拨 ¥'+amount.toLocaleString('zh-CN')+' 到项目账户' : ''));
+  };
+
+  window.deleteProject = function(id){
+    if(!confirm('确定删除项目 ' + id + ' 吗？删除前请确保项目余额已清零。')) return;
+    projects = projects.filter(function(p){ return p.id!==id; });
+    renderProjects();
+  };
+
+  // ============ 资金划拨 ============
+  var transferTargetProjectId = null;
+
+  window.openTransferModal = function(projectId){
+    transferTargetProjectId = projectId || null;
+    var modalTitle = projectId ? '资金划拨 → ' + projects.find(function(p){return p.id===projectId;}).name : '资金划拨';
+    document.getElementById('transferModalTitle').textContent = modalTitle;
+
+    // 填充转出账户
+    var fromSel = document.getElementById('f_fromAccount');
+    var toSel = document.getElementById('f_toAccount');
+    fromSel.innerHTML = '';
+    toSel.innerHTML = '';
+
+    // 企业资金账户
+    fromSel.innerHTML += '<option value="enterprise">企业资金账户 · MJYY-MAIN · ¥' + ENTERPRISE_BALANCE.toLocaleString('zh-CN',{minimumFractionDigits:2}) + '</option>';
+    // 项目账户
+    projects.forEach(function(p){
+      var sel = (projectId===p.id) ? ' selected' : '';
+      fromSel.innerHTML += '<option value="prj:'+p.id+'"'+sel+'>项目账户 · '+p.name+' · ¥'+p.balance.toLocaleString('zh-CN',{minimumFractionDigits:2})+'</option>';
+    });
+
+    // 转入账户（排除自己）
+    toSel.innerHTML = '<option value="">请选择转入账户</option>';
+    projects.forEach(function(p){
+      if(p.id!==projectId){
+        toSel.innerHTML += '<option value="prj:'+p.id+'">项目账户 · '+p.name+' · ¥'+p.balance.toLocaleString('zh-CN',{minimumFractionDigits:2})+'</option>';
+      }
+    });
+    toSel.innerHTML += '<option value="enterprise">企业资金账户 · MJYY-MAIN</option>';
+
+    // 如果指定了项目，默认选中"企业→该项目"
+    if(projectId){
+      fromSel.value = 'enterprise';
+      toSel.value = 'prj:' + projectId;
+    }
+
+    updateTransferInfo();
+    document.getElementById('f_amount').value = '';
+    document.getElementById('f_transferRemark').value = '';
+    document.getElementById('f_transferCode').value = '';
+    document.getElementById('transferModal').classList.add('active');
+  };
+
+  window.closeTransferModal = function(){
+    document.getElementById('transferModal').classList.remove('active');
+  };
+
+  function getAccountBalance(val){
+    if(!val) return 0;
+    if(val==='enterprise') return ENTERPRISE_BALANCE;
+    var id = val.replace('prj:','');
+    var p = projects.find(function(x){ return x.id===id; });
+    return p ? p.balance : 0;
+  }
+
+  function updateTransferInfo(){
+    var from = document.getElementById('f_fromAccount').value;
+    var to = document.getElementById('f_toAccount').value;
+    var max = getAccountBalance(from);
+    document.getElementById('maxTransferAmount').textContent = '¥' + max.toLocaleString('zh-CN',{minimumFractionDigits:2});
+
+    // 方向提示
+    var alert = document.getElementById('transferAlert');
+    if(from==='enterprise' && to && to.startsWith('prj:')){
+      var pn = projects.find(function(p){return p.id===to.replace('prj:','');});
+      alert.innerHTML = '企业 → 项目：资金从企业主账户划拨至项目账户，项目可独立支配使用';
+    } else if(from && from.startsWith('prj:') && to==='enterprise'){
+      var pn2 = projects.find(function(p){return p.id===from.replace('prj:','');});
+      alert.innerHTML = '项目 → 企业：项目结余资金退回企业主账户';
+    } else if(from && from.startsWith('prj:') && to && to.startsWith('prj:')){
+      alert.innerHTML = '项目 → 项目：资金在项目间划转';
+    } else {
+      alert.innerHTML = '请选择转出和转入账户';
+    }
+  }
+
+  window.setQuickAmount = function(v){
+    document.getElementById('f_amount').value = v;
+  };
+
+  window.sendTransferCode = function(){
+    var btn = document.getElementById('sendCodeBtn');
+    btn.disabled = true;
+    btn.textContent = '已发送 (60s)';
+    var s = 60;
+    var timer = setInterval(function(){
+      s--;
+      btn.textContent = '已发送 (' + s + 's)';
+      if(s<=0){ clearInterval(timer); btn.disabled=false; btn.textContent='获取验证码'; }
+    },1000);
+    alert('验证码已发送到 178****69096（演示环境：验证码为 123456）');
+  };
+
+  window.confirmTransfer = function(){
+    var from = document.getElementById('f_fromAccount').value;
+    var to = document.getElementById('f_toAccount').value;
+    var amount = parseFloat(document.getElementById('f_amount').value);
+    var code = document.getElementById('f_transferCode').value.trim();
+    var remark = document.getElementById('f_transferRemark').value.trim();
+
+    if(!from){ alert('请选择转出账户'); return; }
+    if(!to){ alert('请选择转入账户'); return; }
+    if(from===to){ alert('转出和转入账户不能相同'); return; }
+    if(!amount || amount<=0){ alert('请输入有效的划拨金额'); return; }
+    var max = getAccountBalance(from);
+    if(amount > max){ alert('划拨金额超出可用余额'); return; }
+    if(!code){ alert('请输入验证码'); return; }
+    if(code!=='123456'){ alert('验证码错误（演示环境请输入 123456）'); return; }
+
+    // 执行划拨
+    var fromName = from==='enterprise' ? '企业资金账户' : (projects.find(function(p){return p.id===from.replace('prj:','');}).name || from);
+    var toName = to==='enterprise' ? '企业资金账户' : (projects.find(function(p){return p.id===to.replace('prj:','');}).name || to);
+    var direction = (from==='enterprise' && to.startsWith('prj:')) ? 'in' : 'out';
+
+    // 更新余额
+    if(from==='enterprise'){
+      ENTERPRISE_BALANCE -= amount;
+    } else {
+      var fp = projects.find(function(p){return p.id===from.replace('prj:','');});
+      fp.balance -= amount;
+    }
+    if(to==='enterprise'){
+      ENTERPRISE_BALANCE += amount;
+    } else {
+      var tp = projects.find(function(p){return p.id===to.replace('prj:','');});
+      tp.balance += amount;
+      if(direction==='in'){ tp.totalIn += amount; }
+      else { tp.totalOut += amount; }
+    }
+
+    // 记录流水
+    var now = new Date();
+    var ts = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0')+' '+
+             String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');
+    records.unshift({
+      no:'TR' + now.getFullYear()+String(now.getMonth()).padStart(2,'0')+String(now.getDate()).padStart(2,'0') + String(Math.floor(Math.random()*900)+100),
+      direction:direction, from:fromName, to:toName, amount:amount,
+      remark:remark||'资金划拨', operator:'当前用户', status:'成功', time:ts
+    });
+
+    closeTransferModal();
+    updateStats();
+    renderProjects();
+    renderRecords();
+    alert('划拨成功！¥' + amount.toLocaleString('zh-CN') + ' 已从 ' + fromName + ' 划转至 ' + toName);
+  };
+
+  // ============ 流水详情 ============
+  window.viewProjectRecords = function(projectId){
+    var p = projects.find(function(x){ return x.id===projectId; });
+    if(!p) return;
+    var projectRecords = records.filter(function(r){
+      return r.to.indexOf(p.name)>=0 || r.from.indexOf(p.name)>=0;
+    });
+    var body = '<h3 style="margin:0 0 16px;font-size:16px;font-weight:600;">' + p.name + ' · 划拨流水</h3>';
+    if(projectRecords.length===0){
+      body += '<div class="empty-state"><div class="empty-state-icon">💸</div>暂无划拨记录</div>';
+    } else {
+      body += '<div style="max-height:400px;overflow-y:auto;">';
+      body += '<table class="data-table"><thead><tr><th>流水号</th><th>方向</th><th>金额</th><th>时间</th></tr></thead><tbody>';
+      projectRecords.forEach(function(r){
+        var cls = r.direction==='in' ? 'flow-in' : 'flow-out';
+        var sign = r.direction==='in' ? '+' : '-';
+        body += '<tr><td>' + r.no + '</td><td>' + r.remark + '</td><td class="'+cls+'">'+sign+'¥'+r.amount.toLocaleString('zh-CN')+'</td><td>'+r.time+'</td></tr>';
+      });
+      body += '</tbody></table></div>';
+    }
+    document.getElementById('recordDetailBody').innerHTML = body;
+    document.getElementById('recordDetailModal').classList.add('active');
+  };
+
+  window.closeRecordDetail = function(){
+    document.getElementById('recordDetailModal').classList.remove('active');
+  };
+
+  window.exportRecords = function(){
+    alert('导出功能演示：已导出 ' + records.length + ' 条划拨流水记录');
+  };
+
+  // ============ 更新统计 ============
+  function updateStats(){
+    var totalPool = projects.reduce(function(s,p){ return s+p.balance; }, 0);
+    var activeCount = projects.filter(function(p){return p.status==='active';}).length;
+    document.querySelectorAll('.stat-card-value').forEach(function(el,i){
+      if(i===0) el.textContent = '¥' + ENTERPRISE_BALANCE.toLocaleString('zh-CN',{minimumFractionDigits:2});
+      if(i===1) el.textContent = '¥' + totalPool.toLocaleString('zh-CN',{minimumFractionDigits:2});
+      if(i===2) el.textContent = activeCount;
+    });
+  }
+
+  // ============ 初始化 ============
+  renderProjects();
+  renderRecords();
+  updateStats();
+
+})();
+</script>
+
+</body>
+</html>

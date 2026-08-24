@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>消息中心 - 民匠有约</title>
+  <link rel="stylesheet" href="css/style.css?v=23">
+  <style>
+    :root {
+      --brand-primary: #1677FF;
+      --brand-primary-dark: #0958D9;
+      --brand-primary-50: #E6F4FF;
+      --brand-primary-100: #BAE0FF;
+      --sidebar-width: 240px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #f5f6f7;
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ===== 顶部导航 ===== */
+    .topbar {
+      background: #fff;
+      border-bottom: none;
+      height: 60px;
+      width: 100%;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 0;
+    }
+
+    .topbar-inner {
+      max-width: 1440px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 40px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .topbar-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--gray-200);
+      margin: 0 12px;
+    }
+
+    .topbar-crumb {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .topbar-crumb b { color: var(--text); font-weight: 600; }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .topbar-title {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+    .topbar-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 13px;
+      color: var(--text-regular);
+      line-height: 1;
+    }
+    .topbar-breadcrumb a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .topbar-breadcrumb a:hover { color: var(--brand-primary); }
+    .topbar-bc-sep { color: var(--text-placeholder); font-size: 12px; margin: 0 2px; }
+    .topbar-bc-current { color: var(--text); font-weight: 500; }
+
+
+    .topbar-back {
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .topbar-back:hover { color: var(--brand-primary); }
+
+
+    .topbar-user {
+      min-width: 280px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 12px 6px 8px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+      background: #fff;
+      border: 1px solid var(--gray-200);
+    }
+
+    .topbar-user:hover { background: var(--gray-50); border-color: var(--gray-300); }
+
+    .topbar-user.active { background: var(--gray-50); border-color: var(--gray-300); }
+
+    .topbar-user .user-dropdown.open,
+    .topbar-user.active .user-dropdown {
+      display: block;
+      opacity: 1;
+      visibility: visible;
+    }
+    /* ====== 顶部栏 用户名 + 角色/默认企业 多标签 ====== */
+    .topbar-user-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      max-width: 360px;
+      min-width: 0;
+    }
+
+    .topbar-user-name-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      max-width: 220px;
+    }
+
+    .topbar-account-badge {
+      font-size: 10px;
+      padding: 0 5px;
+      border-radius: 4px;
+      background: var(--brand-primary-50);
+      color: var(--brand-primary);
+      font-weight: 500;
+      line-height: 16px;
+      flex-shrink: 0;
+    }
+    .topbar-account-badge.sub {
+      background: #FFF7E6;
+      color: #FF7D00;
+    }
+    .topbar-user-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      line-height: 1.4;
+    }
+    .topbar-user-chips {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: nowrap;
+      flex-shrink: 0;
+    }
+    .topbar-user-chip {
+      font-size: 10px;
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
+      padding: 1px 6px;
+      border-radius: 4px;
+      line-height: 16px;
+      font-weight: 600;
+      border: 1px solid transparent;
+    }
+    .topbar-user-chip.admin   { background: #EDF4FF; color: #1677FF; border-color: #C7DBFF; }
+    .topbar-user-chip.sub     { background: #FFF7E6; color: #FF7D00; border-color: #FFD591; }
+    .topbar-user-chip.verified   { background: #F0F9EB; color: #52C41A; border-color: #B7EB8F; }
+    .topbar-user-chip.unverified { background: #FFF2E8; color: #FA8C16; border-color: #FFD591; }
+    .topbar-user-chip.phone   { background: var(--gray-100); color: var(--text-secondary); border-color: var(--gray-200); }
+    /* ===== 消息通知 ===== */
+    .topbar-message {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .topbar-message:hover {
+      background: var(--gray-100);
+      color: var(--brand-primary);
+    }
+    .topbar-message:hover .topbar-message-icon {
+      color: var(--brand-primary);
+    }
+    .topbar-message-icon {
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .topbar-message-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+    .topbar-message-dot {
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #F53F3F;
+      display: none;
+      z-index: 5;
+    }
+    .topbar-message-dot.show { display: block; }
+    .topbar-message.has-badge .topbar-message-dot {
+      display: none !important;
+    }
+    .topbar-message .topbar-message-badge {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 16px;
+      height: 16px;
+      padding: 0 4px;
+      border-radius: 8px;
+      background: #F53F3F;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 600;
+      text-align: center;
+      line-height: 1;
+      border: 2px solid #fff;
+      box-sizing: content-box;
+      z-index: 10;
+      box-shadow: 0 1px 3px rgba(245, 63, 63, 0.4);
+    }
+    .message-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 340px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      border: 1px solid var(--gray-200);
+      z-index: 1000;
+      display: none;
+      overflow: hidden;
+    }
+    .topbar-message.open .message-dropdown {
+      display: block;
+    }
+    .message-dropdown-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px 10px;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text);
+    }
+    .message-dropdown-clear {
+      font-size: 12px;
+      color: var(--brand-primary);
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .message-dropdown-clear:hover { text-decoration: underline; }
+    .message-dropdown-list {
+      max-height: 320px;
+      overflow-y: auto;
+    }
+    .message-item {
+      display: flex;
+      gap: 10px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--gray-100);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .message-item:last-child { border-bottom: none; }
+    .message-item:hover { background: var(--gray-50); }
+    .message-item.unread { background: #F7FAFF; }
+    .message-item.unread .message-item-title { font-weight: 600; }
+    .message-item-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 14px;
+    }
+    .message-item-icon.system { background: #E8F3FF; color: #1677FF; }
+    .message-item-icon.order { background: #E8F8EB; color: #00B42A; }
+    .message-item-icon.warn { background: #FFF2E8; color: #FA8C16; }
+    .message-item-icon.promo { background: #F3E8FF; color: #722ED1; }
+    .message-item-body {
+      flex: 1;
+      min-width: 0;
+    }
+    .message-item-title {
+      font-size: 13px;
+      color: var(--text);
+      margin-bottom: 2px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .message-item-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+    }
+    .message-item-time {
+      font-size: 11px;
+      color: var(--text-muted);
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .message-dropdown-footer {
+      display: block;
+      text-align: center;
+      padding: 12px;
+      font-size: 13px;
+      color: var(--brand-primary);
+      text-decoration: none;
+      border-top: 1px solid var(--gray-100);
+      font-weight: 500;
+    }
+    .message-dropdown-footer:hover { background: var(--gray-50); }
+    .message-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .topbar-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand-primary) 0%, #1E88FF 100%);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 2px 6px rgba(22, 119, 255, 0.25);
+    }
+
+    .topbar-chevron {
+      width: 14px;
+      height: 14px;
+      color: var(--text-muted);
+      transition: transform 0.2s;
+    }
+
+    .topbar-user.open .topbar-chevron,
+    .topbar-user.active .topbar-chevron {
+      transform: rotate(180deg);
+    }
+
+    /* ===== 用户下拉菜单 ===== */
+    .user-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 280px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      border: 1px solid var(--gray-200);
+      z-index: 1001;
+      display: none;
+      overflow: hidden;
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* ===== 页面布局 ===== */
+    .page-layout {
+      display: flex;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding-top: 60px;
+      min-height: 100vh;
+    }
+    .main-content {
+      flex: 1;
+      width: 100%;
+      padding: 24px 40px 40px;
+      max-width: 1440px;
+      margin: 0 auto;
+      min-width: 0;
+    }
+
+    /* ===== 消息中心 ===== */
+    .msg-page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .msg-page-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .msg-page-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      text-decoration: none;
+    }
+    .btn-outline {
+      background: #fff;
+      border: 1px solid var(--gray-300);
+      color: var(--text-secondary);
+    }
+    .btn-outline:hover { border-color: var(--brand-primary); color: var(--brand-primary); }
+    .btn-primary {
+      background: var(--brand-primary);
+      color: #fff;
+    }
+    .btn-primary:hover { background: var(--brand-primary-dark); }
+
+    /* ===== Tabs ===== */
+    .msg-tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: none;
+      margin-bottom: 20px;
+    }
+    .msg-tab {
+      padding: 10px 20px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .msg-tab:hover { color: var(--brand-primary); }
+    .msg-tab.active {
+      color: var(--brand-primary);
+      border-bottom-color: var(--brand-primary);
+      font-weight: 600;
+    }
+    .msg-tab-count {
+      min-width: 18px;
+      height: 18px;
+      padding: 0 6px;
+      border-radius: 9px;
+      background: var(--gray-100);
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 18px;
+      text-align: center;
+    }
+    .msg-tab.active .msg-tab-count {
+      background: var(--brand-primary-50);
+      color: var(--brand-primary);
+    }
+
+    /* ===== 消息列表 ===== */
+    .msg-list {
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid var(--gray-200);
+      overflow: hidden;
+    }
+    .msg-list-item {
+      display: flex;
+      gap: 14px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--gray-100);
+      cursor: pointer;
+      transition: background 0.15s;
+      align-items: flex-start;
+    }
+    .msg-list-item:last-child { border-bottom: none; }
+    .msg-list-item:hover { background: var(--gray-50); }
+    .msg-list-item.unread { background: #F7FAFF; }
+    .msg-list-item.unread .msg-list-item-title { font-weight: 600; }
+    .msg-list-item.unread::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #F53F3F;
+      margin-top: 8px;
+      flex-shrink: 0;
+    }
+    .msg-list-item-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 18px;
+    }
+    .msg-list-item-icon.system { background: #E8F3FF; color: #1677FF; }
+    .msg-list-item-icon.order { background: #E8F8EB; color: #00B42A; }
+    .msg-list-item-icon.warn { background: #FFF2E8; color: #FA8C16; }
+    .msg-list-item-icon.promo { background: #F3E8FF; color: #722ED1; }
+    .msg-list-item-body { flex: 1; min-width: 0; }
+    .msg-list-item-title {
+      font-size: 14px;
+      color: var(--text);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .msg-list-item-tag {
+      font-size: 11px;
+      padding: 1px 7px;
+      border-radius: 3px;
+      font-weight: 500;
+    }
+    .msg-list-item-tag.system { background: #E8F3FF; color: #1677FF; }
+    .msg-list-item-tag.order { background: #E8F8EB; color: #00B42A; }
+    .msg-list-item-tag.warn { background: #FFF2E8; color: #FA8C16; }
+    .msg-list-item-tag.promo { background: #F3E8FF; color: #722ED1; }
+    .msg-list-item-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    .msg-list-item-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .msg-list-item-time { flex-shrink: 0; white-space: nowrap; }
+    .msg-list-item-arrow {
+      color: var(--text-muted);
+      flex-shrink: 0;
+      margin-top: 12px;
+    }
+    .msg-list-item:hover .msg-list-item-arrow { color: var(--brand-primary); }
+
+    .msg-empty {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--text-muted);
+    }
+    .msg-empty-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+    .msg-empty-text { font-size: 14px; }
+
+    /* ===== 分页 ===== */
+    .pagination {
+      display: flex !important;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0 12px;
+      margin: 0;
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      flex-wrap: wrap;
+      row-gap: 10px;
+      column-gap: 12px;
+      box-sizing: border-box;
+      width: 100%;
+    }
+    .pagination-info { color: var(--text-muted); flex-shrink: 0; min-width: 120px; }
+    .pagination-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .pagination a, .pagination span, .pagination-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      height: 32px;
+      padding: 0 10px;
+      border: 1px solid var(--gray-200);
+      border-radius: 6px;
+      background: #fff;
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.15s;
+      box-sizing: border-box;
+      font-family: inherit;
+      line-height: 1;
+    }
+    .pagination a:hover { background: var(--gray-100); color: var(--brand-primary); border-color: var(--brand-primary); }
+    .pagination .active, .pagination-btn.active { background: var(--brand-primary); color: #fff; font-weight: 600; border-color: var(--brand-primary); }
+    .pagination-btn:disabled, .pagination .disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+    .pagination-size {
+      height: 32px;
+      padding: 0 8px;
+      border: 1px solid var(--gray-200);
+      border-radius: 6px;
+      background: #fff;
+      color: var(--text-secondary);
+      font-size: 13px;
+      cursor: pointer;
+      box-sizing: border-box;
+      min-width: 84px;
+    }
+    .pagination-size:focus { outline: none; border-color: var(--brand-primary); }
+
+    @media (max-width: 768px) {
+      .topbar { padding: 0 16px; }
+      .topbar-inner { padding: 0 16px; }
+      .topbar-crumb { display: none; }
+      .page-layout { flex-direction: column; }
+      .main-content { padding: 16px; }
+      .msg-list-item { padding: 12px 14px; gap: 10px; }
+      .msg-list-item-icon { width: 36px; height: 36px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div style="display:flex;align-items:center;gap:20px;">
+        <a href="account-center.html" class="topbar-brand">
+          <img src="https://oss.minjiangyouyue.com/mjlogo/logo02.png" alt="logo" style="height:34px;border-radius:8px;">
+          <span class="topbar-title">控制台</span>
+        </a>
+        <div class="topbar-breadcrumb">
+          <a href="index.html">首页</a>
+          <span class="topbar-bc-sep">/</span>
+          <a href="account-center.html">控制台</a>
+          <span class="topbar-bc-sep">/</span>
+          <span class="topbar-bc-current">消息中心</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <a href="#" class="topbar-back" onclick="
+      if(window.SKIP_LOGIN_CHECK || (window.__userData && window.__userData.isLoggedIn)) {
+        window.location.href = 'account-center.html';
+      } else {
+        history.back();
+      }
+      return false;
+    ">
+          <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M19 12H5" stroke="currentColor" stroke-width="2"/><path d="M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2"/></svg>
+          返回
+        </a>
+        <div class="topbar-message" id="topbarMessage">
+          <div class="topbar-message-icon">
+            <svg viewBox="0 0 24 24" fill="none" width="15" height="15"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="topbar-message-dot show" id="topbarMessageDot"></span>
+          </div>
+          <span class="topbar-message-badge" id="topbarMessageBadge">3</span>
+          <div class="message-dropdown" id="messageDropdown">
+            <div class="message-dropdown-header">
+              <span>消息通知</span>
+              <a href="javascript:;" class="message-dropdown-clear" id="msgClearAll">全部已读</a>
+            </div>
+            <div class="message-dropdown-list" id="messageList"></div>
+            <a href="account-message.html" class="message-dropdown-footer">查看全部消息 →</a>
+          </div>
+        </div>
+        <div class="topbar-user" id="topbarUser"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主内容 -->
+  <div class="page-layout">
+    <div class="main-content">
+      <div class="msg-page-header">
+        <div class="msg-page-title">消息中心</div>
+        <div class="msg-page-actions">
+          <button class="btn btn-outline" id="markAllReadBtn">
+            <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/></svg>
+            全部已读
+          </button>
+          <button class="btn btn-outline" id="clearReadBtn">
+            <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            清除已读
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab 筛选 -->
+      <div class="msg-tabs" id="msgTabs">
+        <div class="msg-tab active" data-filter="all">
+          全部 <span class="msg-tab-count" id="countAll">0</span>
+        </div>
+        <div class="msg-tab" data-filter="unread">
+          未读 <span class="msg-tab-count" id="countUnread">0</span>
+        </div>
+        <div class="msg-tab" data-filter="system">
+          系统 <span class="msg-tab-count" id="countSystem">0</span>
+        </div>
+        <div class="msg-tab" data-filter="order">
+          业务 <span class="msg-tab-count" id="countOrder">0</span>
+        </div>
+        <div class="msg-tab" data-filter="promo">
+          活动 <span class="msg-tab-count" id="countPromo">0</span>
+        </div>
+      </div>
+
+      <!-- 消息列表 -->
+      <div class="msg-list" id="msgListContainer">
+        <!-- 动态渲染 -->
+      </div>
+
+      <!-- 分页 -->
+      <div class="pagination" id="pagination" style="display:none;"></div>
+    </div>
+  </div>
+
+  
+  <!-- 控制台/认证页专用：禁止 !isLoggedIn → display:none #topbarUser / #topbarMessage （否则"添加新企业"切换后，整区空白=用户感觉点不动） -->
+  <script>
+    window.SKIP_LOGIN_CHECK = true;
+    window.SKIP_TOPBAR_DISPLAY_NONE = true;
+    (function ensureTopbarVisible(){
+      function run(){
+        var tu = document.getElementById("topbarUser"), tm = document.getElementById("topbarMessage");
+        if (tu){ tu.style.display = "flex"; tu.style.visibility="visible"; if (!tu.children.length) tu.innerHTML = '<a href="login.html" style="display:inline-flex;align-items:center;padding:6px 16px;border-radius:6px;background:var(--brand-primary);color:#fff;font-size:13px;font-weight:500;text-decoration:none;white-space:nowrap;">登录平台</a>'; }
+        if (tm){ tm.style.display = "flex"; tm.style.visibility="visible"; }
+      }
+      try{run()}catch(e){}
+      document.addEventListener("DOMContentLoaded", run);
+      setTimeout(run, 50); setTimeout(run, 300);
+    })();
+  </script>
+<script src="js/main.js?v=51"></script>
+  <script>
+    (function() {
+      var isLoggedIn = localStorage.getItem('mjyy_logged_in') === 'true';
+      if (!isLoggedIn) { window.location.href = 'login.html'; return; }
+
+      // ===== 消息数据（localStorage 持久化） =====
+      var defaultMessages = [
+        { id: 'msg_001', type: 'order', icon: '📋', title: '企业审核通过', desc: '您提交的"浙江良巧匠"企业认证已通过审核，可以开始使用平台各项服务。', time: '10分钟前', timestamp: Date.now() - 600000, unread: true, content: '<p>恭喜您！您提交的"浙江良巧匠网络科技有限公司"企业认证已通过审核。</p><p>认证通过后您可以：</p><ul><li>开通民匠有约、安心云等产品服务</li><li>创建子账号并分配角色权限</li><li>签订电子合同</li></ul><p>如有疑问，请联系客服热线 400-888-8888。</p>' },
+        { id: 'msg_002', type: 'system', icon: '🔔', title: '系统维护通知', desc: '平台将于本周六凌晨2-4点进行系统升级维护，届时可能短暂无法访问。', time: '1小时前', timestamp: Date.now() - 3600000, unread: true, content: '<p>尊敬的用户：</p><p>为了提供更好的服务体验，平台将于本周六（8月24日）凌晨 2:00 - 4:00 进行系统升级维护。</p><p>维护期间以下功能可能受影响：</p><ul><li>登录及账号操作</li><li>订单提交与查询</li><li>合同签署</li></ul><p>维护完成后将自动恢复服务，无需额外操作。给您带来不便敬请谅解。</p>' },
+        { id: 'msg_003', type: 'promo', icon: '🎁', title: '新企业权益礼包', desc: '新企业认证完成，赠送3个月会员权益，含专属客服、优先审核等特权。', time: '今天 09:00', timestamp: Date.now() - 43200000, unread: true, content: '<p>恭喜完成企业认证！</p><p>为您赠送 <strong>3个月高级会员权益</strong>，包含：</p><ul><li>✅ 专属客户经理1对1服务</li><li>✅ 企业认证优先审核通道</li><li>✅ 每月免费发单额度提升至50单</li><li>✅ 电子合同签署不限次数</li><li>✅ 数据报表高级分析功能</li></ul><p>权益有效期：3个月（自领取之日起计算）</p><p>如有疑问请联系您的专属客户经理。</p>' },
+        { id: 'msg_004', type: 'warn', icon: '⚠️', title: '账号安全提醒', desc: '检测到您的账号在新设备登录，如非本人操作请及时修改密码。', time: '昨天', timestamp: Date.now() - 86400000, unread: false, content: '<p>我们检测到您的账号在新设备上登录：</p><div style="background:#FFF7E8;padding:12px 16px;border-radius:8px;margin:12px 0;"><p><strong>登录设备：</strong>Windows PC - Chrome浏览器</p><p><strong>登录IP：</strong>123.125.71.38（北京）</p><p><strong>登录时间：</strong>2026-08-20 14:32:15</p></div><p>如非本人操作，请立即：</p><ol><li>修改账号密码</li><li>检查账号绑定信息</li><li>联系平台客服冻结账号</li></ol><p>点击 <a href="account-security.html" style="color:var(--brand-primary);">前往账号安全</a> 进行操作。</p>' },
+        { id: 'msg_005', type: 'order', icon: '✅', title: '合同签署完成', desc: '您与民匠有约的服务合同已签署完成，可在合同管理中查看详情。', time: '2天前', timestamp: Date.now() - 172800000, unread: false, content: '<p>您的服务合同已签署完成。</p><div style="background:var(--gray-50);padding:12px 16px;border-radius:8px;margin:12px 0;"><p><strong>合同编号：</strong>MJYY-HT-20260819001</p><p><strong>服务方：</strong>浙江良巧匠网络科技有限公司</p><p><strong>合同类型：</strong>灵活用工服务协议</p><p><strong>签署日期：</strong>2026-08-19</p><p><strong>有效期至：</strong>2027-08-19</p></div><p>您可以前往 <a href="account-billing.html" style="color:var(--brand-primary);">合同管理</a> 查看完整合同内容并下载。</p>' },
+        { id: 'msg_006', type: 'system', icon: '📢', title: '新功能上线', desc: '企业管理端全新上线，支持人员管理、考勤薪酬、流程审批等功能。', time: '3天前', timestamp: Date.now() - 259200000, unread: false, content: '<p>企业管理端全新上线！</p><p>新增功能模块：</p><ul><li><strong>人员管理</strong> - 员工档案在线管理，支持批量导入</li><li><strong>考勤薪酬</strong> - 智能考勤核算，一键生成薪资单</li><li><strong>流程审批</strong> - 自定义审批流程，规范企业运营</li><li><strong>组织架构</strong> - 可视化组织架构图，灵活管理部门</li></ul><p>前往 <a href="account-center.html" style="color:var(--brand-primary);">控制台</a> 立即体验。</p>' },
+        { id: 'msg_007', type: 'promo', icon: '🎉', title: '邀请有奖活动', desc: '邀请企业好友入驻平台，双方均可获得现金奖励，多邀多得。', time: '5天前', timestamp: Date.now() - 432000000, unread: false, content: '<p>邀请有奖，多邀多得！</p><p>活动规则：</p><ul><li>邀请1家企业入驻，双方各获得 <strong>100元</strong> 现金奖励</li><li>累计邀请5家，额外获得 <strong>500元</strong> 奖励</li><li>累计邀请20家，额外获得 <strong>2000元</strong> 奖励 + VIP会员3个月</li></ul><p>活动时间：2026年8月1日 - 2026年9月30日</p><p>分享您的专属邀请链接，开始邀请好友吧！</p>' },
+        { id: 'msg_008', type: 'warn', icon: '🔒', title: '密码即将过期', desc: '您的账号密码将在7天后过期，为保障安全请及时修改密码。', time: '1周前', timestamp: Date.now() - 604800000, unread: false, content: '<p>您的账号密码将在 <strong>7天</strong> 后过期。</p><p>为保障账号安全，建议您及时修改密码。</p><p>密码安全建议：</p><ul><li>使用8-20位字符，包含大小写字母、数字和特殊符号</li><li>不要使用与其他网站相同的密码</li><li>定期更换密码（建议每3个月一次）</li></ul><p>点击 <a href="account-security.html" style="color:var(--brand-primary);">前往修改密码</a>。</p>' }
+      ];
+
+      function getMessages() {
+        var stored = localStorage.getItem('mjyy_messages');
+        if (stored) {
+          try { return JSON.parse(stored); } catch(e) {}
+        }
+        // 初始化默认消息
+        localStorage.setItem('mjyy_messages', JSON.stringify(defaultMessages));
+        return defaultMessages;
+      }
+
+      function saveMessages(msgs) {
+        localStorage.setItem('mjyy_messages', JSON.stringify(msgs));
+      }
+
+      function updateBadge() {
+        var msgs = getMessages();
+        var unread = msgs.filter(function(m) { return m.unread; }).length;
+        var badge = document.getElementById('topbarMessageBadge');
+        var dot = document.getElementById('topbarMessageDot');
+        if (badge) {
+          if (unread > 0) {
+            badge.textContent = unread > 99 ? '99+' : unread;
+            badge.style.display = 'inline-flex';
+          } else {
+            badge.style.display = 'none';
+          }
+        }
+        if (dot) {
+          if (unread > 0) dot.classList.add('show');
+          else dot.classList.remove('show');
+        }
+      }
+
+      var currentFilter = 'all';
+
+      function getTypeLabel(type) {
+        var labels = { system: '系统', order: '业务', warn: '安全', promo: '活动' };
+        return labels[type] || '通知';
+      }
+
+      function renderList() {
+        var msgs = getMessages();
+        var filtered = msgs;
+
+        if (currentFilter === 'unread') {
+          filtered = msgs.filter(function(m) { return m.unread; });
+        } else if (currentFilter !== 'all') {
+          filtered = msgs.filter(function(m) { return m.type === currentFilter; });
+        }
+
+        // 按时间倒序
+        filtered.sort(function(a, b) { return (b.timestamp || 0) - (a.timestamp || 0); });
+
+        var container = document.getElementById('msgListContainer');
+
+        if (filtered.length === 0) {
+          container.innerHTML = '<div class="msg-empty"><div class="msg-empty-icon">📭</div><div class="msg-empty-text">暂无消息</div></div>';
+          document.getElementById('pagination').style.display = 'none';
+          return;
+        }
+
+        var html = '';
+        filtered.forEach(function(m) {
+          html += '<div class="msg-list-item' + (m.unread ? ' unread' : '') + '" data-msg-id="' + m.id + '">' +
+            '<div class="msg-list-item-icon ' + m.type + '">' + m.icon + '</div>' +
+            '<div class="msg-list-item-body">' +
+              '<div class="msg-list-item-title">' +
+                m.title +
+                '<span class="msg-list-item-tag ' + m.type + '">' + getTypeLabel(m.type) + '</span>' +
+              '</div>' +
+              '<div class="msg-list-item-desc">' + m.desc + '</div>' +
+              '<div class="msg-list-item-meta">' +
+                '<span class="msg-list-item-time">' + m.time + '</span>' +
+              '</div>' +
+            '</div>' +
+            '<svg class="msg-list-item-arrow" viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+          '</div>';
+        });
+        container.innerHTML = html;
+
+        document.getElementById('pagination').style.display = 'flex';
+        document.getElementById('pagination').innerHTML =
+          '<span class="active">1</span><a href="javascript:;">2</a><a href="javascript:;">3</a><span>...</span><a href="javascript:;">下一页</a>';
+
+        // 绑定点击跳转详情
+        container.querySelectorAll('.msg-list-item').forEach(function(item) {
+          item.addEventListener('click', function() {
+            var msgId = this.getAttribute('data-msg-id');
+            // 标记已读
+            var msgs = getMessages();
+            var msg = msgs.find(function(m) { return m.id === msgId; });
+            if (msg && msg.unread) {
+              msg.unread = false;
+              saveMessages(msgs);
+            }
+            // 跳转详情页
+            window.location.href = 'message-detail.html?id=' + msgId;
+          });
+        });
+      }
+
+      function updateTabCounts() {
+        var msgs = getMessages();
+        document.getElementById('countAll').textContent = msgs.length;
+        document.getElementById('countUnread').textContent = msgs.filter(function(m) { return m.unread; }).length;
+        document.getElementById('countSystem').textContent = msgs.filter(function(m) { return m.type === 'system'; }).length;
+        document.getElementById('countOrder').textContent = msgs.filter(function(m) { return m.type === 'order'; }).length;
+        document.getElementById('countPromo').textContent = msgs.filter(function(m) { return m.type === 'promo'; }).length;
+      }
+
+      // Tab 切换
+      document.querySelectorAll('.msg-tab').forEach(function(tab) {
+        tab.addEventListener('click', function() {
+          document.querySelectorAll('.msg-tab').forEach(function(t) { t.classList.remove('active'); });
+          this.classList.add('active');
+          currentFilter = this.getAttribute('data-filter');
+          renderList();
+        });
+      });
+
+      // 全部已读
+      document.getElementById('markAllReadBtn').addEventListener('click', function() {
+        var msgs = getMessages();
+        msgs.forEach(function(m) { m.unread = false; });
+        saveMessages(msgs);
+        updateTabCounts();
+        updateBadge();
+        renderList();
+      });
+
+      // 清除已读
+      document.getElementById('clearReadBtn').addEventListener('click', function() {
+        var msgs = getMessages();
+        msgs = msgs.filter(function(m) { return m.unread; });
+        saveMessages(msgs);
+        updateTabCounts();
+        updateBadge();
+        renderList();
+      });
+
+      // 初始化
+      updateTabCounts();
+      updateBadge();
+      renderList();
+    })();
+  </script>
+</body>
+</html>
