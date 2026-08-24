@@ -28,56 +28,442 @@
       var userData = JSON.parse(localStorage.getItem('mjyy_user_data') || '{}');
       var identityVerified = localStorage.getItem('mjyy_identity_verified') === 'true';
       var authType = localStorage.getItem('mjyy_auth_type') || 'enterprise';
-      var name = enterpriseData.companyName
+      var baseTs = Date.now();
+
+      var realName = enterpriseData.companyName
         || (personalData.realName ? personalData.realName + '（个人企业）' : null)
-        || userData.name
-        || '我的企业';
-      var defaultEnt = {
-        id: 'ENT' + Date.now(),
-        name: name,
-        creditCode: enterpriseData.creditCode || enterpriseData.credit_code || '',
-        legalMobile: userData.mobile || '',
-        authType: authType,
-        verified: identityVerified,
-        role: '主账号管理员',
-        createdAt: Date.now(),
-        isDefault: true
-      };
-      // 添加两个模拟企业
-      var mockEnt2 = {
-        id: 'ENT' + (Date.now() - 100000),
-        name: '杭州云创科技有限公司',
-        creditCode: '91330100MA2HXXXXXX',
-        legalMobile: '13900002222',
-        authType: 'enterprise',
-        verified: true,
-        role: '主账号管理员',
-        createdAt: Date.now() - 86400000 * 30,
-        isDefault: false
-      };
-      var mockEnt3 = {
-        id: 'ENT' + (Date.now() - 200000),
-        name: '上海数链信息技术有限公司',
-        creditCode: '91310100MA3KXXXXXX',
-        legalMobile: '13700003333',
-        authType: 'enterprise',
-        verified: true,
-        role: '子账号管理员',
-        createdAt: Date.now() - 86400000 * 60,
-        isDefault: false
-      };
-      list = [defaultEnt, mockEnt2, mockEnt3];
-      localStorage.setItem('mjyy_enterprise_list', JSON.stringify(list));
-      localStorage.setItem('mjyy_current_enterprise_id', defaultEnt.id);
+        || null;
+
+      if (realName) {
+        // 用户有真实的企业名 → 以此企业为主
+        var realEnt = {
+          id: 'ENT' + baseTs,
+          name: realName,
+          creditCode: enterpriseData.creditCode || enterpriseData.credit_code || '',
+          legalMobile: userData.mobile || '',
+          authType: authType,
+          verified: identityVerified,
+          role: '主账号管理员',
+          createdAt: baseTs,
+          isDefault: true
+        };
+        // 再额外补两个模拟企业（供切换/展示用），当前登录默认真实企业
+        var mockA = {
+          id: 'ENT' + (baseTs + 100001),
+          name: '杭州云创科技有限公司',
+          creditCode: '91330100MA2H' + Math.random().toString(36).slice(2, 8).toUpperCase() + 'XX',
+          legalMobile: '139' + Math.floor(10000000 + Math.random() * 89999999),
+          authType: 'enterprise',
+          verified: true,
+          role: '主账号管理员',
+          createdAt: baseTs - 86400000 * 30,
+          isDefault: false
+        };
+        var mockB = {
+          id: 'ENT' + (baseTs + 100002),
+          name: '深圳星耀智造股份有限公司',
+          creditCode: '91440300MA5E' + Math.random().toString(36).slice(2, 8).toUpperCase() + 'XX',
+          legalMobile: '138' + Math.floor(10000000 + Math.random() * 89999999),
+          authType: 'enterprise',
+          verified: true,
+          role: '子账号管理员',
+          createdAt: baseTs - 86400000 * 60,
+          isDefault: false
+        };
+        list = [realEnt, mockA, mockB];
+        localStorage.setItem('mjyy_enterprise_list', JSON.stringify(list));
+        localStorage.setItem('mjyy_current_enterprise_id', realEnt.id);
+      } else {
+        // 用户尚未录入任何企业信息：生成 3 个模拟企业数据（以"杭州云创科技有限公司"为默认登录 + 默认企业）
+        var entYC = {
+          id: 'ENT' + (baseTs + 200001),
+          name: '杭州云创科技有限公司',
+          creditCode: '91330100MA2H' + Math.random().toString(36).slice(2, 8).toUpperCase() + 'XX',
+          legalMobile: '139' + Math.floor(10000000 + Math.random() * 89999999),
+          authType: 'enterprise',
+          verified: true,
+          role: '主账号管理员',
+          createdAt: baseTs,
+          isDefault: true
+        };
+        var entXY = {
+          id: 'ENT' + (baseTs + 200002),
+          name: '深圳星耀智造股份有限公司',
+          creditCode: '91440300MA5E' + Math.random().toString(36).slice(2, 8).toUpperCase() + 'XX',
+          legalMobile: '138' + Math.floor(10000000 + Math.random() * 89999999),
+          authType: 'enterprise',
+          verified: true,
+          role: '主账号管理员',
+          createdAt: baseTs - 86400000 * 30,
+          isDefault: false
+        };
+        var entBJ = {
+          id: 'ENT' + (baseTs + 200003),
+          name: '北京百川能源科技有限公司',
+          creditCode: '91110100MA01' + Math.random().toString(36).slice(2, 8).toUpperCase() + 'XX',
+          legalMobile: '137' + Math.floor(10000000 + Math.random() * 89999999),
+          authType: 'enterprise',
+          verified: true,
+          role: '子账号管理员',
+          createdAt: baseTs - 86400000 * 60,
+          isDefault: false
+        };
+        list = [entYC, entXY, entBJ];
+        localStorage.setItem('mjyy_enterprise_list', JSON.stringify(list));
+        localStorage.setItem('mjyy_current_enterprise_id', entYC.id);
+      }
     }
     return list;
   }
+  // 一次性清理旧的占位企业数据（仅清理"我的企业"/"新企业（未认证）"这类纯占位名，不误删真实企业）
+  function cleanupOldMockEnterprises() {
+    var raw = localStorage.getItem('mjyy_enterprise_list');
+    if (!raw) return;
+    try {
+      var arr = JSON.parse(raw);
+      if (!Array.isArray(arr)) return;
+      // 仅过滤掉占位性质的虚假默认企业：名称为"我的企业"或"新企业（未认证）"
+      var cleaned = arr.filter(function(e) {
+        if (e.name === '我的企业' || e.name === '新企业（未认证）') return false;
+        return true;
+      });
+      if (cleaned.length !== arr.length) {
+        localStorage.setItem('mjyy_enterprise_list', JSON.stringify(cleaned));
+        var curId = localStorage.getItem('mjyy_current_enterprise_id');
+        if (curId && !cleaned.find(function(e) { return e.id === curId; })) {
+          if (cleaned.length > 0) {
+            localStorage.setItem('mjyy_current_enterprise_id', cleaned[0].id);
+          } else {
+            localStorage.removeItem('mjyy_current_enterprise_id');
+          }
+        }
+      }
+    } catch (e) {}
+  }
+
+  // 补齐：保证至少有 3 个模拟企业（杭州云创 + 深圳星耀智造 + 北京百川能源）
+  // 仅当列表里已存在「杭州云创」或列表总体 < 3 家时才补，不影响用户自己录入的真实企业
+  function ensureMinimumMockEnterprises() {
+    var raw = localStorage.getItem('mjyy_enterprise_list');
+    if (!raw) return; // ensureEnterprises 会处理完全空的情况
+    var arr;
+    try { arr = JSON.parse(raw); if (!Array.isArray(arr)) throw 0; } catch (e) { return; }
+
+    function exists(name) {
+      return arr.some(function(e) { return e.name === name; });
+    }
+    var baseTs = Date.now();
+    var needPersist = false;
+
+    if (!exists('杭州云创科技有限公司')) {
+      arr.push({
+        id: 'ENT' + (baseTs + 300001),
+        name: '杭州云创科技有限公司',
+        creditCode: '91330100MA2H' + Math.random().toString(36).slice(2, 8).toUpperCase() + 'XX',
+        legalMobile: '139' + Math.floor(10000000 + Math.random() * 89999999),
+        authType: 'enterprise',
+        verified: true,
+        role: '主账号管理员',
+        createdAt: baseTs,
+        isDefault: arr.length === 0
+      });
+      needPersist = true;
+    }
+    if (!exists('深圳星耀智造股份有限公司')) {
+      arr.push({
+        id: 'ENT' + (baseTs + 300002),
+        name: '深圳星耀智造股份有限公司',
+        creditCode: '91440300MA5E' + Math.random().toString(36).slice(2, 8).toUpperCase() + 'XX',
+        legalMobile: '138' + Math.floor(10000000 + Math.random() * 89999999),
+        authType: 'enterprise',
+        verified: true,
+        role: '主账号管理员',
+        createdAt: baseTs - 86400000 * 30,
+        isDefault: false
+      });
+      needPersist = true;
+    }
+    if (!exists('北京百川能源科技有限公司')) {
+      arr.push({
+        id: 'ENT' + (baseTs + 300003),
+        name: '北京百川能源科技有限公司',
+        creditCode: '91110100MA01' + Math.random().toString(36).slice(2, 8).toUpperCase() + 'XX',
+        legalMobile: '137' + Math.floor(10000000 + Math.random() * 89999999),
+        authType: 'enterprise',
+        verified: true,
+        role: '子账号管理员',
+        createdAt: baseTs - 86400000 * 60,
+        isDefault: false
+      });
+      needPersist = true;
+    }
+    // 若当前没有默认企业，指定杭州云创为默认企业（仅标记 isDefault，不改变当前登录）
+    var hasDefault = arr.some(function(e) { return e.isDefault; });
+    if (!hasDefault) {
+      var yc = arr.find(function(e) { return e.name === '杭州云创科技有限公司'; });
+      if (yc) { yc.isDefault = true; needPersist = true; }
+    }
+    // 当前登录企业的处理：
+    //   · 如果 localStorage 已有 mjyy_current_enterprise_id 且在列表中存在 → 不动它
+    //   · 如果来自"添加新企业"流程（标记 mjyy_from_add_enterprise=true）→ 刻意保持空选择，任何企业都不显示"当前登录"
+    //     （若当前页面不是认证页 verify.html，自动清除此标记，避免长期死锁在空状态）
+    //   · 如果 curId 不在列表里（旧 ID 失效）→ 也保持空，不自动回退（用户需要明确选择一家）
+    var fromAdd = localStorage.getItem('mjyy_from_add_enterprise') === 'true';
+    var curId = localStorage.getItem('mjyy_current_enterprise_id');
+    var currentPage = (window.location && window.location.pathname) ? window.location.pathname.split('/').pop() : '';
+    if (fromAdd) {
+      if (currentPage !== 'verify.html') {
+        localStorage.removeItem('mjyy_from_add_enterprise');
+      }
+      // 添加新企业流程（或刚从其流程跳离但还未显式选择企业）：确保选择状态为空
+      if (curId) {
+        localStorage.removeItem('mjyy_current_enterprise_id');
+      }
+    } else if (curId && !arr.some(function(e) { return e.id === curId; })) {
+      // curId 指向的企业不存在了（比如被清理了）→ 清空而不是乱选一家
+      localStorage.removeItem('mjyy_current_enterprise_id');
+    }
+    if (needPersist) {
+      localStorage.setItem('mjyy_enterprise_list', JSON.stringify(arr));
+    }
+  }
+
   function getCurrentEnterprise() {
     var list = ensureEnterprises();
     var curId = localStorage.getItem('mjyy_current_enterprise_id');
+    // 只有显式存在的 curId 才返回对应企业；没有就返回 null（表示"未选择任何企业"）
+    // 例如添加新企业流程中，选择状态应为空
+    if (!curId) return null;
     var cur = list.find(function(e) { return e.id === curId; });
-    if (!cur) cur = list[0];
-    return cur;
+    return cur || null;
+  }
+
+  // 根据当前选中的企业（currentEnt）决定账号类型标签
+  // 规则：
+  //   · 如果有企业上下文（currentEnt 非空，有 role）→ 用企业里的 role 决定主账号/子账号
+  //     （例：用户在 A 企业是"子账号管理员"→显示"子账号"，在 B 企业是"主账号管理员"→显示"主账号"）
+  //   · 否则回退到全局 mjyy_account_type
+  // 返回：{ typeText, isSub }
+  // typeText：显示用的标签文字；isSub：是否按子账号渲染项目等附加信息
+  function getEnterpriseAccountRole(globalAccountType, currentEnt) {
+    var gType = globalAccountType || 'main';
+    var isSubGlobal = gType === 'sub';
+    if (currentEnt && typeof currentEnt === 'object' && currentEnt.role) {
+      var r = String(currentEnt.role);
+      // 常见企业级角色关键词：包含"子账号"/"子管理员"/"员工"/"普通成员"/"操作员" → 子账号
+      if (/子账号|子管理|员工|普通成员|操作员|财务助理|项目主管|现场督导|调度|物料管理|质检/.test(r)) {
+        return { typeText: '子账号', isSub: true, fromEnterprise: true };
+      }
+      // 包含"主账号"/"管理员"/"法人"/"法定代表人" → 主账号
+      if (/主账号|管理员|法人|法定代表人|创始人|创始人管理员|所有者/.test(r)) {
+        return { typeText: '主账号', isSub: false, fromEnterprise: true };
+      }
+    }
+    return {
+      typeText: isSubGlobal ? '子账号' : '主账号',
+      isSub: isSubGlobal,
+      fromEnterprise: false
+    };
+  }
+
+  // 子账号在当前企业/当前产品下的已分配项目
+  // 返回：[{ productCode, productLabel, projectId, projectName }] 数组；无结果返回 []
+  // 匹配优先级：
+  //   1. mjyy_sub_accounts 里该子账号自带的 projects 字段
+  //   2. 从 window.projects / mjyy_projects localStorage 匹配：
+  //        a. p.subs 包含当前子账号 id → 属于此项目（分配的子账号 chips）
+  //        b. 当前用户手机号/账号ID = p.ownerPhone/p.phone → 负责人/owner 也归入
+  //        c. 姓名回退：userData.name = p.owner 时也命中（便于有真实姓名时匹配）
+  function getCurrentUserAssignedProjects(userData, currentEnt) {
+    var out = [];
+    try {
+      var userData = userData || JSON.parse(localStorage.getItem('mjyy_user_data') || '{}');
+      var userId = userData.accountId || userData.id || '';
+      var userPhone = userData.mobile || userData.phone || '';
+      var userName = userData.name || userData.realName || userData.nickname || '';
+      var entId = (currentEnt && currentEnt.id) ? currentEnt.id : null;
+
+      // 产品码 → 中文产品名
+      var productLabels = {
+        mjyy: '民匠有约',
+        anxinyun: '安心云',
+        agent: '代理商平台'
+      };
+
+      function dedupAdd(arr, item) {
+        for (var i = 0; i < arr.length; i++) {
+          if (arr[i].projectId === item.projectId) return;
+        }
+        arr.push(item);
+      }
+
+      // 把页面内生成的 window.projects / window.SUBACCOUNTS 持久化到 localStorage，供非项目页（资金/控制台）展示用
+      try {
+        if (typeof window !== 'undefined') {
+          if (Array.isArray(window.projects) && window.projects.length) {
+            try { localStorage.setItem('mjyy_projects', JSON.stringify(window.projects)); } catch (e) {}
+          }
+          if (Array.isArray(window.SUBACCOUNTS) && window.SUBACCOUNTS.length) {
+            try { localStorage.setItem('mjyy_sub_accounts', JSON.stringify(window.SUBACCOUNTS)); } catch (e) {}
+          }
+        }
+      } catch (e) { /* ignore */ }
+
+      // —— 终极兜底（账户首次加载从未进过项目页 / 清缓存后直接跳到产品中心时也不会空） ——
+      // 当 window.* 没数据 + localStorage 也没数据，就用 account-project.html 中那一套默认的 3 个项目 + 6 个子账号，
+      // 写入 localStorage 之后后续的 "window.projects / localStorage mjyy_projects" 流程都能命中。
+      // （这是和"真实用户从未进入项目页但需要在其他页看到民匠有约·项目名"的唯一闭环保障）
+      (function fallbackSeeds() {
+        try {
+          if (typeof window === 'undefined') return;
+          var hasWinProjects = Array.isArray(window.projects) && window.projects.length > 0;
+          var hasWinSubs     = Array.isArray(window.SUBACCOUNTS) && window.SUBACCOUNTS.length > 0;
+          var rawProjects    = localStorage.getItem('mjyy_projects') || '[]';
+          var rawSubs        = localStorage.getItem('mjyy_sub_accounts') || '[]';
+          var lsProjects     = []; try { lsProjects = JSON.parse(rawProjects); } catch (e) {}
+          var lsSubs         = []; try { lsSubs     = JSON.parse(rawSubs);     } catch (e) {}
+          if (hasWinProjects && hasWinSubs) return; // 项目页已暴露，无需兜底
+
+          var DEFAULT_PROJECTS = [
+            { id:'PRJ-2026-001', product:'mjyy', name:'杭州地铁保洁项目', owner:'小赵', phone:'17857069096',
+              balance:28500, totalIn:50000, totalOut:21500, status:'active', createdAt:'2025-08-12 09:19:32',
+              desc:'地铁1号线保洁服务', subs:['U002','U004'] },
+            { id:'PRJ-2026-002', product:'mjyy', name:'阿里巴巴园区保洁', owner:'小李', phone:'13912345678',
+              balance:18700, totalIn:30000, totalOut:11300, status:'active', createdAt:'2025-09-01 14:32:18',
+              desc:'园区日常保洁',     subs:['U003','U006','U007'] },
+            { id:'PRJ-2026-003', product:'mjyy', name:'万达广场安保项目', owner:'小王', phone:'13700123456',
+              balance:0,     totalIn:15000, totalOut:15000, status:'inactive', createdAt:'2025-10-15 10:08:45',
+              desc:'安保服务外包',     subs:[] }
+          ];
+          var DEFAULT_SUBACCOUNTS = [
+            { id:'U002', name:'小李',   phone:'13912345678', role:'项目主管' },
+            { id:'U003', name:'小王',   phone:'13700123456', role:'现场督导' },
+            { id:'U004', name:'小陈',   phone:'13800000011', role:'财务助理' },
+            { id:'U005', name:'小周',   phone:'13800000012', role:'调度' },
+            { id:'U006', name:'小徐',   phone:'13800000013', role:'物料管理' },
+            { id:'U007', name:'小林',   phone:'13800000014', role:'质检' }
+          ];
+
+          if (!hasWinProjects && (!Array.isArray(lsProjects) || lsProjects.length === 0)) {
+            try {
+              window.projects = DEFAULT_PROJECTS;
+              localStorage.setItem('mjyy_projects', JSON.stringify(DEFAULT_PROJECTS));
+            } catch (e) {}
+          }
+          if (!hasWinSubs && (!Array.isArray(lsSubs) || lsSubs.length === 0)) {
+            try {
+              window.SUBACCOUNTS = DEFAULT_SUBACCOUNTS;
+              localStorage.setItem('mjyy_sub_accounts', JSON.stringify(DEFAULT_SUBACCOUNTS));
+            } catch (e) {}
+          }
+        } catch (e4) { /* ignore */ }
+      })();
+
+      // 1) mjyy_sub_accounts 中的直配 projects 字段
+      try {
+        var subsList = JSON.parse(localStorage.getItem('mjyy_sub_accounts') || '[]');
+        var matched = null;
+        for (var si = 0; si < subsList.length; si++) {
+          if (!subsList[si]) continue;
+          var s = subsList[si];
+          if (s.id === userId || s.phone === userPhone || (s.accountId && s.accountId === userId)) {
+            matched = s; break;
+          }
+          // 姓名兜底：当前用户有真实姓名且与子账号名相同
+          if (userName && s.name && s.name === userName) { matched = s; break; }
+        }
+        if (matched && Array.isArray(matched.projects)) {
+          matched.projects.forEach(function (p) {
+            if (!p) return;
+            var pCode = p.product || (typeof p === 'object' ? (p.productCode || 'mjyy') : 'mjyy');
+            var pName = (typeof p === 'string') ? p : (p.name || p.projectName || '');
+            var pId = (typeof p === 'object') ? (p.id || p.projectId || pName) : p;
+            if (pName) dedupAdd(out, {
+              productCode: pCode,
+              productLabel: productLabels[pCode] || '民匠有约',
+              projectId: pId,
+              projectName: pName
+            });
+          });
+        }
+      } catch (e) { /* ignore */ }
+
+      // 2) 从 window.projects / localStorage mjyy_projects 反向匹配 subs + owner
+      var projectsSrc = null;
+      try {
+        if (typeof window !== 'undefined' && Array.isArray(window.projects) && window.projects.length) {
+          projectsSrc = window.projects;
+        }
+      } catch (e) {}
+      if (!projectsSrc) {
+        try { projectsSrc = JSON.parse(localStorage.getItem('mjyy_projects') || '[]'); } catch (e) { projectsSrc = null; }
+      }
+      if (projectsSrc && projectsSrc.length) {
+        // 先拿到当前子账号在 SUBACCOUNTS 里的 id（如果有）
+        var subIds = [];
+        var subPhones = [];
+        var subNames = [];
+        if (userId) subIds.push(userId);
+        if (userPhone) subPhones.push(userPhone);
+        if (userName) subNames.push(userName);
+        try {
+          var winSubs = null;
+          if (typeof window !== 'undefined' && Array.isArray(window.SUBACCOUNTS)) winSubs = window.SUBACCOUNTS;
+          if (!winSubs) try { winSubs = JSON.parse(localStorage.getItem('mjyy_sub_accounts') || '[]'); } catch (e) {}
+          if (Array.isArray(winSubs)) {
+            for (var ki = 0; ki < winSubs.length; ki++) {
+              var s = winSubs[ki];
+              if (!s) continue;
+              var hitSub = false;
+              if (s.phone && subPhones.indexOf(s.phone) >= 0) hitSub = true;
+              if (s.id && subIds.indexOf(s.id) >= 0) hitSub = true;
+              if (s.name && subNames.indexOf(s.name) >= 0) hitSub = true;
+              if (s.accountId && subIds.indexOf(s.accountId) >= 0) hitSub = true;
+              if (hitSub) {
+                if (s.id && subIds.indexOf(s.id) < 0) subIds.push(s.id);
+                if (s.phone && subPhones.indexOf(s.phone) < 0) subPhones.push(s.phone);
+                if (s.name && subNames.indexOf(s.name) < 0) subNames.push(s.name);
+              }
+            }
+          }
+        } catch (e) { /* ignore */ }
+
+        for (var pi = 0; pi < projectsSrc.length; pi++) {
+          var pj = projectsSrc[pi];
+          if (!pj) continue;
+          // 企业过滤：如果 project 有 enterpriseId，必须匹配 currentEnt.id
+          if (entId && pj.enterpriseId && pj.enterpriseId !== entId) continue;
+
+          var belong = false;
+          // 2a) p.subs 子账号分配命中
+          if (pj.subs && pj.subs.length) {
+            for (var mi = 0; mi < pj.subs.length; mi++) {
+              var sid = pj.subs[mi];
+              if (subIds.indexOf(sid) >= 0) { belong = true; break; }
+            }
+          }
+          // 2b) owner / 负责人命中（phone 或 name）
+          if (!belong) {
+            var pOwnerPhone = pj.phone || pj.ownerPhone || pj.mobile || '';
+            var pOwnerName = pj.owner || pj.ownerName || pj.manager || '';
+            if (pOwnerPhone && userPhone && pOwnerPhone === userPhone) belong = true;
+            if (!belong && pOwnerName && userName && pOwnerName === userName) belong = true;
+            // 登录名/账号ID兜底（若登录是 owner 的账号ID）
+            if (!belong && userId && (pj.ownerId === userId || pj.ownerAccountId === userId)) belong = true;
+          }
+          if (!belong) continue;
+
+          var pCode = pj.product || 'mjyy';
+          dedupAdd(out, {
+            productCode: pCode,
+            productLabel: productLabels[pCode] || '民匠有约',
+            projectId: pj.id || pj.projectId || pj.name,
+            projectName: pj.name || pj.projectName || ''
+          });
+        }
+      }
+    } catch (e) { /* ignore */ }
+    return out;
   }
 
   // 刷新全局顶部账号卡片（顶部名称 + 下拉卡片头部信息）
@@ -123,7 +509,10 @@
 
     var displayAvatar = displayName ? displayName.charAt(0) : '企';
     var accountId = userData.accountId || userPhone || 'MJ' + Date.now().toString().slice(-8);
-    var typeText = accountType === 'sub' ? '子账号' : '主账号';
+    // 账号角色：以当前选择的企业（currentEnt.role）优先，避免 A 企业子账号在切到其他企业时仍显示"主账号"
+    var roleInfo = getEnterpriseAccountRole(accountType, currentEnt);
+    var typeText = roleInfo.typeText;
+    var roleIsSub = roleInfo.isSub;
 
     // 顶部栏
     document.querySelectorAll('.topbar-avatar, .user-avatar').forEach(function(el) { el.textContent = displayAvatar; });
@@ -133,6 +522,33 @@
     // 下拉卡片头部
     document.querySelectorAll('.user-dropdown-avatar, .topbar-dropdown-avatar, .dropdown-avatar').forEach(function(el) { el.textContent = displayAvatar; });
     document.querySelectorAll('.user-dropdown-name, .topbar-dropdown-name, .dropdown-name').forEach(function(el) { if (displayName) el.textContent = displayName; });
+
+    // 子账号：显示当前分配的项目名称（格式：产品名·项目名，多个项目逗号分隔）
+    // 显示条件：enterprise-role 判定为子账号 或 全局 accountType 为子账号（任一命中就展示）
+    // 注意：页面上可能同时存在 global/nav 两个 user-dropdown，所以按容器批量写，避免 getElementById 只命中第一个
+    var showProjectAsSub = roleIsSub || (accountType === 'sub');
+    var projectEls = document.querySelectorAll('#dropdownProject, .user-dropdown-project');
+    function renderProjectForAll(text) {
+      if (!projectEls || !projectEls.length) return;
+      projectEls.forEach(function (el) {
+        if (text) { el.textContent = text; el.style.display = 'block'; }
+        else { el.textContent = ''; el.style.display = 'none'; }
+      });
+    }
+    if (showProjectAsSub) {
+      try {
+        var assignedProjects = getCurrentUserAssignedProjects(userData, currentEnt);
+        var projectText = '';
+        if (assignedProjects && assignedProjects.length) {
+          projectText = assignedProjects.map(function (ap) {
+            return (ap.productLabel || '民匠有约') + '·' + (ap.projectName || '');
+          }).filter(Boolean).join('、');
+        }
+        renderProjectForAll(projectText);
+      } catch (e) { renderProjectForAll(''); }
+    } else {
+      renderProjectForAll('');
+    }
     // 4. 企业id改为"统一社会信用代码"；未认证/新企业去除 统一社会信用代码 / 主账号 / 工商识别号
     var creditCode = getCreditCode();
     var dropdownIdEls = document.querySelectorAll('.user-dropdown-id, .topbar-dropdown-id, .dropdown-id');
@@ -166,6 +582,7 @@
         topbarBadge.style.display = '';
         topbarBadge.textContent = typeText;
         topbarBadge.style.cssText = '';
+        topbarBadge.classList.toggle('sub', roleIsSub);
       }
     }
     // 主账号类型 badge：未认证不显示
@@ -175,8 +592,8 @@
       if (!hasVerifiedEnterprise) { el.style.display = 'none'; return; }
       el.style.display = '';
       el.textContent = typeText;
-      el.classList.toggle('sub', accountType === 'sub');
-      if (accountType === 'sub') { el.style.background = '#FFF7E6'; el.style.color = '#FF7D00'; }
+      el.classList.toggle('sub', roleIsSub);
+      if (roleIsSub) { el.style.background = '#FFF7E6'; el.style.color = '#FF7D00'; }
       else { el.style.background = ''; el.style.color = ''; }
     });
 
@@ -199,7 +616,7 @@
     if (hasRealEnterprise) crumbName = currentEnt.name;
     else if (enterpriseData.companyName) crumbName = enterpriseData.companyName;
     else if (personalData.realName) crumbName = personalData.realName + '（个人企业）';
-    else crumbName = '我的企业';
+    else crumbName = '企业控制台';
     document.querySelectorAll('#topbarEnterpriseName, .topbar-enterprise-name, .crumb-enterprise-name').forEach(function(el) {
       if (crumbName) el.textContent = crumbName;
     });
@@ -211,6 +628,8 @@
     if (!ent) return;
     localStorage.setItem('mjyy_current_enterprise_id', ent.id);
     localStorage.setItem('mjyy_last_enterprise_id', ent.id);
+    // 用户明确切换了企业 → 结束"添加新企业"的空选择状态
+    localStorage.removeItem('mjyy_from_add_enterprise');
     // 根据选中的企业状态同步认证状态
     if (ent.creditCode || ent.verified) {
       localStorage.setItem('mjyy_identity_verified', 'true');
@@ -244,11 +663,14 @@
     list.push(ent);
     localStorage.setItem('mjyy_enterprise_list', JSON.stringify(list));
     localStorage.setItem('mjyy_current_enterprise_id', ent.id);
+    // 新企业创建完成 → 结束"添加新企业"的空选择状态
+    localStorage.removeItem('mjyy_from_add_enterprise');
     window.location.reload();
   }
   function renderEnterpriseSwitchList(containerId) {
     var current = getCurrentEnterprise();
-    var currentId = localStorage.getItem('mjyy_current_enterprise_id');
+    // 统一用 getCurrentEnterprise 回退后的结果（如果 localStorage 存的 ID 无效，已自动落到 list[0]）
+    var currentId = current ? current.id : null;
     var list = ensureEnterprises();
     var lastUsedId = localStorage.getItem('mjyy_last_enterprise_id');
     list = list.slice().sort(function(a, b) {
@@ -262,6 +684,9 @@
       return score(b) - score(a);
     });
     var html = '';
+    if (list.length === 0) {
+      html = '<div style="padding:16px;text-align:center;color:var(--text-muted);font-size:13px;">暂无企业，请点击下方添加</div>';
+    }
     list.forEach(function(ent) {
       var active = (currentId && ent.id === currentId) ? ' active' : '';
       var firstChar = ent.name ? ent.name.charAt(0) : '企';
@@ -316,6 +741,8 @@
           <div class="user-dropdown-avatar" id="dropdownAvatar">企</div>
           <div class="user-dropdown-info">
             <div class="user-dropdown-name" id="dropdownName">用户</div>
+            <!-- 子账号登录时显示当前项目名称 -->
+            <div class="user-dropdown-project" id="dropdownProject" style="display:none;font-size:12px;color:var(--text-secondary);margin-top:4px;"></div>
             <!-- 认证通过后才显示：脱敏的统一社会信用代码 + 主账号标签；未认证/新企业不显示 -->
             <div class="user-dropdown-id" id="dropdownId" style="display:none;">--</div>
             <div class="user-dropdown-tags-row" id="dropdownMetaRow" style="display:none;">
@@ -358,7 +785,7 @@
 
   function renderGlobalUserDropdowns() {
     document.querySelectorAll('.topbar-user').forEach(function(container) {
-      if (container.dataset.globalDropdown === 'true') return;
+      // 始终重建：确保 main.js 模板变更后，下次刷新就能生效，不会因 dataset.globalDropdown=true 复用了没有 dropdownProject 的旧 DOM
       container.innerHTML = getGlobalUserDropdownHTML();
       container.dataset.globalDropdown = 'true';
     });
@@ -419,7 +846,8 @@
     // ============= 以下为旧版 navRight 结构（非首页、非控制台页面） =============
     var navRight = document.getElementById('navRight');
     if (!navRight) return;
-    if (navRight.dataset.rendered === 'true') return;
+    // 不再用 dataset.rendered 短路：始终重写 innerHTML，保证用户下次进入页面时新的 dropdownProject 容器一定注入
+    // （之前版本的缓存会导致旧模板没有项目行）
 
     var platform = getCurrentPlatform();
     var platformPages = { minjiang: 'minjiang.html', anxinyun: 'anxinyun.html', agent: 'agent.html' };
@@ -443,6 +871,8 @@
                 <div class="user-dropdown-name" id="dropdownName">企业用户</div>
                 <span class="user-account-badge" id="dropdownBadge" style="font-size:10px;padding:0 5px;border-radius:4px;background:var(--brand-primary-50);color:var(--brand-primary);font-weight:500;line-height:16px;">主账号</span>
               </div>
+              <!-- 子账号登录时显示：产品名·项目名（如“民匠有约·杭州地铁保洁项目”） -->
+              <div class="user-dropdown-project" id="dropdownProject" style="display:none;font-size:12px;color:var(--text-secondary);margin-top:4px;"></div>
               <div class="user-dropdown-id" id="dropdownId">账号ID：--</div>
             </div>
           </div>
@@ -545,7 +975,10 @@
     else displayName = '企业用户';
 
     var displayAvatar = displayName ? displayName.charAt(0) : '企';
-    var typeText = accountType === 'sub' ? '子账号' : '主账号';
+    // 账号角色：以当前企业的 role 优先
+    var roleInfo = getEnterpriseAccountRole(accountType, currentEnt);
+    var typeText = roleInfo.typeText;
+    var roleIsSub = roleInfo.isSub;
 
     document.querySelectorAll('.topbar-avatar, .user-avatar').forEach(function(el) { el.textContent = displayAvatar; });
     document.querySelectorAll('.topbar-name, .user-name').forEach(function(el) { if (displayName) el.textContent = displayName; });
@@ -553,6 +986,29 @@
 
     document.querySelectorAll('.user-dropdown-avatar, .topbar-dropdown-avatar, .dropdown-avatar').forEach(function(el) { el.textContent = displayAvatar; });
     document.querySelectorAll('.user-dropdown-name, .topbar-dropdown-name, .dropdown-name').forEach(function(el) { if (displayName) el.textContent = displayName; });
+
+    // 子账号项目（按所有下拉容器批量写入，避免 getElementById 只写到第一个）
+    var showProjectAsSub = roleIsSub || (accountType === 'sub');
+    var projectEls2 = document.querySelectorAll('#dropdownProject, .user-dropdown-project');
+    function renderAllProjects(text) {
+      if (!projectEls2 || !projectEls2.length) return;
+      projectEls2.forEach(function (el) {
+        if (text) { el.textContent = text; el.style.display = 'block'; }
+        else { el.textContent = ''; el.style.display = 'none'; }
+      });
+    }
+    if (showProjectAsSub) {
+      try {
+        var assignedProjects = getCurrentUserAssignedProjects(userData, currentEnt);
+        var projectText = '';
+        if (assignedProjects && assignedProjects.length) {
+          projectText = assignedProjects.map(function (ap) {
+            return (ap.productLabel || '民匠有约') + '·' + (ap.projectName || '');
+          }).filter(Boolean).join('、');
+        }
+        renderAllProjects(projectText);
+      } catch (e) { renderAllProjects(''); }
+    } else { renderAllProjects(''); }
 
     // 4. 企业ID→统一社会信用代码；未认证/新企业去除 统一社会信用代码/主账号/工商识别号
     var creditCode = getCreditCode();
@@ -582,6 +1038,7 @@
         topbarBadge.style.display = '';
         topbarBadge.textContent = typeText;
         topbarBadge.style.cssText = '';
+        topbarBadge.classList.toggle('sub', roleIsSub);
       }
     }
     var allBadges = document.querySelectorAll('.user-account-badge, .topbar-account-badge');
@@ -590,8 +1047,8 @@
       if (!hasVerifiedEnterprise) { el.style.display = 'none'; return; }
       el.style.display = '';
       el.textContent = typeText;
-      el.classList.toggle('sub', accountType === 'sub');
-      if (accountType === 'sub') { el.style.background = '#FFF7E6'; el.style.color = '#FF7D00'; }
+      el.classList.toggle('sub', roleIsSub);
+      if (roleIsSub) { el.style.background = '#FFF7E6'; el.style.color = '#FF7D00'; }
       else { el.style.background = ''; el.style.color = ''; }
     });
 
@@ -607,7 +1064,7 @@
     if (hasRealEnterprise) crumbName = currentEnt.name;
     else if (enterpriseData.companyName) crumbName = enterpriseData.companyName;
     else if (personalData.realName) crumbName = personalData.realName + '（个人企业）';
-    else crumbName = '我的企业';
+    else crumbName = '企业控制台';
     document.querySelectorAll('#topbarEnterpriseName, .topbar-enterprise-name, .crumb-enterprise-name').forEach(function(el) {
       if (crumbName) el.textContent = crumbName;
     });
@@ -855,21 +1312,49 @@
     if (avatarEl) avatarEl.textContent = displayAvatar;
     if (nameEl && displayName) nameEl.textContent = displayName;
 
-    // 账号类型标签
+    // 账号类型标签（以当前企业 role 优先）
     var accountType = localStorage.getItem('mjyy_account_type') || 'main';
-    var typeText = accountType === 'sub' ? '子账号' : '主账号';
+    var roleInfo = getEnterpriseAccountRole(accountType, curEnt);
+    var typeText = roleInfo.typeText;
+    var roleIsSub = roleInfo.isSub;
     if (badgeEl) {
       badgeEl.textContent = typeText;
-      badgeEl.classList.toggle('sub', accountType === 'sub');
+      badgeEl.classList.toggle('sub', roleIsSub);
     }
     if (topbarBadgeEl) {
       topbarBadgeEl.textContent = typeText;
-      topbarBadgeEl.classList.toggle('sub', accountType === 'sub');
+      topbarBadgeEl.classList.toggle('sub', roleIsSub);
     }
     if (dropdownBadgeEl) {
       dropdownBadgeEl.textContent = typeText;
-      dropdownBadgeEl.classList.toggle('sub', accountType === 'sub');
+      dropdownBadgeEl.classList.toggle('sub', roleIsSub);
     }
+
+    // 子账号项目（与 refreshGlobalDropdownCard 保持一致：产品名·项目名）
+    // 同时更新：userDropdown 作用域内的项目行 + 全页面所有下拉的项目行（避免 global/nav 两个容器只更新其一）
+    var showProjectAsSub = roleIsSub || (accountType === 'sub');
+    var projTextVal = '';
+    if (showProjectAsSub) {
+      try {
+        var aps = getCurrentUserAssignedProjects(userData, curEnt);
+        if (aps && aps.length) {
+          projTextVal = aps.map(function (ap) {
+            return (ap.productLabel || '民匠有约') + '·' + (ap.projectName || '');
+          }).filter(Boolean).join('、');
+        }
+      } catch (e) { projTextVal = ''; }
+    }
+    // 优先写当前 userDropdown（如果存在且可见）
+    var singleScoped = userDropdown ? userDropdown.querySelectorAll('#dropdownProject, .user-dropdown-project') : null;
+    (singleScoped || []).forEach(function (el) {
+      if (projTextVal) { el.textContent = projTextVal; el.style.display = 'block'; }
+      else { el.textContent = ''; el.style.display = 'none'; }
+    });
+    // 再把页面上所有同名/同class容器一起刷一遍（含global template 的容器）
+    document.querySelectorAll('#dropdownProject, .user-dropdown-project').forEach(function (el) {
+      if (projTextVal) { el.textContent = projTextVal; el.style.display = 'block'; }
+      else { el.textContent = ''; el.style.display = 'none'; }
+    });
 
     // 下拉头部信息同步
     if (dropdownAvatarEl) dropdownAvatarEl.textContent = displayAvatar;
@@ -919,7 +1404,12 @@
   renderGlobalUserDropdowns();
   // 渲染企业切换列表（在动态HTML创建完成后）
   if (isLoggedIn) {
+    // 先清理（移除"我的企业"占位项）→ 补齐缺失的 3 个模拟企业 → 再 ensureEnterprises 确认列表存在
+    cleanupOldMockEnterprises();
+    ensureMinimumMockEnterprises();
     ensureEnterprises();
+    // 最后统一刷新所有 UI，保证头部/列表/面包屑读到的是同一份数据
+    try { refreshGlobalDropdownCard(); } catch(e) {}
     if (document.getElementById('navEnterpriseList')) renderEnterpriseSwitchList('navEnterpriseList');
     if (document.getElementById('globalEnterpriseList')) renderEnterpriseSwitchList('globalEnterpriseList');
     if (document.getElementById('enterpriseList')) renderEnterpriseSwitchList('enterpriseList');
@@ -1250,6 +1740,8 @@
   window.initTopbarUserInfo          = initTopbarUserInfo;
   window.refreshGlobalDropdownCard   = refreshGlobalDropdownCard;
   window.ensureEnterprises           = ensureEnterprises;
+  window.cleanupOldMockEnterprises   = cleanupOldMockEnterprises;
+  window.ensureMinimumMockEnterprises = ensureMinimumMockEnterprises;
   window.switchEnterprise            = switchEnterprise;
   window.checkLoginStatus            = checkLoginStatus;
   // 若外部需要调用 goAddNewEnterprise，使用全局点击委托触发 #globalAddNewEnterprise 点击即可

@@ -427,149 +427,160 @@
     .search-input:focus { outline:none; border-color:var(--brand-primary); box-shadow:0 0 0 3px rgba(22,119,255,0.1); }
     .search-select { padding:8px 32px 8px 12px; border:1px solid var(--gray-300); border-radius:8px; font-size:14px; background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 10px center; appearance:none; }
 
-    /* ===== 项目列表表格：单表 + sticky 操作列 （Webkit 滚动条仅画到 0~calc(100%-280px)，视觉上不含操作列）===== */
+    /* ===== 项目列表表格：完全复用用户管理的双表拆分模式 ===== */
+    .project-grid {
+      display: flex;
+      align-items: stretch;
+      border: 1px solid var(--gray-100);
+      border-radius: 8px;
+      background: #fff;
+      overflow: hidden;
+    }
     .project-scroll-wrap {
+      flex: 1 1 auto;
+      min-width: 0;
       overflow-x: auto;
-      overflow-y: visible;
+      overflow-y: hidden;
       position: relative;
-      padding-bottom: 10px;
-      border-radius: 12px;
-      /* Webkit 滚动条：thumb 长度按比例缩短到 (100% - 280px) 宽度位置 */
-      scrollbar-gutter: stable;
     }
-    /* Webkit 内核（Chrome/Edge/Safari）：把滚动条轨道/滑块"视觉终止"在操作列左侧 */
-    .project-scroll-wrap::-webkit-scrollbar { height: 10px; }
-    .project-scroll-wrap::-webkit-scrollbar-track {
-      background: var(--gray-100);
-      border-radius: 10px;
-      /* 右侧留出 280px 空白，让轨道不绘制到操作列下方 */
-      -webkit-mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 280px), transparent calc(100% - 280px), transparent 100%);
-              mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 280px), transparent calc(100% - 280px), transparent 100%);
+    .project-actions-fixed {
+      flex: 0 0 280px;
+      width: 280px;
+      min-width: 280px;
+      max-width: 280px;
+      border-left: 1px solid var(--gray-100);
+      background: #fff;
+      box-shadow: -6px 0 16px -10px rgba(0,0,0,0.1);
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
     }
-    .project-scroll-wrap::-webkit-scrollbar-thumb {
-      background: var(--gray-400);
-      border-radius: 10px;
-      border: 2px solid var(--gray-100);
-      /* 同样 clip 掉操作列下方那一段 thumb */
-      -webkit-mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 280px), transparent calc(100% - 280px), transparent 100%);
-              mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 280px), transparent calc(100% - 280px), transparent 100%);
-    }
-    .project-scroll-wrap::-webkit-scrollbar-thumb:hover { background: var(--gray-500); }
-    /* Firefox：退化为普通横向滚动条，但操作列仍 sticky 固定，视觉差异不大 */
 
-    table.data-table-project { width:100%; min-width: 1480px; /* 10 列内容 + 280 操作列 = ~1424 */ border-collapse:separate; border-spacing:0; table-layout:auto; writing-mode:horizontal-tb; direction:ltr; }
-    table.data-table-project thead th,
-    table.data-table-project tbody td {
-      writing-mode: horizontal-tb !important;
-      text-orientation: initial !important;
-      -webkit-writing-mode: horizontal-tb !important;
-      transform: none !important;
-      perspective: none !important;
+    /* 两表共用相同的表格模型 */
+    table.data-table-project,
+    .project-actions-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 14px;
+      table-layout: fixed;
     }
-    table.data-table-project th {
-      padding:12px 16px; text-align:left; font-size:13px;
-      color:var(--text-secondary); font-weight:500;
-      background:var(--gray-50); border-bottom:1px solid var(--gray-200);
-      position:sticky; top:0; z-index:1;
-      white-space:nowrap !important;
-      line-height:1.4 !important;
-      word-break: keep-all !important;
-      overflow-wrap: normal !important;
-      height: 45px;
-      box-sizing: border-box;
+    table.data-table-project { min-width: 1320px; }
+
+    /* 两表 thead/th 完全一致 */
+    table.data-table-project thead,
+    .project-actions-table thead { height: 48px; line-height: 48px; }
+    table.data-table-project thead tr,
+    .project-actions-table thead tr { height: 48px; }
+
+    table.data-table-project th, table.data-table-project td,
+    .project-actions-table th, .project-actions-table td {
+      padding: 0 16px;
+      margin: 0;
+      text-align: left;
+      border-bottom: 1px solid var(--gray-100);
+      background: #fff;
       vertical-align: middle;
+      box-sizing: border-box;
+      white-space: normal;
+      overflow: visible;
+      height: 56px;
+      line-height: 1.4;
     }
-    table.data-table-project td {
-      padding:14px 16px; font-size:14px; border-bottom:1px solid var(--gray-100);
-      vertical-align:middle; line-height:1.5;
-      word-break: keep-all;
+
+    /* th 统一强制 48px 高 */
+    table.data-table-project thead th,
+    .project-actions-table thead th {
+      height: 48px !important;
+      min-height: 48px;
+      max-height: 48px;
+      line-height: 48px;
+      background: #fafafa;
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 13px;
       white-space: nowrap;
+      border-bottom: 1px solid var(--gray-100);
+      position: static;
+      z-index: 1;
       box-sizing: border-box;
     }
-    /* 允许换行的特定列：子账号、项目名称、累计划拨 */
+
+    /* 右表表头/单元格居中 */
+    .project-actions-table thead th { text-align: center; }
+    .project-actions-table tbody td { text-align: center; }
+
+    /* 允许换行的列 */
     table.data-table-project td.col-sub,
     table.data-table-project td.col-name,
-    table.data-table-project td.col-amounts,
-    table.data-table-project td.col-action {
+    table.data-table-project td.col-amounts {
       white-space: normal;
       word-break: break-word;
     }
-    table.data-table-project tr:hover td { background:var(--gray-50); }
+
+    /* 不换行的列 */
+    table.data-table-project td.col-product,
+    table.data-table-project td.col-id,
+    table.data-table-project td.col-owner,
+    table.data-table-project td.col-phone,
+    table.data-table-project td.col-balance,
+    table.data-table-project td.col-status,
+    table.data-table-project td.col-created {
+      white-space: nowrap;
+    }
+
+    /* hover 同步 */
+    table.data-table-project tbody tr.is-hover td,
+    table.data-table-project tbody tr:hover td,
+    .project-actions-table tbody tr.is-hover td,
+    .project-actions-table tbody tr:hover td {
+      background: #fafafa;
+    }
+
+    /* 行高基准 */
+    table.data-table-project tbody tr,
+    .project-actions-table tbody tr { height: 56px; }
+
+    /* 列宽（左表 10 列） */
+    table.data-table-project col.col-product  { width: 88px; }
+    table.data-table-project col.col-id      { width: 110px; }
+    table.data-table-project col.col-name    { width: 160px; }
+    table.data-table-project col.col-owner   { width: 80px;  }
+    table.data-table-project col.col-phone   { width: 120px; }
+    table.data-table-project col.col-subs    { width: 240px; }
+    table.data-table-project col.col-balance { width: 120px; }
+    table.data-table-project col.col-amounts { width: 110px; }
+    table.data-table-project col.col-status  { width: 80px;  }
+    table.data-table-project col.col-created { width: 156px; }
+
     table.data-table-project .tag {
-      display:inline-flex; align-items:center; justify-content:center;
-      padding:2px 10px; border-radius:4px; font-size:12px; font-weight:500;
-      white-space: nowrap; min-height: 20px;
-    }
-    /* 10+1 列宽保护 */
-    table.data-table-project thead tr th:nth-child(1),
-    table.data-table-project tbody tr td:nth-child(1) { min-width: 88px;  width: 88px;  white-space: nowrap; } /* 产品 */
-    table.data-table-project thead tr th:nth-child(2),
-    table.data-table-project tbody tr td:nth-child(2) { min-width: 110px; width: 110px; } /* 编号 */
-    table.data-table-project thead tr th:nth-child(3),
-    table.data-table-project tbody tr td:nth-child(3) { min-width: 160px; width: 160px; white-space: normal; word-break: break-all; } /* 名称 */
-    table.data-table-project thead tr th:nth-child(4),
-    table.data-table-project tbody tr td:nth-child(4) { min-width: 80px;  width: 80px;  } /* 负责人 */
-    table.data-table-project thead tr th:nth-child(5),
-    table.data-table-project tbody tr td:nth-child(5) { min-width: 120px; width: 120px; } /* 电话 */
-    table.data-table-project thead tr th:nth-child(6),
-    table.data-table-project tbody tr td:nth-child(6) { min-width: 240px; width: 240px; white-space: normal; } /* 子账号 */
-    table.data-table-project thead tr th:nth-child(7),
-    table.data-table-project tbody tr td:nth-child(7) { min-width: 120px; width: 120px; } /* 余额 */
-    table.data-table-project thead tr th:nth-child(8),
-    table.data-table-project tbody tr td:nth-child(8) { min-width: 110px; width: 110px; white-space: normal; } /* 累计划拨 */
-    table.data-table-project thead tr th:nth-child(9),
-    table.data-table-project tbody tr td:nth-child(9) { min-width: 80px;  width: 80px;  } /* 状态 */
-    table.data-table-project thead tr th:nth-child(10),
-    table.data-table-project tbody tr td:nth-child(10){ min-width: 156px; width: 156px; } /* 创建时间 */
-    table.data-table-project thead tr th:nth-child(11),
-    table.data-table-project tbody tr td:nth-child(11){
-      min-width: 280px; width: 280px;
-    } /* 操作列：8 个按钮 3/3/2 布局，宽度 280 刚好（列间距 2px + 内边距收窄）*/
-
-    /* 操作列 sticky 固定到滚动容器（.project-scroll-wrap）的右端 */
-    table.data-table-project thead tr th:last-child,
-    table.data-table-project tbody tr td:last-child {
-      position: sticky;
-      right: 0;
-      background: #fff;
-      box-shadow: -6px 0 10px -6px rgba(0,0,0,0.12);
-      border-left: 2px solid var(--gray-200);
-      z-index: 2;
-      /* Fix 1：表头「操作」文字 + 每一行 td 的整个内容，水平/垂直都强制居中 */
-      text-align: center !important;
-      vertical-align: middle !important;
-      justify-content: center;
+      display: inline-flex;
       align-items: center;
-      align-content: center;
-    }
-    table.data-table-project thead tr th:last-child {
-      /* 表头「操作」居中，且不因为 sticky 而发生文字偏移 */
-      text-align: center !important;
-      background: var(--gray-50);
-      z-index: 4;
       justify-content: center;
+      padding: 2px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+      min-height: 20px;
     }
-    table.data-table-project tr:hover td:last-child,
-    table.data-table-project thead tr:hover th:last-child { background:#fff; }
-    table.data-table-project thead tr:hover th:last-child { background:var(--gray-50); }
 
-    /* 操作列按钮：每 3 个一行，精确换行 + 整列水平/垂直居中（进一步压缩：间距更窄、内边距更小）*/
+    /* 操作按钮容器 */
     .action-cell {
       display: flex;
       flex-wrap: wrap;
-      gap: 2px 1px;          /* 行间距 2px，列间距 1px（再压缩一圈）*/
+      gap: 3px 2px;
       align-items: center;
       align-content: center;
-      justify-content: center !important;
+      justify-content: center;
       width: 100%;
       max-width: 100%;
-      margin: 0 auto !important;
+      margin: 0 auto;
       line-height: 1.3;
-      padding: 3px 0;        /* 纵向 padding 6px → 3px */
+      padding: 4px 0;
       box-sizing: border-box;
       text-align: center;
     }
-    /* 最后一行只有 2 个时，也让它们 3 列里居中 */
     .action-cell::after {
       content: '';
       flex: 0 0 calc((100% - 2px) / 3);
@@ -583,7 +594,7 @@
       max-width: calc((100% - 2px) / 3);
       min-width: 0;
       box-sizing: border-box;
-      padding: 3px 1px;          /* 之前 4×2 → 再缩一圈到 3×1 */
+      padding: 4px 2px;
       margin: 0 auto;
       white-space: nowrap;
       overflow: hidden;
@@ -593,8 +604,9 @@
       justify-content: center;
       text-align: center;
       font-size: 12px;
-      border-radius: 3px;          /* 之前 4px → 再小一号 */
-      min-height: 22px;
+      border-radius: 3px;
+      min-height: 24px;
+      line-height: 1.3;
     }
     .action-cell .btn-link:hover:not(:disabled) {
       background: rgba(22, 119, 255, 0.08);
@@ -604,7 +616,13 @@
     .action-cell .btn-link.warning:hover:not(:disabled) { background: rgba(255, 125, 0, 0.08); }
     .action-cell .btn-link:disabled { background: transparent !important; }
 
-    /* 资金流水表保持原结构（不需要操作列独立滚动条） */
+    /* 滚动条样式 */
+    .project-scroll-wrap::-webkit-scrollbar { height: 10px; }
+    .project-scroll-wrap::-webkit-scrollbar-track { background: #F2F3F5; border-radius: 999px; }
+    .project-scroll-wrap::-webkit-scrollbar-thumb { background: #CDD0D6; border-radius: 999px; border: 2px solid #F2F3F5; }
+    .project-scroll-wrap { scrollbar-width: thin; scrollbar-color: #CDD0D6 #F2F3F5; }
+
+    /* 资金流水表保持原结构 */
     .table-wrap {
       overflow-x: auto;
       overflow-y: visible;
@@ -1142,25 +1160,49 @@
           <button class="btn-secondary" onclick="resetSearch()">清空</button>
         </div>
 
-        <div class="project-scroll-wrap" id="projectTableWrap">
-          <table class="data-table data-table-project" id="projectTable">
-            <thead>
-              <tr>
-                <th>产品</th>
-                <th>项目编号</th>
-                <th>项目名称</th>
-                <th>负责人</th>
-                <th>联系电话</th>
-                <th>子账号</th>
-                <th>项目余额</th>
-                <th>累计划拨</th>
-                <th>状态</th>
-                <th>创建时间</th>
-                <th class="col-action">操作</th>
-              </tr>
-            </thead>
-            <tbody id="projectTableBody"></tbody>
-          </table>
+        <div class="project-grid" id="projectGrid">
+          <div class="project-scroll-wrap" id="projectTableWrap">
+            <table class="data-table-project" id="projectTable">
+              <colgroup>
+                <col class="col-product">
+                <col class="col-id">
+                <col class="col-name">
+                <col class="col-owner">
+                <col class="col-phone">
+                <col class="col-subs">
+                <col class="col-balance">
+                <col class="col-amounts">
+                <col class="col-status">
+                <col class="col-created">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>产品</th>
+                  <th>项目编号</th>
+                  <th>项目名称</th>
+                  <th>负责人</th>
+                  <th>联系电话</th>
+                  <th>子账号</th>
+                  <th>项目余额</th>
+                  <th>累计划拨</th>
+                  <th>状态</th>
+                  <th>创建时间</th>
+                </tr>
+              </thead>
+              <tbody id="projectTableBody"></tbody>
+            </table>
+          </div>
+          <div class="project-actions-fixed">
+            <table class="project-actions-table" id="projectActionsTable">
+              <colgroup>
+                <col style="width:280px;">
+              </colgroup>
+              <thead>
+                <tr><th>操作</th></tr>
+              </thead>
+              <tbody id="projectActionsBody"></tbody>
+            </table>
+          </div>
         </div>
 
         <div class="pagination">
@@ -1653,8 +1695,8 @@
   // ============ 渲染项目列表（双表：左 10 列 + 独立操作列，滚动条不含操作）============
   function renderProjects(){
     var tbody = $('projectTableBody');
-    var actionBody = $('projectActionBody');
-    if(!tbody) return;
+    var actionBody = $('projectActionsBody');
+    if(!tbody || !actionBody) return;
     var kw = (($('searchInput').value || '')+'').toLowerCase();
     var st = $('statusFilter').value || '';
 
@@ -1674,9 +1716,10 @@
       list.push(p);
     }
 
-    var totalCols = 11;
+    var totalCols = 10;
     if(!list.length){
       tbody.innerHTML = '<tr><td colspan="'+totalCols+'"><div class="empty-state"><div class="empty-state-icon">📋</div>暂无符合条件的项目（可清空筛选条件再试）</div></td></tr>';
+      actionBody.innerHTML = '';
       $('paginationInfo').textContent = '共 0 条记录';
       return;
     }
@@ -1688,6 +1731,7 @@
     }
 
     var rows = '';
+    var actRows = '';
     for(var i=0;i<list.length;i++){
       var p = list[i];
       var canStopOrDel = Number(p.balance||0) === 0;
@@ -1712,23 +1756,157 @@
         ? '<button class="btn-link danger" type="button" '+_oc('deleteProject', p.id)+' data-action="delete-project" data-id="'+p.id+'">删除</button>'
         : '<button class="btn-link" type="button" disabled title="项目余额为 0 才能删除">删除</button>';
 
+      // 左表：10 列（不含操作）
       rows += '<tr data-project-id="'+p.id+'">'+
-        '<td>'+productTag(p.product)+'</td>'+
-        '<td><strong>'+p.id+'</strong></td>'+
+        '<td class="col-product">'+productTag(p.product)+'</td>'+
+        '<td class="col-id"><strong>'+p.id+'</strong></td>'+
         '<td class="col-name">'+p.name+'</td>'+
-        '<td>'+p.owner+'</td>'+
-        '<td>'+p.phone+'</td>'+
+        '<td class="col-owner">'+p.owner+'</td>'+
+        '<td class="col-phone">'+p.phone+'</td>'+
         '<td class="col-sub">'+chipsOf(p)+'</td>'+
-        '<td><span style="color:var(--brand-primary);font-weight:600;">'+fmtAmount(p.balance)+'</span></td>'+
+        '<td class="col-balance"><span style="color:var(--brand-primary);font-weight:600;">'+fmtAmount(p.balance)+'</span></td>'+
         '<td class="col-amounts" style="font-size:12px;color:var(--text-regular);">入 '+fmtAmount(p.totalIn)+'<br>出 '+fmtAmount(p.totalOut)+'</td>'+
-        '<td>'+statusTag(p.status)+'</td>'+
-        '<td style="white-space:nowrap;">'+p.createdAt+'</td>'+
-        '<td class="col-action"><div class="action-cell">'+ab+'</div></td>'+
+        '<td class="col-status">'+statusTag(p.status)+'</td>'+
+        '<td class="col-created" style="white-space:nowrap;">'+p.createdAt+'</td>'+
+      '</tr>';
+
+      // 右表：仅操作列
+      actRows += '<tr data-project-id="'+p.id+'">'+
+        '<td><div class="action-cell">'+ab+'</div></td>'+
       '</tr>';
     }
     tbody.innerHTML = rows;
+    actionBody.innerHTML = actRows;
     $('paginationInfo').textContent = '共 ' + list.length + ' 条记录';
+
+    // 两表行高对齐
+    syncProjectRowHeights();
+
+    // 渲染后再走一轮对齐（防按钮/标签异步加载后撑高）
+    requestAnimationFrame(function(){ syncProjectRowHeights(); });
   }
+
+  // 同步左右两表行高
+  function syncProjectRowHeights(){
+    var mainTbody = $('projectTableBody');
+    var actTbody = $('projectActionsBody');
+    if(!mainTbody || !actTbody) return;
+    var mainRows = mainTbody.querySelectorAll('tr');
+    var actRows = actTbody.querySelectorAll('tr');
+    var len = Math.min(mainRows.length, actRows.length);
+
+    // 先断开 observer，避免 style 写入触发无限回调
+    if(typeof projAlignObserver !== 'undefined'){
+      projAlignObserver.disconnect();
+    }
+
+    // 先清除所有行和单元格的内联高度
+    for(var i=0;i<len;i++){
+      mainRows[i].style.height = '';
+      actRows[i].style.height = '';
+      var mTds = mainRows[i].querySelectorAll('td');
+      var aTds = actRows[i].querySelectorAll('td');
+      for(var k=0;k<mTds.length;k++){ mTds[k].style.height = ''; }
+      for(var k=0;k<aTds.length;k++){ aTds[k].style.height = ''; }
+    }
+
+    // 再测量并统一
+    for(var i=0;i<len;i++){
+      var m = mainRows[i], a = actRows[i];
+      var mh = Math.max(m.offsetHeight || 0, 40);
+      var ah = Math.max(a.offsetHeight || 0, 40);
+      var target = Math.max(mh, ah);
+      target = Math.max(target, 56);
+      m.style.height = target + 'px';
+      a.style.height = target + 'px';
+      var mTds = m.querySelectorAll('td');
+      var aTds = a.querySelectorAll('td');
+      for(var k=0;k<mTds.length;k++){ mTds[k].style.height = target + 'px'; mTds[k].style.verticalAlign='middle'; }
+      for(var k=0;k<aTds.length;k++){ aTds[k].style.height = target + 'px'; aTds[k].style.verticalAlign='middle'; }
+    }
+
+    // 同步表头高度为 48px
+    var mainThead = $('projectTable').querySelector('thead tr');
+    var actThead = $('projectActionsTable').querySelector('thead tr');
+    if(mainThead && actThead){
+      mainThead.style.height = '48px';
+      actThead.style.height = '48px';
+      var mThs = mainThead.querySelectorAll('th');
+      var aThs = actThead.querySelectorAll('th');
+      for(var k=0;k<mThs.length;k++){ mThs[k].style.height = '48px'; mThs[k].style.minHeight='48px'; mThs[k].style.maxHeight='48px'; }
+      for(var k=0;k<aThs.length;k++){ aThs[k].style.height = '48px'; aThs[k].style.minHeight='48px'; aThs[k].style.maxHeight='48px'; }
+    }
+
+    // 重新连接 observer
+    if(typeof projAlignObserver !== 'undefined'){
+      var pt = $('projectTableBody'), pa = $('projectActionsBody');
+      if(pt) projAlignObserver.observe(pt, {childList:true, subtree:true, characterData:true});
+      if(pa) projAlignObserver.observe(pa, {childList:true, subtree:true, characterData:true});
+    }
+
+    // 绑定 hover 同步
+    bindProjectHoverSync();
+  }
+
+  // hover 同步：进入任意一行 → 给一对加 is-hover；离开则去掉
+  function bindProjectHoverSync(){
+    var mainTbody = $('projectTableBody');
+    var actTbody = $('projectActionsBody');
+    if(!mainTbody || !actTbody) return;
+    function hoverOn(e){
+      var tr = e.target.closest && e.target.closest('tr');
+      if(!tr) return;
+      var idx = tr.getAttribute('data-project-id');
+      if(!idx) return;
+      var pair1 = mainTbody.querySelector('tr[data-project-id="'+idx+'"]');
+      var pair2 = actTbody.querySelector('tr[data-project-id="'+idx+'"]');
+      if(pair1) pair1.classList.add('is-hover');
+      if(pair2) pair2.classList.add('is-hover');
+    }
+    function hoverOff(e){
+      var tr = e.target.closest && e.target.closest('tr');
+      if(!tr) return;
+      var idx = tr.getAttribute('data-project-id');
+      if(!idx) return;
+      var pair1 = mainTbody.querySelector('tr[data-project-id="'+idx+'"]');
+      var pair2 = actTbody.querySelector('tr[data-project-id="'+idx+'"]');
+      if(pair1) pair1.classList.remove('is-hover');
+      if(pair2) pair2.classList.remove('is-hover');
+    }
+    [mainTbody, actTbody].forEach(function(tb){
+      tb.removeEventListener('mouseenter', hoverOn, true);
+      tb.removeEventListener('mouseleave', hoverOff, true);
+      tb.addEventListener('mouseenter', hoverOn, true);
+      tb.addEventListener('mouseleave', hoverOff, true);
+    });
+  }
+
+  // 添加 hover 样式
+  function addHoverStyle(){
+    if(document.getElementById('projectHoverStyle')) return;
+    var s = document.createElement('style');
+    s.id = 'projectHoverStyle';
+    s.textContent = '.project-grid tr.is-hover td{background:#fafafa;}';
+    document.head.appendChild(s);
+  }
+  addHoverStyle();
+
+  // 窗口尺寸变化时重新对齐
+  window.addEventListener('resize', function(){
+    clearTimeout(window.__projAlignTimer);
+    window.__projAlignTimer = setTimeout(function(){ syncProjectRowHeights(); }, 100);
+  });
+
+  // DOM 变化时重新对齐
+  var projAlignObserver = new MutationObserver(function(){
+    clearTimeout(window.__projAlignTimer2);
+    window.__projAlignTimer2 = setTimeout(function(){ syncProjectRowHeights(); }, 80);
+  });
+  document.addEventListener('DOMContentLoaded', function(){
+    var pt = $('projectTableBody'), pa = $('projectActionsBody');
+    if(pt) projAlignObserver.observe(pt, {childList:true, subtree:true, characterData:true});
+    if(pa) projAlignObserver.observe(pa, {childList:true, subtree:true, characterData:true});
+  });
 
   window.filterProjects = function(){ renderProjects(); };
   window.resetSearch = function(){
@@ -2933,26 +3111,50 @@
         if(list.length===0){
           body += '<div class="empty-state"><div class="empty-state-icon">💸</div>暂无划拨记录</div>';
         } else {
-          body += '<div style="max-height:400px;overflow-y:auto;"><table class="data-table"><thead><tr>'+
-                  '<th>流水号</th><th>方向</th><th>金额</th><th>对方账户</th><th>操作人</th><th>时间</th>'+
-                  '</tr></thead><tbody>';
-          for(var i=0;i<list.length;i++){
-            var r = list[i];
-            var sign = r.direction==='in'?'+':'-';
-            var cls  = r.direction==='in'?'flow-in':'flow-out';
-            var peer = (r.direction==='in' ? r.from : r.to);
-            body += '<tr>'
-                  + '<td>'+r.no+'</td>'
-                  + '<td>'+(r.direction==='in'?'<span class="tag tag-success">入账</span>':'<span class="tag tag-warning">调出</span>')+'</td>'
-                  + '<td class="'+cls+'">'+sign+fmtAmount(r.amount)+'</td>'
-                  + '<td>'+peer+'</td>'
-                  + '<td>'+(r.operator||'—')+'</td>'
-                  + '<td style="white-space:nowrap;">'+r.time+'</td>'
-                  + '</tr>';
+          // 分页：每页 10 条
+          var pageSize = 10;
+          var totalPages = Math.ceil(list.length / pageSize);
+          var bodyParts = [];
+          for(var pg=0; pg<totalPages; pg++){
+            var start = pg * pageSize;
+            var end = Math.min(start + pageSize, list.length);
+            bodyParts.push('<div class="record-page" data-page="'+pg+'" style="display:'+(pg===0?'block':'none')+';">');
+            bodyParts.push('<table class="data-table"><thead><tr>'+
+              '<th>流水号</th><th>方向</th><th>金额</th><th>对方账户</th><th>操作人</th><th>时间</th>'+
+              '</tr></thead><tbody>');
+            for(var i=start; i<end; i++){
+              var r = list[i];
+              var sign = r.direction==='in'?'+':'-';
+              var cls  = r.direction==='in'?'flow-in':'flow-out';
+              var peer = (r.direction==='in' ? r.from : r.to);
+              bodyParts.push('<tr>'
+                + '<td>'+r.no+'</td>'
+                + '<td>'+(r.direction==='in'?'<span class="tag tag-success">入账</span>':'<span class="tag tag-warning">调出</span>')+'</td>'
+                + '<td class="'+cls+'">'+sign+fmtAmount(r.amount)+'</td>'
+                + '<td>'+peer+'</td>'
+                + '<td>'+(r.operator||'—')+'</td>'
+                + '<td style="white-space:nowrap;">'+r.time+'</td>'
+                + '</tr>');
+            }
+            bodyParts.push('</tbody></table></div>');
           }
-          body += '</tbody></table></div>';
+          body += bodyParts.join('');
+          // 分页控件
+          body += '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:10px;border-top:1px solid var(--gray-100);font-size:13px;">';
+          body += '<span style="color:var(--text-muted);">共 '+list.length+' 条</span>';
+          body += '<div class="record-pagination" data-total-pages="'+totalPages+'" data-list-length="'+list.length+'" style="display:flex;gap:4px;align-items:center;"></div>';
+          body += '</div>';
+          // 导出按钮
+          body += '<div style="margin-top:10px;text-align:right;">'
+                + '<button class="btn-primary" style="padding:6px 14px;font-size:13px;" onclick="exportProjectRecords(\''+p.id+'\')">'
+                + '<svg viewBox="0 0 24 24" fill="none" width="12" height="12" style="vertical-align:-1px;margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2"/><polyline points="7 10 12 15 17 10" stroke="currentColor" stroke-width="2"/><line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2"/></svg>'
+                + '导出流水</button></div>';
         }
         $('recordDetailBody').innerHTML = body;
+        // 初始化分页
+        if(totalPages > 0){
+          initRecordPagination(totalPages);
+        }
       }
     });
   };
@@ -2962,7 +3164,101 @@
     }catch(e){}
   };
 
-  // ============ 导出：CSV（完全避免 Blob/objectURL 造成页面被替换） ============
+  // ===== 划拨流水分页 =====
+  var _recordPagination = { currentPage: 0, totalPages: 1 };
+  function initRecordPagination(totalPages) {
+    _recordPagination.totalPages = totalPages;
+    _recordPagination.currentPage = 0;
+    renderRecordPagination();
+  }
+  function renderRecordPagination() {
+    var container = document.querySelector('.record-pagination');
+    if(!container) return;
+    var tp = _recordPagination.totalPages;
+    var cp = _recordPagination.currentPage;
+    var html = '';
+    html += '<button class="pg-btn" data-act="prev" '+(cp===0?'disabled style="opacity:.4;cursor:not-allowed;"':'style="cursor:pointer;"')+'>‹</button>';
+    // 显示最多 5 个页码
+    var startP = Math.max(0, cp - 2);
+    var endP = Math.min(tp, startP + 5);
+    startP = Math.max(0, endP - 5);
+    for(var p = startP; p < endP; p++){
+      html += '<button class="pg-num" data-page="'+p+'" '+(p===cp?'style="background:#1677FF;color:#fff;border-color:#1677FF;cursor:pointer;"':'style="cursor:pointer;"')+'>'+(p+1)+'</button>';
+    }
+    html += '<button class="pg-btn" data-act="next" '+(cp>=tp-1?'disabled style="opacity:.4;cursor:not-allowed;"':'style="cursor:pointer;"')+'>›</button>';
+    container.innerHTML = html;
+    // 绑定事件
+    container.querySelectorAll('.pg-num').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var pg = parseInt(this.getAttribute('data-page'));
+        switchRecordPage(pg);
+      });
+    });
+    container.querySelectorAll('.pg-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var act = this.getAttribute('data-act');
+        if(act==='prev' && _recordPagination.currentPage > 0) switchRecordPage(_recordPagination.currentPage - 1);
+        if(act==='next' && _recordPagination.currentPage < _recordPagination.totalPages - 1) switchRecordPage(_recordPagination.currentPage + 1);
+      });
+    });
+    // 添加页码按钮样式
+    container.querySelectorAll('button').forEach(function(b){
+      if(!b.style.border) { b.style.border = '1px solid #d9d9d9'; b.style.background = '#fff'; b.style.borderRadius = '4px'; b.style.padding = '2px 8px'; b.style.fontSize = '12px'; }
+    });
+  }
+  function switchRecordPage(pg) {
+    _recordPagination.currentPage = pg;
+    var pages = document.querySelectorAll('.record-page');
+    for(var i = 0; i < pages.length; i++){
+      pages[i].style.display = (i === pg) ? 'block' : 'none';
+    }
+    renderRecordPagination();
+  }
+  window.exportProjectRecords = function(projectId) {
+    try{
+      var p = findProject(projectId);
+      if(!p){ alert('未找到项目'); return; }
+      var list = [];
+      for(var i=0;i<records.length;i++){
+        var r = records[i];
+        if((r.to && r.to.indexOf(p.name)>=0) || (r.from && r.from.indexOf(p.name)>=0) || r.projectId===p.id) list.push(r);
+      }
+      if(!list.length){ alert('该项目暂无流水可导出'); return; }
+      function csvEsc(s){ if(s===undefined||s===null) s=''; s=String(s); return /[",\n\r]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; }
+      var headers = ['流水号','方向','金额','对方账户','操作人','备注','时间'];
+      var rows = [headers.join(',')];
+      for(var j=0;j<list.length;j++){
+        var r = list[j];
+        var dir = r.direction==='in'?'入账':'调出';
+        var sign = r.direction==='in'?'+':'-';
+        var peer = r.direction==='in'?r.from:r.to;
+        rows.push([r.no, dir, sign+Number(r.amount).toFixed(2), peer, (r.operator||''), (r.remark||''), r.time].map(csvEsc).join(','));
+      }
+      var d = new Date();
+      function pad2(n){return n<10?'0'+n:''+n;}
+      var fname = projectId+'_划拨流水_'+d.getFullYear()+pad2(d.getMonth()+1)+pad2(d.getDate())+'.csv';
+      var csv = '\uFEFF' + rows.join('\r\n');
+      // 用 Blob + a[download] 触发下载（不替换页面）
+      try{
+        var blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url; a.download = fname;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function(){ URL.revokeObjectURL(url); }, 2000);
+      }catch(e){
+        // fallback：弹窗显示 CSV 内容供复制
+        alert('导出 '+list.length+' 条记录，请复制下方内容另存为 CSV：\n\n' + csv.substring(0, 2000));
+      }
+    }catch(err){
+      try{ console.error('exportProjectRecords err:', err); }catch(e){}
+      alert('导出失败，请重试');
+    }
+  };
+
+  // ============ 导出：CSV（使用 Blob + a[download]，避免卡死） ============
   window.exportRecords = function(){
     try{
       var headers = ['流水号','产品','划拨方向','转出账户','转入账户','金额','备注','操作人','状态','划拨时间'];
@@ -2970,6 +3266,7 @@
         if(currentTab==='all') return true;
         return r.direction===currentTab;
       });
+      if(!list.length){ alert('暂无数据可导出'); return; }
       function csvEsc(s){ if(s===undefined||s===null) s=''; s=String(s); return /[",\n\r]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; }
       var rows = [headers.join(',')];
       for(var i=0;i<list.length;i++){
@@ -2983,41 +3280,21 @@
       function pad(n){return n<10?'0'+n:''+n;}
       var fname = '项目划拨流水_'+ymd.getFullYear()+pad(ymd.getMonth()+1)+pad(ymd.getDate())+'.csv';
       var csv = '\uFEFF' + rows.join('\r\n');
-
-      // 方式一：download 属性触发（多数浏览器不替换当前页面）
-      try{
-        var safe = encodeURIComponent(csv);
-        var href = 'data:text/csv;charset=utf-8,' + safe;
-        var a = document.createElement('a');
-        a.setAttribute('download', fname);
-        a.setAttribute('target', '_blank');
-        a.setAttribute('rel', 'noopener');
-        a.href = href;
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(function(){ try{ if(a.parentNode) a.parentNode.removeChild(a); }catch(e){} }, 1500);
-      }catch(e){ /* fallback to window.open */ }
-
-      // 方式二：兜底 - 新窗口打开（不替换当前页）
-      try{
-        var w = window.open('about:blank', '_blank', 'noopener');
-        if(w){
-          w.document.open();
-          w.document.write(
-            '<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+fname+'</title></head><body style="padding:24px;font-family:-apple-system,sans-serif;">'+
-            '<h3 style="margin:0 0 12px;">导出流水 '+list.length+' 条（'+fname+'）</h3>'+
-            '<p style="margin:0 0 12px;color:#1677FF;">如果浏览器未触发自动下载，请：右键 → 另存为 → 编码选 UTF-8（或直接复制下方 CSV 粘贴到 Excel）</p>'+
-            '<textarea readonly style="width:100%;height:70vh;font-size:12px;font-family:Consolas,monospace;padding:8px;line-height:1.5;border:1px solid #ddd;border-radius:8px;">'+csv.replace(/<[^>]+>/g,'')+'</textarea>'+
-            '</body></html>'
-          );
-          w.document.close();
-        }
-      }catch(e2){ /* ignore */ }
-
-      // 注：静默导出，不再弹窗阻塞；若浏览器未自动下载，上方已打开的新窗口包含 CSV 原文备份。
+      // 安全下载：Blob + createObjectURL，不弹窗不卡页
+      var blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = fname;
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 3000);
+      showPageDebugToast('导出成功', '已导出 '+list.length+' 条流水到 '+fname, 'success', 2500);
     }catch(err){
-      try{ console.error('exportErr', err); }catch(e){}
-      try{ alert('导出失败：'+(err.message||err)); }catch(e){}
+      try{ console.error('exportRecords err:', err); }catch(e){}
+      alert('导出失败，请重试');
     }
   };
 
@@ -3154,6 +3431,40 @@
       }
     });
   }catch(e){ /* ignore */ }
+
+  // —— FIX (暴露到全局 + 持久化，供 js/main.js 的"子账号项目名"显示读取) ——
+  // 此 script 是 IIFE（见文件开头 (function(){...})()），内部 `var projects` / `var SUBACCOUNTS`
+  // 仅属于函数作用域，不会挂到 window 全局。而 js/main.js 的 getCurrentUserAssignedProjects
+  // 通过 window.projects 读取项目数据来匹配"民匠有约·项目名"，因此必须在此处显式挂出。
+  // 同时写入 localStorage，保证用户从"产品中心 / 账号安全 / 用户管理..."等非项目页直接刷新时，
+  // 右上角账号下拉卡片也依然能正确显示项目名（无需先进入过项目管理页）。
+  try {
+    window.PRODUCTS         = PRODUCTS;
+    window.PRODUCT_DEFAULT  = PRODUCT_DEFAULT;
+    window.SUBACCOUNTS      = SUBACCOUNTS;
+    window.projects         = projects;
+
+    // 写入全局项目列表（企业下所有可用项目）
+    localStorage.setItem('mjyy_projects',        JSON.stringify(window.projects));
+    localStorage.setItem('mjyy_sub_accounts',    JSON.stringify(window.SUBACCOUNTS));
+    localStorage.setItem('mjyy_products_dict',   JSON.stringify(window.PRODUCTS));
+    localStorage.setItem('mjyy_product_default', String(window.PRODUCT_DEFAULT || ''));
+    // 有默认产品时，若企业列表里的模拟企业还没 products 字段，也补一份默认配置
+    try {
+      var listRaw = localStorage.getItem('mjyy_enterprise_list');
+      if (listRaw) {
+        var list = JSON.parse(listRaw);
+        var changed = false;
+        for (var i = 0; i < list.length; i++) {
+          if (!list[i].products || !Array.isArray(list[i].products) || list[i].products.length === 0) {
+            list[i].products = [{ code: String(window.PRODUCT_DEFAULT || 'mjyy') }];
+            changed = true;
+          }
+        }
+        if (changed) localStorage.setItem('mjyy_enterprise_list', JSON.stringify(list));
+      }
+    } catch (e2) { /* ignore */ }
+  } catch (e3) { /* ignore */ }
 
 })();
 </script>

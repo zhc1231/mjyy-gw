@@ -939,10 +939,10 @@
       box-sizing: border-box;
     }
     .member-table-actions-table thead th {
-      text-align: right;
+      text-align: center;
     }
     .member-table-actions-table tbody td {
-      text-align: right;
+      text-align: center;
     }
 
     /* 账号列内部昵称说明一行，避免内容撑高导致两侧错位 */
@@ -978,8 +978,9 @@
     .member-actions {
       display: inline-flex;
       align-items: center;
-      gap: 14px;
+      gap: 8px;
       white-space: nowrap;
+      flex-wrap: wrap;
     }
 
     .member-action {
@@ -987,14 +988,22 @@
       text-decoration: none;
       font-size: 13px;
       line-height: 1.4;
-      padding: 2px 0;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: background 0.15s;
     }
 
-    .member-action:hover { text-decoration: underline; }
+    .member-action:hover {
+      text-decoration: none;
+      background: rgba(22, 119, 255, 0.08);
+    }
 
     .member-action.danger { color: #F53F3F; }
+    .member-action.danger:hover { background: rgba(245, 63, 63, 0.08); }
     .member-action.warn { color: #F7BA1E; }
+    .member-action.warn:hover { background: rgba(247, 186, 30, 0.08); }
     .member-action.success { color: #00B42A; }
+    .member-action.success:hover { background: rgba(0, 180, 42, 0.08); }
 
     .member-phone { font-variant-numeric: tabular-nums; }
 
@@ -1506,13 +1515,13 @@
           <div class="page-subtitle">企业主账号、子账号成员列表，支持批量邀请、冻结、角色分配与停用。</div>
         </div>
       </div>
-      <!-- 成员管理 -->
+      <!-- 用户管理 -->
       <div class="card">
         <div class="card-header">
-          <div class="card-title">成员管理</div>
+          <div class="card-title">用户管理</div>
           <button class="btn-primary" id="addMemberBtn">
             <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/><line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/></svg>
-            添加成员
+            添加用户
           </button>
         </div>
         <div class="card-body">
@@ -1556,7 +1565,7 @@
                 <colgroup><col style="width:240px;"></col></colgroup>
                 <thead><tr><th>操作</th></tr></thead>
                 <tbody>
-                  <tr data-default="1" data-row-idx="0" data-status="enabled"><td style="text-align:right;"><div class="member-actions" style="justify-content:flex-end;"><span style="color:var(--text-muted);font-size:13px;">系统默认，不可操作</span></div></td></tr>
+                  <tr data-default="1" data-row-idx="0" data-status="enabled"><td style="text-align:center;"><div class="member-actions" style="justify-content:center;"><span style="color:var(--text-muted);font-size:13px;">系统默认，不可操作</span></div></td></tr>
                 </tbody>
               </table>
             </div>
@@ -1580,11 +1589,11 @@
     </main>
   </div>
 
-  <!-- 添加成员模态框 -->
+  <!-- 添加用户模态框 -->
   <div class="modal-overlay" id="addMemberModal">
     <div class="modal member-modal">
       <div class="modal-header">
-        <div class="modal-title">添加成员</div>
+        <div class="modal-title">添加用户</div>
         <button class="modal-close" id="addMemberClose">
           <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
@@ -1598,14 +1607,14 @@
             <div class="form-error" id="memberAccountError"></div>
           </div>
           <div class="form-group">
-            <label class="form-label">成员姓名<span class="required">*</span></label>
+            <label class="form-label">用户姓名<span class="required">*</span></label>
             <input type="text" class="form-input" id="memberName" placeholder="请输入姓名">
             <div class="form-error" id="memberNameError"></div>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">成员手机号<span class="required">*</span></label>
+          <label class="form-label">用户手机号<span class="required">*</span></label>
           <input type="text" class="form-input" id="memberPhone" placeholder="请输入11位手机号" maxlength="11">
           <div class="form-error" id="memberPhoneError"></div>
         </div>
@@ -1623,12 +1632,59 @@
 
         <div class="form-tip">
           <svg viewBox="0 0 24 24" fill="none" width="14" height="14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-          <span>添加后将向成员手机号发送登录邀请</span>
+          <span>添加后将向用户手机号发送登录邀请</span>
         </div>
       </div>
       <div class="modal-footer">
         <button class="btn-default" id="addMemberCancel">取消</button>
         <button class="btn-primary" id="addMemberConfirm">确认添加</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 编辑用户模态框 -->
+  <div class="modal-overlay" id="editUserModal">
+    <div class="modal member-modal">
+      <div class="modal-header">
+        <div class="modal-title">编辑用户</div>
+        <button class="modal-close" id="editUserClose">
+          <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row-2col">
+          <div class="form-group">
+            <label class="form-label">用户名</label>
+            <input type="text" class="form-input" id="editMemberAccount" disabled style="background:#f5f5f5;color:#999;">
+            <div class="form-hint">用户名不可修改</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">用户姓名<span class="required">*</span></label>
+            <input type="text" class="form-input" id="editMemberName" placeholder="请输入姓名">
+            <div class="form-error" id="editMemberNameError"></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">用户手机号<span class="required">*</span></label>
+          <input type="text" class="form-input" id="editMemberPhone" placeholder="请输入11位手机号" maxlength="11">
+          <div class="form-error" id="editMemberPhoneError"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">角色<span class="required">*</span></label>
+          <select class="form-select" id="editMemberRole">
+            <option value="">请选择角色</option>
+            <option value="财务专员">财务专员</option>
+            <option value="业务专员">业务专员</option>
+            <option value="运营专员">运营专员</option>
+          </select>
+          <div class="form-error" id="editMemberRoleError"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-default" id="editMemberCancel">取消</button>
+        <button class="btn-primary" id="editMemberConfirm">保存修改</button>
       </div>
     </div>
   </div>
@@ -2032,7 +2088,7 @@
             var actTr = document.createElement('tr');
             actTr.setAttribute('data-status', 'enabled');
             actTr.setAttribute('data-row-idx', String(nextIdx));
-            actTr.innerHTML = '<td style="text-align:right;"><div class="member-actions" style="justify-content:flex-end;"><a href="javascript:void(0)" class="member-action" data-action="edit">编辑</a><a href="javascript:void(0)" class="member-action warn" data-action="toggleStatus">停用</a><a href="javascript:void(0)" class="member-action danger" data-action="remove">移除</a></div></td>';
+            actTr.innerHTML = '<td style="text-align:center;"><div class="member-actions" style="justify-content:center;"><a href="javascript:void(0)" class="member-action" data-action="edit">编辑</a><a href="javascript:void(0)" class="member-action warn" data-action="toggleStatus">停用</a><a href="javascript:void(0)" class="member-action danger" data-action="remove">移除</a></div></td>';
             tables.mainTbody.appendChild(mainTr);
             tables.actionsTbody.appendChild(actTr);
             // 重新编号 row-idx（保持连续）+ 同步 hover 绑定 + 高度对齐
@@ -2095,7 +2151,25 @@
             return;
           }
           if (action === 'edit') {
-            alert('编辑成员：该功能用于修改成员姓名、手机号和角色（演示环境请在实际后台接入对应接口）');
+            // 打开编辑弹窗，预填充当前行数据
+            var meta = extractRowMeta(anyTr);
+            var editModal = document.getElementById('editUserModal');
+            document.getElementById('editMemberAccount').value = meta.account;
+            document.getElementById('editMemberName').value = meta.name;
+            // 从元数据获取原始手机号（脱敏的显示值需要用实际值）
+            var tds = pair.mainTr.querySelectorAll('td');
+            var rawPhone = tds[2] ? tds[2].textContent.trim() : meta.phone;
+            // 如果是脱敏手机号，尝试从存储恢复；否则保持显示值
+            document.getElementById('editMemberPhone').value = rawPhone;
+            document.getElementById('editMemberRole').value = meta.role;
+            // 清错误
+            ['editMemberNameError', 'editMemberPhoneError', 'editMemberRoleError'].forEach(function(id) {
+              var el = document.getElementById(id); if(el) el.textContent = '';
+            });
+            // 记录当前编辑的行
+            editModal.__editRow = pair.mainTr;
+            editModal.__editActionsRow = pair.actionsTr;
+            editModal.classList.add('visible');
           } else if (action === 'toggleStatus') {
             var curStatus = tr.getAttribute('data-status') === 'disabled' ? 'disabled' : 'enabled';
             var next = curStatus === 'disabled' ? 'enabled' : 'disabled';
@@ -2122,6 +2196,115 @@
         });
       }
       bindMemberActionDelegation();
+
+      // ============ 编辑用户弹窗逻辑 ============
+      var editModal = document.getElementById('editUserModal');
+
+      function closeEditUserModal() {
+        editModal.classList.remove('visible');
+        editModal.__editRow = null;
+        editModal.__editActionsRow = null;
+      }
+
+      function showEditFieldError(fieldId, errorId, msg) {
+        var el = document.getElementById(fieldId);
+        if (el) el.style.borderColor = '#F53F3F';
+        document.getElementById(errorId).textContent = msg;
+      }
+      function clearEditFieldError(fieldId, errorId) {
+        var el = document.getElementById(fieldId);
+        if (el) el.style.borderColor = '';
+        document.getElementById(errorId).textContent = '';
+      }
+
+      document.getElementById('editUserClose').addEventListener('click', closeEditUserModal);
+      document.getElementById('editMemberCancel').addEventListener('click', closeEditUserModal);
+      editModal.addEventListener('click', function(e) {
+        if (e.target === editModal) closeEditUserModal();
+      });
+
+      // 字段错误清除
+      ['editMemberName', 'editMemberPhone'].forEach(function(fid) {
+        document.getElementById(fid).addEventListener('input', function() {
+          var eid = fid + 'Error';
+          clearEditFieldError(fid, eid);
+        });
+      });
+      document.getElementById('editMemberRole').addEventListener('change', function() {
+        clearEditFieldError('editMemberRole', 'editMemberRoleError');
+      });
+
+      // 保存修改
+      document.getElementById('editMemberConfirm').addEventListener('click', function() {
+        var name = document.getElementById('editMemberName').value.trim();
+        var phone = document.getElementById('editMemberPhone').value.trim();
+        var role = document.getElementById('editMemberRole').value;
+        var hasError = false;
+
+        if (!name) {
+          showEditFieldError('editMemberName', 'editMemberNameError', '请输入用户姓名');
+          hasError = true;
+        } else {
+          clearEditFieldError('editMemberName', 'editMemberNameError');
+        }
+
+        if (!phone) {
+          showEditFieldError('editMemberPhone', 'editMemberPhoneError', '请输入用户手机号');
+          hasError = true;
+        } else if (!/^1[3-9]\d{9}$/.test(phone)) {
+          showEditFieldError('editMemberPhone', 'editMemberPhoneError', '请输入正确的手机号');
+          hasError = true;
+        } else {
+          clearEditFieldError('editMemberPhone', 'editMemberPhoneError');
+        }
+
+        if (!role) {
+          showEditFieldError('editMemberRole', 'editMemberRoleError', '请选择角色');
+          hasError = true;
+        } else {
+          clearEditFieldError('editMemberRole', 'editMemberRoleError');
+        }
+
+        if (hasError) return;
+
+        var btn = document.getElementById('editMemberConfirm');
+        btn.disabled = true;
+        btn.textContent = '保存中...';
+
+        setTimeout(function() {
+          var mainTr = editModal.__editRow;
+          var actionsTr = editModal.__editActionsRow;
+          if (mainTr) {
+            var tds = mainTr.querySelectorAll('td');
+            // 更新姓名 (td[1])
+            if (tds[1]) tds[1].textContent = name;
+            // 更新手机号 (td[2]) - 显示脱敏
+            if (tds[2]) {
+              var maskPhone = phone.length >= 11 ? phone.substring(0,3) + '****' + phone.substring(7) : phone;
+              tds[2].textContent = maskPhone;
+            }
+            // 更新角色 (td[3])
+            if (tds[3]) tds[3].textContent = role;
+          }
+          btn.disabled = false;
+          btn.textContent = '保存修改';
+          closeEditUserModal();
+          alignMemberRowHeights();
+          // 轻量提示
+          showPageToast('用户信息已更新', 'success');
+        }, 400);
+      });
+
+      // 简易 toast 提示
+      function showPageToast(msg, type) {
+        var toast = document.createElement('div');
+        toast.style.cssText = 'position:fixed;top:80px;left:50%;transform:translateX(-50%);padding:10px 20px;border-radius:6px;color:#fff;font-size:14px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.15);transition:opacity 0.2s;';
+        toast.style.background = type === 'success' ? '#52C41A' : '#FF4D4F';
+        toast.textContent = msg;
+        document.body.appendChild(toast);
+        setTimeout(function() { toast.style.opacity = '0'; }, 1500);
+        setTimeout(function() { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 1800);
+      };
 
       // ---- 初始化：配对已有行 + 绑定 hover + 对齐高度 ----
       pairMemberRowsAndBindHover();

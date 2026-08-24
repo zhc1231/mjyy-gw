@@ -1367,28 +1367,20 @@
         <label style="display:block;font-size:13px;color:#333;margin-bottom:6px;">银行账号 <span style="color:#f5222d;">*</span></label>
         <input id="bankAccNo" type="text" placeholder="请输入银行账号" style="width:100%;padding:8px 12px;border:1px solid #d9d9d9;border-radius:6px;font-size:14px;">
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
-        <div>
-          <label style="display:block;font-size:13px;color:#333;margin-bottom:6px;">开户银行 <span style="color:#f5222d;">*</span></label>
-          <select id="bankName" style="width:100%;padding:8px 12px;border:1px solid #d9d9d9;border-radius:6px;font-size:14px;background:#fff;">
-            <option value="">请选择</option>
-            <option>中国工商银行</option>
-            <option>中国建设银行</option>
-            <option>中国农业银行</option>
-            <option>中国银行</option>
-            <option>招商银行</option>
-            <option>交通银行</option>
-            <option>中国邮政储蓄银行</option>
-          </select>
-        </div>
-        <div>
-          <label style="display:block;font-size:13px;color:#333;margin-bottom:6px;">银行联行号</label>
-          <input id="bankCode" type="text" placeholder="12位联行号" style="width:100%;padding:8px 12px;border:1px solid #d9d9d9;border-radius:6px;font-size:14px;">
-        </div>
+      <div style="margin-bottom:14px;">
+        <label style="display:block;font-size:13px;color:#333;margin-bottom:6px;">开户银行 <span style="color:#f5222d;">*</span></label>
+        <input id="bankName" type="text" placeholder="请输入银行名称进行筛选" autocomplete="off"
+               style="width:100%;padding:8px 12px;border:1px solid #d9d9d9;border-radius:6px;font-size:14px;"
+               oninput="filterBankList(this.value)" onfocus="showBankList(true)" onblur="hideBankList()">
+        <div id="bankNameDropdown" style="display:none;max-height:160px;overflow-y:auto;border:1px solid #d9d9d9;border-radius:6px;background:#fff;margin-top:4px;box-shadow:0 4px 12px rgba(0,0,0,0.1);position:relative;z-index:10;"></div>
       </div>
-      <div>
-        <label style="display:block;font-size:13px;color:#333;margin-bottom:6px;">开户支行</label>
-        <input id="bankBranch" type="text" placeholder="开户支行名称" style="width:100%;padding:8px 12px;border:1px solid #d9d9d9;border-radius:6px;font-size:14px;">
+      <div style="margin-bottom:14px;">
+        <label style="display:block;font-size:13px;color:#333;margin-bottom:6px;">开户支行 <span style="color:#f5222d;">*</span></label>
+        <input id="bankBranch" type="text" placeholder="请输入开户支行名称" style="width:100%;padding:8px 12px;border:1px solid #d9d9d9;border-radius:6px;font-size:14px;">
+      </div>
+      <div style="margin-bottom:14px;">
+        <label style="display:block;font-size:13px;color:#333;margin-bottom:6px;">银行联行号 <span style="color:#f5222d;">*</span></label>
+        <input id="bankCode" type="text" placeholder="请输入12位联行号" style="width:100%;padding:8px 12px;border:1px solid #d9d9d9;border-radius:6px;font-size:14px;">
       </div>
     </div>
     <div style="padding:14px 24px;border-top:1px solid #f0f0f0;display:flex;justify-content:flex-end;gap:10px;">
@@ -1450,10 +1442,60 @@
       alert('删除成功');
     }
   };
+  // Bank search/filter for 开户银行
+  var BANK_LIST = [
+    '中国工商银行','中国建设银行','中国农业银行','中国银行','招商银行',
+    '交通银行','中国邮政储蓄银行','中信银行','浦发银行','兴业银行',
+    '光大银行','民生银行','平安银行','华夏银行','广发银行',
+    '北京银行','上海银行','宁波银行','江苏银行','南京银行'
+  ];
+  window.filterBankList = function(val) {
+    var dd = document.getElementById('bankNameDropdown');
+    if (!val || !val.trim()) {
+      renderBankOptions(BANK_LIST);
+    } else {
+      var kw = val.trim().toLowerCase();
+      var matched = BANK_LIST.filter(function(b){ return b.toLowerCase().indexOf(kw) >= 0; });
+      renderBankOptions(matched.length ? matched : BANK_LIST);
+    }
+    dd.style.display = 'block';
+  };
+  function renderBankOptions(list) {
+    var dd = document.getElementById('bankNameDropdown');
+    if (!list.length) { dd.innerHTML = '<div style="padding:8px 12px;color:#999;font-size:13px;">未找到匹配银行</div>'; return; }
+    var html = '';
+    for (var i = 0; i < list.length; i++) {
+      html += '<div class="bank-opt" data-name="'+list[i]+'" style="padding:8px 12px;cursor:pointer;font-size:14px;border-bottom:1px solid #f5f5f5;" onmouseover="this.style.background=\'#f5f5f5\'" onmouseout="this.style.background=\'\'">'
+            + list[i] + '</div>';
+    }
+    dd.innerHTML = html;
+    var opts = dd.querySelectorAll('.bank-opt');
+    for (var j = 0; j < opts.length; j++) {
+      opts[j].addEventListener('mousedown', function(e){
+        e.preventDefault();
+        document.getElementById('bankName').value = this.getAttribute('data-name');
+        dd.style.display = 'none';
+      });
+    }
+  }
+  window.showBankList = function() {
+    renderBankOptions(BANK_LIST);
+    document.getElementById('bankNameDropdown').style.display = 'block';
+  };
+  window.hideBankList = function() {
+    setTimeout(function(){ document.getElementById('bankNameDropdown').style.display = 'none'; }, 150);
+  };
+
   window.saveBank = function() {
     var name = document.getElementById('bankAccName').value.trim();
     var no = document.getElementById('bankAccNo').value.trim();
+    var bn = document.getElementById('bankName').value.trim();
+    var br = document.getElementById('bankBranch').value.trim();
+    var bc = document.getElementById('bankCode').value.trim();
     if(!name || !no) { alert('请填写必填项'); return; }
+    if(!bn) { alert('请填写开户银行'); return; }
+    if(!br) { alert('请填写开户支行'); return; }
+    if(!bc) { alert('请填写银行联行号'); return; }
     alert(editingId ? '编辑成功' : '新增成功');
     closeBankModal();
   };
