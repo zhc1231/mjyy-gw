@@ -402,24 +402,82 @@
     .search-select { padding:8px 32px 8px 12px; border:1px solid var(--gray-300); border-radius:8px; font-size:14px; background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 10px center; appearance:none; }
 
     /* ===== 表格 ===== */
-    .table-wrap { overflow-x:auto; position:relative; }
-    table.data-table { width:100%; min-width: 1480px; border-collapse:separate; border-spacing:0; }
-    table.data-table th { padding:12px 16px; text-align:left; font-size:13px; color:var(--text-secondary); font-weight:500; background:var(--gray-50); border-bottom:1px solid var(--gray-200); position:sticky; top:0; z-index:1; }
-    table.data-table td { padding:14px 16px; font-size:14px; border-bottom:1px solid var(--gray-100); vertical-align:middle; }
+    .table-wrap { overflow-x:auto; position:relative; padding-bottom:6px; }
+    table.data-table { width:100%; min-width: 1600px; border-collapse:separate; border-spacing:0; table-layout:auto; writing-mode:horizontal-tb; direction:ltr; }
+    table.data-table thead th,
+    table.data-table tbody td {
+      writing-mode: horizontal-tb !important;
+      text-orientation: initial !important;
+      -webkit-writing-mode: horizontal-tb !important;
+    }
+    table.data-table th {
+      padding:12px 16px; text-align:left; font-size:13px;
+      color:var(--text-secondary); font-weight:500;
+      background:var(--gray-50); border-bottom:1px solid var(--gray-200);
+      position:sticky; top:0; z-index:1;
+      white-space:nowrap !important;
+      line-height:1.4 !important;
+      -webkit-line-break: auto !important;
+      word-break: keep-all !important;
+      overflow-wrap: normal !important;
+    }
+    table.data-table td {
+      padding:14px 16px; font-size:14px; border-bottom:1px solid var(--gray-100);
+      vertical-align:middle; line-height:1.5;
+      word-break: keep-all;
+      white-space: nowrap;
+    }
+    /* 允许换行的特定列：子账号、项目名称、累计划拨 */
+    table.data-table td.col-sub,
+    table.data-table td.col-name,
+    table.data-table td.col-amounts {
+      white-space: normal;
+      word-break: break-word;
+    }
     table.data-table tr:hover td { background:var(--gray-50); }
-    table.data-table .tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:12px; font-weight:500; }
+    table.data-table .tag {
+      display:inline-flex; align-items:center; justify-content:center;
+      padding:2px 10px; border-radius:4px; font-size:12px; font-weight:500;
+      white-space: nowrap; min-height: 20px;
+    }
+    /* 列宽保护：按 :nth-child 指定（与表头 11 列对应）
+       1 产品 2 项目编号 3 项目名称 4 负责人 5 电话 6 子账号 7 余额 8 累计划拨 9 状态 10 创建时间 11 操作 */
+    table.data-table thead tr th:nth-child(1),
+    table.data-table tbody tr td:nth-child(1) { min-width: 88px;  width: 88px;  white-space: nowrap; } /* 产品 */
+    table.data-table thead tr th:nth-child(2),
+    table.data-table tbody tr td:nth-child(2) { min-width: 110px; width: 110px; } /* 编号 */
+    table.data-table thead tr th:nth-child(3),
+    table.data-table tbody tr td:nth-child(3) { min-width: 160px; width: 160px; white-space: normal; word-break: break-all; } /* 名称(允许折行) */
+    table.data-table thead tr th:nth-child(4),
+    table.data-table tbody tr td:nth-child(4) { min-width: 80px;  width: 80px;  } /* 负责人 */
+    table.data-table thead tr th:nth-child(5),
+    table.data-table tbody tr td:nth-child(5) { min-width: 120px; width: 120px; } /* 电话 */
+    table.data-table thead tr th:nth-child(6),
+    table.data-table tbody tr td:nth-child(6) { min-width: 240px; width: 240px; white-space: normal; } /* 子账号 */
+    table.data-table thead tr th:nth-child(7),
+    table.data-table tbody tr td:nth-child(7) { min-width: 120px; width: 120px; } /* 余额 */
+    table.data-table thead tr th:nth-child(8),
+    table.data-table tbody tr td:nth-child(8) { min-width: 110px; width: 110px; white-space: normal; } /* 累计划拨 */
+    table.data-table thead tr th:nth-child(9),
+    table.data-table tbody tr td:nth-child(9) { min-width: 80px;  width: 80px;  } /* 状态 */
+    table.data-table thead tr th:nth-child(10),
+    table.data-table tbody tr td:nth-child(10){ min-width: 156px; width: 156px; } /* 创建时间 */
+    table.data-table thead tr th:nth-child(11),
+    table.data-table tbody tr td:nth-child(11){
+      min-width: 520px; width: 520px; white-space: normal !important; word-break: break-word;
+    } /* 操作（允许折行，按钮折行到下一行也 OK）*/
     /* 操作列 sticky 到右侧（滚动时固定） */
     table.data-table thead tr th:last-child,
     table.data-table tbody tr td:last-child {
       position: sticky;
       right: 0;
       background: #fff;
-      box-shadow: -4px 0 6px -4px rgba(0,0,0,0.08);
+      box-shadow: -6px 0 10px -6px rgba(0,0,0,0.10);
       z-index: 2;
     }
     table.data-table tr:hover td:last-child,
     table.data-table thead tr:hover th:last-child { background:#fff; }
-    table.data-table thead tr th:last-child { background:var(--gray-50); z-index: 3; }
+    table.data-table thead tr th:last-child { background:var(--gray-50); z-index: 4; }
     .tag-success { background:#E6FFFB; color:#0C9A74; }
     .tag-warning { background:#FFF7E6; color:#FA8C16; }
     .tag-danger { background:#FFF2F0; color:#F53F3F; }
@@ -672,7 +730,7 @@
     <div class="card">
       <div class="card-header">
         <div class="card-title">项目列表</div>
-        <button class="btn-primary" id="btnNewProject" data-action="new-project" type="button" onclick="try{ if(window._tryAction) window._tryAction('new-project'); else window.openProjectModal && window.openProjectModal(); }catch(e){ try{console.error(e);}catch(x){} }">
+        <button class="btn-primary" id="btnNewProject" data-action="new-project" type="button" onclick="try{ if(window.openProjectModal){ window.openProjectModal(); } else { alert('页面初始化未完成，请刷新重试'); } }catch(e){ try{ console.error(e); }catch(x){} try{ alert('打开失败：'+(e.message||e)); }catch(x){} }">
           <svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/><line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/></svg>
           新建项目
         </button>
@@ -727,7 +785,7 @@
     <div class="card">
       <div class="card-header">
         <div class="card-title">资金划拨流水</div>
-        <button class="btn-secondary" id="btnExportRecords" data-action="export-records" type="button" onclick="try{ if(window._tryAction) window._tryAction('export-records'); else window.exportRecords && window.exportRecords(); }catch(e){ try{console.error(e);}catch(x){} }">
+        <button class="btn-secondary" id="btnExportRecords" data-action="export-records" type="button" onclick="try{ if(window.exportRecords){ window.exportRecords(); } else { alert('页面初始化未完成，请刷新重试'); } }catch(e){ try{ console.error(e); }catch(x){} try{ alert('导出失败：'+(e.message||e)); }catch(x){} }">
           <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" stroke="currentColor" stroke-width="2"/></svg>
           导出
         </button>
@@ -1192,7 +1250,8 @@
       if(!el) return;
       var act = el.getAttribute('data-action');
       if(!act) return;
-      if(evt.cancelable) try{ evt.preventDefault(); evt.stopPropagation(); }catch(e){}
+      // 仅 preventDefault，不过度 stopPropagation：避免阻断其他 UI 行为（如下拉、表单、内联 onclick）
+      try{ if(el.tagName==='A' || (evt.cancelable && evt.type==='click')) evt.preventDefault(); }catch(e){}
       var pid = el.getAttribute('data-id') || null;
       switch(act){
         case 'new-project':
@@ -1871,9 +1930,10 @@
         }
       }catch(e2){ /* ignore */ }
 
-      alert('已触发导出 '+list.length+' 条流水（文件名：'+fname+'）。\n若未出现文件下载，新弹出的页面已备份 CSV 原文（可复制到 Excel / 右键另存为 UTF-8 .csv）');
+      // 注：静默导出，不再弹窗阻塞；若浏览器未自动下载，上方已打开的新窗口包含 CSV 原文备份。
     }catch(err){
-      alert('导出失败：'+(err.message||err));
+      try{ console.error('exportErr', err); }catch(e){}
+      try{ alert('导出失败：'+(err.message||err)); }catch(e){}
     }
   };
 
@@ -1906,15 +1966,43 @@
     }
   }
 
-  // ============ 初始化（安全 try/catch 防卡死） ============
-  try{
-    _retrofitTabs();
-    _applyTabActive();
-  }catch(e){ /* ignore */ }
-  try{ renderProjects(); }catch(e){ try{ console.error(e); }catch(e2){} }
-  try{ renderRecords(); }catch(e){ try{ console.error(e); }catch(e2){} }
-  try{ updateStats(); }catch(e){ try{ console.error(e); }catch(e2){} }
-  try{ updateEnterpriseAvail(); }catch(e){}
+  // ============ 初始化（安全 try/catch 防卡死：任意一步失败不影响后续）============
+  try{ _retrofitTabs(); }catch(e){ try{ console.error('init:retrofitTabs', e); }catch(x){} }
+  try{ _applyTabActive(); }catch(e){ try{ console.error('init:applyTabActive', e); }catch(x){} }
+  try{ renderProjects(); }catch(e){ try{ console.error('init:renderProjects', e); }catch(e2){} }
+  try{ renderRecords();  }catch(e){ try{ console.error('init:renderRecords',  e); }catch(e2){} }
+  try{ updateStats();    }catch(e){ try{ console.error('init:updateStats',    e); }catch(e2){} }
+  try{ updateEnterpriseAvail(); }catch(e){ try{ console.error('init:enterpriseAvail', e); }catch(x){} }
+  // 兜底：再 setTimeout 渲染一次（防范后续脚本还在初始化 data）
+  try{ setTimeout(function(){
+    try{ renderProjects(); }catch(e){}
+    try{ renderRecords();  }catch(e){}
+    try{ updateStats();    }catch(e){}
+    try{ bindDelegates();  }catch(e){}
+  }, 0); }catch(e){}
+  try{ setTimeout(function(){
+    try{ renderProjects(); }catch(e){}
+    try{ bindDelegates();  }catch(e){}
+    // 强制挂载一次（以防 onclick 里还未暴露）：按钮加第二次兜底
+    try{
+      var nb = document.getElementById('btnNewProject');
+      if(nb && !nb._bound){
+        nb.addEventListener('click', function(ev){
+          try{ if(ev && ev.preventDefault) ev.preventDefault(); }catch(e){}
+          if(window.openProjectModal) window.openProjectModal();
+        }, false);
+        nb._bound = true;
+      }
+      var eb = document.getElementById('btnExportRecords');
+      if(eb && !eb._bound){
+        eb.addEventListener('click', function(ev){
+          try{ if(ev && ev.preventDefault) ev.preventDefault(); }catch(e){}
+          if(window.exportRecords) window.exportRecords();
+        }, false);
+        eb._bound = true;
+      }
+    }catch(e){}
+  }, 50); }catch(e){}
 
   // ============ 事件委托：点击 modal-overlay 空白处关闭 ============
   try{
