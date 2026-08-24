@@ -3527,6 +3527,89 @@
   })();
 </script>
 <script src="js/main.js?v=1787415385"></script>
+<!-- 实时诊断面板：直接显示项目名匹配链路的每一步状态 -->
+<script>
+(function(){
+  function __diag(){
+    var lines = [];
+    try {
+      var ud = JSON.parse(localStorage.getItem('mjyy_user_data') || '{}');
+      var accType = localStorage.getItem('mjyy_account_type') || '';
+      var list = JSON.parse(localStorage.getItem('mjyy_enterprise_list') || '[]');
+      var curId = localStorage.getItem('mjyy_current_enterprise_id') || '';
+      var cur = list.find(function(e){ return e && e.id === curId; }) || null;
+      var roleText = '';
+      if (cur && cur.role) {
+        roleText = (function(){
+          var r = String(cur.role);
+          if (/子账号|子管理|员工|普通成员|操作员|财务助理|项目主管|现场督导|调度|物料管理|质检/.test(r)) return '子账号';
+          if (/主账号|管理员|法人|法定代表人|创始人/.test(r)) return '主账号';
+          return '未知(' + r + ')';
+        })();
+      } else {
+        roleText = '无企业/无role';
+      }
+      var winProjCount = Array.isArray(window.projects) ? window.projects.length : 0;
+      var winSubsCount = Array.isArray(window.SUBACCOUNTS) ? window.SUBACCOUNTS.length : 0;
+      var lsProj = [];
+      try { lsProj = JSON.parse(localStorage.getItem('mjyy_projects') || '[]'); } catch(e){}
+      var projCount = Array.isArray(lsProj) ? lsProj.length : 0;
+      var proj0name = projCount > 0 ? (lsProj[0] && lsProj[0].name || '') : '';
+      var proj0phone = projCount > 0 ? (lsProj[0] && lsProj[0].phone || '') : '';
+      var proj0subs = projCount > 0 && lsProj[0] && Array.isArray(lsProj[0].subs) ? lsProj[0].subs.join(',') : '';
+      var subs0phone = Array.isArray(window.SUBACCOUNTS) && window.SUBACCOUNTS.length > 0 ? window.SUBACCOUNTS[0].phone : '';
+
+      // 直接调 main.js 里的函数
+      var assigned = [];
+      try {
+        if (typeof window.getCurrentUserAssignedProjects === 'function') {
+          assigned = window.getCurrentUserAssignedProjects(ud, cur);
+        } else {
+          assigned = ['FUNCTION_NOT_EXPORTED'];
+        }
+      } catch(e) { assigned = ['ERR:' + e.message]; }
+
+      // DOM 检查
+      var projectEls = document.querySelectorAll('#dropdownProject, .user-dropdown-project');
+      var elTexts = [];
+      for (var i = 0; i < projectEls.length; i++) {
+        elTexts.push(projectEls[i].textContent + '|display=' + projectEls[i].style.display);
+      }
+
+      lines.push('【用户】mobile=' + (ud.mobile || '""') + ' phone=' + (ud.phone || '""') + ' accountId=' + (ud.accountId || '""') + ' name=' + (ud.name || '""'));
+      lines.push('【account_type】' + accType);
+      lines.push('【当前企业】' + (cur ? cur.name : 'null') + ' / role=' + (cur ? cur.role : 'null') + ' → ' + roleText);
+      lines.push('【项目数据源】window.projects=' + winProjCount + '条  localStorage=' + projCount + '条');
+      lines.push('  [0] name=' + proj0name + ' phone=' + proj0phone + ' subs=' + proj0subs);
+      lines.push('【SUBACCOUNTS】window.SUBACCOUNTS=' + winSubsCount + '条  首条phone=' + subs0phone);
+      lines.push('【getCurrentUserAssignedProjects 返回】' + JSON.stringify(assigned));
+      lines.push('【DOM #dropdownProject】共' + projectEls.length + '个  内容=[' + elTexts.join(' || ') + ']');
+      lines.push('【#dropdownMetaRow】display=' + (function(){ var r = document.getElementById('dropdownMetaRow'); return r ? r.style.display : 'NOT_FOUND'; })());
+      lines.push('【#dropdownBadge】text=' + (function(){ var b = document.getElementById('dropdownBadge'); return b ? b.textContent : 'NOT_FOUND'; })() + ' display=' + (function(){ var b = document.getElementById('dropdownBadge'); return b ? b.style.display : ''; })());
+      lines.push('【#dropdownId】text=' + (function(){ var b = document.getElementById('dropdownId'); return b ? b.textContent : 'NOT_FOUND'; })() + ' display=' + (function(){ var b = document.getElementById('dropdownId'); return b ? b.style.display : ''; })());
+    } catch(e) {
+      lines.push('诊断异常:' + e.message);
+    }
+    return lines.join('\n');
+  }
+
+  // 等 DOM 就绪后每秒刷新诊断面板
+  var panel = document.createElement('div');
+  panel.id = '__diag_panel';
+  panel.style.cssText = 'position:fixed;bottom:10px;left:10px;z-index:99999;max-width:480px;max-height:50vh;overflow:auto;background:rgba(0,0,0,.85);color:#0f0;font:11px/1.5 monospace;padding:10px 12px;border-radius:8px;white-space:pre-wrap;box-shadow:0 4px 16px rgba(0,0,0,.3);';
+  panel.textContent = '诊断中...';
+  document.body.appendChild(panel);
+
+  function refresh(){
+    var text = __diag();
+    panel.textContent = text;
+  }
+  refresh();
+  setInterval(refresh, 1500);
+  // 也挂到 window 方便 console 调用
+  window.__diag = __diag;
+})();
+</script>
 <!-- 页面级调试提示条：点击新建项目无响应时，用户可以直接从右下角看到实际触发反馈 -->
 <div id="_pageDebugToast" role="status" aria-live="polite"><div class="_dbt_t" id="_pageDebugToastTitle"></div><div class="_dbt_b" id="_pageDebugToastBody"></div></div>
 </body>

@@ -1775,6 +1775,7 @@
   window.ensureMinimumMockEnterprises = ensureMinimumMockEnterprises;
   window.switchEnterprise            = switchEnterprise;
   window.checkLoginStatus            = checkLoginStatus;
+  window.getCurrentUserAssignedProjects = getCurrentUserAssignedProjects;
   // 若外部需要调用 goAddNewEnterprise，使用全局点击委托触发 #globalAddNewEnterprise 点击即可
 })();
 
