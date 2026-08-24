@@ -401,14 +401,14 @@
     .search-input:focus { outline:none; border-color:var(--brand-primary); box-shadow:0 0 0 3px rgba(22,119,255,0.1); }
     .search-select { padding:8px 32px 8px 12px; border:1px solid var(--gray-300); border-radius:8px; font-size:14px; background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 10px center; appearance:none; }
 
-    /* ===== 项目列表表格：单表 + sticky 操作列 （Webkit 滚动条仅画到 0~calc(100%-520px)，视觉上不含操作列）===== */
+    /* ===== 项目列表表格：单表 + sticky 操作列 （Webkit 滚动条仅画到 0~calc(100%-320px)，视觉上不含操作列）===== */
     .project-scroll-wrap {
       overflow-x: auto;
       overflow-y: visible;
       position: relative;
       padding-bottom: 10px;
       border-radius: 12px;
-      /* Webkit 滚动条：thumb 长度按比例缩短到 (100% - 520px) 宽度位置 */
+      /* Webkit 滚动条：thumb 长度按比例缩短到 (100% - 320px) 宽度位置 */
       scrollbar-gutter: stable;
     }
     /* Webkit 内核（Chrome/Edge/Safari）：把滚动条轨道/滑块"视觉终止"在操作列左侧 */
@@ -416,22 +416,22 @@
     .project-scroll-wrap::-webkit-scrollbar-track {
       background: var(--gray-100);
       border-radius: 10px;
-      /* 右侧留出 520px 空白，让轨道不绘制到操作列下方 */
-      -webkit-mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 520px), transparent calc(100% - 520px), transparent 100%);
-              mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 520px), transparent calc(100% - 520px), transparent 100%);
+      /* 右侧留出 320px 空白，让轨道不绘制到操作列下方 */
+      -webkit-mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 320px), transparent calc(100% - 320px), transparent 100%);
+              mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 320px), transparent calc(100% - 320px), transparent 100%);
     }
     .project-scroll-wrap::-webkit-scrollbar-thumb {
       background: var(--gray-400);
       border-radius: 10px;
       border: 2px solid var(--gray-100);
       /* 同样 clip 掉操作列下方那一段 thumb */
-      -webkit-mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 520px), transparent calc(100% - 520px), transparent 100%);
-              mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 520px), transparent calc(100% - 520px), transparent 100%);
+      -webkit-mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 320px), transparent calc(100% - 320px), transparent 100%);
+              mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 320px), transparent calc(100% - 320px), transparent 100%);
     }
     .project-scroll-wrap::-webkit-scrollbar-thumb:hover { background: var(--gray-500); }
     /* Firefox：退化为普通横向滚动条，但操作列仍 sticky 固定，视觉差异不大 */
 
-    table.data-table-project { width:100%; min-width: 1720px; /* 10 列内容 + 520 操作列 = 1664+ */ border-collapse:separate; border-spacing:0; table-layout:auto; writing-mode:horizontal-tb; direction:ltr; }
+    table.data-table-project { width:100%; min-width: 1520px; /* 10 列内容 + 320 操作列 = ~1464 */ border-collapse:separate; border-spacing:0; table-layout:auto; writing-mode:horizontal-tb; direction:ltr; }
     table.data-table-project thead th,
     table.data-table-project tbody td {
       writing-mode: horizontal-tb !important;
@@ -497,8 +497,8 @@
     table.data-table-project tbody tr td:nth-child(10){ min-width: 156px; width: 156px; } /* 创建时间 */
     table.data-table-project thead tr th:nth-child(11),
     table.data-table-project tbody tr td:nth-child(11){
-      min-width: 520px; width: 520px;
-    } /* 操作列 */
+      min-width: 320px; width: 320px;
+    } /* 操作列：8 个按钮 3/3/2 布局，宽度 320 刚好 */
 
     /* 操作列 sticky 固定到滚动容器（.project-scroll-wrap）的右端 */
     table.data-table-project thead tr th:last-child,
@@ -514,30 +514,35 @@
     table.data-table-project thead tr:hover th:last-child { background:#fff; }
     table.data-table-project thead tr th:last-child { background:var(--gray-50); z-index: 4; }
 
-    /* 操作列按钮：每 3 个一行，精确换行 */
+    /* 操作列按钮：每 3 个一行，精确换行 + 整列水平/垂直居中 */
     .action-cell {
       display: flex;
       flex-wrap: wrap;
-      gap: 4px 0;
+      gap: 6px 4px;          /* 行间距 6px，列间距 4px */
       align-items: center;
+      align-content: center;  /* 多行内容垂直居中（不满两行时也居中）*/
+      justify-content: center;/* 每行按钮整体水平居中（最后一行不满时居中）*/
       width: 100%;
       line-height: 1.4;
+      padding: 8px 0;
+      box-sizing: border-box;
     }
     .action-cell .btn-link {
-      flex: 0 0 calc((100% - 0px) / 3);
-      max-width: calc((100% - 0px) / 3);
+      flex: 0 0 calc((100% - 8px) / 3);
+      max-width: calc((100% - 8px) / 3);
+      min-width: 0;
       box-sizing: border-box;
-      padding: 4px 2px;
+      padding: 5px 3px;
       margin: 0;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       display: inline-flex;
       align-items: center;
-      justify-content: center;
+      justify-content: center;  /* 每个按钮里的文字图标中心 */
       text-align: center;
       font-size: 13px;
-      border-radius: 4px;
+      border-radius: 6px;
     }
     .action-cell .btn-link:hover:not(:disabled) {
       background: rgba(22, 119, 255, 0.08);
@@ -601,6 +606,36 @@
     .form-global-msg.show  { display: block; }
     .form-global-msg.error { background: #FFF2F0; color: #F53F3F; border: 1px solid #FFCCC7; }
     .form-global-msg.ok    { background: #F1FFF6; color: #00B42A; border: 1px solid #CBF1C8; }
+    /* 页面级可调试提示条：任何 JS 异常都会以红色 3.5s 展示在右下角，用户可直接看到反馈 */
+    #_pageDebugToast{
+      position: fixed; right: 20px; bottom: 24px; z-index: 2147483646;
+      max-width: 420px; min-width: 260px;
+      padding: 12px 16px 12px 40px;
+      border-radius: 10px;
+      font-size: 13px; line-height: 1.5; font-weight: 500;
+      box-shadow: 0 10px 30px rgba(15,23,42,0.18);
+      background-repeat: no-repeat;
+      background-position: 14px 12px;
+      background-size: 18px 18px;
+      pointer-events: auto;
+      transition: opacity .18s ease, transform .18s ease;
+      opacity: 0; transform: translateY(8px);
+    }
+    #_pageDebugToast._show{ opacity: 1; transform: translateY(0); }
+    #_pageDebugToast._ok{
+      background-color: #F1FFF6; color: #00B42A; border: 1px solid #CBF1C8;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%2300B42A' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+    }
+    #_pageDebugToast._info{
+      background-color: #FFF8E6; color: #B07A00; border: 1px solid #F6D99A;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23B07A00' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cline x1='12' y1='16' x2='12' y2='12'/%3E%3Cline x1='12' y1='8' x2='12.01' y2='8'/%3E%3C/svg%3E");
+    }
+    #_pageDebugToast._err{
+      background-color: #FFF2F0; color: #F53F3F; border: 1px solid #FFCCC7;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23F53F3F' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cline x1='15' y1='9' x2='9' y2='15'/%3E%3Cline x1='9' y1='9' x2='15' y2='15'/%3E%3C/svg%3E");
+    }
+    #_pageDebugToast ._dbt_t{ font-weight: 600; margin-bottom: 4px; }
+    #_pageDebugToast ._dbt_b{ opacity: .9; }
     .form-input:focus, .form-select:focus, .form-textarea:focus { outline:none; border-color:var(--brand-primary); box-shadow:0 0 0 3px rgba(22,119,255,0.1); }
     .form-input:disabled { background:var(--gray-50); color:var(--text-secondary); }
     .form-hint { font-size:12px; color:var(--text-placeholder); margin-top:4px; }
@@ -833,7 +868,7 @@
     <div class="card">
       <div class="card-header">
         <div class="card-title">项目列表</div>
-        <button class="btn-primary" id="btnNewProject" data-action="new-project" type="button" onclick="try{ if(window.openProjectModal){ window.openProjectModal(); } else { alert('页面初始化未完成，请刷新重试'); } }catch(e){ try{ console.error(e); }catch(x){} try{ alert('打开失败：'+(e.message||e)); }catch(x){} }">
+        <button class="btn-primary" id="btnNewProject" data-action="new-project" type="button" onclick="try{ if(window.safeOpenProjectModal){ window.safeOpenProjectModal(); } else if(window.openProjectModal){ window.openProjectModal(); } else { try{ showPageDebugToast('脚本未就绪','页面脚本尚未加载，请稍候 1~2 秒再点击，或按 Ctrl+F5 强制刷新','error',5000); }catch(_){ alert('页面初始化未完成，请按 Ctrl+F5 强制刷新重试'); } } }catch(e){ try{ console.error(e); }catch(x){} try{ if(window.showPageDebugToast){ showPageDebugToast('打开失败', (e.message||e), 'error', 5000); } else { alert('打开失败：'+(e.message||e)); } }catch(x){} }">
           <svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/><line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/></svg>
           新建项目
         </button>
@@ -1541,74 +1576,250 @@
   var projModalSubs = []; // 新建弹窗临时分配的子账号 ID
   var editingProjectId = null; // 非 null 表示当前为编辑模式
 
-  window.openProjectModal = function(){
+  // 页面右下角可见调试提示条：任何错误/成功都能让用户看到反馈（不再依赖 alert）
+  var _dbtTimer = null;
+  window.showPageDebugToast = function(title, body, kind, durationMs){
     try{
-      try{ _ensureModalsOnBody(); }catch(e){}
-      var m = $('projectModal');
-      if(!m){ alert('页面初始化异常：未找到新建项目弹窗，请刷新'); return; }
-      editingProjectId = null;
-      $('projectModalTitle').textContent = '新建项目';
-      // 清空所有表单域和错误状态
-      var ids = ['f_projName','f_projCode','f_projOwner','f_projPhone','f_projAmount','f_projDesc'];
-      for(var i=0;i<ids.length;i++){ try{ $(ids[i]).value=''; }catch(e){} }
+      var t = document.getElementById('_pageDebugToast');
+      if(!t){
+        t = document.createElement('div');
+        t.id = '_pageDebugToast';
+        t.innerHTML = '<div class="_dbt_t" id="_pageDebugToastTitle"></div><div class="_dbt_b" id="_pageDebugToastBody"></div>';
+        if(document.body) document.body.appendChild(t);
+      }
+      t.className = '';
+      if(!kind) kind = 'info';
+      t.classList.add(kind==='ok' ? '_ok' : (kind==='err'||kind==='error' ? '_err' : '_info'));
+      t.classList.add('_show');
+      try{
+        var tt = document.getElementById('_pageDebugToastTitle'); if(tt) tt.textContent = title || '';
+        var bb = document.getElementById('_pageDebugToastBody');  if(bb) bb.textContent = body  || '';
+      }catch(e){}
+      if(_dbtTimer){ try{ clearTimeout(_dbtTimer); }catch(e){} _dbtTimer = null; }
+      var dur = (typeof durationMs === 'number' && durationMs>0) ? durationMs : (kind==='err' ? 3800 : 3000);
+      _dbtTimer = setTimeout(function(){
+        try{ t.classList.remove('_show'); }catch(e){}
+      }, dur);
+      if(window.console && console.log){ try{ console.log('[debugToast]', kind, title, body); }catch(e){} }
+    }catch(e){
+      try{ window.alert((title||'') + '  ' + (body||'')); }catch(x){}
+    }
+  };
+
+  // 最硬核、最不会被任何东西覆盖的「强制显示弹窗」：
+  // ① 先 appendChild 到 body；② 每个 style 属性单独赋值；③ 用 setProperty(..., 'important') 兜底；④ 连续 5 个时间点再次强制执行
+  function _forceShowOverlay(m){
+    if(!m) return false;
+    try{
+      if(document && document.body && m.parentNode !== document.body){ try{ document.body.appendChild(m); }catch(e){} }
+    }catch(e){}
+    try{
+      // 清空所有内嵌 CSS（避免冲突）
+      try{ m.removeAttribute('style'); }catch(e){}
+      try{ m.classList.remove('active'); m.classList.remove('hidden'); m.classList.remove('hide'); }catch(e){}
+      // 每个属性单独设置（比 setAttribute('style', ... !important) 兼容性更好）
+      m.style.display = 'flex';
+      m.style.position = 'fixed';
+      m.style.top = '0';
+      m.style.left = '0';
+      m.style.right = '0';
+      m.style.bottom = '0';
+      m.style.background = 'rgba(15, 23, 42, 0.5)';
+      m.style.alignItems = 'center';
+      m.style.justifyContent = 'center';
+      m.style.padding = '24px 16px';
+      m.style.boxSizing = 'border-box';
+      m.style.overflowY = 'auto';
+      m.style.overflowX = 'hidden';
+      // 用 CSSStyleDeclaration.setProperty 加 important 最高优先级兜底
+      try{
+        m.style.setProperty('display','flex','important');
+        m.style.setProperty('position','fixed','important');
+        m.style.setProperty('top','0','important');
+        m.style.setProperty('left','0','important');
+        m.style.setProperty('right','0','important');
+        m.style.setProperty('bottom','0','important');
+        m.style.setProperty('z-index','2147483647','important');
+        m.style.setProperty('background','rgba(15, 23, 42, 0.5)','important');
+        m.style.setProperty('align-items','center','important');
+        m.style.setProperty('justify-content','center','important');
+        m.style.setProperty('padding','24px 16px','important');
+        m.style.setProperty('pointer-events','auto','important');
+        m.style.setProperty('visibility','visible','important');
+        m.style.setProperty('opacity','1','important');
+      }catch(e){}
+      // 最后再写一次 z-index（单属性通常不会被外部 CSS 覆盖）
+      try{ m.style.zIndex = '2147483647'; }catch(e){}
+      m.classList.add('active');
+    }catch(e){ try{ console.error('_forceShowOverlay style err',e); }catch(x){} }
+    var recheck = function(){ try{
+      if(!m) return;
+      if(document && document.body && m.parentNode !== document.body){ try{ document.body.appendChild(m); }catch(e){} }
+      var ds = m.style && m.style.display ? String(m.style.display).toLowerCase() : '';
+      if(ds !== 'flex'){
+        try{ m.style.display = 'flex'; m.style.setProperty('display','flex','important'); }catch(e){}
+      }
+      try{ if(!m.style.zIndex || String(m.style.zIndex)!=='2147483647'){ m.style.setProperty('z-index','2147483647','important'); m.style.zIndex='2147483647'; } }catch(e){}
+      try{ m.classList.add('active'); }catch(e){}
+      try{ m.scrollIntoView && m.scrollIntoView({block:'center', inline:'center'}); }catch(e){}
+    }catch(e){} };
+    setTimeout(recheck, 20);
+    setTimeout(recheck, 80);
+    setTimeout(recheck, 200);
+    setTimeout(recheck, 500);
+    setTimeout(recheck, 1200);
+    return true;
+  }
+  window._forceShowOverlay = _forceShowOverlay;
+
+  // 全局兜底「捕获阶段」点击拦截：任何事件委托 stopPropagation 都挡不住
+  try{
+    document.addEventListener('click', function(e){
+      try{
+        var t = e && e.target;
+        if(!t || !t.closest) return;
+        var btn = t.closest('#btnNewProject, [data-action="new-project"]');
+        if(btn){
+          // 只在还没进入 openProjectModal 时做最后兜底（避免重复打开）
+          if(window.safeOpenProjectModal && !btn._safeFired){
+            btn._safeFired = true;
+            setTimeout(function(){ try{ btn._safeFired = false; }catch(_){} }, 500);
+            try{ if(e && e.preventDefault) e.preventDefault(); }catch(_){}
+            try{ if(e && e.stopImmediatePropagation) e.stopImmediatePropagation(); }catch(_){}
+            window.safeOpenProjectModal();
+          }
+        }
+      }catch(_){}
+    }, true /* capture=true：最先触发，比任何冒泡/委托都早 */);
+  }catch(_){}
+
+  // ====== 安全打开新建项目弹窗（按钮点击的唯一入口）======
+  window.safeOpenProjectModal = function(){
+    try{ showPageDebugToast('按钮已响应', '正在打开新建项目弹窗…', 'info', 1200); }catch(e){}
+    // 1) 先强制把所有弹窗 DOM 挂到 body（防父容器裁剪）
+    try{ _ensureModalsOnBody(); }catch(e){}
+    // 2) 取 projectModal
+    var m = null;
+    try{ m = typeof $ === 'function' ? $('projectModal') : document.getElementById('projectModal'); }catch(e){ m = document.getElementById('projectModal'); }
+    if(!m){
+      try{ showPageDebugToast('弹窗找不到', '页面初始化异常（未找到 #projectModal），请 Ctrl+F5 强制刷新后重试', 'error', 5000); }catch(x){}
+      try{ alert('页面初始化异常：未找到新建项目弹窗，请 Ctrl+F5 强制刷新'); }catch(x){}
+      return;
+    }
+    // 3) 重置状态
+    try{
+      if(window.editingProjectId !== undefined){ window.editingProjectId = null; }
+      else { editingProjectId = null; }
+    }catch(e){}
+    try{
+      var t1 = document.getElementById('projectModalTitle');
+      if(t1) t1.textContent = '新建项目';
+    }catch(e){}
+    // 4) 清空所有表单值 + 红框错误
+    var ids = ['f_projName','f_projCode','f_projOwner','f_projPhone','f_projAmount','f_projDesc'];
+    for(var _i=0;_i<ids.length;_i++){
+      try{ var el = document.getElementById(ids[_i]); if(el) el.value=''; }catch(e){}
+    }
+    if(window.clearFieldError){
       try{ clearFieldError('f_projName'); }catch(e){}
       try{ clearFieldError('f_projOwner'); }catch(e){}
       try{ clearFieldError('f_projPhone'); }catch(e){}
       try{ clearFieldError('f_projAmount'); }catch(e){}
-      try{ $('projectModalMsg').className='form-global-msg error'; }catch(e){}
-      try{ $('f_product').value = 'mjyy'; }catch(e){}
-      // 刷新企业可用余额（实时同步最近 ENTERPRISE_BALANCE）
-      try{ $('f_enterpriseAvail').textContent = Number(ENTERPRISE_BALANCE).toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2}); }catch(e){}
-      projModalSubs = [];
-      renderProjModalSubs();
-      renderProjModalOptions(); // 立即重建子账号选择器（下拉候选）
-      // 新建：显示「初始划拨金额 + 初始子账号分配」
-      try{ var ag = $('f_projAmount').closest && $('f_projAmount').closest('.form-group'); if(ag) ag.style.display=''; }catch(e){}
-      try{ var sg = $('f_projSubs').closest && $('f_projSubs').closest('.form-group'); if(sg) sg.style.display=''; }catch(e){}
-      try{ var saveBtn = m.querySelector('.modal-footer .btn-primary'); if(saveBtn){ saveBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" width="14" height="14"><polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2"/></svg> 保存创建'; } }catch(e){}
-      _showModal(m);
-      // 打开后：焦点定位 + 重新渲染子账号下拉（等待 DOM 插入）
-      setTimeout(function(){
-        try{ _ensureModalsOnBody(); }catch(e){}
-        try{
-          var nm = $('f_projName'); if(nm){ nm.focus(); try{ nm.select(); }catch(e){} }
-        }catch(e){}
-        try{ renderProjModalSubs(); }catch(e){}
-        try{ renderProjModalOptions(); }catch(e){}
-        try{ $('f_enterpriseAvail').textContent = Number(ENTERPRISE_BALANCE).toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2}); }catch(e){}
-      }, 60);
-    }catch(err){ try{ console.error(err); }catch(e){} alert('新建项目打开失败：'+(err.message||err)); }
+    }
+    try{
+      var mg = document.getElementById('projectModalMsg');
+      if(mg) mg.className = 'form-global-msg error';
+    }catch(e){}
+    try{
+      var prd = document.getElementById('f_product');
+      if(prd) prd.value = 'mjyy';
+    }catch(e){}
+    try{
+      var ea = document.getElementById('f_enterpriseAvail');
+      if(ea){
+        var bal = (typeof ENTERPRISE_BALANCE !== 'undefined') ? Number(ENTERPRISE_BALANCE) : 0;
+        ea.textContent = bal.toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2});
+      }
+    }catch(e){}
+    // 5) 子账号：新建模式初始空数组
+    try{
+      if(typeof projModalSubs !== 'undefined') projModalSubs = [];
+      else if(window.projModalSubs !== undefined) window.projModalSubs = [];
+      if(window.renderProjModalSubs) window.renderProjModalSubs();
+      if(window.renderProjModalOptions) window.renderProjModalOptions();
+    }catch(e){}
+    // 6) 新建模式：显示初始划拨金额 + 初始子账号分配
+    try{
+      var ag = document.getElementById('f_projAmount');
+      if(ag && ag.closest){
+        var gg = ag.closest('.form-group'); if(gg) gg.style.display = '';
+      }
+    }catch(e){}
+    try{
+      var sg = document.getElementById('f_projSubs');
+      if(sg && sg.closest){
+        var gg2 = sg.closest('.form-group'); if(gg2) gg2.style.display = '';
+      }
+    }catch(e){}
+    // 7) 保存按钮文案
+    try{
+      var saveBtn = m.querySelector && m.querySelector('.modal-footer .btn-primary');
+      if(saveBtn){
+        saveBtn.disabled = false;
+        saveBtn.style.opacity = '';
+        saveBtn.style.cursor = '';
+        saveBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" width="14" height="14"><polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2"/></svg> 保存创建';
+      }
+    }catch(e){}
+    // 8) ✅ 最重要：强制显示弹窗（per-property style + capture phase 多次 recheck）
+    try{ _forceShowOverlay(m); }catch(e){}
+    // 9) 再次显示 toast，给用户明确成功反馈
+    try{ showPageDebugToast('弹窗已打开', '如果仍看不到，请关掉广告拦截插件或按 Ctrl+F5 刷新', 'ok', 2200); }catch(e){}
+    // 10) 60ms 后：焦点 + 再次确保 body 子节点 + 子账号下拉刷新
+    setTimeout(function(){
+      try{ _ensureModalsOnBody(); }catch(e){}
+      try{ _forceShowOverlay(m); }catch(e){}
+      try{
+        var nm = document.getElementById('f_projName');
+        if(nm){ try{ nm.focus(); }catch(e){} try{ nm.select && nm.select(); }catch(e){} }
+      }catch(e){}
+      if(window.renderProjModalSubs) try{ window.renderProjModalSubs(); }catch(e){}
+      if(window.renderProjModalOptions) try{ window.renderProjModalOptions(); }catch(e){}
+      try{
+        var ea2 = document.getElementById('f_enterpriseAvail');
+        if(ea2){
+          var bal2 = (typeof ENTERPRISE_BALANCE !== 'undefined') ? Number(ENTERPRISE_BALANCE) : 0;
+          ea2.textContent = bal2.toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2});
+        }
+      }catch(e){}
+    }, 60);
+    setTimeout(function(){
+      try{ _forceShowOverlay(m); }catch(e){}
+    }, 300);
+  };
+
+  window.openProjectModal = function(){
+    // 旧函数保留做兼容，路由到 safeOpenProjectModal
+    try{ return window.safeOpenProjectModal && window.safeOpenProjectModal(); }
+    catch(err){
+      try{ showPageDebugToast('打开失败', (err.message||err), 'error', 4500); }catch(e){}
+      try{ alert('新建项目打开失败：'+(err.message||err)); }catch(e){}
+    }
   };
 
   function _showModal(m){
     if(!m) return;
-    // 关键修复：所有 modal-overlay 类型弹窗必须是 body 直接子节点，避免被 page-layout / card-body / table-wrap 等 overflow/transform 祖先裁剪
-    try{
-      if(document.body && m.parentNode !== document.body){
-        try{ document.body.appendChild(m); }catch(e){}
-      }
-    }catch(e){}
-    try{ m.classList.remove('active'); }catch(e){}
-    m.style.cssText = '';
-    m.setAttribute('style','display:flex !important; position:fixed !important; top:0 !important; left:0 !important; right:0 !important; bottom:0 !important; z-index:2147483647 !important; background:rgba(0,0,0,0.45) !important; align-items:center !important; justify-content:center !important;');
-    m.classList.add('active');
-    var force = function(){ try{
-      if(m && (m.style.display||'').indexOf('flex')<0) m.style.setProperty('display','flex','important');
-      if(m && document.body && m.parentNode!==document.body) try{ document.body.appendChild(m); }catch(e){}
-      if(m) { m.style.setProperty('z-index','2147483647','important'); m.classList.add('active'); }
-      if(m) m.scrollIntoView && m.scrollIntoView({block:'center'});
-    }catch(e){} };
-    setTimeout(force, 30);
-    setTimeout(force, 120);
-    setTimeout(force, 280);
+    try{ _forceShowOverlay(m); }catch(e){}
   }
   window._showModal = _showModal;
 
   function _hideModal(m){
     if(!m) return;
     try{ m.classList.remove('active'); }catch(e){}
-    m.style.cssText = '';
-    m.style.display = 'none';
+    try{
+      m.style.cssText = '';
+      m.style.display = 'none';
+    }catch(e){}
   }
 
   window.editProject = function(id){
@@ -2333,7 +2544,8 @@
       if(nb && !nb._bound){
         nb.addEventListener('click', function(ev){
           try{ if(ev && ev.preventDefault) ev.preventDefault(); }catch(e){}
-          if(window.openProjectModal) window.openProjectModal();
+          if(window.safeOpenProjectModal)      window.safeOpenProjectModal();
+          else if(window.openProjectModal)    window.openProjectModal();
         }, false);
         nb._bound = true;
       }
@@ -2429,5 +2641,7 @@
   })();
 </script>
 <script src="js/main.js?v=1787415385"></script>
+<!-- 页面级调试提示条：点击新建项目无响应时，用户可以直接从右下角看到实际触发反馈 -->
+<div id="_pageDebugToast" role="status" aria-live="polite"><div class="_dbt_t" id="_pageDebugToastTitle"></div><div class="_dbt_b" id="_pageDebugToastBody"></div></div>
 </body>
 </html>
