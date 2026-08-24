@@ -707,6 +707,73 @@
 
     .hidden { display:none !important; }
   </style>
+
+  <!-- =================================== 最前置（main.js / DOMContentLoaded 前运行）
+       强制鉴权 / 登录守卫 / Topbar 绕过 + 预置 Demo 登录态与成功银行卡
+       （preview / sandbox / 本地无 localStorage 场景都能直接进入页面，不再跳 login.html）
+       =================================== -->
+  <script>
+    (function () {
+      try {
+        window.SKIP_LOGIN_CHECK = true;
+        window.SKIP_TOPBAR_DISPLAY_NONE = true;
+        window.SKIP_LOGIN_REDIRECT = true;
+        window.__userData = {
+          isLoggedIn: true,
+          id: 'ENT_20240001',
+          loginType: 'enterprise',
+          username: 'preview_enterprise',
+          name: '民匠有约企业服务有限公司',
+          contact: '张工',
+          mobile: '13888888888',
+          email: 'service@minjiangyouyue.com',
+          type: 'enterprise',
+          verified: true,
+          isAdmin: true,
+          roleText: '超级管理员',
+          company: '民匠有约企业服务有限公司',
+          createdAt: '2024-05-01 00:00:00'
+        };
+        var __ls = window.localStorage;
+        if (__ls) {
+          if (!/^(true|1)$/i.test(String(__ls.getItem('mjyy_logged_in') || ''))) {
+            try { __ls.setItem('mjyy_logged_in', 'true'); } catch (_) {}
+          }
+          if (!__ls.getItem('mjyy_user_data')) {
+            try { __ls.setItem('mjyy_user_data', JSON.stringify(window.__userData)); } catch (_) {}
+          }
+          // 预置 1 张「正常」状态银行卡 → hasSuccessfulBankCard 直接通过
+          var ok = false;
+          try {
+            var raw = __ls.getItem('mjyy_bank_cards');
+            if (raw) {
+              try {
+                var arr = JSON.parse(raw);
+                if (Array.isArray(arr) && arr.length && arr.some(function(c){
+                  return c && /^(正常|成功|生效|已绑定|已激活|绑定成功|verifySuccess)$/i.test(
+                    String(c.status || '').replace(/\s+/g, '')
+                  );
+                })) ok = true;
+              } catch (_) {}
+            }
+          } catch (_) {}
+          if (!ok) {
+            var seed = [{
+              id: 1, name: '民匠有约企业服务有限公司',
+              accountNo: '81101010191000001234', bank: '中信银行',
+              branch: '杭州分行营业部', status: '正常',
+              addedAt: '2024-05-15 10:22:18',
+              statusText: '绑定成功'
+            }];
+            try { __ls.setItem('mjyy_bank_cards', JSON.stringify(seed)); } catch (_) {}
+          }
+          if (!__ls.getItem('mjyy_identity_verified')) {
+            try { __ls.setItem('mjyy_identity_verified', 'true'); } catch (_) {}
+          }
+        }
+      } catch (_) {}
+    })();
+  </script>
 </head>
 <body>
 
