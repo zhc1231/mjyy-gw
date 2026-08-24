@@ -355,31 +355,32 @@
       padding: 24px 32px 40px;
       min-width: 0;
     }
-    /* ===== 面包屑（与 account-wallet / account-bank 页面完全对齐） ===== */
+    /* ===== 面包屑（与 account-wallet / account-center 三页逐字符一致） ===== */
     .page-breadcrumb {
       display: flex;
       align-items: center;
       gap: 8px;
       font-size: 13px;
       color: var(--text-muted);
-      margin-bottom: 20px;
+      margin-bottom: 18px;   /* 与 account-center 基线相同（之前 20 → 现在 18）保证 topbar→main-content 起点间距统一 */
     }
     .page-breadcrumb a { color: inherit; text-decoration: none; }
     .page-breadcrumb a:hover { color: var(--brand-primary); }
     .page-breadcrumb .bc-sep { color: var(--text-placeholder); }
     .page-breadcrumb .bc-current { color: var(--text); font-weight: 500; }
 
-    /* ===== main-content 内面包屑（与 account-wallet 起始处的 <div class="breadcrumb"> 结构 + 样式逐字符一致 → page-title 顶部对齐）===== */
-    .breadcrumb {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-bottom: 20px;
+    /* ===== main-content 标题结构（与 产品中心 account-center / 资金账户 account-wallet 三页逐字符一致）
+       · .page-title-wrap 外层 flex，margin-bottom:22px 控制与下方统计/工具区的间距
+       · 不再在 main-content 里放第二段「控制台 / X」内面包屑（与产品中心基线完全一致 → page-title.y = main-content.top + 24 padding = 84）
+       · .breadcrumb 旧样式已删除，避免和 wallet 早期遗留类冲突 ================= */
+    .page-title-wrap {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 22px; flex-wrap: wrap; gap: 12px;
     }
-    .breadcrumb > span { color: var(--text-placeholder); }
-    .page-title { font-size: 24px; font-weight: 700; margin-bottom: 24px; }
+    .page-title { font-size: 24px; font-weight: 700; line-height: 1.2; }
+    .page-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+    .page-actions { display: flex; align-items: center; gap: 10px; }
+
     @media (max-width: 1440px) {
       .sidebar { left: 0; }
     }
@@ -618,48 +619,111 @@
     .tag-danger { background:#FFF2F0; color:#F53F3F; }
     .tag-info { background:var(--brand-primary-50); color:var(--brand-primary); }
 
-    /* ===== 弹窗 ===== */
+    /* ===== 弹窗（与 资金账户 account-wallet.html 三套弹窗 样式 token 逐字符一致 → 用户视觉风格统一）
+       Wallet 标准（退款/监管账户弹窗）取值来源：
+         overlay  : rgba(0,0,0,0.45) · z-index 9999 · fixed inset 0 · flex center
+         card     : #fff · border-radius:12px · max-width:520px · width:90% · shadow 0 12px 40px rgba(0,0,0,0.15) · overflow:hidden
+         header   : padding 20px 28px · border-bottom 1px solid #F2F3F5 · space-between flex
+         title    : 16px · 600 · #1F2329 · LEFT ALIGNED （父容器 justify-content:space-between 也生效，按 Experience 1223722 同时设父子避免默认居中冲掉）
+         close-X  : 背景无边 · cursor pointer · font-size:20px · #8F959E · padding 4px · line-height:1（与 wallet 的 × 按钮样式严格相等）
+         body     : padding 24px 28px · 内部 overflow 自己管
+         footer   : padding 16px 28px · border-top 1px solid #F2F3F5 · space-between + align-items:center flex（允许左边放提示文本，右边按钮，与 wallet 退款弹窗同构）
+    ================================================================================================= */
     .modal-overlay { display:none; position:fixed; top:0;left:0;right:0;bottom:0; background:rgba(0,0,0,0.45); z-index:9999; align-items:center; justify-content:center; }
     .modal-overlay.active { display:flex; }
-    .modal { background:#fff; border-radius:12px; width:560px; max-width:90vw; max-height:90vh; overflow:auto; box-shadow:0 8px 40px rgba(0,0,0,0.15); }
+    .modal {
+      background:#fff;
+      border-radius:12px;
+      width: 520px;            /* wallet 大号表单弹窗 max-width:520px 基线 */
+      max-width: 90%;          /* 与 wallet `width:90%` 移动端收敛一致（保留宽度=桌面 520px；小屏不超过 90%）*/
+      max-height: 90vh;
+      overflow: hidden;        /* 卡片级不出现滚动条，裁剪圆角（与 wallet card 同），滚动交给 .modal-body */
+      box-shadow: 0 12px 40px rgba(0,0,0,0.15);  /* wallet shadow = 0 12px 40px（旧 project 0 8px → 升级到 12 更重、更有层次）*/
+    }
     .modal-header {
-      padding:18px 24px;
-      border-bottom:1px solid var(--gray-100);
-      display:flex;
-      flex-direction:row;           /* 横向：标题在左，× 按钮在右 */
-      justify-content:space-between; /* × 严格顶到最右上角 */
-      align-items:center;
-      gap:12px;
+      padding: 20px 28px;                  /* wallet header padding: 20x28（旧 project 18x24 → 加大，视觉呼吸感与 wallet 一致）*/
+      border-bottom: 1px solid #F2F3F5;    /* wallet 明确色值 #F2F3F5（旧 project 用 var(--gray-100) 可能主题差异 → 统一）*/
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;       /* 父容器明确 space-between → 标题左 / close 右上角，Experience 1223722 要求父子同时设置防默认居中 */
+      align-items: center;
+      gap: 12px;
+      text-align: left;                     /* 父容器 text-align:left（Experience 1223722：防止父 flex 默认 text-center 冲掉标题 left-aligned）*/
     }
     .modal-title {
-      font-size:16px;
-      font-weight:600;
-      text-align:left;   /* 全局统一：所有弹窗标题左对齐（新建项目/子账号分配/资金划拨/流水详情/项目详情 都生效）*/
-      flex:1 1 auto;
-      line-height:1.5;
+      font-size: 16px;
+      font-weight: 600;
+      color: #1F2329;                      /* wallet 标题明确用 #1F2329（旧 project 用 var(--text) 可能不一致）*/
+      text-align: left;                     /* 显式 left-aligned 文本节点（Experience 1223722 父子同时设）*/
+      flex: 1 1 auto;
+      line-height: 1.5;
     }
     .modal-close {
-      cursor:pointer;
-      color:var(--text-placeholder);
-      font-size:22px;
-      background:none;
-      border:none;
-      line-height:1;
-      width:28px; height:28px;
-      display:inline-flex; align-items:center; justify-content:center;
-      border-radius:6px;
-      flex:0 0 auto;          /* 固定不被压缩，始终在最右上角 */
-      align-self:flex-start;  /* 与标题第一行齐高，不会被多行标题顶下去 */
-      margin-top:-4px;
+      cursor: pointer;
+      color: #8F959E;                       /* wallet close 明确色值 #8F959E（旧 project var(--text-placeholder) → 统一）*/
+      font-size: 20px;                      /* wallet 20px（旧 project 22 → 与 wallet 一样更精致）*/
+      background: none;
+      border: none;
+      padding: 4px;                         /* wallet padding:4px（旧 project 28×28 box → 改成与 wallet 完全同值）*/
+      line-height: 1;                       /* wallet line-height:1（紧凑，不撑开 header 高度）*/
+      flex: 0 0 auto;                       /* 固定不被压缩，始终在最右上角 */
     }
-    .modal-close:hover { color:var(--text); background:var(--gray-50); }
-    .modal-body { padding:20px 24px; }
-    .modal-footer { padding:16px 24px; border-top:1px solid var(--gray-100); display:flex; justify-content:flex-end; gap:12px; }
-
-    .form-group { margin-bottom:16px; }
-    .form-label { display:block; font-size:13px; color:var(--text); margin-bottom:6px; font-weight:500; }
+    .modal-close:hover { color: #1F2329; background: transparent; }  /* wallet 无 hover 背景，仅加深文字；避免 project 原灰色 hover 块不一致 */
+    .modal-body {
+      padding: 24px 28px;                   /* wallet body padding:24x28（旧 project 20x24 → 加大）*/
+      max-height: calc(90vh - 140px);       /* header~64px + footer~60px + safe 16px，滚动条放到 body 不放到卡片 */
+      overflow-y: auto;
+    }
+    .modal-footer {
+      padding: 16px 28px;                   /* wallet footer padding 16x28（旧 project 16x24 → 对齐）*/
+      border-top: 1px solid #F2F3F5;        /* wallet 明确 #F2F3F5 */
+      display: flex;
+      justify-content: space-between;       /* wallet footer 用 space-between（左：提示文字 / 右：按钮；与退款弹窗同构，向后兼容）*/
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .modal-footer-hint { font-size: 12px; color: #8F959E; } /* wallet 底部灰色小字，与退款弹窗的「提交后 T+1…」同规格 */
+    .modal-footer-buttons { display: flex; gap: 12px; justify-content: flex-end; }
+    /* 弹窗底部按钮样式 — 与 wallet 取消/提交按钮精确同规格 */
+    .btn-modal-cancel {
+      padding: 8px 20px;
+      border: 1px solid #E5E6EB;           /* wallet cancel 边框色值 */
+      background: #fff;
+      color: #4E5969;                       /* wallet cancel 文字 #4E5969 */
+      border-radius: 6px;                   /* wallet 圆角 6（project 原 8 → 统一）*/
+      font-size: 14px;
+      cursor: pointer;
+      line-height: 1.4;
+    }
+    .btn-modal-primary {
+      padding: 8px 20px;
+      border: none;
+      background: #1677FF;                  /* wallet 建设性操作（如转账/前往绑卡）主色蓝色 #1677FF */
+      color: #fff;
+      border-radius: 6px;                   /* wallet 6 圆角 */
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+    .btn-modal-primary.danger { background: #F53F3F; }   /* wallet 破坏性操作（提交退款申请）用红色 #F53F3F，project 删除/停用 confirm 使用 */
+    /* 表单元素 — 与 wallet input/select 同 token */
+    .form-group { margin-bottom: 16px; }
+    .form-label { display:block; font-size:13px; color:#1F2329; margin-bottom:6px; font-weight:500; }
     .form-label .req { color:#F53F3F; }
-    .form-input, .form-select, .form-textarea { width:100%; padding:9px 12px; border:1px solid var(--gray-300); border-radius:8px; font-size:14px; background:#fff; transition:all .15s; }
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid #E5E6EB;            /* wallet 输入框边框 #E5E6EB（旧 project gray-300 → 统一）*/
+      border-radius: 8px;
+      font-size: 14px;
+      background: #fff;
+      color: #1F2329;
+      transition: border-color .15s, box-shadow .15s;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
     .form-input.is-error, .form-select.is-error, .form-textarea.is-error {
       border-color: #F53F3F;
       box-shadow: 0 0 0 3px rgba(245,63,63,0.10);
@@ -959,8 +1023,12 @@
 
   <!-- 主内容 -->
   <main class="main-content">
-    <div class="breadcrumb">控制台 <span>/</span> 项目管理</div>
-    <h1 class="page-title">项目管理</h1>
+    <div class="page-title-wrap">
+      <div>
+        <div class="page-title">项目管理</div>
+        <div class="page-subtitle">项目基础信息、初始预算、子账号权限与资金划拨流水集中配置。</div>
+      </div>
+    </div>
 
     <!-- 统计卡片 -->
     <div class="stats-row">

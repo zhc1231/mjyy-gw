@@ -707,16 +707,22 @@
       gap: 8px;
       font-size: 13px;
       color: var(--text-muted);
-      margin-bottom: 20px;
+      margin-bottom: 18px;   /* 与 account-center（产品中心基线）/ account-project 三页统一 18px */
     }
 
     .page-breadcrumb a:hover { color: var(--brand-primary); }
 
+    .page-title-wrap {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 22px; flex-wrap: wrap; gap: 12px;
+    }
     .page-title {
       font-size: 24px;
       font-weight: 700;
-      margin-bottom: 24px;
+      line-height: 1.2;
     }
+    .page-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+    .page-actions { display: flex; align-items: center; gap: 10px; }
 
     /* ===== 卡片组件 ===== */
     .card {
@@ -1311,8 +1317,12 @@
 
     <!-- 主内容区 -->
     <main class="main-content">
-      <div class="breadcrumb">控制台 <span>/</span> 资金账户</div>
-      <h1 class="page-title">资金账户</h1>
+      <div class="page-title-wrap">
+        <div>
+          <div class="page-title">资金账户</div>
+          <div class="page-subtitle">企业对公监管账户余额、充值退款、项目划拨流水统一管理。</div>
+        </div>
+      </div>
 
       <!-- 余额 + 快捷操作 合并卡片 -->
       <div class="card">

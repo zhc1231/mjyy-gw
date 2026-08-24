@@ -25,6 +25,10 @@
       color: var(--text);
       min-height: 100vh;
       line-height: 1.6;
+      /* 强制预留纵向滚动条槽 → 三页（产品中心 / 资金账户 / 项目管理）在任意内容高度切换时，
+         max-width:1440 居中的水平坐标 / 侧边栏起点 / 顶部 logo/面包屑/账户芯片位置完全一致。
+         （之前项目管理长表格 vs 产品中心短内容 会因为 8px 滚动条出现/消失而水平漂 7~8 像素） */
+      overflow-y: scroll;
     }
 
     /* ===== 顶部导航 ===== */
@@ -714,7 +718,7 @@
     .page-breadcrumb {
       display: flex; align-items: center; gap: 8px;
       font-size: 13px; color: var(--text-muted);
-      margin-bottom: 18px;
+      margin-bottom: 18px;  /* 与 project/wallet 完全一致（main-content 内 page-title-wrap 起点相对位置同步） */
     }
     .page-breadcrumb a:hover { color: var(--brand-primary); }
 
