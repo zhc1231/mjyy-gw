@@ -353,10 +353,19 @@
       padding: 24px 32px 40px;
       min-width: 0;
     }
-    .breadcrumb {
-      font-size: 13px; color: var(--text-muted);
-      display: flex; align-items: center; gap: 8px; margin-bottom: 20px;
+    /* ===== 面包屑（与 account-wallet / account-bank 页面完全对齐） ===== */
+    .page-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
     }
+    .page-breadcrumb a { color: inherit; text-decoration: none; }
+    .page-breadcrumb a:hover { color: var(--brand-primary); }
+    .page-breadcrumb .bc-sep { color: var(--text-placeholder); }
+    .page-breadcrumb .bc-current { color: var(--text); font-weight: 500; }
     .page-title { font-size: 24px; font-weight: 700; margin-bottom: 24px; }
     @media (max-width: 1440px) {
       .sidebar { left: 0; }
@@ -401,14 +410,14 @@
     .search-input:focus { outline:none; border-color:var(--brand-primary); box-shadow:0 0 0 3px rgba(22,119,255,0.1); }
     .search-select { padding:8px 32px 8px 12px; border:1px solid var(--gray-300); border-radius:8px; font-size:14px; background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 10px center; appearance:none; }
 
-    /* ===== 项目列表表格：单表 + sticky 操作列 （Webkit 滚动条仅画到 0~calc(100%-320px)，视觉上不含操作列）===== */
+    /* ===== 项目列表表格：单表 + sticky 操作列 （Webkit 滚动条仅画到 0~calc(100%-280px)，视觉上不含操作列）===== */
     .project-scroll-wrap {
       overflow-x: auto;
       overflow-y: visible;
       position: relative;
       padding-bottom: 10px;
       border-radius: 12px;
-      /* Webkit 滚动条：thumb 长度按比例缩短到 (100% - 320px) 宽度位置 */
+      /* Webkit 滚动条：thumb 长度按比例缩短到 (100% - 280px) 宽度位置 */
       scrollbar-gutter: stable;
     }
     /* Webkit 内核（Chrome/Edge/Safari）：把滚动条轨道/滑块"视觉终止"在操作列左侧 */
@@ -416,22 +425,22 @@
     .project-scroll-wrap::-webkit-scrollbar-track {
       background: var(--gray-100);
       border-radius: 10px;
-      /* 右侧留出 320px 空白，让轨道不绘制到操作列下方 */
-      -webkit-mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 320px), transparent calc(100% - 320px), transparent 100%);
-              mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 320px), transparent calc(100% - 320px), transparent 100%);
+      /* 右侧留出 280px 空白，让轨道不绘制到操作列下方 */
+      -webkit-mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 280px), transparent calc(100% - 280px), transparent 100%);
+              mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 280px), transparent calc(100% - 280px), transparent 100%);
     }
     .project-scroll-wrap::-webkit-scrollbar-thumb {
       background: var(--gray-400);
       border-radius: 10px;
       border: 2px solid var(--gray-100);
       /* 同样 clip 掉操作列下方那一段 thumb */
-      -webkit-mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 320px), transparent calc(100% - 320px), transparent 100%);
-              mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 320px), transparent calc(100% - 320px), transparent 100%);
+      -webkit-mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 280px), transparent calc(100% - 280px), transparent 100%);
+              mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 280px), transparent calc(100% - 280px), transparent 100%);
     }
     .project-scroll-wrap::-webkit-scrollbar-thumb:hover { background: var(--gray-500); }
     /* Firefox：退化为普通横向滚动条，但操作列仍 sticky 固定，视觉差异不大 */
 
-    table.data-table-project { width:100%; min-width: 1520px; /* 10 列内容 + 320 操作列 = ~1464 */ border-collapse:separate; border-spacing:0; table-layout:auto; writing-mode:horizontal-tb; direction:ltr; }
+    table.data-table-project { width:100%; min-width: 1480px; /* 10 列内容 + 280 操作列 = ~1424 */ border-collapse:separate; border-spacing:0; table-layout:auto; writing-mode:horizontal-tb; direction:ltr; }
     table.data-table-project thead th,
     table.data-table-project tbody td {
       writing-mode: horizontal-tb !important;
@@ -497,8 +506,8 @@
     table.data-table-project tbody tr td:nth-child(10){ min-width: 156px; width: 156px; } /* 创建时间 */
     table.data-table-project thead tr th:nth-child(11),
     table.data-table-project tbody tr td:nth-child(11){
-      min-width: 320px; width: 320px;
-    } /* 操作列：8 个按钮 3/3/2 布局，宽度 320 刚好 */
+      min-width: 280px; width: 280px;
+    } /* 操作列：8 个按钮 3/3/2 布局，宽度 280 刚好（列间距 2px + 内边距收窄）*/
 
     /* 操作列 sticky 固定到滚动容器（.project-scroll-wrap）的右端 */
     table.data-table-project thead tr th:last-child,
@@ -531,33 +540,33 @@
     .action-cell {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px 4px;          /* 行间距 6px，列间距 4px */
+      gap: 4px 2px;          /* 行间距 4px，列间距 2px（进一步缩小视觉间隔）*/
       align-items: center;
       align-content: center;  /* 多行内容垂直居中（不满两行时也居中）*/
       justify-content: center !important; /* 每行按钮整体水平居中（最后一行不满时居中）*/
       width: 100%;
       max-width: 100%;
       margin: 0 auto !important;
-      line-height: 1.4;
-      padding: 8px 0;
+      line-height: 1.35;
+      padding: 6px 0;
       box-sizing: border-box;
       text-align: center;
     }
     /* 最后一行只有 2 个（启用/停用 + 删除）时，也让它们 3 列里居中，不把 2 个撑满 */
     .action-cell::after {
       content: '';
-      flex: 0 0 calc((100% - 8px) / 3);
-      max-width: calc((100% - 8px) / 3);
+      flex: 0 0 calc((100% - 4px) / 3);
+      max-width: calc((100% - 4px) / 3);
       display: block;
       height: 0;
       pointer-events: none;
     }
     .action-cell .btn-link {
-      flex: 0 0 calc((100% - 8px) / 3);
-      max-width: calc((100% - 8px) / 3);
+      flex: 0 0 calc((100% - 4px) / 3);
+      max-width: calc((100% - 4px) / 3);
       min-width: 0;
       box-sizing: border-box;
-      padding: 6px 3px;
+      padding: 4px 2px;
       margin: 0 auto; /* 每一个按钮在自己的 flex 列 slot 里再次水平居中 */
       white-space: nowrap;
       overflow: hidden;
@@ -566,8 +575,8 @@
       align-items: center;
       justify-content: center;  /* 每个按钮里的文字图标中心 */
       text-align: center;
-      font-size: 13px;
-      border-radius: 6px;
+      font-size: 12px;
+      border-radius: 4px;
     }
     .action-cell .btn-link:hover:not(:disabled) {
       background: rgba(22, 119, 255, 0.08);
@@ -844,13 +853,13 @@
 
   <!-- 主内容 -->
   <main class="main-content">
-    <div class="breadcrumb">
-      <a href="account-center.html" style="color:inherit;text-decoration:none;">控制台</a>
-      <span style="color:var(--text-placeholder);">/</span>
-      <a href="account-wallet.html" style="color:inherit;text-decoration:none;">财务</a>
-      <span style="color:var(--text-placeholder);">/</span>
-      <span style="color:var(--text);font-weight:500;">项目管理</span>
-    </div>
+    <nav class="page-breadcrumb">
+      <a href="account-center.html">控制台</a>
+      <span class="bc-sep">/</span>
+      <a href="account-wallet.html">财务</a>
+      <span class="bc-sep">/</span>
+      <span class="bc-current">项目管理</span>
+    </nav>
     <h1 class="page-title">项目管理</h1>
 
     <!-- 统计卡片 -->
@@ -1633,16 +1642,27 @@
 
   // 最硬核、最不会被任何东西覆盖的「强制显示弹窗」：
   // ① 先 appendChild 到 body；② 每个 style 属性单独赋值；③ 用 setProperty(..., 'important') 兜底；④ 连续 5 个时间点再次强制执行
+  // ⑤ ★★ 同时对 overlay 内部的 div.modal（真实白卡片）也做强制显示（之前只 force overlay，导致用户反馈「只有蒙版变暗没有白卡片内容」就是因为 .modal 卡被外部 CSS display:none/visibility:hidden 了）
   function _forceShowOverlay(m){
     if(!m) return false;
     try{
       if(document && document.body && m.parentNode !== document.body){ try{ document.body.appendChild(m); }catch(e){} }
     }catch(e){}
+    // --- 关键修复：找出里面真正的白卡片元素（第一个 div.modal 或第一个直接子 div，两者都要 force）
+    var card = null;
+    try{
+      card = m.querySelector && m.querySelector(':scope > .modal, :scope > div.modal, .modal, div[class*="modal"]');
+      if(!card && m.children && m.children.length){ card = m.children[0]; }
+    }catch(e){ card = null; }
+
     try{
       // 清空所有内嵌 CSS（避免冲突）
       try{ m.removeAttribute('style'); }catch(e){}
       try{ m.classList.remove('active'); m.classList.remove('hidden'); m.classList.remove('hide'); }catch(e){}
-      // 每个属性单独设置（比 setAttribute('style', ... !important) 兼容性更好）
+      if(card){
+        try{ card.removeAttribute('style'); card.classList.remove('hidden'); card.classList.remove('hide'); }catch(e){}
+      }
+      // ===== overlay（蒙版 + 定位）=====
       m.style.display = 'flex';
       m.style.position = 'fixed';
       m.style.top = '0';
@@ -1656,7 +1676,6 @@
       m.style.boxSizing = 'border-box';
       m.style.overflowY = 'auto';
       m.style.overflowX = 'hidden';
-      // 用 CSSStyleDeclaration.setProperty 加 important 最高优先级兜底
       try{
         m.style.setProperty('display','flex','important');
         m.style.setProperty('position','fixed','important');
@@ -1673,10 +1692,63 @@
         m.style.setProperty('visibility','visible','important');
         m.style.setProperty('opacity','1','important');
       }catch(e){}
-      // 最后再写一次 z-index（单属性通常不会被外部 CSS 覆盖）
       try{ m.style.zIndex = '2147483647'; }catch(e){}
-      m.classList.add('active');
+
+      // ===== ★ 白卡片（modal-card / div.modal）本身也强制 display + 定位 + 尺寸 + z-index（之前缺失导致只有蒙版没白卡片）=====
+      if(card){
+        // 保留原有 width：若是 modal-overlay 内联过 width（640/720px 等）不要覆盖
+        var oldWidth = '';
+        try{ oldWidth = getComputedStyle(card).width || card.style.width || ''; }catch(e){}
+        card.style.display  = 'block';
+        card.style.position = 'static';     // relative/static 都可以，fixed 的父已经 flex center
+        card.style.visibility = 'visible';
+        card.style.opacity  = '1';
+        card.style.transform = 'none';
+        card.style.scale    = '1';
+        card.style.pointerEvents = 'auto';
+        card.style.background = '#fff';
+        card.style.marginLeft = 'auto';
+        card.style.marginRight = 'auto';
+        card.style.boxSizing  = 'border-box';
+        card.style.maxHeight  = '90vh';
+        card.style.maxWidth   = '90vw';
+        card.style.overflow   = 'auto';
+        card.style.borderRadius = '12px';
+        card.style.boxShadow  = '0 8px 40px rgba(0,0,0,0.18)';
+        // 保留原宽度（若原来有设置 width 样式），退化到 560px
+        if(oldWidth && /^[0-9]+(px|em|rem|%)$/.test(String(oldWidth))){
+          card.style.width = oldWidth;
+        } else if(card.getAttribute && card.getAttribute('style') && card.getAttribute('style').indexOf('width')>=0){
+          // 保留原 inline width
+        } else {
+          card.style.width = '560px';
+        }
+        try{
+          card.style.setProperty('display','block','important');
+          card.style.setProperty('position','static','important');
+          card.style.setProperty('visibility','visible','important');
+          card.style.setProperty('opacity','1','important');
+          card.style.setProperty('transform','none','important');
+          card.style.setProperty('pointer-events','auto','important');
+          card.style.setProperty('background','#fff','important');
+          card.style.setProperty('z-index','2147483647','important');
+          card.style.setProperty('max-height','90vh','important');
+          card.style.setProperty('overflow','auto','important');
+          card.style.setProperty('box-shadow','0 8px 40px rgba(0,0,0,0.18)','important');
+        }catch(e){}
+        try{ card.style.zIndex = '2147483647'; }catch(e){}
+        // 子结构：header / body / footer 也强制 display
+        try{
+          var sub = card.querySelectorAll('.modal-header, .modal-body, .modal-footer');
+          for(var j=0;j<sub.length;j++){
+            try{ sub[j].style.setProperty('display','block','important'); sub[j].style.display='block'; }catch(e){}
+          }
+        }catch(e){}
+      }
+      // 最后再补 overlay class
+      try{ m.classList.add('active'); }catch(e){}
     }catch(e){ try{ console.error('_forceShowOverlay style err',e); }catch(x){} }
+
     var recheck = function(){ try{
       if(!m) return;
       if(document && document.body && m.parentNode !== document.body){ try{ document.body.appendChild(m); }catch(e){} }
@@ -1687,6 +1759,21 @@
       try{ if(!m.style.zIndex || String(m.style.zIndex)!=='2147483647'){ m.style.setProperty('z-index','2147483647','important'); m.style.zIndex='2147483647'; } }catch(e){}
       try{ m.classList.add('active'); }catch(e){}
       try{ m.scrollIntoView && m.scrollIntoView({block:'center', inline:'center'}); }catch(e){}
+
+      // recheck 中对 modal card 再次兜底（防止异步脚本在 100ms 后把 card display 改掉）
+      try{
+        var card2 = m.querySelector && m.querySelector(':scope > .modal, :scope > div.modal, .modal, div[class*="modal"]');
+        if(!card2 && m.children && m.children.length){ card2 = m.children[0]; }
+        if(card2){
+          var d = String(card2.style.display||'').toLowerCase();
+          if(d !== 'block'){
+            try{ card2.style.display = 'block'; card2.style.setProperty('display','block','important'); }catch(e){}
+          }
+          try{ if(String(card2.style.visibility||'')!=='visible'){ card2.style.setProperty('visibility','visible','important'); } }catch(e){}
+          try{ if(String(card2.style.opacity||'')!=='1'){ card2.style.setProperty('opacity','1','important'); } }catch(e){}
+          try{ if(!card2.style.zIndex || String(card2.style.zIndex)!=='2147483647'){ card2.style.setProperty('z-index','2147483647','important'); card2.style.zIndex='2147483647'; } }catch(e){}
+        }
+      }catch(e){}
     }catch(e){} };
     setTimeout(recheck, 20);
     setTimeout(recheck, 80);

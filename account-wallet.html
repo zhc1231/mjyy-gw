@@ -1258,6 +1258,7 @@
             </div>
             <div class="btn-group">
               <button class="btn btn-primary" id="rechargeBtn" data-wallet-action="recharge">充值</button>
+              <button class="btn btn-outline" id="refundApplyBtn" data-wallet-action="refund" style="background:#fff;border:1px solid #F53F3F;color:#F53F3F;">退款申请</button>
             </div>
           </div>
         </div>
@@ -1588,6 +1589,62 @@
     </main>
   </div>
 
+  <!-- 退款申请弹窗 -->
+  <div id="refundApplyModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.45);z-index:9999;align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:12px;padding:0;max-width:520px;width:90%;box-shadow:0 12px 40px rgba(0,0,0,0.15);overflow:hidden;">
+      <div style="padding:20px 28px;border-bottom:1px solid #F2F3F5;display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div style="font-size:16px;font-weight:600;color:#1F2329;">退款申请</div>
+          <div style="font-size:12px;color:#8F959E;margin-top:2px;">仅支持充值到监管账户但项目尚未使用的资金原路退回（T+1~T+3 工作日到账）</div>
+        </div>
+        <button id="refundApplyClose" style="background:none;border:none;cursor:pointer;font-size:20px;color:#8F959E;padding:4px;line-height:1;">×</button>
+      </div>
+      <div style="padding:24px 28px;">
+        <div style="margin-bottom:16px;">
+          <label style="display:block;font-size:13px;color:#1F2329;margin-bottom:6px;font-weight:500;">退款金额 <span style="color:#F53F3F;">*</span></label>
+          <div style="position:relative;">
+            <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#8F959E;font-size:14px;">¥</span>
+            <input id="refundAmount" type="number" min="0.01" step="0.01" placeholder="请输入退款金额，最多 ¥ 12,580.00" style="width:100%;padding:9px 12px 9px 28px;border:1px solid #E5E6EB;border-radius:8px;font-size:14px;box-sizing:border-box;" />
+          </div>
+          <div style="font-size:12px;color:#8F959E;margin-top:6px;">最多可退 = 当前可用余额 12,580.00（不包含冻结金额与已项目划拨资金）</div>
+        </div>
+        <div style="margin-bottom:16px;">
+          <label style="display:block;font-size:13px;color:#1F2329;margin-bottom:6px;font-weight:500;">原充值单号 <span style="color:#F53F3F;">*</span></label>
+          <select id="refundSourceNo" style="width:100%;padding:9px 12px;border:1px solid #E5E6EB;border-radius:8px;font-size:14px;background:#fff;box-sizing:border-box;">
+            <option value="">请选择要原路退回的充值单号（通常选择最后一笔）</option>
+            <option value="CZ202406150003 — ¥ 5,000.00（中信银行 e 管家 · 2024-06-15 14:28）">CZ202406150003 — ¥ 5,000.00（中信银行 e 管家 · 2024-06-15 14:28）</option>
+            <option value="CZ202406020002 — ¥ 10,000.00（中信银行 e 管家 · 2024-06-02 10:06）">CZ202406020002 — ¥ 10,000.00（中信银行 e 管家 · 2024-06-02 10:06）</option>
+            <option value="CZ202405200001 — ¥ 580.00（中信银行 e 管家 · 2024-05-20 09:11）">CZ202405200001 — ¥ 580.00（中信银行 e 管家 · 2024-05-20 09:11）</option>
+          </select>
+          <div style="font-size:12px;color:#8F959E;margin-top:6px;">退款将原路返回到该充值所使用的银行卡账户（对公账户）</div>
+        </div>
+        <div style="margin-bottom:16px;">
+          <label style="display:block;font-size:13px;color:#1F2329;margin-bottom:6px;font-weight:500;">退款原因 <span style="color:#F53F3F;">*</span></label>
+          <select id="refundReason" style="width:100%;padding:9px 12px;border:1px solid #E5E6EB;border-radius:8px;font-size:14px;background:#fff;box-sizing:border-box;">
+            <option value="">请选择退款原因</option>
+            <option>充值金额有误，需要重新充值</option>
+            <option>项目暂停/未启动，需退回多余资金</option>
+            <option>合同终止/合作取消，按协议原路退回</option>
+            <option>操作失误（重复充值/错误金额）</option>
+            <option>其他原因（请在下方备注中说明）</option>
+          </select>
+        </div>
+        <div style="margin-bottom:0;">
+          <label style="display:block;font-size:13px;color:#1F2329;margin-bottom:6px;font-weight:500;">说明/凭证附件</label>
+          <textarea id="refundRemark" rows="4" placeholder="请补充退款说明（如协议编号、打款凭证、上传凭证截图请在此填写网盘链接或附件 ID）"
+            style="width:100%;padding:9px 12px;border:1px solid #E5E6EB;border-radius:8px;font-size:14px;box-sizing:border-box;resize:vertical;line-height:1.6;"></textarea>
+        </div>
+      </div>
+      <div style="padding:16px 28px;border-top:1px solid #F2F3F5;display:flex;justify-content:space-between;align-items:center;">
+        <div style="font-size:12px;color:#8F959E;">提交后 1~3 个工作日原路退回，退款不收取任何手续费</div>
+        <div style="display:flex;gap:12px;">
+          <button id="refundApplyCancel" style="padding:8px 20px;border:1px solid #E5E6EB;background:#fff;color:#4E5969;border-radius:6px;font-size:14px;cursor:pointer;">取消</button>
+          <button id="refundApplySubmit" style="padding:8px 20px;border:none;background:#F53F3F;color:#fff;border-radius:6px;font-size:14px;cursor:pointer;font-weight:500;">提交退款申请</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- 充值·未绑卡提示弹窗 -->
   <div id="rechargeTipModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.45);z-index:9999;align-items:center;justify-content:center;">
     <div style="background:#fff;border-radius:12px;padding:28px 32px;max-width:420px;width:90%;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,0.15);">
@@ -1790,27 +1847,128 @@
         });
       });
 
-      // ===== 充值流程：绑卡前置 + 弹窗展示平台中信e管家监管账户 =====
+      // ===== 充值流程：绑卡前置（严格校验「至少 1 张 成功/正常」银行卡）+ 弹窗展示平台中信e管家监管账户 =====
+      // ===== 退款申请弹窗（独立流程，不要求绑卡）=====
       var bankData = JSON.parse(localStorage.getItem('mjyy_bank_cards') || '[]');
       if (!bankData.length) {
         bankData = [{ id: 1, name: '民匠有约企业服务有限公司', accountNo: '81101010191000001234', bank: '中信银行', branch: '杭州分行营业部', status: '正常' }];
         try { localStorage.setItem('mjyy_bank_cards', JSON.stringify(bankData)); } catch(e){}
       }
-      var isBound = Array.isArray(bankData) && bankData.length > 0;
+      // T3: 成功卡 = status 是「正常/成功/生效/已激活/info-status-success」或 DOM 扫描 bank.html / bankTableBody 有 info-status-success
+      function hasSuccessfulBankCard(){
+        // 1) mjyy_bank_cards localStorage 里至少 1 条 success 状态
+        var lsOk = Array.isArray(bankData) && bankData.some(function(c){
+          if(!c) return false;
+          var s = String(c.status || '').replace(/\s+/g,'');
+          return /^(正常|成功|生效|已绑定|已激活|绑定成功|verifySuccess)$/i.test(s)
+              || /info-status-success/.test(String(c.statusText||''));
+        });
+        if(lsOk) return true;
+        // 2) DOM 当前页兜底扫描（若是在其他 iframe/同源 Tab 页面里新增了绑定成功记录但还没同步到 localStorage）
+        try{
+          var rows = document.querySelectorAll('#bankTableBody tr, .bank-list tr, [data-bank-status]');
+          for(var i=0;i<rows.length;i++){
+            var r = rows[i];
+            if(r.innerText && /(成功|正常|绑定成功|已生效)/.test(String(r.innerText).slice(0, 300))) return true;
+            if(r.querySelector && r.querySelector('.info-status-success')) return true;
+            var attr = r.getAttribute && r.getAttribute('data-bank-status');
+            if(attr && /(success|正常|成功)/.test(attr)) return true;
+          }
+        }catch(e){}
+        // 3) 其他 localStorage key 兜底
+        try{
+          var other = ['mjyy_bound_banks','mjyy_wallet_bank_cards','bound_bank_list'];
+          for(var k=0;k<other.length;k++){
+            var raw = localStorage.getItem(other[k]);
+            if(!raw) continue;
+            try{
+              var arr = JSON.parse(raw);
+              if(Array.isArray(arr) && arr.some(function(x){ return x && /^(正常|成功|生效|已绑定)$/.test(String(x.status||'').replace(/\s+/g,'')); })) return true;
+            }catch(e){}
+          }
+        }catch(e){}
+        return false;
+      }
+      var isBound = hasSuccessfulBankCard();
+
       function bindRecharge() {
         var rechargeBtn = document.getElementById('rechargeBtn');
         if (!rechargeBtn) return false;
         rechargeBtn.addEventListener('click', function(e) {
           e.preventDefault();
           e.stopPropagation();
-          if (!isBound) {
+          // T3 严格校验：必须有至少一张「绑定成功/正常」的银行卡
+          var ok = false;
+          try{ ok = hasSuccessfulBankCard(); }catch(e){ ok = false; }
+          if (!ok) {
             var tip = document.getElementById('rechargeTipModal');
-            if (tip) tip.style.display = 'flex';
+            if (tip){ tip.style.setProperty('display','flex','important'); tip.style.display = 'flex'; }
             return;
           }
           var modal = document.getElementById('rechargeAccountModal');
-          if (modal) modal.style.display = 'flex';
+          if (modal){ modal.style.setProperty('display','flex','important'); modal.style.display = 'flex'; }
         });
+
+        // T2: 退款申请按钮
+        var refundBtn = document.getElementById('refundApplyBtn');
+        if(refundBtn){
+          refundBtn.addEventListener('click', function(e){
+            e.preventDefault(); e.stopPropagation();
+            var m = document.getElementById('refundApplyModal');
+            if(m){ m.style.setProperty('display','flex','important'); m.style.display = 'flex'; }
+          });
+        }
+        // 退款关闭按钮
+        ['refundApplyClose','refundApplyCancel'].forEach(function(id){
+          var el = document.getElementById(id);
+          if(!el) return;
+          el.addEventListener('click', function(){
+            var m = document.getElementById('refundApplyModal');
+            if(m) m.style.display = 'none';
+          });
+        });
+        // 退款点击背景关闭
+        try{
+          var mRefund = document.getElementById('refundApplyModal');
+          if(mRefund) mRefund.addEventListener('click', function(e){
+            if(e.target && e.target.id === 'refundApplyModal'){
+              mRefund.style.display = 'none';
+            }
+          });
+        }catch(e){}
+        // 退款提交
+        var refundSubmit = document.getElementById('refundApplySubmit');
+        if(refundSubmit){
+          refundSubmit.addEventListener('click', function(){
+            var amt = parseFloat(document.getElementById('refundAmount').value);
+            var no  = (document.getElementById('refundSourceNo').value||'').trim();
+            var rs  = (document.getElementById('refundReason').value||'').trim();
+            if(!amt || isNaN(amt) || amt <= 0){ alert('请填写退款金额（¥ 正数）'); return; }
+            if(amt > 12580){ alert('退款金额不能超过当前可用余额 ¥ 12,580.00'); return; }
+            if(!no){ alert('请选择原充值单号（用于识别原路退回账户）'); return; }
+            if(!rs){ alert('请选择退款原因'); return; }
+            var remark = (document.getElementById('refundRemark').value||'').trim();
+            // 存到退款申请记录（localStorage 方便 Tab 切换查阅）
+            try{
+              var hist = JSON.parse(localStorage.getItem('mjyy_refund_applications') || '[]');
+              var apply = {
+                applyNo: 'TK' + Date.now(),
+                applyTime: new Date().toLocaleString('zh-CN',{ hour12: false }).replace(/\//g,'-'),
+                amount: amt,
+                sourceNo: no,
+                reason: rs,
+                remark: remark,
+                status: '审核中（预计 1~3 工作日原路退回）'
+              };
+              hist.unshift(apply);
+              localStorage.setItem('mjyy_refund_applications', JSON.stringify(hist));
+            }catch(e){}
+            var m = document.getElementById('refundApplyModal');
+            if(m) m.style.display = 'none';
+            alert('退款申请已提交：¥ ' + amt.toFixed(2) + '\n申请单号：TK' + Date.now() + '\n预计 1~3 个工作日原路退回至：' + no);
+          });
+        }
+
         function bindClose(closeId, modalId) {
           var el = document.getElementById(closeId);
           var m = document.getElementById(modalId);
@@ -1831,6 +1989,16 @@
         if (close2) close2.addEventListener('click', function() {
           var m = document.getElementById('rechargeAccountModal');
           if (m) m.style.display = 'none';
+        });
+        // 背景点击关闭：rechargeTipModal / rechargeAccountModal
+        ['rechargeTipModal','rechargeAccountModal'].forEach(function(mid){
+          try{
+            var m = document.getElementById(mid);
+            if(!m) return;
+            m.addEventListener('click', function(e){
+              if(e.target && e.target.id === mid){ m.style.display = 'none'; }
+            });
+          }catch(e){}
         });
         return true;
       }
