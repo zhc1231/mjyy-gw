@@ -1774,15 +1774,11 @@
       var avatarChar = displayName ? displayName.charAt(0) : '用';
       var accountId = userData.mobile || userData.accountId || 'MJ' + Date.now().toString().slice(-8);
 
-                  document.getElementById('dropdownName').textContent = displayName;
-      document.getElementById('dropdownId').textContent = '账号ID：' + maskId(accountId);
-
-      var accountType = localStorage.getItem('mjyy_account_type') || 'main';
-      var typeText = accountType === 'sub' ? '子账号' : '主账号';
-      var badgeColor = accountType === 'sub' ? '#FFF7E6' : 'var(--brand-primary-50)';
-      var badgeTextColor = accountType === 'sub' ? '#FF7D00' : 'var(--brand-primary)';
-      var dropdownBadge = document.getElementById('dropdownBadge');
-      if (dropdownBadge) { dropdownBadge.textContent = typeText; dropdownBadge.style.background = badgeColor; dropdownBadge.style.color = badgeTextColor; }
+      // 安全访问 dropdown 元素（main.js 动态填充前可能不存在）
+      var dn = document.getElementById('dropdownName');
+      if (dn) dn.textContent = displayName;
+      var di = document.getElementById('dropdownId');
+      if (di) di.textContent = '账号ID：' + maskId(accountId);
 
       var identityVerified = localStorage.getItem('mjyy_identity_verified') === 'true';
       var authTag = document.getElementById('authTag');
@@ -1886,11 +1882,48 @@
               member: ['view', 'add', 'edit'],
               security: ['password', 'phone']
             }
+          },
+          '项目管理': {
+            desc: '仅拥有民匠有约端的项目管理、资金账户（划拨金额）、用户管理、账号安全权限，无企业信息/合同管理/账户管理，无安心云/代理商功能',
+            // 企业管理端：整体禁用（无企业信息/合同管理/账户管理）
+            _disabledPlatforms: ['enterprise', 'anxinyun', 'agent'],
+            minjiang: {
+              project: ['view', 'publish', 'accept', 'settle'],
+              finance: ['wallet', 'record'],
+              member: ['view', 'add', 'edit'],
+              security: ['password', 'phone']
+            }
           }
         };
 
         var roleData = roles[roleName] || {};
         if (roleData.desc) document.getElementById('roleDesc').value = roleData.desc;
+
+        // 自动禁用指定平台 Tab（如项目管理角色禁用 enterprise/anxinyun/agent）
+        if (roleData._disabledPlatforms && roleData._disabledPlatforms.length) {
+          roleData._disabledPlatforms.forEach(function(platform) {
+            var tab = document.querySelector('.platform-tab[data-platform="' + platform + '"]');
+            var panel = document.querySelector('.platform-panel[data-platform="' + platform + '"]');
+            if (!tab || !panel) return;
+            tab.classList.add('disabled');
+            var status = tab.querySelector('.tab-status');
+            if (status) { status.className = 'tab-status status-off'; status.textContent = '已关闭'; }
+            var toggle = tab.querySelector('.platform-enable-toggle');
+            if (toggle) toggle.title = '当前已关闭，点击重新开启';
+            panel.classList.add('disabled-perm');
+            panel.querySelectorAll('input[type="checkbox"]').forEach(function(cb) { cb.disabled = true; });
+            panel.querySelectorAll('button').forEach(function(btn) { btn.disabled = true; });
+          });
+          // 如果当前激活的 Tab 被禁用了，切到 minjiang
+          var activeTab = document.querySelector('.platform-tab.active');
+          if (activeTab && activeTab.classList.contains('disabled')) {
+            var minjiangTab = document.querySelector('.platform-tab[data-platform="minjiang"]');
+            if (minjiangTab) {
+              document.querySelectorAll('.platform-tab').forEach(function(t) { t.classList.toggle('active', t === minjiangTab); });
+              document.querySelectorAll('.platform-panel').forEach(function(p) { p.classList.toggle('active', p.dataset.platform === 'minjiang'); });
+            }
+          }
+        }
 
         // 按平台回填权限
         ['enterprise', 'anxinyun', 'minjiang', 'agent'].forEach(function(platform) {
@@ -1927,18 +1960,7 @@
         });
       }
 
-      // ===== 三端平台 Tab 切换 =====
-      var platformTabs = document.querySelectorAll('.platform-tab');
-      var platformPanels = document.querySelectorAll('.platform-panel');
-      platformTabs.forEach(function(tab) {
-        tab.addEventListener('click', function() {
-          var platform = tab.dataset.platform;
-          platformTabs.forEach(function(t) { t.classList.toggle('active', t === tab); });
-          platformPanels.forEach(function(p) {
-            p.classList.toggle('active', p.dataset.platform === platform);
-          });
-        });
-      });
+      // ===== 三端平台 Tab 切换（已移至独立 script 块，不依赖 IIFE 执行结果） =====
 
       // ===== 单个权限复选框变化时同步模块全选状态 =====
       document.querySelectorAll('.platform-panel input[type="checkbox"][value]').forEach(function(cb) {
@@ -1976,6 +1998,37 @@
       try{run()}catch(e){}
       document.addEventListener("DOMContentLoaded", run);
       setTimeout(run, 50); setTimeout(run, 300);
+    })();
+  </script>
+  <!-- 独立 Tab 切换逻辑：不依赖 IIFE，确保即使 IIFE 崩溃也能切换 -->
+  <script>
+    (function initPlatformTabs() {
+      function setupTabs() {
+        var tabs = document.querySelectorAll('.platform-tab');
+        var panels = document.querySelectorAll('.platform-panel');
+        if (!tabs.length || !panels.length) return false;
+        // 避免重复绑定
+        if (tabs[0].dataset.tabBound) return true;
+        tabs.forEach(function(tab) {
+          tab.dataset.tabBound = '1';
+          tab.addEventListener('click', function(e) {
+            // 点击开关区域不切换 tab（由 toggle 的 stopPropagation 处理）
+            if (e.target.closest('.platform-enable-toggle')) return;
+            var platform = tab.dataset.platform;
+            tabs.forEach(function(t) { t.classList.toggle('active', t === tab); });
+            panels.forEach(function(p) {
+              p.classList.toggle('active', p.dataset.platform === platform);
+            });
+          });
+        });
+        return true;
+      }
+      if (!setupTabs()) {
+        // DOM 尚未就绪，延迟重试
+        document.addEventListener('DOMContentLoaded', setupTabs);
+        setTimeout(setupTabs, 100);
+        setTimeout(setupTabs, 500);
+      }
     })();
   </script>
 <script src="js/main.js?v=51"></script>

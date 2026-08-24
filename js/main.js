@@ -623,7 +623,7 @@
         var projectText = '';
         if (assignedProjects && assignedProjects.length) {
           projectText = assignedProjects.map(function (ap) {
-            return (ap.productLabel || '民匠有约') + '·' + (ap.projectName || '');
+            return (ap.projectName || '');
           }).filter(Boolean).join('、');
         }
         // —— 最终硬编码兜底：子账号一定显示项目名 ——
@@ -635,14 +635,13 @@
             else { fbList = JSON.parse(localStorage.getItem('mjyy_projects') || '[]'); }
             if (fbList && fbList.length) {
               var fb = fbList.find(function(p){ return p && p.status !== 'inactive'; }) || fbList[0];
-              if (fb) projectText = (fb.product === 'mjyy' ? '民匠有约' : (fb.product || '民匠有约')) + '·' + (fb.name || fb.projectName || '');
+              if (fb) projectText = (fb.name || fb.projectName || '');
             }
           } catch(e) {}
-          if (!projectText) projectText = '民匠有约·杭州地铁保洁项目';
+          if (!projectText) projectText = '杭州地铁保洁项目';
         }
-        var parsed = parseProjectText(projectText);
-        renderProjectForAll(parsed.label, parsed.name);
-      } catch (e) { var fb2 = parseProjectText('民匠有约·杭州地铁保洁项目'); renderProjectForAll(fb2.label, fb2.name); }
+        renderProjectForAll('', projectText);
+      } catch (e) { renderProjectForAll('', '杭州地铁保洁项目'); }
     } else {
       renderProjectForAll('', '');
     }
@@ -1097,7 +1096,7 @@
         var projectText = '';
         if (assignedProjects && assignedProjects.length) {
           projectText = assignedProjects.map(function (ap) {
-            return (ap.productLabel || '民匠有约') + '·' + (ap.projectName || '');
+            return (ap.projectName || '');
           }).filter(Boolean).join('、');
         }
         if (!projectText) {
@@ -1107,14 +1106,13 @@
             else { fbList2 = JSON.parse(localStorage.getItem('mjyy_projects') || '[]'); }
             if (fbList2 && fbList2.length) {
               var fb2 = fbList2.find(function(p){ return p && p.status !== 'inactive'; }) || fbList2[0];
-              if (fb2) projectText = (fb2.product === 'mjyy' ? '民匠有约' : (fb2.product || '民匠有约')) + '·' + (fb2.name || fb2.projectName || '');
+              if (fb2) projectText = (fb2.name || fb2.projectName || '');
             }
           } catch(e) {}
-          if (!projectText) projectText = '民匠有约·杭州地铁保洁项目';
+          if (!projectText) projectText = '杭州地铁保洁项目';
         }
-        var p2 = parseProjText(projectText);
-        renderAllProjects(p2.label, p2.name);
-      } catch (e) { var fp = parseProjText('民匠有约·杭州地铁保洁项目'); renderAllProjects(fp.label, fp.name); }
+        renderAllProjects('', projectText);
+      } catch (e) { renderAllProjects('', '杭州地铁保洁项目'); }
     } else { renderAllProjects('', ''); }
 
     // 4. 企业ID→统一社会信用代码；未认证/新企业去除 统一社会信用代码/主账号/工商识别号
@@ -1412,7 +1410,7 @@
         var aps = getCurrentUserAssignedProjects(userData, curEnt);
         if (aps && aps.length) {
           projTextVal = aps.map(function (ap) {
-            return (ap.productLabel || '民匠有约') + '·' + (ap.projectName || '');
+            return (ap.projectName || '');
           }).filter(Boolean).join('、');
         }
         // 硬编码兜底
@@ -1423,33 +1421,24 @@
             else { fbList3 = JSON.parse(localStorage.getItem('mjyy_projects') || '[]'); }
             if (fbList3 && fbList3.length) {
               var fb3 = fbList3.find(function(p){ return p && p.status !== 'inactive'; }) || fbList3[0];
-              if (fb3) projTextVal = (fb3.product === 'mjyy' ? '民匠有约' : (fb3.product || '民匠有约')) + '·' + (fb3.name || fb3.projectName || '');
+              if (fb3) projTextVal = (fb3.name || fb3.projectName || '');
             }
           } catch(e) {}
-          if (!projTextVal) projTextVal = '民匠有约·杭州地铁保洁项目';
+          if (!projTextVal) projTextVal = '杭州地铁保洁项目';
         }
-      } catch (e) { projTextVal = '民匠有约·杭州地铁保洁项目'; }
+      } catch (e) { projTextVal = '杭州地铁保洁项目'; }
     }
-    // 优先写当前 userDropdown（如果存在且可见）
+    // 写入项目标签（只显示项目名，不显示产品名前缀）
     function writeProjectChip(scope, text) {
       var els = scope.querySelectorAll('#dropdownProject, .user-dropdown-project');
       els.forEach(function (el) {
         var labelEl = el.querySelector('.chip-label');
         var nameEl = el.querySelector('.chip-name');
         var sepEl = el.querySelector('.chip-sep');
-        var parsed = (text && text.indexOf('·') >= 0)
-          ? { label: text.split('·')[0].trim(), name: text.split('·').slice(1).join('·').trim() }
-          : { label: '', name: text };
         if (labelEl && nameEl) {
-          if (parsed.label && parsed.name) {
-            labelEl.textContent = parsed.label;
-            nameEl.textContent = parsed.name;
-            labelEl.style.display = '';
-            sepEl.style.display = '';
-            el.style.display = 'inline-flex';
-          } else if (parsed.name) {
+          if (text) {
             labelEl.textContent = '';
-            nameEl.textContent = parsed.name;
+            nameEl.textContent = text;
             labelEl.style.display = 'none';
             sepEl.style.display = 'none';
             el.style.display = 'inline-flex';
