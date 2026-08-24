@@ -1174,18 +1174,51 @@
     return '¥' + Number(n||0).toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2});
   }
   // ===== 表单校验/格式化辅助（新建/编辑项目弹窗）=====
+  // 确保所有弹窗 DOM 都是 body 直接子节点（避免被祖先 overflow:hidden / transform / contain / perspective 裁剪或层级失效）
+  function _ensureModalsOnBody(){
+    try{
+      if(!document || !document.body) return;
+      var overlays = document.querySelectorAll && document.querySelectorAll('.modal-overlay');
+      if(!overlays) return;
+      for(var i=0;i<overlays.length;i++){
+        try{
+          var o = overlays[i];
+          if(o && o.parentNode && o.parentNode !== document.body) document.body.appendChild(o);
+        }catch(e){}
+      }
+    }catch(e){}
+  }
+  try{ _ensureModalsOnBody(); }catch(e){}
+  try{ document.addEventListener && document.addEventListener('DOMContentLoaded', _ensureModalsOnBody); }catch(e){}
+  try{ setTimeout(_ensureModalsOnBody, 30); setTimeout(_ensureModalsOnBody, 300); setTimeout(_ensureModalsOnBody, 1200); }catch(e){}
+
   function _errSiblingBox(id){
     var el = $(id); if(!el) return null;
-    // 返回元素下方的 .form-error-text（若无则创建），并挂到 form-group 内（紧挨着输入框）
-    var fg = el.closest && el.closest('.form-group'); if(!fg) return null;
-    var ex = fg.querySelector('.form-error-text[data-for="'+id+'"]');
-    if(ex) return ex;
-    var d = document.createElement('div');
+    var fg;
+    try{ fg = el.closest && el.closest('.form-group'); }catch(e){ fg = null; }
+    if(!fg){
+      // 兜底：向上找 3 层内的 form-group
+      var p = el;
+      for(var k=0;k<4 && p && p.parentNode;k++){ p = p.parentNode; if(p && p.classList && p.classList.contains('form-group')){ fg = p; break; } }
+    }
+    if(!fg) return null;
+    try{
+      var ex = fg.querySelector && fg.querySelector('.form-error-text[data-for="'+id+'"]');
+      if(ex) return ex;
+    }catch(e){}
+    var d;
+    try{ d = document.createElement('div'); }catch(e){ return null; }
+    if(!d) return null;
     d.className = 'form-error-text';
-    d.setAttribute('data-for', id);
-    try{ fg.insertBefore(d, el.nextSibling ? el.nextSibling.nextSibling ? el.nextSibling : el.nextSibling : fg.lastChild); /* 容错：直接 append */ }catch(e){}
-    try{ fg.appendChild(d); }catch(e){}
-    return fg.querySelector('.form-error-text[data-for="'+id+'"]');
+    try{ d.setAttribute('data-for', id); }catch(e){}
+    try{
+      // 放在紧挨着输入框之后（即输入框的下一个兄弟节点）
+      if(el.nextSibling){ fg.insertBefore(d, el.nextSibling); }
+      else { fg.appendChild(d); }
+    }catch(e){
+      try{ fg.appendChild(d); }catch(e2){}
+    }
+    try{ return fg.querySelector && fg.querySelector('.form-error-text[data-for="'+id+'"]'); }catch(e){ return d; }
   }
   window.clearFieldError = function(id){
     try{ var el = $(id); if(el) el.classList.remove('is-error'); }catch(e){}
@@ -1510,6 +1543,7 @@
 
   window.openProjectModal = function(){
     try{
+      try{ _ensureModalsOnBody(); }catch(e){}
       var m = $('projectModal');
       if(!m){ alert('页面初始化异常：未找到新建项目弹窗，请刷新'); return; }
       editingProjectId = null;
@@ -1535,6 +1569,7 @@
       _showModal(m);
       // 打开后：焦点定位 + 重新渲染子账号下拉（等待 DOM 插入）
       setTimeout(function(){
+        try{ _ensureModalsOnBody(); }catch(e){}
         try{
           var nm = $('f_projName'); if(nm){ nm.focus(); try{ nm.select(); }catch(e){} }
         }catch(e){}
@@ -1547,15 +1582,25 @@
 
   function _showModal(m){
     if(!m) return;
+    // 关键修复：所有 modal-overlay 类型弹窗必须是 body 直接子节点，避免被 page-layout / card-body / table-wrap 等 overflow/transform 祖先裁剪
+    try{
+      if(document.body && m.parentNode !== document.body){
+        try{ document.body.appendChild(m); }catch(e){}
+      }
+    }catch(e){}
     try{ m.classList.remove('active'); }catch(e){}
-    m.style.cssText = 'display:flex !important; position:fixed; top:0; left:0; right:0; bottom:0; z-index:99999; background:rgba(0,0,0,0.45); align-items:center; justify-content:center;';
+    m.style.cssText = '';
+    m.setAttribute('style','display:flex !important; position:fixed !important; top:0 !important; left:0 !important; right:0 !important; bottom:0 !important; z-index:2147483647 !important; background:rgba(0,0,0,0.45) !important; align-items:center !important; justify-content:center !important;');
     m.classList.add('active');
-    setTimeout(function(){ try{
+    var force = function(){ try{
       if(m && (m.style.display||'').indexOf('flex')<0) m.style.setProperty('display','flex','important');
-      if(m && m.classList) m.classList.add('active');
+      if(m && document.body && m.parentNode!==document.body) try{ document.body.appendChild(m); }catch(e){}
+      if(m) { m.style.setProperty('z-index','2147483647','important'); m.classList.add('active'); }
       if(m) m.scrollIntoView && m.scrollIntoView({block:'center'});
-    }catch(e){} }, 100);
-    setTimeout(function(){ try{ if(m) m.style.setProperty('display','flex','important'); }catch(e){} }, 250);
+    }catch(e){} };
+    setTimeout(force, 30);
+    setTimeout(force, 120);
+    setTimeout(force, 280);
   }
   window._showModal = _showModal;
 
@@ -1568,6 +1613,7 @@
 
   window.editProject = function(id){
     try{
+      try{ _ensureModalsOnBody(); }catch(e){}
       var p = findProject(id); if(!p){ alert('未找到待编辑项目'); return; }
       editingProjectId = id;
       var m = $('projectModal'); if(!m){ alert('页面初始化异常'); return; }
@@ -1594,6 +1640,7 @@
       try{ var saveBtn = m.querySelector('.modal-footer .btn-primary'); if(saveBtn){ saveBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" width="14" height="14"><polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2"/></svg> 保存修改'; } }catch(e){}
       _showModal(m);
       setTimeout(function(){
+        try{ _ensureModalsOnBody(); }catch(e){}
         try{ var nm = $('f_projName'); if(nm) nm.focus(); }catch(e){}
         try{ renderProjModalOptions(); }catch(e){}
       }, 60);
@@ -1635,34 +1682,63 @@
   window.renderProjModalOptions = function(){
     try{
       var sel = $('projSubPick'); if(!sel) return;
-      var remain = SUBACCOUNTS.filter(function(u){ return projModalSubs.indexOf(u.id)<0; });
-      var cur = sel.value;
-      var html = '<option value="">— 从子账号池选择成员 —</option>';
-      for(var i=0;i<remain.length;i++){
-        var u = remain[i];
-        html += '<option value="'+u.id+'">'+u.name+' · '+u.role+' · '+u.phone+'</option>';
+      var cur = sel.value || '';
+      var html = '';
+      var pool = (typeof SUBACCOUNTS !== 'undefined' && Array.isArray(SUBACCOUNTS)) ? SUBACCOUNTS : [];
+      var used = Array.isArray(projModalSubs) ? projModalSubs : [];
+      var remain = pool.filter(function(u){ return used.indexOf(u && u.id)<0 && u && u.id; });
+      html = '<option value="">— 从子账号池选择成员 —</option>';
+      if(pool.length===0){
+        html += '<option value="" disabled>（暂无子账号成员，请到「用户管理」创建子账号后再分配）</option>';
+      } else if(remain.length===0 && used.length>0){
+        html += '<option value="" disabled>（子账号池成员均已分配）</option>';
+      } else {
+        for(var i=0;i<remain.length;i++){
+          var u = remain[i];
+          if(!u || !u.id) continue;
+          try{
+            html += '<option value="'+String(u.id).replace(/"/g,'&quot;')+'">'
+              + String(u.name || '未命名').replace(/[<>]/g,'')
+              + ' · '
+              + String(u.role || '成员').replace(/[<>]/g,'')
+              + ' · '
+              + String(u.phone || '').replace(/[<>]/g,'')
+              + '</option>';
+          }catch(e){}
+        }
       }
-      sel.innerHTML = html;
-      if(projModalSubs.length>=10){ sel.disabled = true; sel.style.opacity = '.6'; }
+      try{ sel.innerHTML = html; }catch(e){}
+      if(used.length>=10){ sel.disabled = true; sel.style.opacity = '.6'; }
       else { sel.disabled = false; sel.style.opacity = ''; }
-    }catch(e){ /* ignore */ }
+      // 回选值
+      try{
+        if(cur){
+          var opts = sel.options;
+          for(var j=0;j<opts.length;j++){ if(opts[j].value===cur){ sel.selectedIndex = j; break; } }
+        }
+      }catch(e){}
+    }catch(e){
+      try{ console.error('renderProjModalOptions err',e); }catch(x){}
+    }
   };
 
   window.removeProjModalSub = function(id){
-    projModalSubs = projModalSubs.filter(function(x){ return x!==id; });
+    projModalSubs = (Array.isArray(projModalSubs) ? projModalSubs : []).filter(function(x){ return x!==id; });
     renderProjModalSubs();
   };
 
   // 从下拉直接选择并添加（替代之前 prompt 流程）
   window.addProjModalSubDirect = function(){
     try{
-      if(projModalSubs.length >= 10){ alert('单个项目最多分配 10 个成员'); return; }
-      var sel = $('projSubPick'); if(!sel) return;
-      var v = sel.value || '';
+      var list = Array.isArray(projModalSubs) ? projModalSubs : [];
+      if(list.length >= 10){ alert('单个项目最多分配 10 个成员'); return; }
+      var sel = $('projSubPick'); if(!sel){ alert('页面初始化异常：子账号选择器未加载'); return; }
+      var v = (sel.value || '').trim();
       if(!v){ alert('请先从下拉中选择一个子账号'); return; }
-      if(projModalSubs.indexOf(v)<0) projModalSubs.push(v);
+      if(list.indexOf(v)<0){ list.push(v); projModalSubs = list; }
       renderProjModalSubs();
     }catch(e){
+      try{ console.error(e); }catch(x){}
       alert('添加失败：'+(e.message||e));
     }
   };
@@ -1736,12 +1812,31 @@
     }
     var isEdit2 = !!editingProjectId;
     var lastAmount = isEdit2 ? 0 : amountOk;
-    closeProjectModal();
-    updateStats();
-    renderProjects();
-    renderRecords();
-    updateEnterpriseAvail();
-    alert(isEdit2 ? '项目更新成功' : ('项目创建成功' + (lastAmount>0 ? '，已从企业账户划拨 '+fmtAmount(lastAmount)+' 到项目账户' : '')));
+    try{
+      var okText = isEdit2 ? '项目更新成功' : ('项目创建成功' + (lastAmount>0 ? '，已从企业账户划拨 '+fmtAmount(lastAmount)+' 到项目账户' : ''));
+      // 显示成功绿色提示条 700ms 后再关闭（给用户视觉反馈）
+      showModalMsg(okText, 'ok');
+      updateStats();
+      renderProjects();
+      renderRecords();
+      updateEnterpriseAvail();
+      try{
+        // 如果按钮存在：禁用保存按钮防重复提交
+        var sv = $('projectModal') && $('projectModal').querySelector && $('projectModal').querySelector('.modal-footer .btn-primary');
+        if(sv){ try{ sv.disabled = true; sv.style.opacity='.7'; sv.style.cursor='not-allowed'; }catch(e){} }
+      }catch(e){}
+      setTimeout(function(){
+        try{ closeProjectModal(); }catch(e){}
+        try{
+          var sv2 = $('projectModal') && $('projectModal').querySelector && $('projectModal').querySelector('.modal-footer .btn-primary');
+          if(sv2){ try{ sv2.disabled = false; sv2.style.opacity=''; sv2.style.cursor=''; }catch(e){} }
+        }catch(e){}
+        try{ alert(okText); }catch(e){}
+      }, 700);
+    }catch(e){
+      try{ closeProjectModal(); }catch(e){}
+      updateStats(); renderProjects(); renderRecords(); updateEnterpriseAvail();
+    }
   };
 
   function updateEnterpriseAvail(){
