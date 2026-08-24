@@ -1,0 +1,28 @@
+{
+  "name": "workspace",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhc1231/mjyy-gw.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/zhc1231/mjyy-gw/issues"
+  },
+  "homepage": "https://github.com/zhc1231/mjyy-gw#readme",
+  "dependencies": {
+    "jsdom": "^29.1.1",
+    "mermaid": "^11.17.0"
+  },
+  "directories": {
+    "doc": "docs"
+  }
+}

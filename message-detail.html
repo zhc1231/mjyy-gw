@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>消息详情 - 民匠有约</title>
+  <link rel="stylesheet" href="css/style.css?v=23">
+  <style>
+    :root {
+      --brand-primary: #1677FF;
+      --brand-primary-dark: #0958D9;
+      --brand-primary-50: #E6F4FF;
+      --sidebar-width: 232px;
+      --text: #1F1F1F;
+      --text-secondary: #6B6B6B;
+      --text-muted: #9C9C9C;
+      --gray-50: #FAFBFC;
+      --gray-100: #F2F3F5;
+      --gray-200: #E5E6EB;
+      --gray-300: #C9CDD4;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #F5F7FA;
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ===== 顶部导航 ===== */
+    .topbar {
+      background: #fff; border-bottom: none;
+      height: 60px; display: flex; align-items: center;
+      padding: 0 40px; position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+    .topbar-inner {
+      max-width: 1440px; width: 100%; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .topbar-brand {
+      display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text);
+    }
+    .topbar-title { font-size: 17px; font-weight: 700; letter-spacing: 0.3px; }
+    .topbar-divider { width: 1px; height: 20px; background: var(--gray-200); margin: 0 12px; }
+    .topbar-crumb { font-size: 14px; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
+    .topbar-crumb a { color: var(--text-secondary); text-decoration: none; }
+    .topbar-crumb a:hover { color: var(--brand-primary); }
+    .topbar-crumb b { color: var(--text); font-weight: 600; }
+    .topbar-right { display: flex; align-items: center; gap: 18px; }
+    .topbar-back {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 13px; color: var(--text-secondary); text-decoration: none;
+      padding: 6px 12px; border-radius: 8px; transition: all 0.2s;
+    }
+    .topbar-back:hover { background: var(--gray-100); color: var(--brand-primary); }
+
+    /* ===== 消息按钮 ===== */
+    .topbar-message {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .topbar-message:hover {
+      background: var(--gray-100);
+      color: var(--brand-primary);
+    }
+    .topbar-message:hover .topbar-message-icon {
+      color: var(--brand-primary);
+    }
+    .topbar-message-icon {
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .topbar-message-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+    .topbar-message-dot {
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #F53F3F;
+      display: none;
+      z-index: 5;
+    }
+    .topbar-message-dot.show { display: block; }
+    .topbar-message.has-badge .topbar-message-dot {
+      display: none !important;
+    }
+    .topbar-message .topbar-message-badge {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 16px;
+      height: 16px;
+      padding: 0 4px;
+      border-radius: 8px;
+      background: #F53F3F;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 600;
+      text-align: center;
+      line-height: 1;
+      border: 2px solid #fff;
+      box-sizing: content-box;
+      z-index: 10;
+      box-shadow: 0 1px 3px rgba(245, 63, 63, 0.4);
+    }
+
+    /* ===== 账号区域 ===== */
+    .topbar-user {
+      position: relative; display: flex; align-items: center; gap: 8px;
+      padding: 4px 10px 4px 4px; border-radius: 8px; cursor: pointer; transition: background 0.2s;
+    }
+    .topbar-user:hover, .topbar-user.active { background: var(--gray-100); }
+    .topbar-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--brand-primary); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 600; flex-shrink: 0;
+    }
+    .topbar-user-meta { display: flex; flex-direction: column; gap: 2px; }
+    .topbar-user-name-row { display: flex; align-items: center; gap: 6px; }
+    .topbar-user-name { font-size: 13px; font-weight: 600; color: var(--text); max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .topbar-account-badge { font-size: 10px; padding: 0 5px; border-radius: 4px; background: var(--brand-primary-50); color: var(--brand-primary); font-weight: 500; line-height: 16px; }
+    .topbar-user-chips { display: flex; align-items: center; gap: 4px; }
+    .topbar-user-chip { font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 500; line-height: 16px; }
+    .topbar-user-chip.verified { background: #E8F8EB; color: #00B42A; }
+    .topbar-user-chip.unverified { background: #FFF2E8; color: #FA8C16; }
+    .topbar-chevron { width: 16px; height: 16px; color: var(--text-muted); transition: transform 0.2s; }
+    .topbar-user.active .topbar-chevron { transform: rotate(180deg); }
+
+    /* ===== 下拉菜单 ===== */
+    .user-dropdown {
+      position: absolute; top: calc(100% + 6px); right: 0; width: 300px;
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12); border: 1px solid var(--gray-200);
+      z-index: 1001; display: none; overflow: hidden;
+    }
+    .topbar-user.active .user-dropdown { display: block; }
+
+    /* ===== 消息下拉 ===== */
+    .message-dropdown {
+      position: absolute; top: calc(100% + 8px); right: 0; width: 340px;
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12); border: 1px solid var(--gray-200);
+      z-index: 1000; display: none; overflow: hidden;
+    }
+    .topbar-message.open .message-dropdown { display: block; }
+
+    /* ===== 页面布局 ===== */
+    .page-layout {
+      display: flex; margin-top: 60px; min-height: calc(100vh - 60px);
+    }
+    .main-content {
+      flex: 1; padding: 24px 40px; max-width: 900px; margin: 0 auto; width: 100%;
+    }
+
+    /* ===== 消息详情卡片 ===== */
+    .msg-detail-card {
+      background: #fff; border-radius: 12px; border: 1px solid var(--gray-200);
+      overflow: hidden;
+    }
+    .msg-detail-header {
+      padding: 24px 28px; border-bottom: 1px solid var(--gray-100);
+      display: flex; gap: 16px; align-items: flex-start;
+    }
+    .msg-detail-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0;
+    }
+    .msg-detail-icon.system { background: #E8F3FF; color: #1677FF; }
+    .msg-detail-icon.order { background: #E8F8EB; color: #00B42A; }
+    .msg-detail-icon.warn { background: #FFF2E8; color: #FA8C16; }
+    .msg-detail-icon.promo { background: #F3E8FF; color: #722ED1; }
+    .msg-detail-info { flex: 1; min-width: 0; }
+    .msg-detail-title {
+      font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px;
+    }
+    .msg-detail-meta {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 12px; color: var(--text-muted);
+    }
+    .msg-detail-tag {
+      font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 500;
+    }
+    .msg-detail-tag.system { background: #E8F3FF; color: #1677FF; }
+    .msg-detail-tag.order { background: #E8F8EB; color: #00B42A; }
+    .msg-detail-tag.warn { background: #FFF2E8; color: #FA8C16; }
+    .msg-detail-tag.promo { background: #F3E8FF; color: #722ED1; }
+
+    .msg-detail-body {
+      padding: 24px 28px;
+      font-size: 14px; line-height: 1.8; color: var(--text);
+    }
+    .msg-detail-body p { margin-bottom: 12px; }
+    .msg-detail-body ul, .msg-detail-body ol {
+      margin: 8px 0 12px 20px; padding-left: 8px;
+    }
+    .msg-detail-body li { margin-bottom: 4px; }
+    .msg-detail-body a { color: var(--brand-primary); text-decoration: none; }
+    .msg-detail-body a:hover { text-decoration: underline; }
+    .msg-detail-body strong { font-weight: 600; }
+
+    .msg-detail-footer {
+      padding: 16px 28px; border-top: 1px solid var(--gray-100);
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 500;
+      cursor: pointer; transition: all 0.2s; border: none; text-decoration: none;
+    }
+    .btn-primary { background: var(--brand-primary); color: #fff; }
+    .btn-primary:hover { background: var(--brand-primary-dark); }
+    .btn-outline { background: #fff; border: 1px solid var(--gray-300); color: var(--text-secondary); }
+    .btn-outline:hover { border-color: var(--brand-primary); color: var(--brand-primary); }
+    .btn-ghost { background: transparent; color: var(--text-secondary); }
+    .btn-ghost:hover { background: var(--gray-100); color: var(--text); }
+
+    /* ===== 相关消息 ===== */
+    .related-msg {
+      margin-top: 20px;
+    }
+    .related-msg-title {
+      font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 12px;
+    }
+    .related-msg-list {
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .related-msg-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 16px; background: #fff; border-radius: 10px;
+      border: 1px solid var(--gray-200); cursor: pointer; transition: all 0.15s;
+      text-decoration: none; color: var(--text);
+    }
+    .related-msg-item:hover {
+      border-color: var(--brand-primary); background: var(--brand-primary-50);
+    }
+    .related-msg-item-icon { font-size: 18px; flex-shrink: 0; }
+    .related-msg-item-body { flex: 1; min-width: 0; }
+    .related-msg-item-title { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+    .related-msg-item-time { font-size: 12px; color: var(--text-muted); }
+    .related-msg-item-arrow { color: var(--text-muted); flex-shrink: 0; }
+
+    .msg-not-found {
+      text-align: center; padding: 80px 20px;
+    }
+    .msg-not-found-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
+    .msg-not-found-text { font-size: 14px; color: var(--text-muted); margin-bottom: 20px; }
+
+    @media (max-width: 768px) {
+      .topbar { padding: 0 16px; }
+      .topbar-crumb { display: none; }
+      .main-content { padding: 16px; }
+      .msg-detail-header { padding: 16px; }
+      .msg-detail-body { padding: 16px; }
+      .msg-detail-footer { padding: 12px 16px; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div style="display:flex;align-items:center;">
+        <a href="index.html" class="topbar-brand">
+          <img src="https://oss.minjiangyouyue.com/mjlogo/logo02.png" alt="logo" style="height:34px;border-radius:8px;">
+          <span class="topbar-title">消息详情</span>
+        </a>
+        <div class="topbar-divider"></div>
+        <div class="topbar-crumb">
+          <a href="account-center.html">控制台</a>
+          <span style="color:var(--gray-300);">/</span>
+          <a href="account-message.html">消息中心</a>
+          <span style="color:var(--gray-300);">/</span>
+          <b>消息详情</b>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <a href="account-message.html" class="topbar-back">
+          <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M19 12H5" stroke="currentColor" stroke-width="2"/><path d="M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2"/></svg>
+          返回列表
+        </a>
+        <div class="topbar-message" id="topbarMessage">
+          <div class="topbar-message-icon">
+            <svg viewBox="0 0 24 24" fill="none" width="15" height="15"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="topbar-message-dot show" id="topbarMessageDot"></span>
+          </div>
+          <span class="topbar-message-badge" id="topbarMessageBadge">3</span>
+          <div class="message-dropdown" id="messageDropdown">
+            <div class="message-dropdown-header">
+              <span>消息通知</span>
+              <a href="javascript:;" class="message-dropdown-clear" id="msgClearAll">全部已读</a>
+            </div>
+            <div class="message-dropdown-list" id="messageList"></div>
+            <a href="account-message.html" class="message-dropdown-footer">查看全部消息 →</a>
+          </div>
+        </div>
+        <div class="topbar-user" id="topbarUser">
+          <div class="topbar-avatar" id="topbarAvatar">用</div>
+          <div class="topbar-user-meta" id="topbarUserMeta">
+            <span class="topbar-user-name-row">
+              <span class="topbar-user-name" id="topbarUserName">企业用户</span>
+              <span class="topbar-account-badge" id="topbarAccountBadge">主账号</span>
+            </span>
+            <span class="topbar-user-chips" id="topbarUserChips"></span>
+          </div>
+          <svg class="topbar-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2"/></svg>
+          <div class="user-dropdown" id="userDropdown">
+            <div class="user-dropdown-header">
+              <div class="user-dropdown-avatar" id="dropdownAvatar">用</div>
+              <div class="user-dropdown-info">
+                <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                  <div class="user-dropdown-name" id="dropdownName">用户</div>
+                  <span class="user-account-badge" id="dropdownBadge">主账号</span>
+                </div>
+                <div class="user-dropdown-id" id="dropdownId">企业ID：--</div>
+                <div class="user-dropdown-tags" id="dropdownTags">
+                  <span class="user-dropdown-tag" id="authTag">未认证</span>
+                </div>
+              </div>
+            </div>
+            <div class="user-dropdown-body">
+              <div class="user-dropdown-group">
+                <div class="user-dropdown-group-title">进入</div>
+                <a href="account-center.html" class="user-dropdown-item user-dropdown-item-primary">
+                  <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/></svg>
+                  产品中心
+                </a>
+              </div>
+            </div>
+            <div class="user-dropdown-footer">
+              <button class="user-dropdown-logout" id="logoutBtn">
+                <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" stroke-width="2"/><polyline points="16 17 21 12 16 7" stroke="currentColor" stroke-width="2"/><line x1="21" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="2"/></svg>
+                退出登录
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主内容 -->
+  <div class="page-layout">
+    <div class="main-content" id="detailContainer">
+      <!-- 动态渲染 -->
+    </div>
+  </div>
+
+  <script src="js/main.js?v=51"></script>
+  <script>
+    (function() {
+      var isLoggedIn = localStorage.getItem('mjyy_logged_in') === 'true';
+      if (!isLoggedIn) { window.location.href = 'login.html'; return; }
+
+      function getMessages() {
+        var stored = localStorage.getItem('mjyy_messages');
+        if (stored) {
+          try { return JSON.parse(stored); } catch(e) {}
+        }
+        // 如果没有存储的消息，返回空数组（列表页会初始化）
+        return [];
+      }
+
+      function saveMessages(msgs) {
+        localStorage.setItem('mjyy_messages', JSON.stringify(msgs));
+      }
+
+      function updateBadge() {
+        var msgs = getMessages();
+        var unread = msgs.filter(function(m) { return m.unread; }).length;
+        var badge = document.getElementById('topbarMessageBadge');
+        var dot = document.getElementById('topbarMessageDot');
+        if (badge) {
+          if (unread > 0) {
+            badge.textContent = unread > 99 ? '99+' : unread;
+            badge.style.display = 'inline-flex';
+          } else {
+            badge.style.display = 'none';
+          }
+        }
+        if (dot) {
+          if (unread > 0) dot.classList.add('show');
+          else dot.classList.remove('show');
+        }
+      }
+
+      function getTypeLabel(type) {
+        var labels = { system: '系统', order: '业务', warn: '安全', promo: '活动' };
+        return labels[type] || '通知';
+      }
+
+      // 获取 URL 参数中的消息 ID
+      var params = new URLSearchParams(window.location.search);
+      var msgId = params.get('id');
+      var msgs = getMessages();
+      var msg = msgs.find(function(m) { return m.id === msgId; });
+
+      var container = document.getElementById('detailContainer');
+
+      if (!msg) {
+        container.innerHTML = '<div class="msg-not-found"><div class="msg-not-found-icon">📭</div><div class="msg-not-found-text">消息不存在或已被删除</div><a href="account-message.html" class="btn btn-primary">返回消息列表</a></div>';
+        updateBadge();
+        return;
+      }
+
+      // 标记为已读
+      if (msg.unread) {
+        msg.unread = false;
+        saveMessages(msgs);
+        updateBadge();
+      } else {
+        updateBadge();
+      }
+
+      // 渲染详情
+      container.innerHTML = '' +
+        '<div class="msg-detail-card">' +
+          '<div class="msg-detail-header">' +
+            '<div class="msg-detail-icon ' + msg.type + '">' + msg.icon + '</div>' +
+            '<div class="msg-detail-info">' +
+              '<div class="msg-detail-title">' + msg.title + '</div>' +
+              '<div class="msg-detail-meta">' +
+                '<span class="msg-detail-tag ' + msg.type + '">' + getTypeLabel(msg.type) + '</span>' +
+                '<span>' + msg.time + '</span>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="msg-detail-body">' + msg.content + '</div>' +
+          '<div class="msg-detail-footer">' +
+            '<a href="account-message.html" class="btn btn-ghost"><svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M19 12H5" stroke="currentColor" stroke-width="2"/><path d="M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2"/></svg>返回列表</a>' +
+            '<div style="display:flex;gap:8px;">' +
+              '<a href="javascript:;" class="btn btn-outline" id="prevMsg"><svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2"/></svg>上一条</a>' +
+              '<a href="javascript:;" class="btn btn-outline" id="nextMsg">下一条<svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2"/></svg></a>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+
+      // 相关消息
+      var related = msgs.filter(function(m) { return m.id !== msg.id; }).slice(0, 4);
+      if (related.length > 0) {
+        var relatedHtml = '<div class="related-msg"><div class="related-msg-title">相关消息</div><div class="related-msg-list">';
+        related.forEach(function(m) {
+          relatedHtml += '<a href="message-detail.html?id=' + m.id + '" class="related-msg-item">' +
+            '<div class="related-msg-item-icon">' + m.icon + '</div>' +
+            '<div class="related-msg-item-body">' +
+              '<div class="related-msg-item-title">' + m.title + '</div>' +
+              '<div class="related-msg-item-time">' + m.time + '</div>' +
+            '</div>' +
+            '<svg class="related-msg-item-arrow" viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2"/></svg>' +
+          '</a>';
+        });
+        relatedHtml += '</div></div>';
+        container.insertAdjacentHTML('beforeend', relatedHtml);
+      }
+
+      // 上/下一条导航
+      var sortedMsgs = msgs.slice().sort(function(a, b) { return (b.timestamp || 0) - (a.timestamp || 0); });
+      var currentIdx = sortedMsgs.findIndex(function(m) { return m.id === msgId; });
+
+      var prevBtn = document.getElementById('prevMsg');
+      var nextBtn = document.getElementById('nextMsg');
+
+      if (prevBtn && currentIdx > 0) {
+        prevBtn.href = 'message-detail.html?id=' + sortedMsgs[currentIdx - 1].id;
+      } else if (prevBtn) {
+        prevBtn.style.opacity = '0.4';
+        prevBtn.style.pointerEvents = 'none';
+      }
+
+      if (nextBtn && currentIdx < sortedMsgs.length - 1 && currentIdx >= 0) {
+        nextBtn.href = 'message-detail.html?id=' + sortedMsgs[currentIdx + 1].id;
+      } else if (nextBtn) {
+        nextBtn.style.opacity = '0.4';
+        nextBtn.style.pointerEvents = 'none';
+      }
+    })();
+  </script>
+</body>
+</html>
