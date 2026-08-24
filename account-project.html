@@ -26,6 +26,8 @@
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       background: #f5f6f7; color: var(--text); min-height: 100vh; line-height: 1.6;
+      /* 强制预留 8px 纵向滚动条槽 → 不同高度页面切换时（长表格 vs 短内容），max-width:1440 居中的水平坐标不会跳 7~8 像素（解决用户说"顶部 logo/面包屑/账户区和其他页面对不齐"的水平飘移问题）*/
+      overflow-y: scroll;
     }
 
     /* ===== 顶部导航（对齐 account-wallet） ===== */
@@ -366,6 +368,17 @@
     .page-breadcrumb a:hover { color: var(--brand-primary); }
     .page-breadcrumb .bc-sep { color: var(--text-placeholder); }
     .page-breadcrumb .bc-current { color: var(--text); font-weight: 500; }
+
+    /* ===== main-content 内面包屑（与 account-wallet 起始处的 <div class="breadcrumb"> 结构 + 样式逐字符一致 → page-title 顶部对齐）===== */
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+    .breadcrumb > span { color: var(--text-placeholder); }
     .page-title { font-size: 24px; font-weight: 700; margin-bottom: 24px; }
     @media (max-width: 1440px) {
       .sidebar { left: 0; }
@@ -946,6 +959,7 @@
 
   <!-- 主内容 -->
   <main class="main-content">
+    <div class="breadcrumb">控制台 <span>/</span> 项目管理</div>
     <h1 class="page-title">项目管理</h1>
 
     <!-- 统计卡片 -->
