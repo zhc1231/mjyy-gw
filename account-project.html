@@ -2544,8 +2544,8 @@
     for(var k=0;k<SUBACCOUNTS.length;k++){
       var s = SUBACCOUNTS[k];
       var checked = assignWorkingIds.indexOf(s.id)>=0;
-      // 统一 4 列 grid：复选框（固定 28px）/ 姓名+角色（1fr 自适应）/ 手机号（130px 固定文本左对齐）/ 状态 tag（64px 固定）
-      pool += '<div style="'
+      // 使用原生 label 包裹整行（避免 onclick 字符串拼 escape），4 列 grid 布局
+      pool += '<label class="sub-assign-row" style="'
             + 'display:grid;'
             + 'grid-template-columns:28px 1fr 130px 64px;'
             + 'align-items:center;'
@@ -2553,30 +2553,26 @@
             + 'padding:10px 14px;'
             + 'border-bottom:1px solid var(--gray-100);'
             + 'cursor:pointer;'
-            + '" '
-            + 'onclick="'
-            +   'var c = this.querySelector(\'input[type=\\\\\'checkbox\\\\\']\');'
-            +   'if(c && event.target !== c){ try{ c.checked = !c.checked; }catch(_){} }'
-            +   'toggleAssignSub(\''+s.id+'\');'
-            + '">'
-            // 列 1：复选框（固定 28px 列），整个 label 内水平居中
-            + '<label style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:20px;margin:0;padding:0;">'
-            +   '<input type="checkbox" '+(checked?'checked':'')+' onclick="event.preventDefault(); event.stopPropagation(); this.checked='+(checked?'false':'true')+'; toggleAssignSub(\\''+s.id+'\\');" style="width:16px;height:16px;">'
-            + '</label>'
-            // 列 2：姓名（粗体 13px）+ 角色 tag（11px 圆角灰）—— 两行；左对齐
+            + 'margin:0;'
+            + 'font-weight:inherit;">'
+            // 列 1：复选框（固定 28px 列）
+            + '<div style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:20px;">'
+            +   '<input type="checkbox" '+(checked?'checked':'')+' onchange="toggleAssignSub(this.dataset.id)" data-id="'+s.id+'" style="width:16px;height:16px;" onclick="event.stopPropagation();">'
+            + '</div>'
+            // 列 2：姓名（粗体 13px）+ 角色 tag（11px 圆角灰）
             + '<div style="min-width:0;display:flex;flex-direction:column;gap:2px;align-items:flex-start;justify-content:center;">'
             +   '<div style="font-size:13px;font-weight:600;color:#1D2129;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+s.name+'</div>'
             +   '<span class="tag tag-default" style="font-size:11px;align-self:flex-start;">'+s.role+'</span>'
             + '</div>'
-            // 列 3：手机号（130px 固定列 → 所有行从同一 X 坐标开始，解决用户说的『小徐这行向右偏移一整格』）
+            // 列 3：手机号（130px 固定列 → 所有行从同一 X 坐标开始）
             + '<div style="font-size:12px;color:var(--text-muted);letter-spacing:0.2px;text-align:left;">'
             +   (s.phone || '—')
             + '</div>'
-            // 列 4：是否已分配（64px 固定列 → 与手机号分离，不影响左列位置）
+            // 列 4：状态（64px 固定列 → 不影响左列位置）
             + '<div style="display:inline-flex;align-items:center;justify-content:flex-end;">'
-            +   (checked ? '<span class="tag tag-success" style="font-size:11px;">已分配</span>' : '')
+            +   (checked ? '<span class="tag tag-success" style="font-size:11px;pointer-events:none;">已分配</span>' : '')
             + '</div>'
-            + '</div>';
+            + '</label>';
     }
     poolBox.innerHTML = pool;
   }
