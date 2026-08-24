@@ -411,6 +411,9 @@
     .btn-primary { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; background:var(--brand-primary); color:#fff; border:none; border-radius:8px; font-size:14px; font-weight:500; cursor:pointer; transition:all .15s; text-decoration:none; }
     .btn-primary:hover { background:var(--brand-primary-dark); }
     .btn-primary svg { width:14px; height:14px; }
+    /* 参考 account-user.html「添加成员」弹窗的取消按钮：白底 + 灰色描边 + 字号 13 */
+    .btn-default { display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:8px 16px; background:#fff; color:var(--text); border:1px solid var(--gray-300); border-radius:6px; font-size:13px; font-weight:500; cursor:pointer; transition:all .15s; text-decoration:none; }
+    .btn-default:hover { border-color:var(--brand-primary); color:var(--brand-primary); }
     .btn-secondary { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; background:#fff; color:var(--text); border:1px solid var(--gray-300); border-radius:8px; font-size:14px; cursor:pointer; transition:all .15s; text-decoration:none; }
     .btn-secondary:hover { border-color:var(--brand-primary); color:var(--brand-primary); }
     .btn-danger { color:#F53F3F; font-size:13px; cursor:pointer; background:none; border:none; }
@@ -790,7 +793,45 @@
     #_pageDebugToast ._dbt_b{ opacity: .9; }
     .form-input:focus, .form-select:focus, .form-textarea:focus { outline:none; border-color:var(--brand-primary); box-shadow:0 0 0 3px rgba(22,119,255,0.1); }
     .form-input:disabled { background:var(--gray-50); color:var(--text-secondary); }
-    .form-hint { font-size:12px; color:var(--text-placeholder); margin-top:4px; }
+    .form-hint { font-size:12px; color:var(--text-placeholder); margin-top:4px; line-height: 1.5; }
+    /* ===== 项目新建/编辑弹窗：参考「添加成员」弹窗的紧凑左对齐样式 ===== */
+    .project-create-modal { width: 520px; max-width: 92vw; }
+    .project-create-modal .modal-body { padding: 20px 24px; }
+    .project-create-modal .modal-footer { padding: 12px 24px; justify-content: flex-end; }
+    /* 强制表单元素左对齐（覆盖原居中样式，与 account-user.html 中 member-modal 保持一致）*/
+    .project-create-modal .form-label { text-align: left !important; display: block; }
+    .project-create-modal .form-group { text-align: left !important; margin-bottom: 14px; }
+    .project-create-modal .form-hint { text-align: left; }
+    /* 双列布局：产品归属+项目编号 / 负责人+联系电话 */
+    .form-row-2col {
+      display: flex;
+      gap: 16px;
+      text-align: left;
+    }
+    .form-row-2col .form-group {
+      flex: 1;
+      margin-bottom: 14px;
+    }
+    /* 信息提示块：参考 account-user.html 的 .form-tip，带 icon + 浅灰背景 */
+    .form-tip {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-placeholder);
+      line-height: 1.5;
+      margin-top: 6px;
+      padding: 10px 12px;
+      background: #F7F8FA;
+      border-radius: 6px;
+      text-align: left;
+    }
+    .form-tip svg { flex-shrink: 0; margin-top: 1px; }
+    @media (max-width: 640px) {
+      .project-create-modal { width: 94vw; }
+      .form-row-2col { flex-direction: column; gap: 12px; }
+      .form-row-2col .form-group { margin-bottom: 14px; }
+    }
     .form-amount { font-size:24px; font-weight:700; color:var(--brand-primary); }
     .form-amount .currency { font-size:14px; font-weight:500; margin-right:4px; }
     .quick-amounts { display:flex; gap:8px; margin-top:8px; }
@@ -1172,58 +1213,78 @@
   </main>
 </div>
 
-<!-- ===== 新建项目弹窗 ===== -->
+<!-- ===== 新建项目弹窗（参考 account-user.html 添加成员弹窗的紧凑左对齐样式）===== -->
 <div class="modal-overlay" id="projectModal">
-  <div class="modal">
+  <div class="modal project-create-modal">
     <div class="modal-header" style="text-align:left !important;" data-title-left="1">
       <div class="modal-title" id="projectModalTitle">新建项目</div>
       <button class="modal-close" onclick="closeProjectModal()">×</button>
     </div>
     <div class="modal-body">
-      <div class="form-group">
-        <label class="form-label">产品归属 <span class="req">*</span></label>
-        <select class="form-select" id="f_product" disabled style="background:var(--gray-50);cursor:not-allowed;">
-          <option value="mjyy" selected>民匠有约</option>
-        </select>
-        <div class="form-hint">当前仅支持「民匠有约」产品</div>
+      <!-- 第 1 行：产品归属 + 项目编号（双列）-->
+      <div class="form-row-2col">
+        <div class="form-group">
+          <label class="form-label">产品归属 <span class="req">*</span></label>
+          <select class="form-select" id="f_product" disabled style="background:var(--gray-50);cursor:not-allowed;">
+            <option value="mjyy" selected>民匠有约</option>
+          </select>
+          <div class="form-hint">当前仅支持「民匠有约」产品</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">项目编号 <span class="req" title="系统自动生成，无需手动填写">*</span></label>
+          <input class="form-input" id="f_projCode" type="text" disabled readonly placeholder="自动生成中…"
+                 style="background:var(--gray-50);color:var(--text-regular);cursor:not-allowed;">
+          <div class="form-hint">系统自动生成，保存后生效</div>
+        </div>
       </div>
+
       <div id="projectModalMsg" class="form-global-msg error"></div>
+
+      <!-- 第 2 行：项目名称（独占）-->
       <div class="form-group">
         <label class="form-label">项目名称 <span class="req">*</span></label>
         <input class="form-input" id="f_projName" type="text" placeholder="请输入项目名称" maxlength="50"
                oninput="clearFieldError('f_projName'); checkFieldRequired('f_projName','项目名称不能为空');"
                onblur="checkFieldRequired('f_projName','项目名称不能为空');">
       </div>
-      <div class="form-group">
-        <label class="form-label">项目编号 <span class="req" title="系统自动生成，无需手动填写">*</span></label>
-        <input class="form-input" id="f_projCode" type="text" disabled readonly placeholder="自动生成中…"
-               style="background:var(--gray-50);color:var(--text-regular);cursor:not-allowed;">
-        <div class="form-hint">系统自动生成，格式：<code style="background:var(--gray-50);padding:1px 4px;border-radius:4px;">PRJ-YYYY-NNN</code>，打开本弹窗时即分配，保存后正式生效</div>
+
+      <!-- 第 3 行：负责人 + 联系电话（双列）-->
+      <div class="form-row-2col">
+        <div class="form-group">
+          <label class="form-label">负责人 <span class="req">*</span></label>
+          <input class="form-input" id="f_projOwner" type="text" placeholder="请输入项目负责人姓名"
+                 oninput="clearFieldError('f_projOwner'); checkFieldRequired('f_projOwner','负责人姓名不能为空');"
+                 onblur="checkFieldRequired('f_projOwner','负责人姓名不能为空');">
+        </div>
+        <div class="form-group">
+          <label class="form-label">联系电话 <span class="req">*</span></label>
+          <input class="form-input" id="f_projPhone" type="text" placeholder="请输入负责人手机号"
+                 oninput="clearFieldError('f_projPhone'); checkFieldPhone('f_projPhone');"
+                 onblur="checkFieldPhone('f_projPhone');">
+        </div>
       </div>
-      <div class="form-group">
-        <label class="form-label">负责人 <span class="req">*</span></label>
-        <input class="form-input" id="f_projOwner" type="text" placeholder="请输入项目负责人姓名"
-               oninput="clearFieldError('f_projOwner'); checkFieldRequired('f_projOwner','负责人姓名不能为空');"
-               onblur="checkFieldRequired('f_projOwner','负责人姓名不能为空');">
-      </div>
-      <div class="form-group">
-        <label class="form-label">联系电话 <span class="req">*</span></label>
-        <input class="form-input" id="f_projPhone" type="text" placeholder="请输入负责人手机号"
-               oninput="clearFieldError('f_projPhone'); checkFieldPhone('f_projPhone');"
-               onblur="checkFieldPhone('f_projPhone');">
-      </div>
+
+      <!-- 第 4 行：初始划拨金额（独占）-->
       <div class="form-group">
         <label class="form-label">初始划拨金额</label>
         <input class="form-input" id="f_projAmount" type="text" placeholder="0.00"
                onfocus="if(this.value) this.value = stripAmount(this.value); this.select && this.select();"
                onblur="var v = formatAmountInput(this.value); if(v!==false) this.value = v; clearFieldError('f_projAmount');"
                oninput="this.value = (this.value||'').replace(/[^\d.]/g,'');">
-        <div class="form-hint">企业资金账户可用 ¥<span id="f_enterpriseAvail">128,580.00</span>；创建项目时从企业账户预拨（可选，填0即跳过初始划拨）</div>
+        <!-- 提示改为与「添加成员」info 提示一致的 .form-tip 风格 -->
+        <div class="form-tip">
+          <svg viewBox="0 0 24 24" fill="none" width="14" height="14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <span>企业资金账户可用 ¥<span id="f_enterpriseAvail">128,580.00</span>；创建项目时从企业账户预拨（可选，填 0 即跳过初始划拨）</span>
+        </div>
       </div>
+
+      <!-- 第 5 行：项目描述（选填，独占）-->
       <div class="form-group">
         <label class="form-label">项目描述</label>
         <textarea class="form-textarea" id="f_projDesc" rows="3" placeholder="请输入项目描述（选填）"></textarea>
       </div>
+
+      <!-- 第 6 行：初始子账号分配（选填，独占）-->
       <div class="form-group">
         <label class="form-label">初始子账号分配（选填）</label>
         <div id="f_projSubs" class="chips"></div>
@@ -1237,11 +1298,8 @@
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn-secondary" onclick="closeProjectModal()">取消</button>
-      <button class="btn-primary" onclick="saveProject()">
-        <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2"/></svg>
-        保存
-      </button>
+      <button class="btn-default" onclick="closeProjectModal()">取消</button>
+      <button class="btn-primary" onclick="saveProject()">保存创建</button>
     </div>
   </div>
 </div>
