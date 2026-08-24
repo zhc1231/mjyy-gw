@@ -290,8 +290,6 @@
     .tag-error   { background:#FFF1F0; color:#F53F3F; }
     .tag-default { background:var(--gray-100); color:var(--text-regular); }
     .tag-product-mjyy { background:#E6F4FF; color:#1677FF; }   /* 民匠有约 */
-    .tag-product-axy  { background:#FFF1F8; color:#EB2F96; }   /* 安心云 */
-    .tag-product-dls  { background:#FFF7E6; color:#FA8C16; }   /* 代理商 */
 
     /* chip (子账号标签，可移除) */
     .chip { display:inline-flex; align-items:center; gap:6px; padding:2px 8px 2px 10px; border-radius:999px; background:var(--gray-50); border:1px solid var(--gray-200); font-size:12px; color:var(--text-regular); line-height:20px; }
@@ -681,19 +679,13 @@
       </div>
       <div class="card-body">
         <div class="search-bar">
-          <input class="search-input" type="text" id="searchInput" placeholder="搜索项目名称/编号/负责人/联系电话" oninput="filterProjects()">
+          <input class="search-input" type="text" id="searchInput" placeholder="搜索项目名称/编号/负责人/联系电话/子账号姓名" oninput="filterProjects()">
           <select class="search-select" id="statusFilter" onchange="filterProjects()">
             <option value="">全部状态</option>
             <option value="active">进行中</option>
             <option value="paused">已暂停</option>
             <option value="inactive">已停用</option>
             <option value="done">已完成</option>
-          </select>
-          <select class="search-select" id="productFilter" onchange="filterProjects()">
-            <option value="">全部产品</option>
-            <option value="mjyy">民匠有约</option>
-            <option value="axy">安心云</option>
-            <option value="dls">代理商</option>
           </select>
           <button class="btn-secondary" onclick="resetSearch()">清空</button>
         </div>
@@ -779,12 +771,10 @@
     <div class="modal-body">
       <div class="form-group">
         <label class="form-label">产品归属 <span class="req">*</span></label>
-        <select class="form-select" id="f_product">
-          <option value="">请选择产品</option>
-          <option value="mjyy">民匠有约</option>
-          <option value="axy">安心云</option>
-          <option value="dls">代理商</option>
+        <select class="form-select" id="f_product" disabled style="background:var(--gray-50);cursor:not-allowed;">
+          <option value="mjyy" selected>民匠有约</option>
         </select>
+        <div class="form-hint">当前仅支持「民匠有约」产品</div>
       </div>
       <div class="form-group">
         <label class="form-label">项目名称 <span class="req">*</span></label>
@@ -925,6 +915,20 @@
   </div>
 </div>
 
+<!-- ===== 项目详情弹窗 ===== -->
+<div class="modal-overlay" id="projectDetailModal">
+  <div class="modal" style="width:720px;">
+    <div class="modal-header">
+      <div class="modal-title" id="projectDetailTitle">项目详情</div>
+      <button class="modal-close" onclick="closeProjectDetail()">×</button>
+    </div>
+    <div class="modal-body" id="projectDetailBody" style="max-height:65vh;overflow-y:auto;"></div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeProjectDetail()">关闭</button>
+    </div>
+  </div>
+</div>
+
 <script>
 (function(){
   // ============ 通用兼容：NodeList.forEach ============
@@ -932,12 +936,11 @@
     NodeList.prototype.forEach = Array.prototype.forEach;
   }
 
-  // ============ 产品字典 ============
+  // ============ 产品字典（当前仅民匠有约） ============
   var PRODUCTS = {
-    mjyy: { label: '民匠有约', cls: 'tag-product-mjyy' },
-    axy:  { label: '安心云',    cls: 'tag-product-axy' },
-    dls:  { label: '代理商',    cls: 'tag-product-dls' }
+    mjyy: { label: '民匠有约', cls: 'tag-product-mjyy' }
   };
+  var PRODUCT_DEFAULT = 'mjyy';
 
   // ============ Mock 企业可用子账号池（可分配给项目） ============
   var SUBACCOUNTS = [
@@ -949,29 +952,29 @@
     { id:'U007', name:'小林',   phone:'13800000014', role:'质检' }
   ];
 
-  // ============ Mock 项目（新增 product / subs 字段） ============
+  // ============ Mock 项目（当前产品仅：民匠有约 mjyy） ============
   var projects = [
     { id:'PRJ-2026-001', product:'mjyy', name:'杭州地铁保洁项目', owner:'小赵', phone:'17857069096',
       balance:28500, totalIn:50000, totalOut:21500, status:'active', createdAt:'2025-08-12 09:19:32',
       desc:'地铁1号线保洁服务', subs:['U002','U004'] },
-    { id:'PRJ-2026-002', product:'axy',  name:'阿里巴巴园区保洁', owner:'小李', phone:'13912345678',
+    { id:'PRJ-2026-002', product:'mjyy', name:'阿里巴巴园区保洁', owner:'小李', phone:'13912345678',
       balance:18700, totalIn:30000, totalOut:11300, status:'active', createdAt:'2025-09-01 14:32:18',
       desc:'园区日常保洁',     subs:['U003','U006','U007'] },
-    { id:'PRJ-2026-003', product:'dls',  name:'万达广场安保项目', owner:'小王', phone:'13700123456',
+    { id:'PRJ-2026-003', product:'mjyy', name:'万达广场安保项目', owner:'小王', phone:'13700123456',
       balance:0,     totalIn:15000, totalOut:15000, status:'inactive', createdAt:'2025-10-15 10:08:45',
       desc:'安保服务外包',     subs:[] }
   ];
 
   var records = [
     { no:'TR20251001001', direction:'in', from:'企业资金账户', to:'杭州地铁保洁项目', amount:20000, remark:'首笔项目资金', operator:'小赵', status:'成功', time:'2025-10-01 10:23:45', product:'mjyy', projectId:'PRJ-2026-001'},
-    { no:'TR20251008002', direction:'in', from:'企业资金账户', to:'阿里巴巴园区保洁', amount:10000, remark:'月度拨款',     operator:'小赵', status:'成功', time:'2025-10-08 15:12:30', product:'axy',  projectId:'PRJ-2026-002'},
+    { no:'TR20251008002', direction:'in', from:'企业资金账户', to:'阿里巴巴园区保洁', amount:10000, remark:'月度拨款',     operator:'小赵', status:'成功', time:'2025-10-08 15:12:30', product:'mjyy', projectId:'PRJ-2026-002'},
     { no:'TR20251012003', direction:'out',from:'杭州地铁保洁项目', to:'企业资金账户', amount:5000,  remark:'结余退回',     operator:'小李', status:'成功', time:'2025-10-12 09:45:18', product:'mjyy', projectId:'PRJ-2026-001'},
-    { no:'TR20251015004', direction:'in', from:'企业资金账户', to:'万达广场安保项目', amount:15000, remark:'项目启动资金', operator:'小赵', status:'成功', time:'2025-10-15 10:08:45', product:'dls',  projectId:'PRJ-2026-003'},
-    { no:'TR20251020005', direction:'out',from:'阿里巴巴园区保洁', to:'企业资金账户', amount:3000,  remark:'经费结余',     operator:'小王', status:'成功', time:'2025-10-20 16:30:22', product:'axy',  projectId:'PRJ-2026-002'},
+    { no:'TR20251015004', direction:'in', from:'企业资金账户', to:'万达广场安保项目', amount:15000, remark:'项目启动资金', operator:'小赵', status:'成功', time:'2025-10-15 10:08:45', product:'mjyy', projectId:'PRJ-2026-003'},
+    { no:'TR20251020005', direction:'out',from:'阿里巴巴园区保洁', to:'企业资金账户', amount:3000,  remark:'经费结余',     operator:'小王', status:'成功', time:'2025-10-20 16:30:22', product:'mjyy', projectId:'PRJ-2026-002'},
     { no:'TR20251025006', direction:'in', from:'企业资金账户', to:'杭州地铁保洁项目', amount:10000, remark:'追加拨款',     operator:'小赵', status:'成功', time:'2025-10-25 11:20:10', product:'mjyy', projectId:'PRJ-2026-001'},
-    { no:'TR20251101007', direction:'in', from:'企业资金账户', to:'阿里巴巴园区保洁', amount:12000, remark:'月度预算',     operator:'小赵', status:'成功', time:'2025-11-01 09:05:33', product:'axy',  projectId:'PRJ-2026-002'},
-    { no:'TR20251115008', direction:'out',from:'万达广场安保项目', to:'企业资金账户', amount:1500,  remark:'结余回收',     operator:'小李', status:'成功', time:'2025-11-15 14:58:47', product:'dls',  projectId:'PRJ-2026-003'},
-    { no:'TR20251115009', direction:'out',from:'万达广场安保项目', to:'企业资金账户', amount:13500, remark:'项目停用结余清零', operator:'小赵', status:'成功', time:'2025-11-15 15:02:01', product:'dls',  projectId:'PRJ-2026-003'}
+    { no:'TR20251101007', direction:'in', from:'企业资金账户', to:'阿里巴巴园区保洁', amount:12000, remark:'月度预算',     operator:'小赵', status:'成功', time:'2025-11-01 09:05:33', product:'mjyy', projectId:'PRJ-2026-002'},
+    { no:'TR20251115008', direction:'out',from:'万达广场安保项目', to:'企业资金账户', amount:1500,  remark:'结余回收',     operator:'小李', status:'成功', time:'2025-11-15 14:58:47', product:'mjyy', projectId:'PRJ-2026-003'},
+    { no:'TR20251115009', direction:'out',from:'万达广场安保项目', to:'企业资金账户', amount:13500, remark:'项目停用结余清零', operator:'小赵', status:'成功', time:'2025-11-15 15:02:01', product:'mjyy', projectId:'PRJ-2026-003'}
   ];
 
   var ENTERPRISE_BALANCE = 128580.00;
@@ -1000,20 +1003,21 @@
     if(s==='done')     return '<span class="tag tag-info">已完成</span>';
     return '<span class="tag tag-default">未知</span>';
   }
-  function chipsOf(project){
+  function chipsOf(project, opts){
+    opts = opts || {};
     var subs = project.subs || [];
     var html = '<div class="chips">';
-    if(subs.length===0){ html += '<span style="color:var(--text-muted);font-size:12px;">—</span>'; }
+    if(subs.length===0){ html += '<span style="color:var(--text-muted);font-size:12px;">未分配</span>'; }
     else {
-      for(var i=0;i<Math.min(subs.length,3);i++){
+      var max = opts.maxShow || 5;
+      for(var i=0;i<Math.min(subs.length,max);i++){
         var u = findSub(subs[i]); if(!u) continue;
-        html += '<span class="chip" title="'+(u.role||'')+' · '+u.phone+'">'
+        html += '<span class="chip" title="'+(u.role||'成员')+' · '+u.phone+'">'
               + '<span class="chip-avatar">'+(u.name||'').charAt(0)+'</span>'
               + '<span class="chip-name">'+u.name+'</span></span>';
       }
-      if(subs.length>3){ html += '<span class="chip" style="background:var(--gray-100);border-color:var(--gray-200);">+'+(subs.length-3)+'</span>'; }
+      if(subs.length>max){ html += '<span class="chip" style="background:var(--gray-100);border-color:var(--gray-200);">+'+(subs.length-max)+'</span>'; }
     }
-    html += '<button class="chip-add" onclick="openAssignSubModal(\''+project.id+'\')" title="分配/去除子账号">+ 分配</button>';
     html += '</div>';
     return html;
   }
@@ -1024,13 +1028,11 @@
     if(!tbody) return;
     var kw = (($('searchInput').value || '')+'').toLowerCase();
     var st = $('statusFilter').value || '';
-    var pd = $('productFilter').value || '';
 
     var list = [];
     for(var i=0;i<projects.length;i++){
       var p = projects[i];
       if(st && p.status!==st) continue;
-      if(pd && p.product!==pd) continue;
       if(kw){
         var hay = (p.name+' '+p.id+' '+p.owner+' '+p.phone+' '+p.desc).toLowerCase();
         var subMatch = false;
@@ -1054,36 +1056,38 @@
     for(var i=0;i<list.length;i++){
       var p = list[i];
       var canStopOrDel = Number(p.balance||0) === 0;
-      // 操作列
+      // 操作列（data-action + data-id 双属性，兼容 onclick 字符串）
       var actions = '';
-      actions += '<button class="btn-link" onclick="openTransferModal(\''+p.id+'\')">资金划拨</button>';
-      actions += '<button class="btn-link" onclick="viewProjectRecords(\''+p.id+'\')">划拨流水</button>';
-      actions += '<button class="btn-link" onclick="openAssignSubModal(\''+p.id+'\')">子账号</button>';
+      actions += '<button class="btn-link" data-action="view-project"   data-id="'+p.id+'" type="button">查看详情</button>';
+      actions += '<button class="btn-link" data-action="edit-project"   data-id="'+p.id+'" type="button">编辑</button>';
+      actions += '<button class="btn-link" data-action="assign-sub"     data-id="'+p.id+'" type="button">子账号分配</button>';
+      actions += '<button class="btn-link" data-action="transfer"       data-id="'+p.id+'" type="button">资金划拨</button>';
+      actions += '<button class="btn-link" data-action="view-records"  data-id="'+p.id+'" type="button">划拨流水</button>';
       if(p.status==='inactive'){
         actions += canStopOrDel
-          ? '<button class="btn-link" onclick="enableProject(\''+p.id+'\')" style="color:#00B42A;">启用</button>'
+          ? '<button class="btn-link" data-action="enable-project" data-id="'+p.id+'" type="button" style="color:#00B42A;">启用</button>'
           : '<button class="btn-link" disabled title="项目余额为 0 才能启用">启用</button>';
       } else {
         actions += canStopOrDel
-          ? '<button class="btn-link warning" onclick="disableProject(\''+p.id+'\')">停用</button>'
+          ? '<button class="btn-link warning" data-action="disable-project" data-id="'+p.id+'" type="button">停用</button>'
           : '<button class="btn-link" disabled title="项目余额为 0 才能停用">停用</button>';
       }
       actions += canStopOrDel
-        ? '<button class="btn-link danger" onclick="deleteProject(\''+p.id+'\')">删除</button>'
+        ? '<button class="btn-link danger" data-action="delete-project" data-id="'+p.id+'" type="button">删除</button>'
         : '<button class="btn-link" disabled title="项目余额为 0 才能删除">删除</button>';
 
-      rows += '<tr>'+
+      rows += '<tr data-project-id="'+p.id+'">'+
         '<td>'+productTag(p.product)+'</td>'+
         '<td><strong>'+p.id+'</strong></td>'+
         '<td>'+p.name+'</td>'+
         '<td>'+p.owner+'</td>'+
         '<td>'+p.phone+'</td>'+
-        '<td style="min-width:200px;">'+chipsOf(p)+'</td>'+
+        '<td style="min-width:240px;">'+chipsOf(p)+'</td>'+
         '<td><span style="color:var(--brand-primary);font-weight:600;">'+fmtAmount(p.balance)+'</span></td>'+
         '<td style="font-size:12px;color:var(--text-regular);">入 '+fmtAmount(p.totalIn)+'<br>出 '+fmtAmount(p.totalOut)+'</td>'+
         '<td>'+statusTag(p.status)+'</td>'+
         '<td style="white-space:nowrap;">'+p.createdAt+'</td>'+
-        '<td style="white-space:nowrap;">'+actions+'</td>'+
+        '<td style="white-space:normal;min-width:520px;">'+actions+'</td>'+
       '</tr>';
     }
     tbody.innerHTML = rows;
@@ -1094,7 +1098,6 @@
   window.resetSearch = function(){
     try{ $('searchInput').value=''; }catch(e){}
     try{ $('statusFilter').value=''; }catch(e){}
-    try{ $('productFilter').value=''; }catch(e){}
     renderProjects();
   };
 
@@ -1190,6 +1193,7 @@
       var act = el.getAttribute('data-action');
       if(!act) return;
       if(evt.cancelable) try{ evt.preventDefault(); evt.stopPropagation(); }catch(e){}
+      var pid = el.getAttribute('data-id') || null;
       switch(act){
         case 'new-project':
           if(window.openProjectModal) window.openProjectModal();
@@ -1197,13 +1201,45 @@
         case 'export-records':
           if(window.exportRecords) window.exportRecords();
           break;
+        case 'view-project':
+          if(pid && window.viewProjectDetail) window.viewProjectDetail(pid);
+          break;
+        case 'edit-project':
+          if(pid && window.editProject) window.editProject(pid);
+          break;
+        case 'assign-sub':
+          if(pid && window.openAssignSubModal) window.openAssignSubModal(pid);
+          break;
+        case 'transfer':
+          if(pid && window.openTransferModal) window.openTransferModal(pid);
+          break;
+        case 'view-records':
+          if(pid && window.viewProjectRecords) window.viewProjectRecords(pid);
+          break;
+        case 'enable-project':
+          if(pid && window.enableProject) window.enableProject(pid);
+          break;
+        case 'disable-project':
+          if(pid && window.disableProject) window.disableProject(pid);
+          break;
+        case 'delete-project':
+          if(pid && window.deleteProject) window.deleteProject(pid);
+          break;
       }
     }catch(e){ try{ console.error('actionErr', act||'', e); }catch(x){} alert('操作失败：'+(e.message||e)); }
   }
-  window._tryAction = function(name){
+  window._tryAction = function(name, id){
     try{
       if(name==='new-project' && window.openProjectModal) window.openProjectModal();
       else if(name==='export-records' && window.exportRecords) window.exportRecords();
+      else if(name==='view-project' && id && window.viewProjectDetail) window.viewProjectDetail(id);
+      else if(name==='edit-project' && id && window.editProject) window.editProject(id);
+      else if(name==='assign-sub' && id && window.openAssignSubModal) window.openAssignSubModal(id);
+      else if(name==='transfer' && id && window.openTransferModal) window.openTransferModal(id);
+      else if(name==='view-records' && id && window.viewProjectRecords) window.viewProjectRecords(id);
+      else if(name==='enable-project' && id && window.enableProject) window.enableProject(id);
+      else if(name==='disable-project' && id && window.disableProject) window.disableProject(id);
+      else if(name==='delete-project' && id && window.deleteProject) window.deleteProject(id);
     }catch(e){ alert('操作失败：'+(e.message||e)); }
   };
   function bindDelegates(){
@@ -1214,39 +1250,76 @@
   try{ document.addEventListener('DOMContentLoaded', bindDelegates); }catch(e){}
   try{ setTimeout(bindDelegates, 150); setTimeout(bindDelegates, 500); setTimeout(bindDelegates, 1200); }catch(e){}
 
-  // ============ 新建项目 ============
+  // ============ 新建 / 编辑项目 ============
   var projModalSubs = []; // 新建弹窗临时分配的子账号 ID
+  var editingProjectId = null; // 非 null 表示当前为编辑模式
 
   window.openProjectModal = function(){
     try{
       var m = $('projectModal');
       if(!m) return;
+      editingProjectId = null;
       $('projectModalTitle').textContent = '新建项目';
-      var ids = ['f_product','f_projName','f_projCode','f_projOwner','f_projPhone','f_projAmount','f_projDesc'];
+      var ids = ['f_projName','f_projCode','f_projOwner','f_projPhone','f_projAmount','f_projDesc'];
       for(var i=0;i<ids.length;i++){ try{ $(ids[i]).value=''; }catch(e){} }
+      try{ $('f_product').value = 'mjyy'; }catch(e){}
       try{ $('f_enterpriseAvail').textContent = Number(ENTERPRISE_BALANCE).toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2}); }catch(e){}
       projModalSubs = [];
       renderProjModalSubs();
-      // 多策展示（兼容 CSS 缺失/被覆盖）
-      try{ m.classList.remove('active'); }catch(e){}
-      m.style.cssText = 'display:flex !important; position:fixed; top:0; left:0; right:0; bottom:0; z-index:99999; background:rgba(0,0,0,0.45); align-items:center; justify-content:center;';
-      m.classList.add('active');
-      // 兜底：100ms 后再次强制显示（防止后续样式覆盖）
-      setTimeout(function(){ try{
-        if(m && (m.style.display||'').indexOf('flex')<0) m.style.setProperty('display','flex','important');
-        if(m && m.classList) m.classList.add('active');
-        if(m) m.scrollIntoView && m.scrollIntoView({block:'center'});
-      }catch(e){} }, 100);
-      setTimeout(function(){ try{ if(m) m.style.setProperty('display','flex','important'); }catch(e){} }, 250);
+      // 编辑态隐藏区：新建时显示
+      try{ var ag = $('f_projAmount').closest && $('f_projAmount').closest('.form-group'); if(ag) ag.style.display=''; }catch(e){}
+      try{ var sg = $('f_projSubs').closest && $('f_projSubs').closest('.form-group'); if(sg) sg.style.display=''; }catch(e){}
+      try{ var saveBtn = m.querySelector('.modal-footer .btn-primary'); if(saveBtn){ saveBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" width="14" height="14"><polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2"/></svg> 保存'; } }catch(e){}
+      _showModal(m);
     }catch(err){ try{ console.error(err); }catch(e){} alert('新建项目打开失败：'+(err.message||err)); }
+  };
+
+  function _showModal(m){
+    if(!m) return;
+    try{ m.classList.remove('active'); }catch(e){}
+    m.style.cssText = 'display:flex !important; position:fixed; top:0; left:0; right:0; bottom:0; z-index:99999; background:rgba(0,0,0,0.45); align-items:center; justify-content:center;';
+    m.classList.add('active');
+    setTimeout(function(){ try{
+      if(m && (m.style.display||'').indexOf('flex')<0) m.style.setProperty('display','flex','important');
+      if(m && m.classList) m.classList.add('active');
+      if(m) m.scrollIntoView && m.scrollIntoView({block:'center'});
+    }catch(e){} }, 100);
+    setTimeout(function(){ try{ if(m) m.style.setProperty('display','flex','important'); }catch(e){} }, 250);
+  }
+  window._showModal = _showModal;
+
+  function _hideModal(m){
+    if(!m) return;
+    try{ m.classList.remove('active'); }catch(e){}
+    m.style.cssText = '';
+    m.style.display = 'none';
+  }
+
+  window.editProject = function(id){
+    var p = findProject(id); if(!p) return;
+    editingProjectId = id;
+    var m = $('projectModal'); if(!m) return;
+    $('projectModalTitle').textContent = '编辑项目 · ' + p.name;
+    try{ $('f_product').value = p.product || 'mjyy'; }catch(e){}
+    try{ $('f_projName').value  = p.name  || ''; }catch(e){}
+    try{ $('f_projCode').value  = p.id    || ''; }catch(e){}
+    try{ $('f_projOwner').value = p.owner || ''; }catch(e){}
+    try{ $('f_projPhone').value = p.phone || ''; }catch(e){}
+    try{ $('f_projDesc').value  = p.desc  || ''; }catch(e){}
+    projModalSubs = (p.subs || []).slice();
+    renderProjModalSubs();
+    // 编辑模式：隐藏初始划拨金额、隐藏子账号分配（子账号分配走独立入口）
+    try{ var ag = $('f_projAmount').closest && $('f_projAmount').closest('.form-group'); if(ag) ag.style.display='none'; }catch(e){}
+    try{ var sg = $('f_projSubs').closest && $('f_projSubs').closest('.form-group'); if(sg) sg.style.display='none'; }catch(e){}
+    try{ var saveBtn = m.querySelector('.modal-footer .btn-primary'); if(saveBtn){ saveBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" width="14" height="14"><polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2"/></svg> 保存修改'; } }catch(e){}
+    _showModal(m);
   };
 
   window.closeProjectModal = function(){
     try{
       var m = $('projectModal'); if(!m) return;
-      m.classList.remove('active');
-      m.style.cssText = '';
-      m.style.display = 'none';
+      editingProjectId = null;
+      _hideModal(m);
     }catch(e){}
   };
 
@@ -1293,53 +1366,74 @@
 
   window.saveProject = function(){
     try{
+      var isEdit = !!editingProjectId;
       var product = $('f_product').value;
       var name    = ($('f_projName').value||'').trim();
       var code    = ($('f_projCode').value||'').trim();
       var owner   = ($('f_projOwner').value||'').trim();
       var phone   = ($('f_projPhone').value||'').trim();
-      var amount  = parseFloat($('f_projAmount').value || '0');
+      var amount  = isEdit ? 0 : parseFloat($('f_projAmount').value || '0');
       var desc    = ($('f_projDesc').value||'').trim();
 
       if(!product){ alert('请选择产品归属'); return; }
       if(!name){ alert('请输入项目名称'); return; }
       if(!owner){ alert('请输入负责人姓名'); return; }
       if(!phone){ alert('请输入联系电话'); return; }
-      if(amount<0){ alert('初始划拨金额不能为负数'); return; }
-      if(amount>ENTERPRISE_BALANCE){ alert('企业账户可用余额不足：'+fmtAmount(ENTERPRISE_BALANCE)); return; }
+      if(!isEdit){
+        if(amount<0){ alert('初始划拨金额不能为负数'); return; }
+        if(amount>ENTERPRISE_BALANCE){ alert('企业账户可用余额不足：'+fmtAmount(ENTERPRISE_BALANCE)); return; }
+      }
 
-      var newCode = code || ('PRJ-' + new Date().getFullYear() + '-' + String(projects.length+1).padStart(3,'0'));
-      // 编号重复校验
-      for(var i=0;i<projects.length;i++){ if(projects[i].id===newCode){ alert('项目编号已存在：'+newCode); return; } }
+      if(isEdit){
+        // 编辑：直接更新现有项目
+        var ep = findProject(editingProjectId); if(!ep){ alert('待编辑项目不存在'); return; }
+        // 若修改了编号：校验唯一性（排除自身）
+        if(code && code!==ep.id){
+          for(var i=0;i<projects.length;i++){ if(projects[i].id===code){ alert('项目编号已存在：'+code); return; } }
+          ep.id = code;
+        }
+        ep.product = product;
+        ep.name    = name;
+        ep.owner   = owner;
+        ep.phone   = phone;
+        ep.desc    = desc;
+        // subs / balance 不在这里改
+      } else {
+        var newCode = code || ('PRJ-' + new Date().getFullYear() + '-' + String(projects.length+1).padStart(3,'0'));
+        // 编号重复校验
+        for(var j=0;j<projects.length;j++){ if(projects[j].id===newCode){ alert('项目编号已存在：'+newCode); return; } }
 
-      var now = new Date();
-      function pad(n){return n<10?'0'+n:''+n;}
-      var ts = now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+' '+
-               pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
+        var now = new Date();
+        function pad(n){return n<10?'0'+n:''+n;}
+        var ts = now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+' '+
+                 pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
 
-      var p = { id:newCode, product:product, name:name, owner:owner, phone:phone,
-                balance:amount||0, totalIn:amount||0, totalOut:0, status:'active',
-                createdAt:ts, desc:desc, subs:projModalSubs.slice() };
-      projects.push(p);
+        var np = { id:newCode, product:product, name:name, owner:owner, phone:phone,
+                  balance:amount||0, totalIn:amount||0, totalOut:0, status:'active',
+                  createdAt:ts, desc:desc, subs:projModalSubs.slice() };
+        projects.push(np);
 
-      if(amount>0){
-        records.unshift({
-          no:'TR'+now.getFullYear()+pad(now.getMonth()+1)+pad(now.getDate())+String(1000+projects.length),
-          direction:'in', from:'企业资金账户', to:name+'('+newCode+')', amount:amount,
-          remark:'项目启动资金', operator:'当前用户', status:'成功', time:ts, product:product, projectId:newCode
-        });
-        ENTERPRISE_BALANCE -= amount;
+        if(amount>0){
+          records.unshift({
+            no:'TR'+now.getFullYear()+pad(now.getMonth()+1)+pad(now.getDate())+String(1000+projects.length),
+            direction:'in', from:'企业资金账户', to:name+'('+newCode+')', amount:amount,
+            remark:'项目启动资金', operator:'当前用户', status:'成功', time:ts, product:product, projectId:newCode
+          });
+          ENTERPRISE_BALANCE -= amount;
+        }
       }
     }catch(err){
       alert('保存失败：'+(err.message||err));
       return;
     }
+    var isEdit2 = !!editingProjectId;
+    var lastAmount = isEdit2 ? 0 : parseFloat(($('f_projAmount')&&$('f_projAmount').value) || '0');
     closeProjectModal();
     updateStats();
     renderProjects();
     renderRecords();
     updateEnterpriseAvail();
-    alert('项目创建成功' + (amount>0 ? '，已从企业账户划拨 '+fmtAmount(amount)+' 到项目账户' : ''));
+    alert(isEdit2 ? '项目更新成功' : ('项目创建成功' + (lastAmount>0 ? '，已从企业账户划拨 '+fmtAmount(lastAmount)+' 到项目账户' : '')));
   };
 
   function updateEnterpriseAvail(){
@@ -1374,6 +1468,87 @@
     renderProjects();
   };
 
+  // ============ 项目详情 ============
+  window.viewProjectDetail = function(id){
+    var p = findProject(id); if(!p) return;
+    var pd = (PRODUCTS[p.product]||{label:'未分类',tagCls:''}).label;
+    var stCls = p.status==='active' ? 'tag-success' : 'tag-warning';
+    var stTxt = p.status==='active' ? '运行中' : '已停用';
+    // 该项目流水统计
+    var list = [];
+    for(var i=0;i<records.length;i++){
+      var r = records[i];
+      if((r.to && r.to.indexOf(p.name)>=0) || (r.from && r.from.indexOf(p.name)>=0) || r.projectId===p.id) list.push(r);
+    }
+    var subsHtml = '';
+    if(!p.subs || p.subs.length===0){ subsHtml = '<span style="color:var(--text-muted);font-size:13px;">未分配子账号</span>'; }
+    else {
+      for(var k=0;k<p.subs.length;k++){
+        var u = findSub(p.subs[k]); if(!u) continue;
+        subsHtml += '<span class="chip" style="margin:2px 4px 2px 0;"><span class="chip-avatar">'+(u.name||'').charAt(0)+'</span><span class="chip-name" title="'+(u.role||'')+' · '+u.phone+'">'+u.name+'</span></span>';
+      }
+    }
+    var body = '';
+    body += '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:14px 16px;background:linear-gradient(135deg,#E6F4FF 0%,#F0F7FF 100%);border-radius:10px;margin-bottom:18px;">';
+    body += '<div><div style="font-size:12px;color:var(--text-secondary);margin-bottom:6px;">项目编号 · '+(p.id||'—')+'</div>';
+    body += '<div style="font-size:20px;font-weight:700;color:var(--text);margin-bottom:8px;">'+(p.name||'—')+'</div>';
+    body += '<div style="display:flex;gap:8px;align-items:center;"><span class="tag-product tag-product-mjyy">'+pd+'</span><span class="tag '+stCls+'">'+stTxt+'</span></div></div>';
+    body += '<div style="text-align:right;"><div style="font-size:12px;color:var(--text-secondary);margin-bottom:6px;">项目账户余额</div>';
+    body += '<div style="font-size:26px;font-weight:800;color:var(--brand-primary);">¥'+fmtAmount(p.balance||0)+'</div></div></div>';
+
+    body += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 24px;margin-bottom:18px;">';
+    body += _kv('负责人', (p.owner||'—') + ' · ' + (p.phone||'—'));
+    body += _kv('创建时间', p.createdAt||'—');
+    body += _kv('累计入账', '<span style="color:#00B42A;font-weight:600;">¥'+fmtAmount(p.totalIn||0)+'</span>');
+    body += _kv('累计调出', '<span style="color:#F53F3F;font-weight:600;">¥'+fmtAmount(p.totalOut||0)+'</span>');
+    body += '</div>';
+
+    body += '<div style="margin-bottom:18px;">'+_kv('项目描述', (p.desc&&p.desc.trim()) ? p.desc.replace(/\n/g,'<br>') : '<span style="color:var(--text-muted);">—</span>')+'</div>';
+
+    body += '<div style="margin-bottom:18px;">';
+    body += '<div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px;">分配子账号（'+(p.subs?p.subs.length:0)+' 人）</div>';
+    body += '<div style="padding:10px 12px;border:1px solid var(--gray-200);border-radius:8px;background:#fff;min-height:44px;">'+subsHtml+'</div>';
+    body += '</div>';
+
+    body += '<div>';
+    body += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">';
+    body += '<div style="font-size:13px;font-weight:600;color:var(--text);">最近划拨流水 · 共 '+list.length+' 条</div>';
+    body += '<button class="btn-link" style="padding:0;" onclick="closeProjectDetail();try{window.viewProjectRecords(\''+p.id+'\');}catch(e){}">查看全部流水 →</button>';
+    body += '</div>';
+    if(list.length===0){
+      body += '<div class="empty-state" style="padding:24px 0;"><div class="empty-state-icon">💸</div>暂无划拨记录</div>';
+    } else {
+      body += '<div style="max-height:260px;overflow-y:auto;border:1px solid var(--gray-200);border-radius:8px;"><table class="data-table" style="min-width:0;"><thead><tr>';
+      body += '<th>流水号</th><th>方向</th><th>金额</th><th>对方</th><th>时间</th>';
+      body += '</tr></thead><tbody>';
+      var showN = Math.min(list.length, 20);
+      for(var m=0;m<showN;m++){
+        var rr = list[m];
+        var sg = rr.direction==='in'?'+':'-';
+        var fc = rr.direction==='in'?'flow-in':'flow-out';
+        var peer = rr.direction==='in' ? rr.from : rr.to;
+        body += '<tr><td style="font-size:12px;">'+rr.no+'</td>'
+              + '<td>'+(rr.direction==='in'?'<span class="tag tag-success">入账</span>':'<span class="tag tag-warning">调出</span>')+'</td>'
+              + '<td class="'+fc+'" style="font-weight:600;">'+sg+fmtAmount(rr.amount)+'</td>'
+              + '<td style="font-size:12px;">'+peer+'</td>'
+              + '<td style="white-space:nowrap;font-size:12px;">'+rr.time+'</td></tr>';
+      }
+      body += '</tbody></table></div>';
+      if(list.length>showN){ body += '<div style="text-align:center;padding:8px 0 0;font-size:12px;color:var(--text-secondary);">仅展示最近 20 条，点击「查看全部流水」浏览完整记录</div>'; }
+    }
+    body += '</div>';
+
+    $('projectDetailTitle').textContent = '项目详情 · ' + (p.name||'—');
+    $('projectDetailBody').innerHTML = body;
+    var dm = $('projectDetailModal'); if(dm) _showModal(dm);
+  };
+  function _kv(k,v){
+    return '<div style="padding:8px 0;border-bottom:1px dashed var(--gray-200);"><div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;">'+k+'</div><div style="font-size:14px;color:var(--text);">'+v+'</div></div>';
+  }
+  window.closeProjectDetail = function(){
+    try{ var dm = $('projectDetailModal'); if(dm) _hideModal(dm); }catch(e){}
+  };
+
   // ============ 子账号分配弹窗 ============
   var assignProjectId = null;
   var assignWorkingIds = [];
@@ -1384,18 +1559,10 @@
     assignWorkingIds = (p.subs || []).slice();
     $('assignSubProject').textContent = p.id + ' · ' + p.name;
     renderAssignModal();
-    try{
-      var m = $('assignSubModal');
-      m.classList.add('active');
-      if(window.getComputedStyle(m).display==='none') m.style.display='flex';
-    }catch(e){}
+    try{ var m = $('assignSubModal'); if(m) _showModal(m); }catch(e){}
   };
   window.closeAssignSubModal = function(){
-    try{
-      var m = $('assignSubModal');
-      m.classList.remove('active');
-      m.style.display='';
-    }catch(e){}
+    try{ var m = $('assignSubModal'); if(m) _hideModal(m); }catch(e){}
     assignProjectId = null;
     assignWorkingIds = [];
   };
@@ -1492,17 +1659,13 @@
     try{ $('f_transferCode').value=''; }catch(e){}
 
     try{
-      var m = $('transferModal');
-      m.classList.add('active');
-      if(window.getComputedStyle(m).display==='none') m.style.display='flex';
+      var m = $('transferModal'); if(m) _showModal(m);
     }catch(e){}
   };
 
   window.closeTransferModal = function(){
     try{
-      var m = $('transferModal');
-      m.classList.remove('active');
-      m.style.display='';
+      var m = $('transferModal'); if(m) _hideModal(m);
     }catch(e){}
   };
 
@@ -1647,16 +1810,12 @@
     }
     $('recordDetailBody').innerHTML = body;
     try{
-      var m = $('recordDetailModal');
-      m.classList.add('active');
-      if(window.getComputedStyle(m).display==='none') m.style.display='flex';
+      var m = $('recordDetailModal'); if(m) _showModal(m);
     }catch(e){}
   };
   window.closeRecordDetail = function(){
     try{
-      var m = $('recordDetailModal');
-      m.classList.remove('active');
-      m.style.display='';
+      var m = $('recordDetailModal'); if(m) _hideModal(m);
     }catch(e){}
   };
 
@@ -1762,9 +1921,17 @@
     document.addEventListener('click', function(e){
       var t = e.target;
       if(!t || !t.classList) return;
-      if(t.classList.contains('modal-overlay') && t.classList.contains('active')){
-        t.classList.remove('active');
-        t.style.display='';
+      if(t.classList.contains('modal-overlay')){
+        // 按 id 路由到对应 close 函数（清理状态），兜底用 _hideModal
+        var id = t.getAttribute('id') || '';
+        try{
+          if(id==='projectModal')      { window.closeProjectModal && window.closeProjectModal(); return; }
+          if(id==='projectDetailModal'){ window.closeProjectDetail && window.closeProjectDetail(); return; }
+          if(id==='assignSubModal')    { window.closeAssignSubModal && window.closeAssignSubModal(); return; }
+          if(id==='transferModal')     { window.closeTransferModal  && window.closeTransferModal();  return; }
+          if(id==='recordDetailModal') { window.closeRecordDetail   && window.closeRecordDetail();   return; }
+        }catch(x){}
+        _hideModal(t);
       }
     });
   }catch(e){ /* ignore */ }
