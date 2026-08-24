@@ -463,6 +463,37 @@
         }
       }
     } catch (e) { /* ignore */ }
+
+    // —— 最终兜底：子账号匹配不到任何项目时，默认返回第一个 active 项目 ——
+    // 场景：子账号登录但手机号/姓名未与项目 owner/subs 匹配上（如用户输入的子账号名在 SUBACCOUNTS 池里不存在）
+    // 此时仍需展示"民匠有约·项目名"，否则用户会看到空白的下拉卡片
+    if (out.length === 0) {
+      try {
+        var accountTypeFallback = localStorage.getItem('mjyy_account_type') || 'main';
+        if (accountTypeFallback === 'sub') {
+          // 取第一个 active 状态的项目作为默认展示
+          var fbSrc = null;
+          if (typeof window !== 'undefined' && Array.isArray(window.projects) && window.projects.length) fbSrc = window.projects;
+          if (!fbSrc) try { fbSrc = JSON.parse(localStorage.getItem('mjyy_projects') || '[]'); } catch (e) {}
+          if (fbSrc && fbSrc.length) {
+            var fbProj = null;
+            for (var fi = 0; fi < fbSrc.length; fi++) {
+              if (fbSrc[fi] && fbSrc[fi].status !== 'inactive') { fbProj = fbSrc[fi]; break; }
+            }
+            if (!fbProj) fbProj = fbSrc[0]; // 全部 inactive 也取第一个
+            if (fbProj) {
+              var fbCode = fbProj.product || 'mjyy';
+              out.push({
+                productCode: fbCode,
+                productLabel: productLabels[fbCode] || '民匠有约',
+                projectId: fbProj.id || fbProj.projectId || fbProj.name,
+                projectName: fbProj.name || fbProj.projectName || ''
+              });
+            }
+          }
+        }
+      } catch (e) { /* ignore */ }
+    }
     return out;
   }
 

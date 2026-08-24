@@ -696,8 +696,29 @@
         setTimeout(function() {
           setLoading(false);
           showToast('子账号登录成功');
-          var userData = { 
-            mobile: '', 
+
+          // —— 补手机号 / accountId：从 SUBACCOUNTS 池匹配，否则用默认 17857069096（PRJ-001 owner phone） ——
+          // 这样 js/main.js 的 getCurrentUserAssignedProjects 能通过 phone 匹配到项目
+          var subPhone = '17857069096';   // 默认：PRJ-001 负责人手机号，保证匹配到"杭州地铁保洁项目"
+          var subId    = 'U_SUB_' + Date.now().toString().slice(-6);
+          try {
+            var rawSubs = JSON.parse(localStorage.getItem('mjyy_sub_accounts') || '[]');
+            for (var i = 0; i < rawSubs.length; i++) {
+              var s = rawSubs[i];
+              if (!s) continue;
+              // 用户输入的名字与子账号池里的 name 匹配
+              if (s.name && s.name === subAccount) {
+                if (s.phone) subPhone = s.phone;
+                if (s.id)    subId    = s.id;
+                break;
+              }
+            }
+          } catch (e) { /* ignore */ }
+
+          var userData = {
+            mobile: subPhone,
+            phone: subPhone,
+            accountId: subId,
             name: subAccount,
             subAccountName: subAccount
           };
