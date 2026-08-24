@@ -509,10 +509,23 @@
       box-shadow: -6px 0 10px -6px rgba(0,0,0,0.12);
       border-left: 2px solid var(--gray-200);
       z-index: 2;
+      /* Fix 1：表头「操作」文字 + 每一行 td 的整个内容，水平/垂直都强制居中 */
+      text-align: center !important;
+      vertical-align: middle !important;
+      justify-content: center;
+      align-items: center;
+      align-content: center;
+    }
+    table.data-table-project thead tr th:last-child {
+      /* 表头「操作」居中，且不因为 sticky 而发生文字偏移 */
+      text-align: center !important;
+      background: var(--gray-50);
+      z-index: 4;
+      justify-content: center;
     }
     table.data-table-project tr:hover td:last-child,
     table.data-table-project thead tr:hover th:last-child { background:#fff; }
-    table.data-table-project thead tr th:last-child { background:var(--gray-50); z-index: 4; }
+    table.data-table-project thead tr:hover th:last-child { background:var(--gray-50); }
 
     /* 操作列按钮：每 3 个一行，精确换行 + 整列水平/垂直居中 */
     .action-cell {
@@ -521,19 +534,31 @@
       gap: 6px 4px;          /* 行间距 6px，列间距 4px */
       align-items: center;
       align-content: center;  /* 多行内容垂直居中（不满两行时也居中）*/
-      justify-content: center;/* 每行按钮整体水平居中（最后一行不满时居中）*/
+      justify-content: center !important; /* 每行按钮整体水平居中（最后一行不满时居中）*/
       width: 100%;
+      max-width: 100%;
+      margin: 0 auto !important;
       line-height: 1.4;
       padding: 8px 0;
       box-sizing: border-box;
+      text-align: center;
+    }
+    /* 最后一行只有 2 个（启用/停用 + 删除）时，也让它们 3 列里居中，不把 2 个撑满 */
+    .action-cell::after {
+      content: '';
+      flex: 0 0 calc((100% - 8px) / 3);
+      max-width: calc((100% - 8px) / 3);
+      display: block;
+      height: 0;
+      pointer-events: none;
     }
     .action-cell .btn-link {
       flex: 0 0 calc((100% - 8px) / 3);
       max-width: calc((100% - 8px) / 3);
       min-width: 0;
       box-sizing: border-box;
-      padding: 5px 3px;
-      margin: 0;
+      padding: 6px 3px;
+      margin: 0 auto; /* 每一个按钮在自己的 flex 列 slot 里再次水平居中 */
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -1822,6 +1847,70 @@
     }catch(e){}
   }
 
+  // ====== 统一安全打开弹窗：任何项目详情/编辑/子账号分配/划拨/流水 等弹窗都走这里 ======
+  // 始终：显示黄色 info toast → 调 prep() 填充 DOM → _ensureModalsOnBody() → _forceShowOverlay() → 绿色成功 toast（或红色失败）
+  window._openSafeModal = function(opt){
+    // opt: {modalId, toastTitle (info), toastOk (success), toastBody (info), prep (function), requireProject (bool)}
+    try{
+      if(!opt) opt = {};
+      var modalId = opt.modalId;
+      if(!modalId){
+        try{ showPageDebugToast('打开失败','参数缺失：未指定弹窗 ID','error', 5000); }catch(e){}
+        return;
+      }
+      try{ showPageDebugToast(
+        (opt.toastTitle || ('正在打开 '+modalId+'…')),
+        (opt.toastBody || '若仍看不到，请按 Ctrl+F5 强制刷新或关闭广告拦截插件'),
+        'info',
+        1400
+      ); }catch(e){}
+      try{ _ensureModalsOnBody(); }catch(e){}
+      var m = null;
+      try{ m = (typeof $ === 'function') ? $(modalId) : document.getElementById(modalId); }catch(e){ m = document.getElementById(modalId); }
+      if(!m){
+        try{ showPageDebugToast('页面初始化异常', '未找到弹窗节点：#'+modalId+'；请 Ctrl+F5 强制刷新页面后重试', 'error', 6000); }catch(e){}
+        try{ alert('页面初始化异常：未找到 '+modalId+'，请 Ctrl+F5 强制刷新'); }catch(e){}
+        return;
+      }
+      // 1) 执行用户的 DOM 填充（允许抛异常 → 红条提示）
+      if(typeof opt.prep === 'function'){
+        try{
+          var ret = opt.prep(m);
+          if(ret === false){
+            // prep 返回 false 表示业务校验未通过（例如项目未找到、项目已停用），不必再 show
+            return;
+          }
+        }catch(prepErr){
+          try{ showPageDebugToast('弹窗准备失败', (prepErr.message||prepErr), 'error', 5000); }catch(x){}
+          try{ alert('弹窗打开失败：'+(prepErr.message||prepErr)); }catch(x){}
+          return;
+        }
+      }
+      // 2) 再次确保所有 modal 在 body（prep 里可能无意中移动了 DOM）
+      try{ _ensureModalsOnBody(); }catch(e){}
+      // 3) 强制显示
+      try{ var ok = _forceShowOverlay(m); if(!ok) throw new Error('_forceShowOverlay 返回 false'); }catch(forceErr){
+        try{ showPageDebugToast('显示失败', (forceErr.message||forceErr), 'error', 6000); }catch(x){}
+        try{ alert('弹窗强制显示失败：'+(forceErr.message||forceErr)); }catch(x){}
+        return;
+      }
+      // 4) 绿色成功反馈
+      try{ showPageDebugToast(
+        (opt.toastOkTitle || ('✓ 弹窗已打开')),
+        (opt.toastOkBody  || ('#'+modalId+' 已成功弹出；若看不到请关闭广告拦截插件')),
+        'ok',
+        2200
+      ); }catch(e){}
+      // 5) 30ms / 120ms / 400ms 再强制三次（防后续 main.js / 其他脚本覆盖 display:none / z-index）
+      setTimeout(function(){ try{ _ensureModalsOnBody(); _forceShowOverlay(m); }catch(e){} }, 30);
+      setTimeout(function(){ try{ _ensureModalsOnBody(); _forceShowOverlay(m); }catch(e){} }, 120);
+      setTimeout(function(){ try{ _ensureModalsOnBody(); _forceShowOverlay(m); }catch(e){} }, 400);
+    }catch(topErr){
+      try{ showPageDebugToast('打开失败（顶层异常）', (topErr.message||topErr), 'error', 7000); }catch(x){}
+      try{ alert('弹窗打开失败：'+(topErr.message||topErr)); }catch(x){}
+    }
+  };
+
   window.editProject = function(id){
     try{
       try{ _ensureModalsOnBody(); }catch(e){}
@@ -2084,77 +2173,80 @@
 
   // ============ 项目详情 ============
   window.viewProjectDetail = function(id){
-    var p = findProject(id); if(!p) return;
-    var pd = (PRODUCTS[p.product]||{label:'未分类',tagCls:''}).label;
-    var stCls = p.status==='active' ? 'tag-success' : 'tag-warning';
-    var stTxt = p.status==='active' ? '运行中' : '已停用';
-    // 该项目流水统计
-    var list = [];
-    for(var i=0;i<records.length;i++){
-      var r = records[i];
-      if((r.to && r.to.indexOf(p.name)>=0) || (r.from && r.from.indexOf(p.name)>=0) || r.projectId===p.id) list.push(r);
-    }
-    var subsHtml = '';
-    if(!p.subs || p.subs.length===0){ subsHtml = '<span style="color:var(--text-muted);font-size:13px;">未分配子账号</span>'; }
-    else {
-      for(var k=0;k<p.subs.length;k++){
-        var u = findSub(p.subs[k]); if(!u) continue;
-        subsHtml += '<span class="chip" style="margin:2px 4px 2px 0;"><span class="chip-avatar">'+(u.name||'').charAt(0)+'</span><span class="chip-name" title="'+(u.role||'')+' · '+u.phone+'">'+u.name+'</span></span>';
+    window._openSafeModal({
+      modalId: 'projectDetailModal',
+      toastTitle: '正在打开项目详情…',
+      toastBody: '正在加载项目基础信息与最近流水…',
+      toastOkTitle: '✓ 项目详情已打开',
+      toastOkBody:  '项目详情弹窗已显示；若看不到请按 Ctrl+F5 刷新',
+      prep: function(){
+        var p = findProject(id);
+        if(!p){ showPageDebugToast('项目不存在','未找到项目 ID='+id,'error',4500); return false; }
+        var pd = (PRODUCTS[p.product]||{label:'未分类',tagCls:''}).label;
+        var stCls = p.status==='active' ? 'tag-success' : 'tag-warning';
+        var stTxt = p.status==='active' ? '运行中' : '已停用';
+        var list = [];
+        for(var i=0;i<records.length;i++){
+          var r = records[i];
+          if((r.to && r.to.indexOf(p.name)>=0) || (r.from && r.from.indexOf(p.name)>=0) || r.projectId===p.id) list.push(r);
+        }
+        var subsHtml = '';
+        if(!p.subs || p.subs.length===0){ subsHtml = '<span style="color:var(--text-muted);font-size:13px;">未分配子账号</span>'; }
+        else {
+          for(var k=0;k<p.subs.length;k++){
+            var u = findSub(p.subs[k]); if(!u) continue;
+            subsHtml += '<span class="chip" style="margin:2px 4px 2px 0;"><span class="chip-avatar">'+(u.name||'').charAt(0)+'</span><span class="chip-name" title="'+(u.role||'')+' · '+u.phone+'">'+u.name+'</span></span>';
+          }
+        }
+        var body = '';
+        body += '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:14px 16px;background:linear-gradient(135deg,#E6F4FF 0%,#F0F7FF 100%);border-radius:10px;margin-bottom:18px;">';
+        body += '<div><div style="font-size:12px;color:var(--text-secondary);margin-bottom:6px;">项目编号 · '+(p.id||'—')+'</div>';
+        body += '<div style="font-size:20px;font-weight:700;color:var(--text);margin-bottom:8px;">'+(p.name||'—')+'</div>';
+        body += '<div style="display:flex;gap:8px;align-items:center;"><span class="tag-product tag-product-mjyy">'+pd+'</span><span class="tag '+stCls+'">'+stTxt+'</span></div></div>';
+        body += '<div style="text-align:right;"><div style="font-size:12px;color:var(--text-secondary);margin-bottom:6px;">项目账户余额</div>';
+        body += '<div style="font-size:26px;font-weight:800;color:var(--brand-primary);">¥'+fmtAmount(p.balance||0)+'</div></div></div>';
+        body += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 24px;margin-bottom:18px;">';
+        body += _kv('负责人', (p.owner||'—') + ' · ' + (p.phone||'—'));
+        body += _kv('创建时间', p.createdAt||'—');
+        body += _kv('累计入账', '<span style="color:#00B42A;font-weight:600;">¥'+fmtAmount(p.totalIn||0)+'</span>');
+        body += _kv('累计调出', '<span style="color:#F53F3F;font-weight:600;">¥'+fmtAmount(p.totalOut||0)+'</span>');
+        body += '</div>';
+        body += '<div style="margin-bottom:18px;">'+_kv('项目描述', (p.desc&&p.desc.trim()) ? p.desc.replace(/\n/g,'<br>') : '<span style="color:var(--text-muted);">—</span>')+'</div>';
+        body += '<div style="margin-bottom:18px;">';
+        body += '<div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px;">分配子账号（'+(p.subs?p.subs.length:0)+' 人）</div>';
+        body += '<div style="padding:10px 12px;border:1px solid var(--gray-200);border-radius:8px;background:#fff;min-height:44px;">'+subsHtml+'</div>';
+        body += '</div>';
+        body += '<div>';
+        body += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">';
+        body += '<div style="font-size:13px;font-weight:600;color:var(--text);">最近划拨流水 · 共 '+list.length+' 条</div>';
+        body += '<button class="btn-link" style="padding:0;" onclick="closeProjectDetail();try{window.viewProjectRecords(\''+p.id+'\');}catch(e){}">查看全部流水 →</button>';
+        body += '</div>';
+        if(list.length===0){
+          body += '<div class="empty-state" style="padding:24px 0;"><div class="empty-state-icon">💸</div>暂无划拨记录</div>';
+        } else {
+          body += '<div style="max-height:260px;overflow-y:auto;border:1px solid var(--gray-200);border-radius:8px;"><table class="data-table" style="min-width:0;"><thead><tr>';
+          body += '<th>流水号</th><th>方向</th><th>金额</th><th>对方</th><th>时间</th>';
+          body += '</tr></thead><tbody>';
+          var showN = Math.min(list.length, 20);
+          for(var mi=0;mi<showN;mi++){
+            var rr = list[mi];
+            var sg = rr.direction==='in'?'+':'-';
+            var fc = rr.direction==='in'?'flow-in':'flow-out';
+            var peer = rr.direction==='in' ? rr.from : rr.to;
+            body += '<tr><td style="font-size:12px;">'+rr.no+'</td>'
+                  + '<td>'+(rr.direction==='in'?'<span class="tag tag-success">入账</span>':'<span class="tag tag-warning">调出</span>')+'</td>'
+                  + '<td class="'+fc+'" style="font-weight:600;">'+sg+fmtAmount(rr.amount)+'</td>'
+                  + '<td style="font-size:12px;">'+peer+'</td>'
+                  + '<td style="white-space:nowrap;font-size:12px;">'+rr.time+'</td></tr>';
+          }
+          body += '</tbody></table></div>';
+          if(list.length>showN){ body += '<div style="text-align:center;padding:8px 0 0;font-size:12px;color:var(--text-secondary);">仅展示最近 20 条，点击「查看全部流水」浏览完整记录</div>'; }
+        }
+        body += '</div>';
+        $('projectDetailTitle').textContent = '项目详情 · ' + (p.name||'—');
+        $('projectDetailBody').innerHTML = body;
       }
-    }
-    var body = '';
-    body += '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:14px 16px;background:linear-gradient(135deg,#E6F4FF 0%,#F0F7FF 100%);border-radius:10px;margin-bottom:18px;">';
-    body += '<div><div style="font-size:12px;color:var(--text-secondary);margin-bottom:6px;">项目编号 · '+(p.id||'—')+'</div>';
-    body += '<div style="font-size:20px;font-weight:700;color:var(--text);margin-bottom:8px;">'+(p.name||'—')+'</div>';
-    body += '<div style="display:flex;gap:8px;align-items:center;"><span class="tag-product tag-product-mjyy">'+pd+'</span><span class="tag '+stCls+'">'+stTxt+'</span></div></div>';
-    body += '<div style="text-align:right;"><div style="font-size:12px;color:var(--text-secondary);margin-bottom:6px;">项目账户余额</div>';
-    body += '<div style="font-size:26px;font-weight:800;color:var(--brand-primary);">¥'+fmtAmount(p.balance||0)+'</div></div></div>';
-
-    body += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 24px;margin-bottom:18px;">';
-    body += _kv('负责人', (p.owner||'—') + ' · ' + (p.phone||'—'));
-    body += _kv('创建时间', p.createdAt||'—');
-    body += _kv('累计入账', '<span style="color:#00B42A;font-weight:600;">¥'+fmtAmount(p.totalIn||0)+'</span>');
-    body += _kv('累计调出', '<span style="color:#F53F3F;font-weight:600;">¥'+fmtAmount(p.totalOut||0)+'</span>');
-    body += '</div>';
-
-    body += '<div style="margin-bottom:18px;">'+_kv('项目描述', (p.desc&&p.desc.trim()) ? p.desc.replace(/\n/g,'<br>') : '<span style="color:var(--text-muted);">—</span>')+'</div>';
-
-    body += '<div style="margin-bottom:18px;">';
-    body += '<div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px;">分配子账号（'+(p.subs?p.subs.length:0)+' 人）</div>';
-    body += '<div style="padding:10px 12px;border:1px solid var(--gray-200);border-radius:8px;background:#fff;min-height:44px;">'+subsHtml+'</div>';
-    body += '</div>';
-
-    body += '<div>';
-    body += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">';
-    body += '<div style="font-size:13px;font-weight:600;color:var(--text);">最近划拨流水 · 共 '+list.length+' 条</div>';
-    body += '<button class="btn-link" style="padding:0;" onclick="closeProjectDetail();try{window.viewProjectRecords(\''+p.id+'\');}catch(e){}">查看全部流水 →</button>';
-    body += '</div>';
-    if(list.length===0){
-      body += '<div class="empty-state" style="padding:24px 0;"><div class="empty-state-icon">💸</div>暂无划拨记录</div>';
-    } else {
-      body += '<div style="max-height:260px;overflow-y:auto;border:1px solid var(--gray-200);border-radius:8px;"><table class="data-table" style="min-width:0;"><thead><tr>';
-      body += '<th>流水号</th><th>方向</th><th>金额</th><th>对方</th><th>时间</th>';
-      body += '</tr></thead><tbody>';
-      var showN = Math.min(list.length, 20);
-      for(var m=0;m<showN;m++){
-        var rr = list[m];
-        var sg = rr.direction==='in'?'+':'-';
-        var fc = rr.direction==='in'?'flow-in':'flow-out';
-        var peer = rr.direction==='in' ? rr.from : rr.to;
-        body += '<tr><td style="font-size:12px;">'+rr.no+'</td>'
-              + '<td>'+(rr.direction==='in'?'<span class="tag tag-success">入账</span>':'<span class="tag tag-warning">调出</span>')+'</td>'
-              + '<td class="'+fc+'" style="font-weight:600;">'+sg+fmtAmount(rr.amount)+'</td>'
-              + '<td style="font-size:12px;">'+peer+'</td>'
-              + '<td style="white-space:nowrap;font-size:12px;">'+rr.time+'</td></tr>';
-      }
-      body += '</tbody></table></div>';
-      if(list.length>showN){ body += '<div style="text-align:center;padding:8px 0 0;font-size:12px;color:var(--text-secondary);">仅展示最近 20 条，点击「查看全部流水」浏览完整记录</div>'; }
-    }
-    body += '</div>';
-
-    $('projectDetailTitle').textContent = '项目详情 · ' + (p.name||'—');
-    $('projectDetailBody').innerHTML = body;
-    var dm = $('projectDetailModal'); if(dm) _showModal(dm);
+    });
   };
   function _kv(k,v){
     return '<div style="padding:8px 0;border-bottom:1px dashed var(--gray-200);"><div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;">'+k+'</div><div style="font-size:14px;color:var(--text);">'+v+'</div></div>';
@@ -2168,12 +2260,21 @@
   var assignWorkingIds = [];
 
   window.openAssignSubModal = function(projectId){
-    var p = findProject(projectId); if(!p) return;
-    assignProjectId = projectId;
-    assignWorkingIds = (p.subs || []).slice();
-    $('assignSubProject').textContent = p.id + ' · ' + p.name;
-    renderAssignModal();
-    try{ var m = $('assignSubModal'); if(m) _showModal(m); }catch(e){}
+    window._openSafeModal({
+      modalId: 'assignSubModal',
+      toastTitle: '正在打开子账号分配…',
+      toastBody: '正在读取项目成员与子账号池…',
+      toastOkTitle: '✓ 子账号分配已打开',
+      toastOkBody:  '勾选或取消勾选即可调整成员；最后点「确认分配」保存',
+      prep: function(){
+        var p = findProject(projectId);
+        if(!p){ showPageDebugToast('项目不存在','未找到项目 ID='+projectId,'error',4500); return false; }
+        assignProjectId = projectId;
+        assignWorkingIds = (p.subs || []).slice();
+        $('assignSubProject').textContent = p.id + ' · ' + p.name;
+        renderAssignModal();
+      }
+    });
   };
   window.closeAssignSubModal = function(){
     try{ var m = $('assignSubModal'); if(m) _hideModal(m); }catch(e){}
@@ -2237,44 +2338,51 @@
   var transferTargetProjectId = null;
 
   window.openTransferModal = function(projectId){
-    transferTargetProjectId = projectId || null;
-    var modalTitle = '资金划拨';
-    try{
-      if(projectId){
-        var tp = findProject(projectId);
-        if(tp && tp.status==='inactive'){ alert('项目 '+tp.id+' 已停用，不能划拨；请先启用'); return; }
-        if(tp) modalTitle = '资金划拨 → ' + tp.name;
+    window._openSafeModal({
+      modalId: 'transferModal',
+      toastTitle: '正在打开资金划拨…',
+      toastBody: '正在构建企业/项目账户下拉…',
+      toastOkTitle: '✓ 资金划拨已打开',
+      toastOkBody:  '选择转出/转入账户 + 金额 + 验证码 123456 → 确认划拨',
+      prep: function(){
+        transferTargetProjectId = projectId || null;
+        var modalTitle = '资金划拨';
+        if(projectId){
+          var tp = findProject(projectId);
+          if(tp && tp.status==='inactive'){
+            try{ showPageDebugToast('项目已停用','项目已停用，不能进行资金划拨；请先启用项目','error',5000); }catch(e){}
+            alert('项目已停用，不能划拨；请先启用');
+            return false;
+          }
+          if(tp) modalTitle = '资金划拨 → ' + tp.name;
+        }
+        try{ $('transferModalTitle').textContent = modalTitle; }catch(e){}
+        var fromSel = $('f_fromAccount'), toSel = $('f_toAccount');
+        try{ fromSel.innerHTML = ''; toSel.innerHTML = ''; }catch(e){}
+        try{ fromSel.innerHTML += '<option value="enterprise">企业资金账户 · MJYY-MAIN · '+fmtAmount(ENTERPRISE_BALANCE)+'</option>'; }catch(e){}
+        for(var i=0;i<projects.length;i++){
+          var p = projects[i];
+          if(p.status==='inactive') continue;
+          var sel = (projectId===p.id)?' selected':'';
+          try{ fromSel.innerHTML += '<option value="prj:'+p.id+'"'+sel+'>项目账户 · '+p.name+' · '+fmtAmount(p.balance)+'</option>'; }catch(e){}
+        }
+        try{ toSel.innerHTML = '<option value="">请选择转入账户</option>'; }catch(e){}
+        for(var i=0;i<projects.length;i++){
+          var p2 = projects[i];
+          if(p2.id!==projectId && p2.status!=='inactive'){
+            try{ toSel.innerHTML += '<option value="prj:'+p2.id+'">项目账户 · '+p2.name+' · '+fmtAmount(p2.balance)+'</option>'; }catch(e){}
+          }
+        }
+        try{ toSel.innerHTML += '<option value="enterprise">企业资金账户 · MJYY-MAIN</option>'; }catch(e){}
+        if(projectId){
+          try{ fromSel.value='enterprise'; toSel.value='prj:'+projectId; }catch(e){}
+        }
+        updateTransferInfo();
+        try{ $('f_amount').value=''; }catch(e){}
+        try{ $('f_transferRemark').value=''; }catch(e){}
+        try{ $('f_transferCode').value=''; }catch(e){}
       }
-      $('transferModalTitle').textContent = modalTitle;
-    }catch(e){}
-
-    var fromSel = $('f_fromAccount'), toSel = $('f_toAccount');
-    fromSel.innerHTML = ''; toSel.innerHTML = '';
-    fromSel.innerHTML += '<option value="enterprise">企业资金账户 · MJYY-MAIN · '+fmtAmount(ENTERPRISE_BALANCE)+'</option>';
-    for(var i=0;i<projects.length;i++){
-      var p = projects[i];
-      if(p.status==='inactive') continue;
-      var sel = (projectId===p.id)?' selected':'';
-      fromSel.innerHTML += '<option value="prj:'+p.id+'"'+sel+'>项目账户 · '+p.name+' · '+fmtAmount(p.balance)+'</option>';
-    }
-    toSel.innerHTML = '<option value="">请选择转入账户</option>';
-    for(var i=0;i<projects.length;i++){
-      var p2 = projects[i];
-      if(p2.id!==projectId && p2.status!=='inactive'){
-        toSel.innerHTML += '<option value="prj:'+p2.id+'">项目账户 · '+p2.name+' · '+fmtAmount(p2.balance)+'</option>';
-      }
-    }
-    toSel.innerHTML += '<option value="enterprise">企业资金账户 · MJYY-MAIN</option>';
-    if(projectId){ fromSel.value='enterprise'; toSel.value='prj:'+projectId; }
-
-    updateTransferInfo();
-    try{ $('f_amount').value=''; }catch(e){}
-    try{ $('f_transferRemark').value=''; }catch(e){}
-    try{ $('f_transferCode').value=''; }catch(e){}
-
-    try{
-      var m = $('transferModal'); if(m) _showModal(m);
-    }catch(e){}
+    });
   };
 
   window.closeTransferModal = function(){
@@ -2391,41 +2499,48 @@
 
   // ============ 流水详情 ============
   window.viewProjectRecords = function(projectId){
-    var p = findProject(projectId); if(!p) return;
-    var list = [];
-    for(var i=0;i<records.length;i++){
-      var r = records[i];
-      if((r.to && r.to.indexOf(p.name)>=0) || (r.from && r.from.indexOf(p.name)>=0) || r.projectId===p.id) list.push(r);
-    }
-    var body = '<h3 style="margin:0 0 16px;font-size:16px;font-weight:600;">' + p.id + ' · ' + p.name + ' · 划拨流水</h3>';
-    body += '<div style="margin-bottom:14px;padding:10px 12px;background:var(--gray-50);border-radius:8px;font-size:13px;color:var(--text-regular);">'+
-            '余额 '+fmtAmount(p.balance)+' · 累计入 '+fmtAmount(p.totalIn)+' · 累计出 '+fmtAmount(p.totalOut)+'</div>';
-    if(list.length===0){
-      body += '<div class="empty-state"><div class="empty-state-icon">💸</div>暂无划拨记录</div>';
-    } else {
-      body += '<div style="max-height:400px;overflow-y:auto;"><table class="data-table"><thead><tr>'+
-              '<th>流水号</th><th>方向</th><th>金额</th><th>对方账户</th><th>操作人</th><th>时间</th>'+
-              '</tr></thead><tbody>';
-      for(var i=0;i<list.length;i++){
-        var r = list[i];
-        var sign = r.direction==='in'?'+':'-';
-        var cls  = r.direction==='in'?'flow-in':'flow-out';
-        var peer = (r.direction==='in' ? r.from : r.to);
-        body += '<tr>'
-              + '<td>'+r.no+'</td>'
-              + '<td>'+(r.direction==='in'?'<span class="tag tag-success">入账</span>':'<span class="tag tag-warning">调出</span>')+'</td>'
-              + '<td class="'+cls+'">'+sign+fmtAmount(r.amount)+'</td>'
-              + '<td>'+peer+'</td>'
-              + '<td>'+(r.operator||'—')+'</td>'
-              + '<td style="white-space:nowrap;">'+r.time+'</td>'
-              + '</tr>';
+    window._openSafeModal({
+      modalId: 'recordDetailModal',
+      toastTitle: '正在打开划拨流水…',
+      toastBody: '正在加载项目完整流水表格…',
+      toastOkTitle: '✓ 划拨流水已打开',
+      toastOkBody:  '最多 400px 高滚动浏览；关闭按钮在右上角或空白遮罩',
+      prep: function(){
+        var p = findProject(projectId);
+        if(!p){ showPageDebugToast('项目不存在','未找到项目 ID='+projectId,'error',4500); return false; }
+        var list = [];
+        for(var i=0;i<records.length;i++){
+          var r = records[i];
+          if((r.to && r.to.indexOf(p.name)>=0) || (r.from && r.from.indexOf(p.name)>=0) || r.projectId===p.id) list.push(r);
+        }
+        var body = '<h3 style="margin:0 0 16px;font-size:16px;font-weight:600;">' + p.id + ' · ' + p.name + ' · 划拨流水</h3>';
+        body += '<div style="margin-bottom:14px;padding:10px 12px;background:var(--gray-50);border-radius:8px;font-size:13px;color:var(--text-regular);">'+
+                '余额 '+fmtAmount(p.balance)+' · 累计入 '+fmtAmount(p.totalIn)+' · 累计出 '+fmtAmount(p.totalOut)+'</div>';
+        if(list.length===0){
+          body += '<div class="empty-state"><div class="empty-state-icon">💸</div>暂无划拨记录</div>';
+        } else {
+          body += '<div style="max-height:400px;overflow-y:auto;"><table class="data-table"><thead><tr>'+
+                  '<th>流水号</th><th>方向</th><th>金额</th><th>对方账户</th><th>操作人</th><th>时间</th>'+
+                  '</tr></thead><tbody>';
+          for(var i=0;i<list.length;i++){
+            var r = list[i];
+            var sign = r.direction==='in'?'+':'-';
+            var cls  = r.direction==='in'?'flow-in':'flow-out';
+            var peer = (r.direction==='in' ? r.from : r.to);
+            body += '<tr>'
+                  + '<td>'+r.no+'</td>'
+                  + '<td>'+(r.direction==='in'?'<span class="tag tag-success">入账</span>':'<span class="tag tag-warning">调出</span>')+'</td>'
+                  + '<td class="'+cls+'">'+sign+fmtAmount(r.amount)+'</td>'
+                  + '<td>'+peer+'</td>'
+                  + '<td>'+(r.operator||'—')+'</td>'
+                  + '<td style="white-space:nowrap;">'+r.time+'</td>'
+                  + '</tr>';
+          }
+          body += '</tbody></table></div>';
+        }
+        $('recordDetailBody').innerHTML = body;
       }
-      body += '</tbody></table></div>';
-    }
-    $('recordDetailBody').innerHTML = body;
-    try{
-      var m = $('recordDetailModal'); if(m) _showModal(m);
-    }catch(e){}
+    });
   };
   window.closeRecordDetail = function(){
     try{
