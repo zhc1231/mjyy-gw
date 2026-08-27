@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>费用与资产 - 民匠有约</title>
-  <link rel="stylesheet" href="css/style.css?v=23">
+  <link rel="stylesheet" href="css/style.css?v=2025fix10">
   <style>
     :root {
       --brand-primary: #1677FF;
@@ -211,7 +211,7 @@
       color: var(--text-secondary);
       cursor: pointer;
       transition: all 0.2s;
-      user-select: none;
+      user-select: none; flex-shrink: 0;
     }
     .topbar-message:hover {
       background: var(--gray-100);
@@ -237,14 +237,14 @@
     }
     .topbar-message-dot {
       position: absolute;
-      top: -3px;
-      right: -3px;
-      width: 8px;
+      top: -2px;
+      right: -2px;width: 8px;
       height: 8px;
       border-radius: 50%;
       background: #F53F3F;
       display: none;
       z-index: 5;
+          box-shadow: 0 0 0 2px #fff;
     }
     .topbar-message-dot.show { display: block; }
     .topbar-message.has-badge .topbar-message-dot {
@@ -252,23 +252,23 @@
     }
     .topbar-message .topbar-message-badge {
       position: absolute;
-      top: -2px;
-      right: -2px;
+      top: -3px;
+      right: -6px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       min-width: 16px;
-      height: 16px;
+      height: 14px;
       padding: 0 4px;
-      border-radius: 8px;
+      border-radius: 7px;
       background: #F53F3F;
       color: #fff;
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 600;
       text-align: center;
       line-height: 1;
       border: 2px solid #fff;
-      box-sizing: content-box;
+      box-sizing: border-box;
       z-index: 10;
       box-shadow: 0 1px 3px rgba(245, 63, 63, 0.4);
     }
@@ -506,11 +506,13 @@
     }
 
     .user-dropdown-header {
-      padding: 16px;
+      padding: 36px 90px 16px 16px;
       border-bottom: none;
       display: flex;
       align-items: center;
       gap: 12px;
+      position: relative;
+      position: relative;
     }
 
     .user-dropdown-avatar {
@@ -698,7 +700,7 @@
       font-weight: 600;
     }
 
-    .sidebar-link svg { width: 17px; height: 17px; flex-shrink: 0; }
+    .sidebar-link svg { width: 17px; height: 17px; flex-shrink: 0; display: block; overflow: visible; align-self: center; }
 
     .sidebar-divider { height: 1px; background: var(--gray-200); margin: 10px 16px; }
 
@@ -1126,8 +1128,8 @@
           <div class="topbar-message-icon">
             <svg viewBox="0 0 24 24" fill="none" width="15" height="15"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <span class="topbar-message-dot show" id="topbarMessageDot"></span>
+            <span class="topbar-message-badge" id="topbarMessageBadge">3</span>
           </div>
-          <span class="topbar-message-badge" id="topbarMessageBadge">3</span>
           <div class="message-dropdown" id="messageDropdown">
             <div class="message-dropdown-header">
               <span>消息通知</span>
@@ -1172,15 +1174,19 @@
         </a></li>
       </ul>
       <div class="sidebar-divider"></div>
+      <div class="sidebar-section-title">企业管理</div>
+      <ul class="sidebar-menu">
+        <li id="sidebarSubEntMgmt"><a href="account-project.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M9 9h6M9 13h4M9 17h5" stroke="currentColor" stroke-width="2"/></svg>
+          子公司管理
+        </a></li>
+      </ul>
+      <div class="sidebar-divider"></div>
       <div class="sidebar-section-title">财务</div>
       <ul class="sidebar-menu">
         <li><a href="account-wallet.html" class="sidebar-link ">
           <svg viewBox="0 0 24 24" fill="none"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="2"/></svg>
           资金账户
-        </a></li>
-        <li><a href="account-project.html" class="sidebar-link">
-          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M9 9h6M9 13h4M9 17h5" stroke="currentColor" stroke-width="2"/></svg>
-          项目管理
         </a></li>
       </ul>
       <div class="sidebar-divider"></div>
@@ -1236,14 +1242,14 @@
                   <td>平台服务协议（标准版）</td>
                   <td><span class="status-tag">已签约</span></td>
                   <td>2024-03-10 16:42</td>
-                  <td><a href="#" class="table-action">查看</a><a href="#" class="table-action">下载</a></td>
+                  <td><a href="#" class="table-action" data-action="view" data-no="HT20240001">查看</a><a href="#" class="table-action" data-action="download" data-no="HT20240001">下载</a></td>
                 </tr>
                 <tr>
                   <td>HT20240002</td>
                   <td>数据安全保密协议</td>
                   <td><span class="status-tag pending">待签署</span></td>
                   <td>--</td>
-                  <td><a href="#" class="table-action">去签署</a></td>
+                  <td><a href="#" class="table-action" data-action="sign" data-no="HT20240002">去签署</a></td>
                 </tr>
               </tbody>
             </table>
@@ -1275,6 +1281,53 @@
       var enterpriseData = JSON.parse(localStorage.getItem('mjyy_enterprise_data') || '{}');
       var identityVerified = localStorage.getItem('mjyy_identity_verified') === 'true';
       var selectedAuthType = localStorage.getItem('mjyy_auth_type') || 'enterprise';
+      var accountType = localStorage.getItem('mjyy_account_type') || 'main';
+
+      // 子账户侧边栏隐藏
+      if (accountType === 'sub') {
+        var subEntMgmt = document.getElementById('sidebarSubEntMgmt');
+        if (subEntMgmt) subEntMgmt.style.display = 'none';
+      }
+
+      // 子账户合同数据加载
+      if (accountType === 'sub') {
+        var subContracts = [];
+        try {
+          var saved = localStorage.getItem('mjyy_sub_contracts');
+          if (saved) {
+            subContracts = JSON.parse(saved);
+          }
+        } catch (e) { subContracts = []; }
+
+        if (!subContracts.length) {
+          subContracts = [
+            { contractNo: 'HT20240001', contractName: '平台服务协议（标准版）', status: 'signed', signTime: '2024-03-10 16:42' },
+            { contractNo: 'HT20240002', contractName: '数据安全保密协议', status: 'pending', signTime: '--' },
+            { contractNo: 'HT20240003', contractName: '子账号服务补充协议', status: 'signed', signTime: '2024-05-20 09:15' }
+          ];
+          try { localStorage.setItem('mjyy_sub_contracts', JSON.stringify(subContracts)); } catch(e) {}
+        }
+
+        var tbody = document.getElementById('contractTableBody');
+        if (tbody) {
+          tbody.innerHTML = '';
+          subContracts.forEach(function(c) {
+            var statusHtml = c.status === 'signed'
+              ? '<span class="status-tag">已签约</span>'
+              : '<span class="status-tag pending">待签署</span>';
+            var actionsHtml = c.status === 'signed'
+              ? '<a href="#" class="table-action" data-action="view" data-no="' + c.contractNo + '">查看</a><a href="#" class="table-action" data-action="download" data-no="' + c.contractNo + '">下载</a>'
+              : '<a href="#" class="table-action" data-action="sign" data-no="' + c.contractNo + '">去签署</a>';
+            var tr = document.createElement('tr');
+            tr.innerHTML = '<td>' + c.contractNo + '</td>' +
+              '<td>' + c.contractName + '</td>' +
+              '<td>' + statusHtml + '</td>' +
+              '<td>' + c.signTime + '</td>' +
+              '<td>' + actionsHtml + '</td>';
+            tbody.appendChild(tr);
+          });
+        }
+      }
 
       // Dynamic parent highlight based on active child
       document.querySelectorAll('.sidebar-item').forEach(function(item) {
@@ -1319,7 +1372,7 @@
           '<td>' + (contractInfo.contractName || '已签署合同') + '</td>' +
           '<td><span class="status-tag">已签约</span></td>' +
           '<td>' + (contractInfo.signTime || new Date().toLocaleString('zh-CN')) + '</td>' +
-          '<td><a href="#" class="table-action">查看</a><a href="#" class="table-action">下载</a></td>';
+          '<td><a href="#" class="table-action" data-action="view" data-no="' + (contractInfo.contractNo || 'HT' + Date.now()) + '">查看</a><a href="#" class="table-action" data-action="download" data-no="' + (contractInfo.contractNo || 'HT' + Date.now()) + '">下载</a></td>';
         tbody.insertBefore(row, tbody.firstChild);
       }
 
@@ -1358,6 +1411,24 @@
           closeInvoiceModalFn();
         });
       }
+
+      // 合同操作事件委托（查看、下载、去签署）
+      document.getElementById('contractTableBody').addEventListener('click', function(e) {
+        var target = e.target;
+        if (!(target instanceof Element)) return;
+        var actionLink = target.closest('.table-action');
+        if (!actionLink) return;
+        e.preventDefault();
+        var action = actionLink.getAttribute('data-action');
+        var contractNo = actionLink.getAttribute('data-no') || '';
+        if (action === 'view') {
+          alert('查看合同：' + contractNo);
+        } else if (action === 'download') {
+          alert('下载合同：' + contractNo);
+        } else if (action === 'sign') {
+          alert('跳转签署合同：' + contractNo);
+        }
+      });
     })();
   </script>
 
@@ -1423,6 +1494,16 @@
       setTimeout(run, 50); setTimeout(run, 300);
     })();
   </script>
-<script src="js/main.js?v=51"></script>
+<script src="js/main.js?v=1787772022"></script>
+<script src="js/enterprise-switch.js?v=19"></script>
+<script>
+(function(){
+  var accountType = localStorage.getItem('mjyy_account_type');
+  if (accountType === 'sub') {
+    var subEntMgmt = document.getElementById('sidebarSubEntMgmt');
+    if (subEntMgmt) subEntMgmt.style.display = 'none';
+  }
+})();
+</script>
 </body>
 </html>

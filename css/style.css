@@ -78,6 +78,16 @@ img { max-width: 100%; display: block; }
 ul { list-style: none; }
 button { font-family: inherit; cursor: pointer; border: none; background: none; }
 
+svg { display: block; }
+svg text { text-anchor: middle; dominant-baseline: central; }
+.btn svg, .btn .icon, .button svg, .button .icon { display: inline-flex; align-items: center; justify-content: center; }
+[class*="icon"].svg, [class*="-icon"].svg, svg[class*="icon"], svg[class*="-icon"] { display: block; }
+svg[class*="with-text"], [class*="with-text"] svg, [class*="text-with-icon"] svg {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .container {
   max-width: var(--container);
   margin: 0 auto;
@@ -351,14 +361,17 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .icon-white { color: white; }
 
 /* ===== TOPBAR ===== */
+/* Topbar 高度调整以容纳用户卡片 */
 .topbar {
-  height: 36px;
+  height: auto;
+  min-height: 48px;
   background: #F7F8FA;
   border-bottom: 1px solid var(--gray-200);
   font-size: 12px;
   color: var(--text-muted);
   display: flex;
   align-items: center;
+  padding: 4px 0;
 }
 .topbar-inner {
   max-width: var(--container);
@@ -2852,17 +2865,18 @@ select.form-input {
 
 /* ===== 顶部消息通知按钮 ===== */
 .topbar-message {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.2s;
-  user-select: none;
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 8px !important;
+  color: var(--text-secondary) !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+  user-select: none !important;
+  flex-shrink: 0 !important;
 }
 .topbar-message:hover {
   background: var(--gray-100);
@@ -2872,57 +2886,58 @@ select.form-input {
   color: var(--brand-primary);
 }
 .topbar-message-icon {
-  width: 22px;
-  height: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-secondary);
-  transition: all 0.2s;
-  flex-shrink: 0;
-  position: relative;
+  width: 22px !important;
+  height: 22px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: var(--text-secondary) !important;
+  transition: all 0.2s !important;
+  flex-shrink: 0 !important;
+  position: relative !important;
 }
 .topbar-message-icon svg {
-  width: 20px;
-  height: 20px;
+  width: 20px !important;
+  height: 20px !important;
 }
 .topbar-message-dot {
-  position: absolute;
-  top: -3px;
-  right: -3px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #F53F3F;
-  display: none;
-  z-index: 5;
+  position: absolute !important;
+  top: -2px !important;
+  right: -2px !important;
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 50% !important;
+  background: #F53F3F !important;
+  display: none !important;
+  z-index: 5 !important;
+  box-shadow: 0 0 0 2px #fff !important;
 }
-.topbar-message-dot.show { display: block; }
+.topbar-message-dot.show { display: block !important; }
 /* When badge is visible, hide the dot */
 .topbar-message.has-badge .topbar-message-dot {
   display: none !important;
 }
 .topbar-message .topbar-message-badge {
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 16px;
-  height: 16px;
-  padding: 0 4px;
-  border-radius: 8px;
-  background: #F53F3F;
-  color: #fff;
-  font-size: 10px;
-  font-weight: 600;
-  text-align: center;
-  line-height: 1;
-  border: 2px solid #fff;
-  box-sizing: content-box;
-  z-index: 10;
-  box-shadow: 0 1px 3px rgba(245, 63, 63, 0.4);
+  position: absolute !important;
+  top: -3px !important;
+  right: -6px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 16px !important;
+  height: 14px !important;
+  padding: 0 4px !important;
+  border-radius: 7px !important;
+  background: #F53F3F !important;
+  color: #fff !important;
+  font-size: 9px !important;
+  font-weight: 600 !important;
+  text-align: center !important;
+  line-height: 1 !important;
+  border: 2px solid #fff !important;
+  box-sizing: border-box !important;
+  z-index: 10 !important;
+  box-shadow: 0 1px 3px rgba(245, 63, 63, 0.4) !important;
 }
 
 /* ===== 消息下拉面板 ===== */
@@ -3121,12 +3136,16 @@ select.form-input {
   position: relative;
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 8px;
-  padding: 6px 12px;
-  border-radius: 8px;
+  padding: 4px 12px 4px 4px;
+  border-radius: 10px;
   cursor: pointer;
   transition: background 0.2s;
-  min-width: 280px;
+  width: 340px;
+  min-width: 340px;
+  max-width: 340px;
+  box-sizing: border-box;
 }
 
 .topbar-user:hover {
@@ -3144,32 +3163,54 @@ select.form-input {
 }
 
 .topbar-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--brand-primary);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  font-weight: 600;
-  flex-shrink: 0;
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  background: var(--brand-primary) !important;
+  color: #fff !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  flex-shrink: 0 !important;
+  line-height: 1 !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif !important;
+  text-align: center !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  /* 中文字符视觉微调：字符如"杭"重心偏下，需整体上移 1px 达到视觉居中 */
+  transform: translateY(-1px) !important;
+}
+
+/* Welcome hero avatar (account center banner) */
+.welcome-hero-avatar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif !important;
 }
 
 .topbar-user-meta {
   display: flex;
   align-items: center;
   gap: 8px;
-  max-width: 360px;
+  flex: 1;
   min-width: 0;
+  max-width: 360px;
+  overflow: hidden;
 }
 
 .topbar-user-name-row {
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 6px;
   max-width: 220px;
+  flex-shrink: 1;
+  min-width: 0;
+  width: 100%;
 }
 
 .topbar-user-name {
@@ -3179,16 +3220,32 @@ select.form-input {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  line-height: 1.4;
+  line-height: 32px;
+  max-width: 100%;
+  text-align: left;
+  flex: 1;
+  min-width: 0;
+}
+
+.topbar-user-meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  max-width: 360px;
+  overflow: hidden;
 }
 
 .topbar-user-chips {
   display: inline-flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 6px;
   flex-shrink: 0;
   flex-wrap: nowrap;
-  margin-left: 6px;
+  overflow: hidden;
 }
 
 .topbar-user-chip {
@@ -3196,10 +3253,11 @@ select.form-input {
   padding: 2px 8px;
   border-radius: 4px;
   font-weight: 500;
-  line-height: 16px;
+  line-height: 1;
   border: none;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   white-space: nowrap;
   background: var(--gray-100);
   color: var(--text-secondary);
@@ -3212,11 +3270,36 @@ select.form-input {
 .topbar-user-chip.verified   { background: #E8F8EB; color: #00B42A; }
 .topbar-user-chip.unverified { background: #FFF2E8; color: #FA8C16; }
 
+.topbar-ent-chip {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  line-height: 14px;
+  font-weight: 500;
+  border: 1px solid #D9F7BE;
+  background: #F6FFED;
+  color: #389E0D;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.topbar-ent-chip.sub {
+  border-color: #FFE7BA;
+  background: #FFF7E6;
+  color: #D46B08;
+}
+
 .topbar-chevron {
-  width: 16px;
-  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
   color: var(--text-muted);
   transition: transform 0.2s;
+  flex-shrink: 0;
 }
 
 .topbar-name {
@@ -3230,6 +3313,9 @@ select.form-input {
 }
 
 .topbar-chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 14px;
   height: 14px;
   color: var(--text-muted);
@@ -3237,126 +3323,319 @@ select.form-input {
   flex-shrink: 0;
 }
 
+.topbar-chevron svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
 /* ===== USER DROPDOWN (统一账户中心风格) ===== */
-.user-dropdown {
-  position: absolute;
-  top: calc(100% + 8px);
+body .user-dropdown {
+  position: absolute !important;
+  top: calc(100% + 8px) !important;
   left: 0 !important;
   right: auto !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  min-width: 0 !important;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-  border: 1px solid var(--gray-200);
-  z-index: 1001;
+  width: 340px !important;
+  min-width: 340px !important;
+  max-width: 360px !important;
+  background: #fff !important;
+  border-radius: 14px !important;
+  box-shadow:
+    0 4px 12px rgba(0,0,0,0.06),
+    0 12px 32px rgba(0,0,0,0.12) !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
+  z-index: 1001 !important;
   display: none;
-  overflow: hidden;
-  box-sizing: border-box;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
 }
 
 .user-dropdown.open {
   display: block;
 }
 
-.user-dropdown-header {
-  padding: 16px;
-  border-bottom: none;
-  display: flex;
+/* Header 区域 — 为右上角角标预留空间（仅一处定义） */
+body .user-dropdown-header {
+  padding: 0 12px 0 12px !important;
+  border-bottom: none !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 10px !important;
+  position: relative !important;
+  margin-bottom: 10px !important;
+}
+
+/* 下拉卡片打开动效 */
+.user-dropdown.open {
+  animation: userDropdownFadeIn 0.18s ease-out;
+}
+@keyframes userDropdownFadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 切换企业 独立行 — 顶部第一行 */
+.user-dropdown-switch-row {
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  padding: 0 0 6px 0 !important;
+  border-top: none !important;
+  border-bottom: none !important;
+}
+
+/* 切换企业 按钮 */
+.user-dropdown-switch-ent-badge {
+  position: static;
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
-}
-
-.user-dropdown-header-avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-size: 18px;
-  font-weight: 600;
-  flex-shrink: 0;
-}
-
-.user-dropdown-header-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.user-dropdown-header-name {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--text);
-  margin-bottom: 2px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.user-dropdown-header-id {
+  gap: 5px;
+  padding: 6px 14px;
   font-size: 12px;
-  color: var(--text-muted);
+  font-weight: 500;
+  line-height: 1;
+  font-family: inherit;
+  color: var(--brand-primary, #1677FF) !important;
+  background: var(--brand-primary-50, #E8F3FF);
+  border: 1px solid var(--brand-primary-200, #BAE0FF);
+  border-top: none;
+  border-right: none;
+  border-radius: 6px;
+  border-top-left-radius: 0;
+  border-bottom-right-radius: 0;
+  outline: none;
+  box-shadow: none;
+  text-decoration: none !important;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s, transform 0.18s;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  min-width: auto;
+  justify-content: center;
 }
 
-.user-dropdown-header-tags {
-  display: flex;
-  gap: 6px;
-  margin-top: 4px;
+.user-dropdown-switch-ent-badge:hover {
+  background: var(--brand-primary, #1677FF);
+  color: #fff !important;
+  box-shadow: 0 2px 8px rgba(22,119,255,0.22);
+  border-top: none;
+  border-right: none;
 }
 
-.user-dropdown-header {
-  padding: 16px;
-  border-bottom: none;
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.user-dropdown-switch-ent-badge:focus,
+.user-dropdown-switch-ent-badge:active,
+.user-dropdown-switch-ent-badge:focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(22,119,255,0.18) !important;
+  border-color: #BAE0FF;
+}
+
+.user-dropdown-switch-ent-badge svg {
+  flex-shrink: 0;
+  width: 11px;
+  height: 11px;
+  transition: transform 0.3s ease;
+}
+
+.user-dropdown-switch-ent-badge:hover svg {
+  transform: rotate(360deg);
 }
 
 .user-dropdown-avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: var(--brand-primary-50);
-  color: var(--brand-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  font-weight: 600;
-  flex-shrink: 0;
-  background-color: var(--brand-primary-50, #E8F3FF);
+  width: 52px !important;
+  height: 52px !important;
+  border-radius: 50% !important;
+  background: linear-gradient(135deg, #E8F3FF 0%, #D6EBFF 100%) !important;
+  color: var(--brand-primary, #1677FF) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 22px !important;
+  font-weight: 600 !important;
+  flex-shrink: 0 !important;
+  box-shadow: inset 0 0 0 1px rgba(22,119,255,0.08);
+  line-height: 1 !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif !important;
+  text-align: center !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  transform: none !important;
 }
 
-.user-dropdown-info { flex: 1; min-width: 0; }
-
-.user-dropdown-name {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--text);
-  margin-bottom: 4px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+body .user-dropdown-info {
+  flex: 1 !important;
+  min-width: 0 !important;
+  padding-right: 4px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  margin: 0 !important;
 }
 
-.user-dropdown-id {
-  font-size: 12px;
-  color: var(--text-muted);
-  display: flex;
+/* 名称+ID 左侧 */
+body .user-dropdown-name-wrap {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 8px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+/* 名称+ID 左列 */
+body .user-dropdown-name-col {
+  flex: 1 !important;
+  min-width: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 4px !important;
+  overflow: hidden !important;
+  text-align: left !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* 当前登录 右侧容器 — 已弃用，保留隐藏 */
+body .user-dropdown-right-badge {
+  display: none !important;
+}
+
+/* 企业名称 — 单行显示，左对齐，超出省略号 */
+body .user-dropdown-name {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  color: var(--text, #1F2329) !important;
+  line-height: 1.2 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  max-width: 100% !important;
+  text-align: left !important;
+  display: block !important;
+}
+
+/* 统一社会信用代码（已隐藏） */
+body .user-dropdown-id {
+  display: none !important;
+}
+
+/* 徽章行：角色徽章 */
+.user-dropdown-badge-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  margin: 6px 0 0 0 !important;
+  padding: 0 !important;
+  flex-wrap: nowrap !important;
+}
+
+/* 当前登录 — 精致胶囊徽章 */
+.header-current-badge {
+  display: inline-flex;
   align-items: center;
   gap: 4px;
-  margin-bottom: 6px;
+  height: 20px;
+  padding: 0 9px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  color: #722ED1;
+  background: #F3E8FF;
+  border-radius: 10px;
+  white-space: nowrap;
+  user-select: none;
+  letter-spacing: 0.2px;
+}
+.header-current-badge::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #722ED1;
 }
 
-.user-dropdown-tags {
-  display: flex;
-  gap: 6px;
+/* 项目 chip */
+.user-dropdown-project-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   margin-top: 6px;
+  padding: 3px 8px;
+  background: #F7F8FA;
+  color: var(--text-secondary, #4E5969);
+  font-size: 11px;
+  border-radius: 6px;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
+.user-dropdown-project-chip .chip-icon { color: var(--brand-primary, #1677FF); display: inline-flex; }
+.user-dropdown-project-chip .chip-name { color: var(--text, #1F2329); font-weight: 500; }
+.user-dropdown-project-chip .chip-sep { color: #C9CDD4; margin: 0 2px; }
+.user-dropdown-project-chip .chip-label { color: var(--text-muted, #86909C); }
+
+.user-dropdown-switch-ent {
+  display: inline-flex !important;
+  align-items: center;
+  height: 18px;
+  gap: 3px;
+  padding: 0 7px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  font-family: inherit;
+  color: var(--brand-primary, #1677FF) !important;
+  background: var(--brand-primary-50, #E8F3FF);
+  border: 1px solid var(--brand-primary-200, #BAE0FF);
+  border-radius: 3px;
+  outline: none;
+  box-shadow: none;
+  text-decoration: none !important;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin: 0;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.user-dropdown-switch-ent:focus,
+.user-dropdown-switch-ent:active,
+.user-dropdown-switch-ent:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+  border-color: var(--brand-primary-200, #BAE0FF);
+}
+
+.user-dropdown-switch-ent:hover {
+  background: var(--brand-primary, #1677FF);
+  color: #fff;
+}
+
+.user-dropdown-switch-ent svg {
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  transition: transform 0.3s ease;
+}
+
+.user-dropdown-switch-ent:hover svg {
+  transform: rotate(360deg);
+}
+
+/* 注：.user-dropdown-name / .user-dropdown-id 已在上方统一定义，不再重复 */
 
 .user-dropdown-tags-row {
   display: flex;
@@ -3364,27 +3643,6 @@ select.form-input {
   gap: 6px;
   margin-top: 4px;
   flex-wrap: wrap;
-}
-
-.user-dropdown-current-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 11px;
-  padding: 2px 8px;
-  border-radius: 4px;
-  background: #F3E8FF;
-  color: #722ED1;
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-.user-dropdown-current-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #722ED1;
-  flex-shrink: 0;
 }
 
 .user-dropdown-tag {
@@ -3407,21 +3665,22 @@ select.form-input {
 }
 
 /* ===== 进入控制台按钮区 ===== */
-.user-dropdown-enter-bar {
-  padding: 12px 16px;
-  display: flex;
-  align-items: center;
-  border-top: none;
-  border-bottom: 1px solid #F2F3F5;
+body .user-dropdown-enter-bar {
+  padding: 0 12px 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  background: linear-gradient(180deg, #FAFBFC 0%, #FFFFFF 100%) !important;
 }
 
-.user-dropdown-enter-console {
+body .user-dropdown-enter-console {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   gap: 6px !important;
   width: 100% !important;
-  padding: 11px 18px !important;
+  padding: 9px 14px !important;
   border-radius: 8px !important;
   background: var(--brand-primary) !important;
   color: #fff !important;
@@ -3433,61 +3692,70 @@ select.form-input {
   transition: all 0.2s ease !important;
   border: none !important;
   box-sizing: border-box !important;
-  box-shadow: 0 2px 6px rgba(22,119,255,0.2);
+  box-shadow: 0 2px 6px rgba(22,119,255,0.2) !important;
   cursor: pointer !important;
 }
-.user-dropdown-enter-console:hover {
+body .user-dropdown-enter-console:hover {
   background: var(--brand-primary-dark) !important;
-  box-shadow: 0 4px 12px rgba(22,119,255,0.28);
-  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(22,119,255,0.28) !important;
+  transform: translateY(-1px) !important;
+  border: none !important;
 }
-.user-dropdown-enter-console:active {
-  transform: translateY(0);
-  box-shadow: 0 1px 4px rgba(22,119,255,0.22);
+body .user-dropdown-enter-console:active {
+  transform: translateY(0) !important;
+  box-shadow: 0 1px 4px rgba(22,119,255,0.22) !important;
 }
-.user-dropdown-enter-console svg {
-  flex-shrink: 0;
+body .user-dropdown-enter-console svg {
+  flex-shrink: 0 !important;
   color: #fff !important;
 }
-.user-dropdown-enter-console svg:first-child {
-  width: 16px;
-  height: 16px;
+body .user-dropdown-enter-console svg:first-child {
+  width: 16px !important;
+  height: 16px !important;
 }
-.user-dropdown-enter-console svg:last-child {
-  width: 14px;
-  height: 14px;
+body .user-dropdown-enter-console svg:last-child {
+  width: 14px !important;
+  height: 14px !important;
   opacity: 0.85;
 }
 
-.user-dropdown-body {
-  padding: 8px 0;
+body .user-dropdown-body {
+  padding: 4px 0 !important;
 }
 
-.user-dropdown-footer {
-  padding: 12px 16px;
-  border-top: 1px solid var(--gray-200);
+body .user-dropdown-footer {
+  padding: 10px 12px !important;
+  border-top: 1px solid #F2F3F5 !important;
+  background: #FAFBFC !important;
+  margin-top: 0 !important;
 }
 
-.user-dropdown-logout {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  width: 100%;
-  padding: 8px;
-  border: 1px solid var(--gray-300);
-  border-radius: 6px;
-  font-size: 13px;
-  color: var(--text-secondary);
-  background: #fff;
-  cursor: pointer;
-  transition: all 0.2s;
+body .user-dropdown-logout {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  width: 100% !important;
+  padding: 6px !important;
+  border: 1px solid #E5E6EB !important;
+  border-radius: 6px !important;
+  font-size: 13px !important;
+  color: #4E5969 !important;
+  background: #fff !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
 }
 
-.user-dropdown-logout:hover {
-  border-color: var(--brand-primary);
-  color: var(--brand-primary);
-  background: var(--brand-primary-50);
+body .user-dropdown-logout:hover {
+  border-color: #F53F3F !important;
+  color: #F53F3F !important;
+  background: #FEF0F0 !important;
+}
+
+/* 操作区 */
+body .user-dropdown-actions {
+  padding: 8px 12px !important;
+  border-top: 1px solid #F2F3F5 !important;
 }
 
 .user-dropdown-item {
@@ -3531,11 +3799,13 @@ select.form-input {
 }
 
 .user-dropdown-section-title {
-  padding: 12px 16px 8px;
-  font-size: 12px;
-  color: #86909C;
-  font-weight: 500;
-  letter-spacing: 0.5px;
+  padding: 12px 16px 8px !important;
+  font-size: 12px !important;
+  color: #86909C !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.5px !important;
+  text-transform: none !important;
+  margin: 0 !important;
 }
 
 /* 操作区域 - 用留白分隔 */
@@ -3547,10 +3817,10 @@ select.form-input {
 .user-dropdown-action {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 9px 12px;
-  margin: 2px 0;
-  border-radius: 8px;
+  gap: 8px;
+  padding: 7px 10px;
+  margin: 1px 0;
+  border-radius: 6px;
   font-size: 13px;
   color: #4E5969;
   text-decoration: none;
@@ -3578,12 +3848,7 @@ select.form-input {
   color: #4E5969;
 }
 
-/* Footer 区域 */
-.user-dropdown-footer {
-  padding: 12px 16px;
-  border-top: 1px solid #F2F3F5;
-  margin-top: 4px;
-}
+/* Footer 区域已在上方统一定义，避免重复覆盖 */
 
 /* 企业列表下方、操作项之间的分割线样式 */
 .user-dropdown-group .user-dropdown-divider {
@@ -3648,13 +3913,11 @@ select.form-input {
   display: none;
   align-items: center;
   justify-content: center;
-  opacity: 0;
-  transition: opacity 0.25s ease;
+  opacity: 1;
 }
 
 .modal-overlay.visible {
   display: flex;
-  opacity: 1;
 }
 
 .modal {
@@ -3665,15 +3928,7 @@ select.form-input {
   padding: 32px;
   text-align: center;
   box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-  transform: scale(0.92) translateY(10px);
-  opacity: 0;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   margin: 0 20px;
-}
-
-.modal-overlay.visible .modal {
-  transform: scale(1) translateY(0);
-  opacity: 1;
 }
 
 .modal-icon {
@@ -3989,21 +4244,30 @@ select.form-input {
   color: var(--brand-primary);
 }
 .enterprise-switch-icon {
-  width: 32px; height: 32px; border-radius: 8px;
-  background: var(--gray-100);
-  color: var(--text-secondary);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 13px; font-weight: 600; flex-shrink: 0;
+  width: 32px !important; height: 32px !important; border-radius: 8px !important;
+  background: var(--gray-100) !important;
+  color: var(--text-secondary) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  flex-shrink: 0 !important;
+  line-height: 1 !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif !important;
+  text-align: center !important;
+  padding: 0 !important;
+  transform: translateY(-1px) !important;
 }
 .enterprise-switch-item.active .enterprise-switch-icon {
   background: var(--brand-primary); color: #fff;
 }
-.enterprise-switch-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; padding-right: 60px; }
+.enterprise-switch-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; padding-right: 60px; }
 .enterprise-switch-name {
-  font-size: 13px; font-weight: 500;
+  font-size: 13px; font-weight: 500; line-height: 1.4;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.enterprise-switch-role { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.enterprise-switch-role { font-size: 11px; color: var(--text-muted); margin-top: 0; line-height: 1.3; }
 .enterprise-switch-name-row {
   display: flex;
   align-items: center;
@@ -4037,6 +4301,52 @@ select.form-input {
   min-width: 0;
 }
 
+/* ===== 下拉卡片：角色徽章 + 勾选图标 + 项目列表 ===== */
+/* 角色徽章（下拉头部） */
+.header-role-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  padding: 0 7px;
+  border: 1px solid #D6E4FF;
+  border-radius: 3px;
+  background: #EFF6FF;
+  color: #2F54EB;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+.header-badge-sep {
+  font-size: 11px;
+  color: #C9CDD4;
+  margin: 0 2px;
+}
+/* 右侧√指示器 */
+.enterprise-current-check {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--brand-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+.enterprise-switch-item.active .enterprise-current-check {
+  color: var(--brand-primary);
+}
+/* 项目列表样式（与企业列表一致） */
+.user-dropdown-project-list {
+  padding: 0 8px;
+}
+.user-dropdown-project-list .enterprise-switch-item {
+  cursor: default;
+}
+
 /* ===== 全局：轻量弹窗 (account-center 风格) ===== */
 .modal-mask {
   position: fixed; inset: 0;
@@ -4056,6 +4366,11 @@ select.form-input {
   overflow: hidden;
   max-height: 90vh;
   display: flex; flex-direction: column;
+  text-align: left;
+  padding: 0;
+  margin: 0;
+  visibility: visible;
+  opacity: 1;
 }
 .modal-mask > .modal .modal-header {
   padding: 18px 22px;
@@ -4177,6 +4492,112 @@ select.form-input {
 }
 .pagination-size:focus { outline: none; border-color: var(--brand-primary); }
 
+/* ===== GLOBAL TOPBAR ALIGNMENT FIX (overrides inline HTML styles) ===== */
+/* Fix logo / breadcrumb / 站内信 vertical misalignment across all pages */
+body .topbar,
+body .topbar-inner,
+body .topbar-left,
+body .topbar-right,
+body .topbar-brand,
+body .topbar-breadcrumb,
+body .topbar-user {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+}
+/* 消息通知按钮需要居中图标，不能使用 flex-start */
+body .topbar-message {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+body .topbar-inner {
+  justify-content: space-between !important;
+  height: 100% !important;
+  min-height: 60px !important;
+}
+body .topbar-brand { gap: 10px !important; }
+body .topbar-right { gap: 8px !important; }
+/* Fix "back" button (返回) icon alignment */
+body .topbar-back {
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+/* ===== GLOBAL ICON-TEXT VISUAL CENTERING FIX ===== */
+/* Chinese chars (杭/项/企/等) need slight upward shift because their weight is lower than geometric center */
+body .enterprise-switch-icon,
+body .topbar-avatar,
+body .user-avatar,
+body .user-dropdown-avatar,
+body .welcome-hero-avatar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif !important;
+  text-align: center !important;
+  padding: 0 !important;
+  /* Visual centering for CJK glyphs: shift up 1px */
+  transform: translateY(-1px) !important;
+}
+body .enterprise-switch-icon {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 8px !important;
+  line-height: 1 !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif !important;
+  text-align: center !important;
+  transform: translateY(-1px) !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: var(--gray-100) !important;
+  color: var(--text-secondary) !important;
+}
+body .topbar-avatar,
+body .user-avatar {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+
+/* ===== GLOBAL TEXT-ICON VISUAL CENTERING FIX (member/chip/team avatars) ===== */
+body .member-avatar-sm,
+body .chip-avatar,
+body .service-avatar,
+body .chat-avatar,
+body .message-avatar,
+body .team-avatar {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif !important;
+  text-align: center !important;
+  transform: translateY(-0.5px) !important;
+}
+
+/* ===== GLOBAL WELCOME HERO VERTICAL CENTERING ===== */
+body .welcome-hero-inner {
+  align-items: center !important;
+}
+body .welcome-hero-actions {
+  align-self: center !important;
+}
+body .welcome-meta-item {
+  align-items: center !important;
+}
+body .welcome-hero-avatar {
+  line-height: 1 !important;
+  transform: translateY(-1px) !important;
+}
+
 @media (max-width: 768px) {
   .pagination {
     flex-direction: row-reverse;
@@ -4185,4 +4606,58 @@ select.form-input {
   }
   .pagination-info { order: 2; width: 100%; margin-top: 2px; }
   .pagination-controls { order: 1; }
+}
+
+/* ===== 企业未认证状态：隐藏所有内容 ===== */
+body.unverified-enterprise .sidebar,
+body.unverified-enterprise .main-content,
+body.unverified-enterprise .page-layout,
+body.unverified-enterprise .page-title-wrap,
+body.unverified-enterprise .page-header,
+body.unverified-enterprise .card,
+body.unverified-enterprise .card-body,
+body.unverified-enterprise .card-title,
+body.unverified-enterprise .data-table,
+body.unverified-enterprise table,
+body.unverified-enterprise tbody,
+body.unverified-enterprise tr,
+body.unverified-enterprise td,
+body.unverified-enterprise th,
+body.unverified-enterprise .hero-section,
+body.unverified-enterprise .welcome-hero,
+body.unverified-enterprise .product-center,
+body.unverified-enterprise .stat-card,
+body.unverified-enterprise .hero-stat-num,
+body.unverified-enterprise .nav-enter-system,
+body.unverified-enterprise .enter-system-btn,
+body.unverified-enterprise .content-area,
+body.unverified-enterprise [class*="content-area"],
+body.unverified-enterprise [class*="data-section"],
+body.unverified-enterprise [class*="tab-panel"],
+body.unverified-enterprise [class*="panel-"],
+body.unverified-enterprise [class*="hero-"],
+body.unverified-enterprise [class*="welcome-"],
+body.unverified-enterprise [class*="product-"],
+body.unverified-enterprise .empty-state,
+body.unverified-enterprise .data-empty,
+body.unverified-enterprise .empty,
+body.unverified-enterprise .pagination,
+body.unverified-enterprise .filter-bar,
+body.unverified-enterprise .search-bar,
+body.unverified-enterprise .toolbar,
+body.unverified-enterprise .card-footer,
+body.unverified-enterprise .card-header {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+/* 强制隐藏主内容区域内的所有子元素 */
+body.unverified-enterprise .main-content *,
+body.unverified-enterprise .page-layout > *,
+body.unverified-enterprise .card * {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+body.unverified-enterprise .topbar {
+  position: relative;
+  z-index: 100000;
 }

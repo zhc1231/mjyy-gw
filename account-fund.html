@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>部门资金账户 - 民匠有约</title>
+  <link rel="stylesheet" href="css/style.css?v=2025fix10">
+  <style>
+    :root {
+      --brand-primary: #1677FF;
+      --brand-primary-dark: #0958D9;
+      --brand-primary-50: #E6F4FF;
+      --brand-primary-100: #BAE0FF;
+      --sidebar-width: 240px;
+      --gray-50: #F7F8FA;
+      --gray-100: #F2F3F5;
+      --gray-200: #E5E6EB;
+      --gray-300: #C9CDD4;
+      --text: #1D2129;
+      --text-regular: #4E5969;
+      --text-secondary: #86909C;
+      --text-placeholder: #C9CDD4;
+      --success: #00B42A;
+      --warning: #FF7D00;
+      --danger: #F53F3F;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #f5f6f7; color: var(--text); min-height: 100vh; line-height: 1.6;
+      overflow-y: scroll;
+    }
+    /* ===== 顶部导航 ===== */
+    .topbar { background:#fff; border-bottom:none; height:60px; width:100%; position:fixed; top:0; left:0; right:0; z-index:1000; padding:0; }
+    .topbar-inner { max-width:1440px; width:100%; margin:0 auto; padding:0 40px; height:100%; display:flex; align-items:center; justify-content:space-between; }
+    .topbar-divider { width:1px; height:20px; background:var(--gray-200); margin:0 12px; }
+    .topbar-brand { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text); }
+    .topbar-title { font-size:17px; font-weight:700; letter-spacing:0.3px; }
+    .topbar-breadcrumb { display:flex; align-items:center; gap:4px; font-size:13px; color:var(--text-regular); line-height:1; }
+    .topbar-breadcrumb a { color:var(--text-secondary); text-decoration:none; transition:color 0.15s; }
+    .topbar-breadcrumb a:hover { color:var(--brand-primary); }
+    .topbar-bc-sep { color:var(--text-placeholder); font-size:12px; margin:0 2px; }
+    .topbar-bc-current { color:var(--text); font-weight:500; }
+    .topbar-right { display:flex; align-items:center; gap:8px; }
+    .topbar-back { font-size:13px; color:var(--text-secondary); text-decoration:none; display:flex; align-items:center; gap:6px; }
+    .topbar-back:hover { color:var(--brand-primary); }
+    .topbar-user { position:relative; display:flex; align-items:center; gap:10px; padding:6px 12px 6px 8px; border-radius:10px; cursor:pointer; transition:background 0.2s; background:#fff; border:1px solid var(--gray-200); }
+    .topbar-user:hover { background:var(--gray-50); border-color:var(--gray-300); }
+    /* ===== 侧边栏 ===== */
+    .page-layout { display:flex; min-height:100vh; padding-top:60px; }
+    .sidebar { width:var(--sidebar-width); background:#fff; border-right:1px solid var(--gray-200); position:fixed; top:60px; bottom:0; left:0; overflow-y:auto; padding:16px 0; z-index:100; }
+    .sidebar-section-title { font-size:11px; color:var(--text-secondary); padding:8px 16px 6px; font-weight:500; letter-spacing:0.5px; text-transform:uppercase; }
+    .sidebar-menu { list-style:none; }
+    .sidebar-link { display:flex; align-items:center; gap:10px; padding:9px 16px; font-size:14px; color:var(--text-regular); text-decoration:none; transition:all 0.15s; border-left:3px solid transparent; }
+    .sidebar-link:hover { color:var(--brand-primary); background:var(--gray-100); }
+    .sidebar-link.active { color:var(--brand-primary); background:var(--brand-primary-50); border-left-color:var(--brand-primary); font-weight:500; }
+    .sidebar-link svg { width:17px; height:17px; flex-shrink:0; display: block; overflow: visible; align-self: center; }
+    .sidebar-divider { height:1px; background:var(--gray-200); margin:10px 16px; }
+    .main-content { margin-left:var(--sidebar-width); padding:24px 32px; flex:1; max-width:calc(100vw - var(--sidebar-width)); }
+    /* ===== 页面标题 ===== */
+    .page-title-wrap { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+    .page-title { font-size:22px; font-weight:600; color:var(--text); }
+    .page-subtitle { font-size:13px; color:var(--text-secondary); margin-top:4px; }
+    /* ===== 按钮 ===== */
+    .btn { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:8px; font-size:14px; border:none; cursor:pointer; transition:all 0.15s; text-decoration:none; }
+    .btn-primary { background:var(--brand-primary); color:#fff; }
+    .btn-primary:hover { background:var(--brand-primary-dark); }
+    .btn-outline { background:#fff; border:1px solid var(--gray-300); color:var(--text-regular); }
+    .btn-outline:hover { border-color:var(--brand-primary); color:var(--brand-primary); }
+    .btn-danger-outline { background:#fff; border:1px solid var(--danger); color:var(--danger); }
+    .btn-danger-outline:hover { background:#FFF1F0; }
+    .btn-sm { padding:4px 10px; font-size:12px; border-radius:6px; }
+    .btn:disabled { opacity:0.5; cursor:not-allowed; }
+    /* ===== 卡片 ===== */
+    .card { background:#fff; border-radius:12px; box-shadow:0 1px 4px rgba(0,0,0,0.04); margin-bottom:20px; }
+    .card-body { padding:20px 24px; }
+    .card-header { padding:16px 24px; border-bottom:1px solid var(--gray-200); display:flex; align-items:center; justify-content:space-between; }
+    .card-title { font-size:15px; font-weight:600; }
+    /* ===== 主账号概览 ===== */
+    .overview-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; align-items:center; }
+    .ov-item { display:flex; flex-direction:column; gap:6px; }
+    .ov-label { font-size:12px; color:var(--text-secondary); }
+    .ov-value { font-size:24px; font-weight:700; color:var(--text); }
+    .ov-value.primary { color:var(--brand-primary); }
+    .ov-value.danger { color:var(--danger); }
+    .ov-value.success { color:var(--success); }
+    .ov-value.warning { color:var(--warning); }
+    .ov-actions { display:flex; gap:8px; margin-top:8px; }
+    /* ===== Tab 栏 ===== */
+    .tab-bar { display:flex; gap:0; border-bottom:1px solid var(--gray-200); margin-bottom:16px; }
+    .tab-item { padding:10px 20px; font-size:14px; color:var(--text-secondary); cursor:pointer; border-bottom:2px solid transparent; transition:all 0.15s; }
+    .tab-item:hover { color:var(--brand-primary); }
+    .tab-item.active { color:var(--brand-primary); border-bottom-color:var(--brand-primary); font-weight:500; }
+    .tab-panel { display:none; }
+    .tab-panel.active { display:block; }
+    /* ===== 表格 ===== */
+    .data-table { width:100%; border-collapse:collapse; font-size:13px; }
+    .data-table th { text-align:left; padding:10px 12px; background:var(--gray-50); color:var(--text-secondary); font-weight:500; border-bottom:1px solid var(--gray-200); white-space:nowrap; }
+    .data-table td { padding:12px; border-bottom:1px solid var(--gray-100); vertical-align:middle; }
+    .data-table tr:hover td { background:var(--gray-50); }
+    .data-table .empty-row td { text-align:center; color:var(--text-placeholder); padding:40px; }
+    .table-actions { display:flex; gap:6px; flex-wrap:wrap; }
+    .table-action { font-size:12px; color:var(--brand-primary); cursor:pointer; text-decoration:none; padding:2px 6px; border-radius:4px; }
+    .table-action:hover { background:var(--brand-primary-50); }
+    .table-action.danger { color:var(--danger); }
+    .table-action.danger:hover { background:#FFF1F0; }
+    .table-action:disabled { color:var(--text-placeholder); cursor:not-allowed; }
+    /* ===== 状态标签 ===== */
+    .status-tag { display:inline-flex; align-items:center; gap:4px; font-size:12px; padding:2px 10px; border-radius:10px; }
+    .tab-badge { display:inline-block; min-width:18px; height:18px; padding:0 6px; border-radius:9px; background:var(--danger); color:#fff; font-size:11px; font-weight:500; text-align:center; line-height:18px; }
+    .status-active { background:#E8FFEA; color:var(--success); }
+    .status-frozen { background:#FFF7E8; color:var(--warning); }
+    .status-closed { background:var(--gray-100); color:var(--text-secondary); }
+    .mode-tag { font-size:11px; padding:1px 8px; border-radius:8px; }
+    .mode-independent { background:var(--brand-primary-50); color:var(--brand-primary); }
+    .mode-managed { background:#F5E8FF; color:#722ED1; }
+    /* ===== 模态框 ===== */
+    .modal-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.45); z-index:2000; display:none; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.25s ease; }
+    .modal-overlay.show { display:flex; opacity:1; pointer-events:auto; }
+    .modal-content { background:#fff; border-radius:12px; width:460px; max-width:90vw; max-height:90vh; overflow:hidden; display:flex; flex-direction:column; }
+    .modal-content.lg { width:560px; }
+    .modal-header { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid var(--gray-200); }
+    .modal-title { font-size:16px; font-weight:600; }
+    .modal-close { width:28px; height:28px; display:flex; align-items:center; justify-content:center; cursor:pointer; border-radius:6px; color:var(--text-secondary); border:none; background:none; font-size:18px; }
+    .modal-close:hover { background:var(--gray-100); color:var(--text); }
+    .modal-body { padding:20px; overflow-y:auto; flex:1; }
+    .modal-footer { display:flex; justify-content:flex-end; gap:8px; padding:12px 20px; border-top:1px solid var(--gray-200); }
+    .form-group { margin-bottom:16px; }
+    .form-label { display:block; font-size:13px; color:var(--text-regular); margin-bottom:6px; font-weight:500; }
+    .form-label .req { color:var(--danger); }
+    .form-input, .form-select, .form-textarea { width:100%; padding:8px 12px; border:1px solid var(--gray-300); border-radius:8px; font-size:14px; color:var(--text); background:#fff; transition:border-color 0.15s; font-family:inherit; }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { outline:none; border-color:var(--brand-primary); box-shadow:0 0 0 2px var(--brand-primary-50); }
+    .form-input.error { border-color:var(--danger); }
+    .form-textarea { resize:vertical; min-height:64px; }
+    .form-hint { font-size:12px; color:var(--text-secondary); margin-top:4px; }
+    .form-row { display:flex; gap:12px; }
+    .form-row .form-group { flex:1; }
+    .modal-msg { font-size:13px; padding:8px 12px; border-radius:6px; margin-bottom:12px; display:none; }
+    .modal-msg.show { display:block; }
+    .modal-msg.error { background:#FFF1F0; color:var(--danger); }
+    .modal-msg.success { background:#E8FFEA; color:var(--success); }
+    .modal-msg.warning { background:#FFF7E8; color:var(--warning); }
+    .radio-group { display:flex; gap:16px; }
+    .radio-item { display:flex; align-items:center; gap:6px; font-size:14px; cursor:pointer; }
+    .radio-item input { cursor:pointer; }
+    .balance-info { background:var(--gray-50); border:1px solid var(--gray-200); border-radius:8px; padding:10px 14px; margin-bottom:14px; font-size:13px; color:var(--text-regular); }
+    .balance-info b { color:var(--brand-primary); }
+    /* ===== 流水类型标签 ===== */
+    .tx-type-tag { font-size:11px; padding:1px 8px; border-radius:8px; }
+    .tx-allocate { background:var(--brand-primary-50); color:var(--brand-primary); }
+    .tx-recall { background:#FFF1F0; color:var(--danger); }
+    .tx-recharge { background:#E8FFEA; color:var(--success); }
+    .tx-adjust { background:#FFF7E8; color:var(--warning); }
+    .tx-transfer { background:var(--gray-100); color:var(--text-secondary); }
+    /* ===== 分页 ===== */
+    .pagination { display:flex; align-items:center; justify-content:space-between; padding:12px 0 0; }
+    .pagination-info { font-size:12px; color:var(--text-secondary); }
+    /* 响应式 */
+    @media (max-width:900px) {
+      .sidebar { display:none; }
+      .main-content { margin-left:0; padding:16px; }
+      .overview-grid { grid-template-columns:repeat(2,1fr); }
+    }
+  </style>
+
+<script src="js/switch-ent-handler.js?v=10"></script>
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div style="display:flex;align-items:center;gap:20px;">
+        <a href="account-center.html" class="topbar-brand">
+          <img src="https://oss.minjiangyouyue.com/mjlogo/logo02.png" alt="logo" style="height:34px;border-radius:8px;">
+          <span class="topbar-title">控制台</span>
+        </a>
+        <div class="topbar-breadcrumb">
+          <a href="index.html">首页</a>
+          <span class="topbar-bc-sep">/</span>
+          <a href="account-center.html">控制台</a>
+          <span class="topbar-bc-sep">/</span>
+          <span class="topbar-bc-current">部门资金账户</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <a href="account-center.html" class="topbar-back">
+          <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M19 12H5" stroke="currentColor" stroke-width="2"/><path d="M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2"/></svg>
+          返回
+        </a>
+        <div class="topbar-message" id="topbarMessage">
+          <div class="topbar-message-icon">
+            <svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="topbar-message-dot" id="topbarMessageDot"></span>
+            <span class="topbar-message-badge" id="topbarMessageBadge" style="display:none;">3</span>
+          </div>
+          <div class="message-dropdown" id="messageDropdown">
+            <div class="message-dropdown-header">
+              <span>消息通知</span>
+              <a href="javascript:;" class="message-dropdown-clear" id="msgClearAll">全部已读</a>
+            </div>
+            <div class="message-dropdown-list" id="messageList">
+              <!-- 动态消息列表 -->
+            </div>
+            <a href="javascript:;" class="message-dropdown-footer" id="msgViewAll">查看全部消息 →</a>
+          </div>
+        </div>
+        <div class="topbar-user" id="topbarUser"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 页面主体 -->
+  <div class="page-layout">
+    <!-- 左侧边栏 -->
+    <aside class="sidebar">
+      <div class="sidebar-section-title">产品</div>
+      <ul class="sidebar-menu">
+        <li><a href="account-center.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/></svg>
+          产品中心
+        </a></li>
+      </ul>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-title">企业</div>
+      <ul class="sidebar-menu">
+        <li><a href="account-realname.html?type=enterprise" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4" stroke="currentColor" stroke-width="2"/></svg>
+          企业信息
+        </a></li>
+        <li><a href="account-billing.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"/></svg>
+          合同管理
+        </a></li>
+        <li><a href="account-bank.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"/><line x1="2" y1="10" x2="22" y2="10" stroke="currentColor" stroke-width="2"/></svg>
+          账户管理
+        </a></li>
+      </ul>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-title">企业管理</div>
+      <ul class="sidebar-menu">
+        <li id="sidebarSubEntMgmt"><a href="account-project.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M9 9h6M9 13h4M9 17h5" stroke="currentColor" stroke-width="2"/></svg>
+          子公司管理
+        </a></li>
+      </ul>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-title">财务</div>
+      <ul class="sidebar-menu">
+        <li><a href="account-wallet.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="2"/></svg>
+          资金账户
+        </a></li>
+        <li><a href="account-fund.html" class="sidebar-link active">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M3 9h18M9 21V9" stroke="currentColor" stroke-width="2"/></svg>
+          部门账户
+        </a></li>
+      </ul>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-title">设置</div>
+      <ul class="sidebar-menu">
+        <li><a href="account-permission.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="currentColor" stroke-width="2"/></svg>
+          权限概览
+        </a></li>
+
+        <li><a href="account-user.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2"/></svg>
+          用户管理
+        </a></li>
+        <li><a href="account-role.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+          角色管理
+        </a></li>
+        <li><a href="account-security.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/></svg>
+          账号安全
+        </a></li>
+      </ul>
+    </aside>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+      <div class="page-title-wrap">
+        <div>
+          <div class="page-title">部门资金账户</div>
+          <div class="page-subtitle">主账号统一划拨、部门独立账本开立与回收，财务独立与托管双模式。</div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-outline" onclick="gotoApprovalCenter()">
+            <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="currentColor" stroke-width="2"/></svg>
+            审批中心<span id="headerPendingBadge" class="tab-badge" style="display:none;margin-left:6px;"></span>
+          </button>
+          <button class="btn btn-primary" onclick="openOpenAccountModal()">
+            <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2"/></svg>
+            开立部门账户
+          </button>
+        </div>
+      </div>
+
+      <!-- 审批提示横幅 -->
+      <div id="approvalBanner" style="display:none;background:linear-gradient(90deg,#FFF7E8 0%,#E6F4FF 100%);border:1px solid #FFD591;border-radius:8px;padding:10px 16px;margin-bottom:16px;align-items:center;justify-content:space-between;gap:12px;">
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-regular);">
+          <svg viewBox="0 0 24 24" fill="none" width="18" height="18" style="color:var(--warning);"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 8v4M12 16h.01" stroke="currentColor" stroke-width="2"/></svg>
+          <span>当前有 <b id="bannerPendingCount" style="color:var(--danger);">0</b> 笔审批待处理，大额划拨/冻结/调账等敏感操作需多级审批后自动执行。</span>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="gotoApprovalCenter()">前往处理</button>
+      </div>
+
+      <!-- 数据权限视图横幅（第四阶段） -->
+      <div id="scopeBanner" style="background:linear-gradient(90deg,#E6F4FF 0%,#F2F3F5 100%);border:1px solid #BAE0FF;border-radius:8px;padding:10px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-regular);">
+          <svg viewBox="0 0 24 24" fill="none" width="18" height="18" style="color:var(--brand-primary);"><path d="M12 2L2 7v10l10 5 10-5V7L12 2z" stroke="currentColor" stroke-width="2"/><path d="M2 7l10 5 10-5" stroke="currentColor" stroke-width="2"/><path d="M12 22V12" stroke="currentColor" stroke-width="2"/></svg>
+          <span><b id="scopeLabel" style="color:var(--brand-primary);">主账号视图</b> · <span id="scopeSub">可见全部部门与主账号</span></span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="font-size:12px;color:var(--text-secondary);">
+            角色：<span id="scopeRoles" style="color:var(--text-regular);font-weight:500;">主管理员</span>
+          </div>
+          <div class="scope-switcher" style="position:relative;">
+            <button class="btn btn-outline btn-sm" onclick="toggleScopeSwitcher(event)">演示切换身份 ▾</button>
+            <div id="scopeSwitcherMenu" style="display:none;position:absolute;right:0;top:100%;margin-top:4px;background:#fff;border:1px solid var(--gray-200);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.08);min-width:220px;z-index:50;padding:4px 0;">
+              <div class="scope-menu-item" onclick="switchDemoIdentity('main','主管理员',null)" style="padding:8px 14px;font-size:13px;cursor:pointer;color:var(--text-regular);">主管理员（scope=all）</div>
+              <div class="scope-menu-item" onclick="switchDemoIdentity('sub','财务主管',null)" style="padding:8px 14px;font-size:13px;cursor:pointer;color:var(--text-regular);">财务主管（scope=all_dept）</div>
+              <div class="scope-menu-item" onclick="switchDemoIdentity('sub','部门负责人',null)" style="padding:8px 14px;font-size:13px;cursor:pointer;color:var(--text-regular);">部门负责人（首个部门）</div>
+              <div class="scope-menu-item" onclick="switchDemoIdentity('sub','部门成员',null)" style="padding:8px 14px;font-size:13px;cursor:pointer;color:var(--text-regular);">部门成员（首个部门）</div>
+              <div style="height:1px;background:var(--gray-200);margin:4px 0;"></div>
+              <div class="scope-menu-item" onclick="switchDemoIdentity('sub','部门负责人','__pick__')" style="padding:8px 14px;font-size:13px;cursor:pointer;color:var(--brand-primary);">指定部门切换...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <style>
+        .scope-menu-item:hover { background: var(--brand-primary-50); }
+      </style>
+
+      <!-- 主账号资金概览 -->
+      <div class="card" id="mainAccountCard">
+        <div class="card-body">
+          <div class="overview-grid">
+            <div class="ov-item">
+              <div class="ov-label">主账号可用余额</div>
+              <div class="ov-value primary" id="mainBalance">¥ 0.00</div>
+            </div>
+            <div class="ov-item">
+              <div class="ov-label">冻结金额</div>
+              <div class="ov-value warning" id="mainFrozen">¥ 0.00</div>
+            </div>
+            <div class="ov-item">
+              <div class="ov-label">累计充值</div>
+              <div class="ov-value success" id="mainTotalIn">¥ 0.00</div>
+            </div>
+            <div class="ov-item">
+              <div class="ov-label">累计划出</div>
+              <div class="ov-value danger" id="mainTotalOut">¥ 0.00</div>
+            </div>
+          </div>
+          <div class="ov-actions">
+            <button class="btn btn-primary btn-sm" onclick="openRechargeModal()">充值</button>
+            <button class="btn btn-outline btn-sm" onclick="openTransferModal('allocate')">划拨到部门</button>
+            <button class="btn btn-outline btn-sm" onclick="refreshAll()">刷新</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 栏 -->
+      <div class="card">
+        <div class="card-body">
+          <div class="tab-bar">
+            <div class="tab-item active" data-tab="accounts" onclick="switchTab('accounts')">部门账户</div>
+            <div class="tab-item" data-tab="transactions" onclick="switchTab('transactions')">资金流水</div>
+            <div class="tab-item" data-tab="audit" onclick="switchTab('audit')">操作审计</div>
+          </div>
+
+          <!-- 部门账户表格 -->
+          <div class="tab-panel active" id="panel-accounts">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>部门</th>
+                  <th>账户号</th>
+                  <th>模式</th>
+                  <th>可用余额</th>
+                  <th>冻结</th>
+                  <th>累计入账</th>
+                  <th>累计出账</th>
+                  <th>状态</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="deptAccountsBody"></tbody>
+            </table>
+            <div class="pagination">
+              <div class="pagination-info" id="accountsPageInfo"></div>
+            </div>
+          </div>
+
+          <!-- 资金流水表格 -->
+          <div class="tab-panel" id="panel-transactions">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>流水号</th>
+                  <th>时间</th>
+                  <th>类型</th>
+                  <th>转出</th>
+                  <th>转入</th>
+                  <th>金额</th>
+                  <th>转出后余额</th>
+                  <th>转入后余额</th>
+                  <th>操作人</th>
+                  <th>备注</th>
+                </tr>
+              </thead>
+              <tbody id="txBody"></tbody>
+            </table>
+            <div class="pagination">
+              <div class="pagination-info" id="txPageInfo"></div>
+            </div>
+          </div>
+
+          <!-- 操作审计表格 -->
+          <div class="tab-panel" id="panel-audit">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>时间</th>
+                  <th>操作</th>
+                  <th>对象</th>
+                  <th>详情</th>
+                  <th>操作人</th>
+                </tr>
+              </thead>
+              <tbody id="auditBody"></tbody>
+            </table>
+            <div class="pagination">
+              <div class="pagination-info" id="auditPageInfo"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ============ 开立部门账户模态框 ============ -->
+  <div class="modal-overlay" id="openAccountModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">开立部门资金账户</div>
+        <button class="modal-close" onclick="closeModal('openAccountModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-msg" id="oa_msg"></div>
+        <div class="form-group">
+          <label class="form-label">选择部门 <span class="req">*</span></label>
+          <select class="form-select" id="oa_deptId">
+            <option value="">— 请选择部门 —</option>
+          </select>
+          <div class="form-hint">仅显示已启用且未开立账户的部门</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">财务模式 <span class="req">*</span></label>
+          <div class="radio-group">
+            <label class="radio-item"><input type="radio" name="oa_mode" value="independent" checked> 财务独立</label>
+            <label class="radio-item"><input type="radio" name="oa_mode" value="managed"> 财务托管</label>
+          </div>
+          <div class="form-hint">财务独立：部门账本独立核算；财务托管：主账号代管，账本仍独立记录</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">初始划拨金额</label>
+          <input type="number" class="form-input" id="oa_initial" placeholder="0.00" step="0.01" min="0">
+          <div class="form-hint">可选，从主账号划拨初始资金到新账户（主账号当前可用：<b id="oa_mainAvail">¥ 0.00</b>）</div>
+        </div>
+        <div class="balance-info" id="oa_balanceInfo" style="display:none;">
+          部门账户开立后，初始余额将显示为 <b id="oa_initialPreview">¥ 0.00</b>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('openAccountModal')">取消</button>
+        <button class="btn btn-primary" onclick="submitOpenAccount()">确定开立</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 划拨/回收模态框 ============ -->
+  <div class="modal-overlay" id="transferModal">
+    <div class="modal-content lg">
+      <div class="modal-header">
+        <div class="modal-title" id="tr_title">资金划拨</div>
+        <button class="modal-close" onclick="closeModal('transferModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-msg" id="tr_msg"></div>
+        <div class="balance-info" id="tr_balanceInfo"></div>
+        <div class="form-group">
+          <label class="form-label" id="tr_deptLabel">部门账户</label>
+          <select class="form-select" id="tr_deptId"></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">划拨金额 <span class="req">*</span></label>
+          <input type="number" class="form-input" id="tr_amount" placeholder="0.00" step="0.01" min="0.01">
+        </div>
+        <div class="form-group">
+          <label class="form-label">备注</label>
+          <textarea class="form-textarea" id="tr_remark" placeholder="可选，划拨用途说明"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">验证码 <span class="req">*</span></label>
+          <input type="text" class="form-input" id="tr_code" placeholder="请输入验证码">
+          <div class="form-hint">演示环境验证码：<b>123456</b></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('transferModal')">取消</button>
+        <button class="btn btn-primary" onclick="submitTransfer()">确定</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 充值模态框 ============ -->
+  <div class="modal-overlay" id="rechargeModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">主账号充值</div>
+        <button class="modal-close" onclick="closeModal('rechargeModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-msg" id="rc_msg"></div>
+        <div class="balance-info">当前主账号可用余额：<b id="rc_mainAvail">¥ 0.00</b></div>
+        <div class="form-group">
+          <label class="form-label">充值金额 <span class="req">*</span></label>
+          <input type="number" class="form-input" id="rc_amount" placeholder="0.00" step="0.01" min="0.01">
+        </div>
+        <div class="form-group">
+          <label class="form-label">充值方式</label>
+          <select class="form-select" id="rc_method">
+            <option value="在线充值">在线充值</option>
+            <option value="银行转账">银行转账</option>
+            <option value="支付宝">支付宝</option>
+            <option value="微信支付">微信支付</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">备注</label>
+          <textarea class="form-textarea" id="rc_remark" placeholder="可选"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('rechargeModal')">取消</button>
+        <button class="btn btn-primary" onclick="submitRecharge()">确定充值</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 冻结/调账模态框（复用） ============ -->
+  <div class="modal-overlay" id="actionModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title" id="ac_title">操作</div>
+        <button class="modal-close" onclick="closeModal('actionModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-msg" id="ac_msg"></div>
+        <div class="balance-info" id="ac_balanceInfo"></div>
+        <div class="form-group" id="ac_reasonGroup">
+          <label class="form-label">原因 <span class="req">*</span></label>
+          <textarea class="form-textarea" id="ac_reason" placeholder="请输入操作原因"></textarea>
+        </div>
+        <div class="form-group" id="ac_deltaGroup" style="display:none;">
+          <label class="form-label">调整金额 <span class="req">*</span></label>
+          <input type="number" class="form-input" id="ac_delta" placeholder="0.00（正数增加，负数减少）" step="0.01">
+        </div>
+        <div class="form-group" id="ac_remarkGroup">
+          <label class="form-label">备注</label>
+          <textarea class="form-textarea" id="ac_remark" placeholder="可选"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('actionModal')">取消</button>
+        <button class="btn btn-primary" id="ac_submitBtn" onclick="submitAction()">确定</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/main.js?v=1787772022"></script>
+<script src="js/enterprise-switch.js?v=19"></script>
+  <script>
+    // ===== 部门资金账户管理页面 =====
+    var F = null;        // MJYYFund 引用
+    var D = null;        // MJYYDept 引用
+    var P = null;        // MJYYPermission 引用（第四阶段：数据权限隔离）
+    var currentAction = null;   // 当前操作类型：freeze/unfreeze/close/adjust
+    var currentActionDeptId = null; // 当前操作部门ID
+    var transferDirection = 'allocate'; // allocate(主→部门) / recall(部门→主)
+
+    function $(id) { return document.getElementById(id); }
+    function fmtAmt(n) { return F ? F.fmtAmount(n) : ('¥ ' + Number(n||0).toFixed(2)); }
+    function fmtDate(ts) { return F ? F.fmtDate(ts) : '-'; }
+
+    function deptName(deptId) {
+      if (!D) return deptId;
+      var d = D.findDept(deptId);
+      return d ? d.name : ('(' + deptId + ')');
+    }
+    function accountLabel(type, id) {
+      if (type === 'main') return '主账号';
+      if (type === 'dept') return '部门 · ' + deptName(id);
+      if (type === 'external') return '外部';
+      if (type === 'project') return '项目 · ' + id;
+      return id || '-';
+    }
+    function txTypeLabel(type) {
+      var map = { allocate: '划拨', recall: '回收', recharge: '充值', adjust: '调账', transfer: '划转', consume: '消费', refund: '退款', open: '开立', close: '注销', freeze: '冻结', unfreeze: '解冻' };
+      return map[type] || type;
+    }
+    function txTypeClass(type) {
+      var map = { allocate: 'tx-allocate', recall: 'tx-recall', recharge: 'tx-recharge', adjust: 'tx-adjust' };
+      return map[type] || 'tx-transfer';
+    }
+    function actionLabel(action) {
+      var map = { open_account: '开立账户', freeze_account: '冻结', unfreeze_account: '解冻', close_account: '注销', adjust: '调账', recharge: '充值', allocate: '划拨', recall: '回收' };
+      return map[action] || action;
+    }
+
+    // ===== 审批感知提交辅助 =====
+    // 当操作命中审批规则时，发起审批（通过后自动执行）；否则直接执行原操作
+    // opts: { operationType, ruleCode, executorFn, payload, targetInfo, amount, applicantDeptId,
+    //         modalMsgId, closeModalId, successMsg, directCall }
+    function submitWithApproval(opts) {
+      var AP = window.MJYYApproval;
+      // 未启用审批组件 → 直接执行
+      if (!AP) {
+        var r0 = opts.directCall();
+        if (!r0.ok) { showMsg(opts.modalMsgId, r0.msg, 'error'); return; }
+        if (opts.closeModalId) closeModal(opts.closeModalId);
+        alert((opts.successMsg || '操作') + '成功');
+        refreshAll();
+        return;
+      }
+      var check = AP.checkRequired(opts.operationType, opts.amount);
+      // 不需审批 → 直接执行
+      if (!check.required) {
+        var r1 = opts.directCall();
+        if (!r1.ok) { showMsg(opts.modalMsgId, r1.msg, 'error'); return; }
+        if (opts.closeModalId) closeModal(opts.closeModalId);
+        alert((opts.successMsg || '操作') + '成功');
+        refreshAll();
+        return;
+      }
+      // 需要审批 → 发起审批单
+      var result = AP.create(opts.ruleCode, opts.operationType, opts.payload, opts.executorFn,
+        AP.getCurrentOperator(), opts.applicantDeptId || null, opts.targetInfo || null, opts.amount);
+      if (!result.ok) { showMsg(opts.modalMsgId, result.msg, 'error'); return; }
+      if (opts.closeModalId) closeModal(opts.closeModalId);
+      var tip = '已发起审批（' + (check.rule ? check.rule.name : '') + '）\n单号：' + result.approval.no
+        + '\n审批通过后将自动执行。可在「审批中心」查看进度。';
+      alert(tip);
+      refreshAll();
+    }
+    // 跳转审批中心
+    function gotoApprovalCenter() { window.location.href = 'account-approval.html'; }
+
+    // ===== 主账号概览渲染（按权限显隐） =====
+    function renderMainOverview() {
+      var card = $('mainAccountCard');
+      // 不可见主账号 → 隐藏整个卡片
+      if (P && !P.canViewMainAccount()) {
+        if (card) card.style.display = 'none';
+        return;
+      }
+      if (card) card.style.display = '';
+      var main = F.getMainAccount();
+      $('mainBalance').textContent = fmtAmt(main.balance);
+      $('mainFrozen').textContent = fmtAmt(main.frozen);
+      $('mainTotalIn').textContent = fmtAmt(main.totalIn);
+      $('mainTotalOut').textContent = fmtAmt(main.totalOut);
+      $('oa_mainAvail').textContent = fmtAmt(main.balance);
+      $('rc_mainAvail').textContent = fmtAmt(main.balance);
+    }
+
+    // ===== 数据权限视图横幅渲染（第四阶段） =====
+    function renderScopeBanner() {
+      if (!P) return;
+      var info = P.getScopeLabel();
+      var scope = P.getCurrentScope();
+      $('scopeLabel').textContent = info.label;
+      $('scopeSub').textContent = info.sub;
+      $('scopeRoles').textContent = (scope.roleNames || []).join('、') || '未知';
+    }
+
+    // ===== 演示切换身份（仅用于测试不同角色下的数据隔离效果） =====
+    function toggleScopeSwitcher(e) {
+      if (e && e.stopPropagation) e.stopPropagation();
+      var menu = $('scopeSwitcherMenu');
+      if (!menu) return;
+      menu.style.display = (menu.style.display === 'none' || !menu.style.display) ? 'block' : 'none';
+    }
+    // 点击其他位置关闭菜单
+    document.addEventListener('click', function (e) {
+      var menu = $('scopeSwitcherMenu');
+      if (!menu || menu.style.display === 'none') return;
+      var target = e.target;
+      var switcher = document.querySelector('.scope-switcher');
+      if (switcher && !switcher.contains(target)) menu.style.display = 'none';
+    });
+    // accountType: main / sub; role: 主管理员/财务主管/部门负责人/部门成员; deptId: 指定部门或 null(取首个) 或 '__pick'(弹出选择)
+    function switchDemoIdentity(accountType, role, deptId) {
+      $('scopeSwitcherMenu').style.display = 'none';
+      if (!D) { alert('部门工具未加载'); return; }
+      var depts = D.getDepartments();
+      if (accountType === 'sub' && (!depts || depts.length === 0)) {
+        alert('暂无部门，请先在组织架构页面创建部门');
+        return;
+      }
+      if (accountType === 'sub' && deptId === '__pick__') {
+        var opts = depts.map(function (d) { return d.id + ' - ' + d.name; }).join('\n');
+        var picked = prompt('请选择部门（输入部门ID或行号，从0开始）:\n' + opts, '0');
+        if (picked === null) return;
+        var idx = parseInt(picked, 10);
+        if (!isNaN(idx) && idx >= 0 && idx < depts.length) deptId = depts[idx].id;
+        else deptId = picked;
+      }
+      if (accountType === 'main') {
+        localStorage.setItem('mjyy_account_type', 'main');
+        var mainUser = JSON.parse(localStorage.getItem('mjyy_user_data') || '{}');
+        mainUser.username = 'demo_main';
+        mainUser.roleNames = ['主管理员'];
+        delete mainUser.deptId;
+        localStorage.setItem('mjyy_user_data', JSON.stringify(mainUser));
+      } else {
+        var targetDept = null;
+        if (deptId) {
+          targetDept = D.findDept(deptId);
+        }
+        if (!targetDept && depts.length > 0) targetDept = depts[0];
+        if (!targetDept) { alert('部门不存在'); return; }
+        var subUser = JSON.parse(localStorage.getItem('mjyy_user_data') || '{}');
+        subUser.username = 'demo_' + role + '_' + targetDept.id.slice(-4);
+        subUser.roleNames = [role];
+        subUser.deptId = targetDept.id;
+        localStorage.setItem('mjyy_user_data', JSON.stringify(subUser));
+        localStorage.setItem('mjyy_account_type', 'sub');
+      }
+      alert('已切换身份：' + role + (accountType === 'sub' && deptId ? '\n部门：' + (D.findDept(deptId) ? D.findDept(deptId).name : deptId) : '') + '\n点击确定后刷新视图');
+      refreshAll();
+    }
+
+    // ===== 部门账户表格渲染（按权限过滤 + 操作按钮按权限显隐） =====
+    function renderDeptAccounts() {
+      var body = $('deptAccountsBody');
+      var rawList = F.getDeptAccounts();
+      // 第四阶段：按数据权限过滤
+      var list = P ? P.filterDeptAccounts(rawList) : rawList;
+      if (!list.length) {
+        var emptyMsg = (P && !P.canViewMainAccount())
+          ? '当前视图下无可见的部门账户'
+          : '暂无部门资金账户，点击右上角"开立部门账户"创建';
+        body.innerHTML = '<tr class="empty-row"><td colspan="9">' + escapeHtml(emptyMsg) + '</td></tr>';
+        $('accountsPageInfo').textContent = '共 0 条记录';
+        return;
+      }
+      var html = '';
+      for (var i = 0; i < list.length; i++) {
+        var a = list[i];
+        var statusTag = '<span class="status-tag status-' + a.status + '">' +
+          (a.status === 'active' ? '正常' : (a.status === 'frozen' ? '已冻结' : '已注销')) + '</span>';
+        var modeTag = '<span class="mode-tag mode-' + a.mode + '">' +
+          (a.mode === 'managed' ? '财务托管' : '财务独立') + '</span>';
+        // 操作按钮按权限显隐
+        var ops = '';
+        var canAllocate = !P || (P.canOperateFund('allocate_to_dept', 0, a.deptId).ok);
+        var canRecall = !P || (P.canOperateFund('recall_from_dept', 0, a.deptId).ok);
+        var canAdjust = !P || (P.canOperateFund('adjust', 0, a.deptId).ok);
+        var canFreeze = !P || (P.canOperateFund('freeze', 0, a.deptId).ok);
+        var canUnfreeze = !P || (P.canOperateFund('unfreeze', 0, a.deptId).ok);
+        var canClose = !P || (P.canOperateFund('close', 0, a.deptId).ok);
+        if (a.status === 'active') {
+          if (canAllocate) ops += '<a class="table-action" onclick="openTransferModalForDept(\'' + a.deptId + '\',\'allocate\')">划拨</a>';
+          if (canRecall) ops += '<a class="table-action" onclick="openTransferModalForDept(\'' + a.deptId + '\',\'recall\')">回收</a>';
+          if (canAdjust) ops += '<a class="table-action" onclick="openActionModal(\'adjust\',\'' + a.deptId + '\')">调账</a>';
+          if (canFreeze) ops += '<a class="table-action" onclick="openActionModal(\'freeze\',\'' + a.deptId + '\')">冻结</a>';
+        } else if (a.status === 'frozen') {
+          if (canUnfreeze) ops += '<a class="table-action" onclick="openActionModal(\'unfreeze\',\'' + a.deptId + '\')">解冻</a>';
+        }
+        if (a.status !== 'closed') {
+          if (canClose) ops += '<a class="table-action danger" onclick="openActionModal(\'close\',\'' + a.deptId + '\')">注销</a>';
+        }
+        if (!ops) ops = '<span style="color:var(--text-secondary);font-size:12px;">无权限</span>';
+        html += '<tr>' +
+          '<td>' + escapeHtml(deptName(a.deptId)) + '</td>' +
+          '<td><code style="font-size:12px;color:var(--text-secondary);">' + a.accountNo + '</code></td>' +
+          '<td>' + modeTag + '</td>' +
+          '<td style="font-weight:600;color:var(--brand-primary);">' + fmtAmt(a.balance) + '</td>' +
+          '<td>' + fmtAmt(a.frozen) + '</td>' +
+          '<td style="color:var(--success);">' + fmtAmt(a.totalIn) + '</td>' +
+          '<td style="color:var(--danger);">' + fmtAmt(a.totalOut) + '</td>' +
+          '<td>' + statusTag + '</td>' +
+          '<td><div class="table-actions">' + ops + '</div></td>' +
+          '</tr>';
+      }
+      body.innerHTML = html;
+      $('accountsPageInfo').textContent = '共 ' + list.length + ' 条记录';
+    }
+
+    // ===== 资金流水渲染（按权限过滤） =====
+    function renderTransactions() {
+      var body = $('txBody');
+      var rawList = F.getTransactions();
+      // 第四阶段：按数据权限过滤（部门用户仅可见与本部门相关的流水）
+      var list = P ? P.filterFundTx(rawList) : rawList;
+      if (!list.length) {
+        body.innerHTML = '<tr class="empty-row"><td colspan="10">当前视图下暂无可见资金流水</td></tr>';
+        $('txPageInfo').textContent = '共 0 条记录';
+        return;
+      }
+      var html = '';
+      for (var i = 0; i < list.length; i++) {
+        var t = list[i];
+        var amountSign = (t.type === 'recall' || t.type === 'recharge') ? '+' : '-';
+        var amountColor = (t.type === 'recall' || t.type === 'recharge') ? 'var(--success)' : 'var(--danger)';
+        html += '<tr>' +
+          '<td><code style="font-size:11px;color:var(--text-secondary);">' + t.no + '</code></td>' +
+          '<td>' + fmtDate(t.createdAt) + '</td>' +
+          '<td><span class="tx-type-tag ' + txTypeClass(t.type) + '">' + txTypeLabel(t.type) + '</span></td>' +
+          '<td>' + escapeHtml(accountLabel(t.fromType, t.fromId)) + '</td>' +
+          '<td>' + escapeHtml(accountLabel(t.toType, t.toId)) + '</td>' +
+          '<td style="color:' + amountColor + ';font-weight:600;">' + amountSign + fmtAmt(t.amount) + '</td>' +
+          '<td>' + fmtAmt(t.balanceAfterFrom) + '</td>' +
+          '<td>' + fmtAmt(t.balanceAfterTo) + '</td>' +
+          '<td>' + escapeHtml(t.operator) + '</td>' +
+          '<td style="color:var(--text-secondary);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + escapeHtml(t.remark) + '">' + escapeHtml(t.remark || '-') + '</td>' +
+          '</tr>';
+      }
+      body.innerHTML = html;
+      $('txPageInfo').textContent = '共 ' + list.length + ' 条记录';
+    }
+
+    // ===== 操作审计渲染（按权限过滤） =====
+    function renderAudit() {
+      var body = $('auditBody');
+      var rawList = F.getAuditLogs();
+      // 第四阶段：按数据权限过滤
+      var list = P ? P.filterAuditLogs(rawList) : rawList;
+      if (!list.length) {
+        body.innerHTML = '<tr class="empty-row"><td colspan="5">当前视图下暂无可见审计记录</td></tr>';
+        $('auditPageInfo').textContent = '共 0 条记录';
+        return;
+      }
+      var html = '';
+      for (var i = 0; i < list.length; i++) {
+        var l = list[i];
+        var target = l.targetName ? (escapeHtml(l.targetName) + (l.targetType === 'dept' ? ' (部门)' : (l.targetType === 'main' ? ' (主账号)' : ''))) : escapeHtml(l.targetId || '-');
+        html += '<tr>' +
+          '<td>' + fmtDate(l.createdAt) + '</td>' +
+          '<td><span class="tx-type-tag tx-' + (l.action.indexOf('freeze')>=0 ? 'adjust' : (l.action==='recharge'?'recharge':'allocate')) + '">' + actionLabel(l.action) + '</span></td>' +
+          '<td>' + target + '</td>' +
+          '<td style="color:var(--text-regular);max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + escapeHtml(l.detail) + '">' + escapeHtml(l.detail || '-') + '</td>' +
+          '<td>' + escapeHtml(l.operator) + '</td>' +
+          '</tr>';
+      }
+      body.innerHTML = html;
+      $('auditPageInfo').textContent = '共 ' + list.length + ' 条记录';
+    }
+
+    // ===== Tab 切换 =====
+    function switchTab(tab) {
+      var items = document.querySelectorAll('.tab-item');
+      var panels = document.querySelectorAll('.tab-panel');
+      for (var i = 0; i < items.length; i++) { items[i].classList.remove('active'); }
+      for (var j = 0; j < panels.length; j++) { panels[j].classList.remove('active'); }
+      event.target.classList.add('active');
+      $('panel-' + tab).classList.add('active');
+      if (tab === 'transactions') renderTransactions();
+      if (tab === 'audit') renderAudit();
+    }
+
+    // ===== 刷新全部 =====
+    function refreshAll() {
+      renderScopeBanner();   // 第四阶段：刷新数据权限视图横幅
+      renderMainOverview();
+      renderDeptAccounts();
+      renderTransactions();
+      renderAudit();
+      refreshApprovalBanner();
+    }
+    // 审批待办横幅
+    function refreshApprovalBanner() {
+      var AP = window.MJYYApproval;
+      var banner = $('approvalBanner');
+      var badge = $('headerPendingBadge');
+      var countEl = $('bannerPendingCount');
+      if (!AP || !banner) return;
+      var pending = AP.myPending();
+      if (pending.length > 0) {
+        banner.style.display = 'flex';
+        countEl.textContent = pending.length;
+        if (badge) { badge.textContent = pending.length; badge.style.display = 'inline-block'; }
+      } else {
+        banner.style.display = 'none';
+        if (badge) badge.style.display = 'none';
+      }
+    }
+
+    // ===== 模态框通用 =====
+    function openModal(id) { $(id).classList.add('show'); }
+    function closeModal(id) {
+      $(id).classList.remove('show');
+      // 清空错误提示
+      var msg = $(id.replace('Modal','_msg')) || $(id + '_msg');
+      var msgEl = document.querySelector('#' + id + ' .modal-msg');
+      if (msgEl) msgEl.classList.remove('show', 'error', 'success', 'warning');
+    }
+    function showMsg(msgElId, text, type) {
+      var el = $(msgElId);
+      if (!el) return;
+      el.textContent = text;
+      el.className = 'modal-msg show ' + (type || 'error');
+    }
+
+    // ===== 开立账户模态框 =====
+    function openOpenAccountModal() {
+      // 填充未开立账户的部门
+      var sel = $('oa_deptId');
+      var depts = D.getDepartments();
+      var accounts = F.getDeptAccounts();
+      var openedMap = {};
+      for (var i = 0; i < accounts.length; i++) openedMap[accounts[i].deptId] = true;
+      var opts = '<option value="">— 请选择部门 —</option>';
+      for (var j = 0; j < depts.length; j++) {
+        if (openedMap[depts[j].id]) continue;
+        if (depts[j].status && depts[j].status !== 'active') continue;
+        opts += '<option value="' + depts[j].id + '">' + escapeHtml(depts[j].name) + '</option>';
+      }
+      sel.innerHTML = opts;
+      $('oa_initial').value = '';
+      $('oa_balanceInfo').style.display = 'none';
+      renderMainOverview();
+      openModal('openAccountModal');
+    }
+
+    function submitOpenAccount() {
+      var deptId = $('oa_deptId').value;
+      var mode = document.querySelector('input[name="oa_mode"]:checked').value;
+      var initial = parseFloat($('oa_initial').value) || 0;
+      if (!deptId) { showMsg('oa_msg', '请选择部门', 'error'); return; }
+      if (initial < 0) { showMsg('oa_msg', '初始划拨金额不能为负', 'error'); return; }
+      var main = F.getMainAccount();
+      if (initial > 0 && initial > main.balance) {
+        showMsg('oa_msg', '主账号余额不足，当前可用 ' + fmtAmt(main.balance), 'error');
+        return;
+      }
+      var r = F.openDeptAccount(deptId, mode, initial, '当前用户');
+      if (!r.ok) { showMsg('oa_msg', r.msg, 'error'); return; }
+      closeModal('openAccountModal');
+      alert('部门资金账户已开立' + (initial > 0 ? '，初始划拨 ' + fmtAmt(initial) + ' 已执行' : ''));
+      refreshAll();
+    }
+
+    // ===== 划拨/回收模态框 =====
+    function openTransferModal(direction) {
+      transferDirection = direction;
+      var isAllocate = (direction === 'allocate');
+      $('tr_title').textContent = isAllocate ? '划拨资金到部门' : '从部门回收资金';
+      $('tr_deptLabel').textContent = isAllocate ? '划拨至部门 <span class="req">*</span>' : '从部门回收 <span class="req">*</span>';
+      // 填充可用部门（allocate：所有active账户；recall：有余额的active账户）
+      var list = F.getDeptAccounts();
+      var opts = '<option value="">— 请选择部门 —</option>';
+      for (var i = 0; i < list.length; i++) {
+        if (list[i].status !== 'active') continue;
+        if (!isAllocate && list[i].balance <= 0) continue;
+        opts += '<option value="' + list[i].deptId + '">' + escapeHtml(deptName(list[i].deptId)) +
+          ' · ' + list[i].accountNo + ' · 余额 ' + fmtAmt(list[i].balance) + '</option>';
+      }
+      $('tr_deptId').innerHTML = opts;
+      var main = F.getMainAccount();
+      $('tr_balanceInfo').innerHTML = isAllocate
+        ? '主账号当前可用余额：<b>' + fmtAmt(main.balance) + '</b>（划拨后扣减）'
+        : '部门资金回收至主账号（回收后主账号增加，当前主账号余额 ' + fmtAmt(main.balance) + '）';
+      $('tr_amount').value = '';
+      $('tr_remark').value = '';
+      $('tr_code').value = '';
+      openModal('transferModal');
+    }
+
+    function openTransferModalForDept(deptId, direction) {
+      openTransferModal(direction);
+      $('tr_deptId').value = deptId;
+    }
+
+    function submitTransfer() {
+      var deptId = $('tr_deptId').value;
+      var amount = parseFloat($('tr_amount').value);
+      var remark = $('tr_remark').value.trim();
+      var code = $('tr_code').value.trim();
+      if (!deptId) { showMsg('tr_msg', '请选择部门', 'error'); return; }
+      if (!amount || amount <= 0) { showMsg('tr_msg', '请输入有效金额', 'error'); return; }
+      if (!code) { showMsg('tr_msg', '请输入验证码', 'error'); return; }
+      if (code !== '123456') { showMsg('tr_msg', '验证码错误（演示环境请输入 123456）', 'error'); return; }
+      var isAllocate = (transferDirection === 'allocate');
+      submitWithApproval({
+        operationType: isAllocate ? 'allocate_to_dept' : 'recall_from_dept',
+        ruleCode: 'allocate_large',
+        executorFn: isAllocate ? 'fund.allocateToDept' : 'fund.recallFromDept',
+        payload: { deptId: deptId, amount: amount, remark: remark || (isAllocate ? '划拨到部门' : '从部门回收') },
+        targetInfo: { targetType: 'dept_account', targetId: deptId, targetName: deptName(deptId) },
+        amount: amount,
+        applicantDeptId: isAllocate ? null : deptId,
+        modalMsgId: 'tr_msg',
+        closeModalId: 'transferModal',
+        successMsg: (isAllocate ? '划拨' : '回收') + '（金额 ' + fmtAmt(amount) + '）',
+        directCall: function () {
+          return isAllocate
+            ? F.allocateToDept(deptId, amount, remark || '划拨到部门', '当前用户')
+            : F.recallFromDept(deptId, amount, remark || '从部门回收', '当前用户');
+        }
+      });
+    }
+
+    // ===== 充值模态框 =====
+    function openRechargeModal() {
+      $('rc_amount').value = '';
+      $('rc_remark').value = '';
+      renderMainOverview();
+      openModal('rechargeModal');
+    }
+    function submitRecharge() {
+      var amount = parseFloat($('rc_amount').value);
+      var method = $('rc_method').value;
+      var remark = $('rc_remark').value.trim();
+      if (!amount || amount <= 0) { showMsg('rc_msg', '请输入有效充值金额', 'error'); return; }
+      submitWithApproval({
+        operationType: 'recharge_main',
+        ruleCode: 'recharge_large',
+        executorFn: 'fund.rechargeMain',
+        payload: { amount: amount, method: method, remark: remark || '主账号充值' },
+        targetInfo: { targetType: 'main_account', targetId: 'main', targetName: '主账号' },
+        amount: amount,
+        applicantDeptId: null,
+        modalMsgId: 'rc_msg',
+        closeModalId: 'rechargeModal',
+        successMsg: '充值（金额 ' + fmtAmt(amount) + '）',
+        directCall: function () { return F.rechargeMain(amount, method, remark, '当前用户'); }
+      });
+    }
+
+    // ===== 冻结/解冻/注销/调账模态框 =====
+    function openActionModal(action, deptId) {
+      currentAction = action;
+      currentActionDeptId = deptId;
+      var acc = F.findDeptAccount(deptId);
+      if (!acc) { alert('部门资金账户不存在'); return; }
+      var titles = { freeze: '冻结部门账户', unfreeze: '解冻部门账户', close: '注销部门账户', adjust: '调整部门账户余额' };
+      $('ac_title').textContent = titles[action] || '操作';
+      $('ac_balanceInfo').innerHTML = '部门：<b>' + escapeHtml(deptName(deptId)) + '</b> · 账户号 ' + acc.accountNo + ' · 当前余额 <b>' + fmtAmt(acc.balance) + '</b>';
+      $('ac_reason').value = '';
+      $('ac_remark').value = '';
+      $('ac_delta').value = '';
+      // 控制字段显示
+      $('ac_reasonGroup').style.display = (action === 'freeze' || action === 'close') ? 'block' : 'none';
+      $('ac_deltaGroup').style.display = (action === 'adjust') ? 'block' : 'none';
+      $('ac_remarkGroup').style.display = (action === 'adjust' || action === 'unfreeze') ? 'block' : 'none';
+      $('ac_submitBtn').textContent = '确定' + (titles[action] || '').replace('部门账户', '');
+      openModal('actionModal');
+    }
+    function submitAction() {
+      var deptId = currentActionDeptId;
+      var acc = F.findDeptAccount(deptId);
+      var targetName = deptName(deptId) + (acc ? ' · ' + acc.accountNo : '');
+      var targetInfo = { targetType: 'dept_account', targetId: deptId, targetName: targetName };
+      if (currentAction === 'freeze') {
+        var reason = $('ac_reason').value.trim();
+        if (!reason) { showMsg('ac_msg', '请输入冻结原因', 'error'); return; }
+        submitWithApproval({
+          operationType: 'freeze_dept_account', ruleCode: 'freeze_account', executorFn: 'fund.freezeDeptAccount',
+          payload: { deptId: deptId, reason: reason },
+          targetInfo: targetInfo, amount: 0, applicantDeptId: deptId,
+          modalMsgId: 'ac_msg', closeModalId: 'actionModal', successMsg: '冻结部门账户',
+          directCall: function () { return F.freezeDeptAccount(deptId, reason, '当前用户'); }
+        });
+      } else if (currentAction === 'unfreeze') {
+        var unfreezeRemark = $('ac_remark').value.trim();
+        submitWithApproval({
+          operationType: 'unfreeze_dept_account', ruleCode: 'freeze_account', executorFn: 'fund.unfreezeDeptAccount',
+          payload: { deptId: deptId },
+          targetInfo: targetInfo, amount: 0, applicantDeptId: deptId,
+          modalMsgId: 'ac_msg', closeModalId: 'actionModal', successMsg: '解冻部门账户',
+          directCall: function () { return F.unfreezeDeptAccount(deptId, '当前用户'); }
+        });
+      } else if (currentAction === 'close') {
+        var closeReason = $('ac_reason').value.trim();
+        if (!closeReason) { showMsg('ac_msg', '请输入注销原因', 'error'); return; }
+        submitWithApproval({
+          operationType: 'close_dept_account', ruleCode: 'close_account', executorFn: 'fund.closeDeptAccount',
+          payload: { deptId: deptId, reason: closeReason },
+          targetInfo: targetInfo, amount: acc ? acc.balance : 0, applicantDeptId: deptId,
+          modalMsgId: 'ac_msg', closeModalId: 'actionModal', successMsg: '注销部门账户',
+          directCall: function () { return F.closeDeptAccount(deptId, '当前用户'); }
+        });
+      } else if (currentAction === 'adjust') {
+        var delta = parseFloat($('ac_delta').value);
+        if (isNaN(delta) || delta === 0) { showMsg('ac_msg', '请输入非零调整金额', 'error'); return; }
+        var remark = $('ac_remark').value.trim();
+        submitWithApproval({
+          operationType: 'adjust_dept_account', ruleCode: 'adjust_account', executorFn: 'fund.adjustDeptAccount',
+          payload: { deptId: deptId, delta: delta, remark: remark || '管理员调账' },
+          targetInfo: targetInfo, amount: Math.abs(delta), applicantDeptId: deptId,
+          modalMsgId: 'ac_msg', closeModalId: 'actionModal', successMsg: '部门账户调账（' + fmtAmt(delta) + '）',
+          directCall: function () { return F.adjustDeptAccount(deptId, delta, remark || '管理员调账', '当前用户'); }
+        });
+      }
+    }
+
+    // ===== 工具：HTML 转义 =====
+    function escapeHtml(s) {
+      if (s === null || s === undefined) return '';
+      return String(s).replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+      });
+    }
+
+    // ===== 初始化 =====
+    (function init() {
+      function tryInit() {
+        if (window.MJYYFund && window.MJYYDept && window.MJYYPermission) {
+          F = window.MJYYFund;
+          D = window.MJYYDept;
+          P = window.MJYYPermission;   // 第四阶段：数据权限工具
+          D.migrate(); // 确保部门迁移完成
+          refreshAll();
+        } else {
+          setTimeout(tryInit, 100);
+        }
+      }
+      tryInit();
+      // 模态框背景点击关闭
+      var modals = document.querySelectorAll('.modal-overlay');
+      for (var i = 0; i < modals.length; i++) {
+        modals[i].addEventListener('click', function (e) {
+          if (e.target === this) { this.classList.remove('show'); }
+        });
+      }
+    })();
+
+    var accountType = localStorage.getItem('mjyy_account_type');
+    if (accountType === 'sub') {
+      var subEntMgmt = document.getElementById('sidebarSubEntMgmt');
+      if (subEntMgmt) subEntMgmt.style.display = 'none';
+    }
+  </script>
+</body>
+</html>

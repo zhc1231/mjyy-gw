@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>账户管理 - 民匠有约</title>
-  <link rel="stylesheet" href="css/style.css?v=23">
+  <link rel="stylesheet" href="css/style.css?v=2025fix10">
   <style>
     :root {
       --brand-primary: #1677FF;
@@ -226,7 +226,7 @@
       color: var(--text-secondary);
       cursor: pointer;
       transition: all 0.2s;
-      user-select: none;
+      user-select: none; flex-shrink: 0;
     }
     .topbar-message:hover {
       background: var(--gray-100);
@@ -252,8 +252,7 @@
     }
     .topbar-message-dot {
       position: absolute;
-      top: -3px;
-      right: -3px;
+      top: 4px; right: 4px;
       width: 8px;
       height: 8px;
       border-radius: 50%;
@@ -261,29 +260,29 @@
       display: none;
       z-index: 5;
     }
+      box-shadow: 0 0 0 2px #fff;
     .topbar-message-dot.show { display: block; }
     .topbar-message.has-badge .topbar-message-dot {
       display: none !important;
     }
     .topbar-message .topbar-message-badge {
       position: absolute;
-      top: -2px;
-      right: -2px;
+      top: 4px; right: 4px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       min-width: 16px;
-      height: 16px;
+      height: 14px;
       padding: 0 4px;
-      border-radius: 8px;
+      border-radius: 7px;
       background: #F53F3F;
       color: #fff;
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 600;
       text-align: center;
       line-height: 1;
       border: 2px solid #fff;
-      box-sizing: content-box;
+      box-sizing: border-box;
       z-index: 10;
       box-shadow: 0 1px 3px rgba(245, 63, 63, 0.4);
     }
@@ -305,7 +304,7 @@
     }
     .message-dropdown-header {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
       padding: 14px 16px 10px;
       font-weight: 600;
@@ -414,7 +413,7 @@
     }
     .topbar-message-badge {
       display: inline-flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       min-width: 16px;
       height: 16px;
@@ -432,7 +431,7 @@
     /* ===== 下拉菜单 当前登录标签 ===== */
     .user-dropdown-current-tag {
       display: inline-flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 3px;
       font-size: 11px;
       padding: 1px 7px;
@@ -453,7 +452,7 @@
     /* ===== 企业列表 当前登录徽章 ===== */
     .enterprise-switch-name-row {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 6px;
     }
     .enterprise-current-badge {
@@ -499,11 +498,13 @@
     }
 
     .user-dropdown-header {
-      padding: 16px;
+      padding: 36px 90px 16px 16px;
       border-bottom: none;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 12px;
+      position: relative;
+      position: relative;
     }
 
     .user-dropdown-avatar {
@@ -536,7 +537,7 @@
       font-size: 12px;
       color: var(--text-muted);
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 6px;
     }
 
@@ -577,7 +578,7 @@
 
     .user-dropdown-item {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 10px;
       padding: 10px 16px;
       font-size: 13px;
@@ -620,7 +621,7 @@
 
     .user-dropdown-logout {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       gap: 6px;
       width: 100%;
@@ -691,7 +692,7 @@
       font-weight: 600;
     }
 
-    .sidebar-link svg { width: 17px; height: 17px; flex-shrink: 0; }
+    .sidebar-link svg { width: 17px; height: 17px; flex-shrink: 0; display: block; overflow: visible; align-self: center; }
 
     .sidebar-divider { height: 1px; background: var(--gray-200); margin: 10px 16px; }
 
@@ -703,7 +704,7 @@
       min-width: 0;
     }
     .page-breadcrumb {
-      display: flex; align-items: center; gap: 8px;
+      display: flex; align-items: flex-start; gap: 8px;
       font-size: 13px; color: var(--text-muted);
       margin-bottom: 18px;   /* 与产品中心（account-center 官方基线）完全一致 18px，三页之前 20px 的版本这里也同步覆盖 */
     }
@@ -732,7 +733,7 @@
       padding: 16px 20px;
       border-bottom: none;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
     }
 
@@ -748,7 +749,7 @@
 
     .info-item {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
       padding-bottom: 16px;
       border-bottom: 1px solid var(--gray-100);
@@ -761,7 +762,7 @@
 
     .info-label {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 10px;
       color: var(--text-secondary);
       font-size: 14px;
@@ -775,7 +776,7 @@
 
     .info-value {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 12px;
       font-size: 14px;
       color: var(--text);
@@ -783,7 +784,7 @@
 
     .info-status {
       display: inline-flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 6px;
       font-size: 12px;
       padding: 2px 8px;
@@ -837,7 +838,7 @@
       margin-bottom: 12px;
     }
 
-    .permission-icon svg { width: 20px; height: 20px; }
+    .permission-icon svg { width: 20px; height: 20px; display: block; }
 
     .permission-title {
       font-size: 14px;
@@ -907,7 +908,7 @@
       bottom: 0;
       background: rgba(0,0,0,0.45);
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       z-index: 2000;
       opacity: 0;
@@ -941,7 +942,7 @@
       padding: 16px 20px;
       border-bottom: none;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
     }
 
@@ -955,7 +956,7 @@
       width: 28px;
       height: 28px;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       border: none;
       background: none;
@@ -1032,7 +1033,7 @@
 
     .btn-default {
       display: inline-flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       gap: 6px;
       padding: 8px 16px;
@@ -1054,7 +1055,7 @@
     /* ===== 按钮 ===== */
     .btn-primary {
       display: inline-flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       gap: 6px;
       padding: 8px 16px;
@@ -1197,15 +1198,19 @@
         </a></li>
       </ul>
       <div class="sidebar-divider"></div>
+      <div class="sidebar-section-title">企业管理</div>
+      <ul class="sidebar-menu">
+        <li id="sidebarSubEntMgmt"><a href="account-project.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M9 9h6M9 13h4M9 17h5" stroke="currentColor" stroke-width="2"/></svg>
+          子公司管理
+        </a></li>
+      </ul>
+      <div class="sidebar-divider"></div>
       <div class="sidebar-section-title">财务</div>
       <ul class="sidebar-menu">
         <li><a href="account-wallet.html" class="sidebar-link ">
           <svg viewBox="0 0 24 24" fill="none"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="2"/></svg>
           资金账户
-        </a></li>
-        <li><a href="account-project.html" class="sidebar-link">
-          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M9 9h6M9 13h4M9 17h5" stroke="currentColor" stroke-width="2"/></svg>
-          项目管理
         </a></li>
       </ul>
       <div class="sidebar-divider"></div>
@@ -1251,7 +1256,7 @@
                 用户角色
               </div>
               <div class="info-value">
-                <span>主账号管理员</span>
+                <span id="userRole">主管理员</span>
               </div>
             </div>
             <div class="info-item">
@@ -1406,7 +1411,16 @@
       setTimeout(run, 50); setTimeout(run, 300);
     })();
   </script>
-<script src="js/main.js?v=51"></script>
+<script src="js/main.js?v=1787772022"></script>
+<script>
+(function(){
+  var accountType = localStorage.getItem('mjyy_account_type');
+  if (accountType === 'sub') {
+    var subEntMgmt = document.getElementById('sidebarSubEntMgmt');
+    if (subEntMgmt) subEntMgmt.style.display = 'none';
+  }
+})();
+</script>
 <script>
 (function(){
   var editingId = null;
@@ -1506,5 +1520,73 @@
 })();
 </script>
 
+<script src="js/enterprise-switch.js?v=19"></script>
+<script>
+(function(){
+  var accountType = localStorage.getItem('mjyy_account_type') || 'main';
+  var identityVerified = localStorage.getItem('mjyy_identity_verified') === 'true';
+  var userData = JSON.parse(localStorage.getItem('mjyy_user_data') || '{}');
+
+  var list = [];
+  try { list = JSON.parse(localStorage.getItem('mjyy_enterprise_list') || '[]'); } catch(e) {}
+  var curId = localStorage.getItem('mjyy_current_enterprise_id');
+  var curEnt = list.find(function(e) { return e.id === curId; }) || list[0] || null;
+
+  function maskMobile(m) {
+    if (!m || m.length < 11) return m || '--';
+    return m.substring(0, 3) + '****' + m.substring(7);
+  }
+
+  var roleEl = document.getElementById('userRole');
+  var subjectEl = document.getElementById('identitySubject');
+  var statusEl = document.getElementById('identityStatus');
+  var mainAccEl = document.getElementById('mainAccount');
+
+  if (accountType === 'sub') {
+    if (roleEl) roleEl.textContent = '子管理员';
+  } else {
+    if (roleEl) roleEl.textContent = '主管理员';
+  }
+
+  if (curEnt && subjectEl) {
+    subjectEl.textContent = curEnt.name || '--';
+  }
+
+  if (statusEl) {
+    if (identityVerified) {
+      statusEl.textContent = '已认证';
+      statusEl.className = 'info-status info-status-success';
+    } else {
+      statusEl.textContent = '未认证';
+      statusEl.className = 'info-status';
+    }
+  }
+
+  if (mainAccEl) {
+    if (accountType === 'sub') {
+      var parentId = curEnt && curEnt.parentId;
+      var parentEnt = null;
+      if (parentId) {
+        parentEnt = list.find(function(e) { return e.id === parentId; });
+      }
+      if (!parentEnt) {
+        parentEnt = list.find(function(e) { return e.role && /主管理员|主账号/.test(e.role); });
+      }
+      if (!parentEnt && list.length > 0) {
+        parentEnt = list[0];
+      }
+      if (parentEnt) {
+        var mainMobile = maskMobile(parentEnt.legalMobile || userData.mobile || '');
+        mainAccEl.textContent = parentEnt.name + (mainMobile && mainMobile !== '--' ? ' · ' + mainMobile : '');
+      } else {
+        mainAccEl.textContent = '--';
+      }
+    } else {
+      var mainMobile2 = maskMobile((curEnt && curEnt.legalMobile) || userData.mobile || '');
+      mainAccEl.textContent = (curEnt ? curEnt.name : '--') + (mainMobile2 && mainMobile2 !== '--' ? ' · ' + mainMobile2 : '');
+    }
+  }
+})();
+</script>
 </body>
 </html>

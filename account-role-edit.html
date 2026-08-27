@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>角色编辑 - 民匠有约</title>
-  <link rel="stylesheet" href="css/style.css?v=23">
+  <link rel="stylesheet" href="css/style.css?v=2025fix10">
   <style>
     :root {
       --brand-primary: #1677FF;
@@ -226,7 +226,7 @@
       color: var(--text-secondary);
       cursor: pointer;
       transition: all 0.2s;
-      user-select: none;
+      user-select: none; flex-shrink: 0;
     }
     .topbar-message:hover {
       background: var(--gray-100);
@@ -252,14 +252,14 @@
     }
     .topbar-message-dot {
       position: absolute;
-      top: -3px;
-      right: -3px;
-      width: 8px;
+      top: -2px;
+      right: -2px;width: 8px;
       height: 8px;
       border-radius: 50%;
       background: #F53F3F;
       display: none;
       z-index: 5;
+          box-shadow: 0 0 0 2px #fff;
     }
     .topbar-message-dot.show { display: block; }
     .topbar-message.has-badge .topbar-message-dot {
@@ -267,23 +267,23 @@
     }
     .topbar-message .topbar-message-badge {
       position: absolute;
-      top: -2px;
-      right: -2px;
+      top: -3px;
+      right: -6px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       min-width: 16px;
-      height: 16px;
+      height: 14px;
       padding: 0 4px;
-      border-radius: 8px;
+      border-radius: 7px;
       background: #F53F3F;
       color: #fff;
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 600;
       text-align: center;
       line-height: 1;
       border: 2px solid #fff;
-      box-sizing: content-box;
+      box-sizing: border-box;
       z-index: 10;
       box-shadow: 0 1px 3px rgba(245, 63, 63, 0.4);
     }
@@ -305,7 +305,7 @@
     }
     .message-dropdown-header {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
       padding: 14px 16px 10px;
       font-weight: 600;
@@ -414,7 +414,7 @@
     }
     .topbar-message-badge {
       display: inline-flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       min-width: 16px;
       height: 16px;
@@ -432,7 +432,7 @@
     /* ===== 下拉菜单 当前登录标签 ===== */
     .user-dropdown-current-tag {
       display: inline-flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 3px;
       font-size: 11px;
       padding: 1px 7px;
@@ -453,7 +453,7 @@
     /* ===== 企业列表 当前登录徽章 ===== */
     .enterprise-switch-name-row {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 6px;
     }
     .enterprise-current-badge {
@@ -529,7 +529,7 @@
 
     .nav-enter-system {
       display: inline-flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       padding: 6px 16px;
       border-radius: 6px;
@@ -566,11 +566,13 @@
     }
 
     .user-dropdown-header {
-      padding: 16px;
+      padding: 36px 90px 16px 16px;
       border-bottom: none;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 12px;
+      position: relative;
+      position: relative;
     }
 
     .user-dropdown-avatar {
@@ -601,7 +603,7 @@
       font-size: 12px;
       color: var(--text-muted);
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 6px;
     }
     .user-dropdown-tags { display: flex; gap: 6px; margin-top: 6px; }
@@ -626,7 +628,7 @@
     }
     .user-dropdown-item {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 10px;
       padding: 10px 16px;
       font-size: 13px;
@@ -646,7 +648,7 @@
     .user-dropdown-footer { padding: 12px 16px; border-top: 1px solid var(--gray-200); }
     .user-dropdown-logout {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       gap: 6px;
       width: 100%;
@@ -716,7 +718,7 @@
       font-weight: 600;
     }
 
-    .sidebar-link svg { width: 17px; height: 17px; flex-shrink: 0; }
+    .sidebar-link svg { width: 17px; height: 17px; flex-shrink: 0; display: block; overflow: visible; align-self: center; }
 
     .sidebar-divider { height: 1px; background: var(--gray-200); margin: 10px 16px; }
 
@@ -745,7 +747,7 @@
       min-width: 0;
     }
     .page-breadcrumb {
-      display: flex; align-items: center; gap: 8px;
+      display: flex; align-items: flex-start; gap: 8px;
       font-size: 13px; color: var(--text-muted);
       margin-bottom: 18px;   /* 与产品中心（account-center 官方基线）完全一致 18px，三页之前 20px 的版本这里也同步覆盖 */
     }
@@ -774,7 +776,7 @@
       padding: 16px 20px;
       border-bottom: none;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
     }
 
@@ -857,7 +859,7 @@
       padding: 12px 16px;
       background: var(--gray-100);
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 10px;
       border-bottom: none;
       user-select: none;
@@ -881,7 +883,7 @@
 
     .permission-checkbox {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 6px;
       cursor: pointer;
       font-size: 13px;
@@ -906,7 +908,7 @@
 
     .platform-tab {
       display: inline-flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 6px;
       padding: 10px 20px;
       font-size: 14px;
@@ -951,7 +953,7 @@
     .platform-enable-toggle {
       position: relative;
       display: inline-flex;
-      align-items: center;
+      align-items: flex-start;
       width: 34px;
       height: 18px;
       border-radius: 999px;
@@ -1018,7 +1020,7 @@
       border-radius: 6px;
       margin-bottom: 16px;
       font-size: 13px;
-      align-items: center;
+      align-items: flex-start;
       gap: 8px;
     }
     .platform-panel.disabled-perm .platform-disabled-banner {
@@ -1042,7 +1044,7 @@
       border-radius: 6px;
       margin-bottom: 16px;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 6px;
     }
 
@@ -1056,7 +1058,7 @@
     .platform-perm-actions {
       display: flex;
       flex-wrap: wrap;
-      align-items: center;
+      align-items: flex-start;
       gap: 12px;
       padding: 12px 16px;
       background: var(--gray-100);
@@ -1084,7 +1086,7 @@
     /* ===== 按钮 ===== */
     .btn-primary {
       display: inline-flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       gap: 6px;
       padding: 8px 20px;
@@ -1103,7 +1105,7 @@
 
     .btn-default {
       display: inline-flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       gap: 6px;
       padding: 8px 20px;
@@ -1168,8 +1170,8 @@
           <div class="topbar-message-icon">
             <svg viewBox="0 0 24 24" fill="none" width="15" height="15"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <span class="topbar-message-dot show" id="topbarMessageDot"></span>
+            <span class="topbar-message-badge" id="topbarMessageBadge">3</span>
           </div>
-          <span class="topbar-message-badge" id="topbarMessageBadge">3</span>
           <div class="message-dropdown" id="messageDropdown">
             <div class="message-dropdown-header">
               <span>消息通知</span>
@@ -1217,7 +1219,7 @@
         </a></li>
         <li><a href="account-project.html" class="sidebar-link">
           <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M9 9h6M9 13h4M9 17h5" stroke="currentColor" stroke-width="2"/></svg>
-          项目管理
+          子公司管理
         </a></li>
       </ul>
       <div class="sidebar-divider"></div>
@@ -1883,8 +1885,8 @@
               security: ['password', 'phone']
             }
           },
-          '项目管理': {
-            desc: '仅拥有民匠有约端的项目管理、资金账户（划拨金额）、用户管理、账号安全权限，无企业信息/合同管理/账户管理，无安心云/代理商功能',
+          '子公司管理': {
+            desc: '仅拥有民匠有约端的子公司管理、资金账户（划拨金额）、用户管理、账号安全权限，无企业信息/合同管理/账户管理，无安心云/代理商功能',
             // 企业管理端：整体禁用（无企业信息/合同管理/账户管理）
             _disabledPlatforms: ['enterprise', 'anxinyun', 'agent'],
             minjiang: {
@@ -2031,6 +2033,7 @@
       }
     })();
   </script>
-<script src="js/main.js?v=51"></script>
+<script src="js/main.js?v=1787772022"></script>
+<script src="js/enterprise-switch.js?v=19"></script>
 </body>
 </html>

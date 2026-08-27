@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-<head>
+<html lang="zh-CN"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>控制台 - 民匠有约</title>
-  <link rel="stylesheet" href="css/style.css?v=23">
+  <link rel="stylesheet" href="css/style.css?v=2025fix54">
   <style>
     :root {
       --brand-primary: #1677FF;
@@ -18,6 +17,9 @@
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    svg { display: block; }
+    svg text { text-anchor: middle; dominant-baseline: central; }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -143,17 +145,20 @@
     }
 
     .topbar-user {
+      width: 340px;
       min-width: 280px;
+      max-width: 340px;
       position: relative;
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 6px 12px 6px 8px;
+      gap: 8px;
+      padding: 4px 12px 4px 8px;
       border-radius: 10px;
       cursor: pointer;
       transition: background 0.2s;
       background: #fff;
       border: 1px solid var(--gray-200);
+      box-sizing: border-box;
     }
 
     .topbar-user:hover { background: var(--gray-50); border-color: var(--gray-300); }
@@ -165,30 +170,59 @@
       display: block;
       opacity: 1;
       visibility: visible;
-}
+    }
+
+    .topbar-user .topbar-avatar { flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .topbar-user .topbar-user-meta { display: flex; align-items: center; min-width: 0; }
+    .topbar-user .topbar-chevron { display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .topbar-user .topbar-user-name-row { display: flex; align-items: center; }
+    .topbar-user .topbar-user-chips { display: inline-flex; align-items: center; }
 
     /* ====== 顶部栏 用户名 + 徽章 + 认证标签 ====== */
     .topbar-user-meta {
       display: flex;
       align-items: center;
       gap: 8px;
-      max-width: 360px;
+      flex: 1;
       min-width: 0;
     }
 
     .topbar-user-name-row {
-      display: inline-flex;
+      display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 6px;
       max-width: 220px;
+      width: 100%;
     }
 
     .topbar-user-name {
-      font-size: 13px;
-      font-weight: 600;
+      font-size: 13px !important;
+      font-weight: 600 !important;
       color: var(--text);
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-      line-height: 1.4;
+      line-height: 32px;
+      flex: 1; min-width: 0;
+    }
+
+    .topbar-ent-chip {
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 4px;
+      line-height: 14px;
+      font-weight: 500;
+      border: 1px solid #D9F7BE;
+      background: #F6FFED;
+      color: #389E0D;
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .topbar-ent-chip.sub {
+      border-color: #FFE7BA;
+      background: #FFF7E6;
+      color: #D46B08;
     }
 
     .topbar-account-badge {
@@ -245,7 +279,7 @@
       color: var(--text-secondary);
       cursor: pointer;
       transition: all 0.2s;
-      user-select: none;
+      user-select: none; flex-shrink: 0;
     }
     .topbar-message:hover {
       background: var(--gray-100);
@@ -271,14 +305,15 @@
     }
     .topbar-message-dot {
       position: absolute;
-      top: -3px;
-      right: -3px;
+      top: -2px;
+      right: -2px;
       width: 8px;
       height: 8px;
       border-radius: 50%;
       background: #F53F3F;
       display: none;
       z-index: 5;
+      box-shadow: 0 0 0 2px #fff;
     }
     .topbar-message-dot.show { display: block; }
     .topbar-message.has-badge .topbar-message-dot {
@@ -286,23 +321,23 @@
     }
     .topbar-message .topbar-message-badge {
       position: absolute;
-      top: -2px;
-      right: -2px;
+      top: -3px;
+      right: -6px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       min-width: 16px;
-      height: 16px;
+      height: 14px;
       padding: 0 4px;
-      border-radius: 8px;
+      border-radius: 7px;
       background: #F53F3F;
       color: #fff;
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 600;
       text-align: center;
       line-height: 1;
       border: 2px solid #fff;
-      box-sizing: content-box;
+      box-sizing: border-box;
       z-index: 10;
       box-shadow: 0 1px 3px rgba(245, 63, 63, 0.4);
     }
@@ -324,7 +359,7 @@
     }
     .message-dropdown-header {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
       padding: 14px 16px 10px;
       font-weight: 600;
@@ -344,6 +379,7 @@
     }
     .message-item {
       display: flex;
+      align-items: center;
       gap: 10px;
       padding: 12px 16px;
       border-bottom: 1px solid var(--gray-100);
@@ -437,7 +473,7 @@
     /* ===== 企业列表 当前登录徽章 ===== */
     .enterprise-switch-name-row {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 6px;
     }
     .enterprise-current-badge {
@@ -466,7 +502,21 @@
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
 
-    .topbar-chevron { width: 14px; height: 14px; color: var(--text-muted); transition: transform 0.2s; }
+    .topbar-chevron {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px;
+      height: 14px;
+      color: var(--text-muted);
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+    .topbar-chevron svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
     .topbar-user.open .topbar-chevron,
     .topbar-user.active .topbar-chevron { transform: rotate(180deg); }
 
@@ -474,39 +524,47 @@
     .user-dropdown {
       position: absolute;
       top: calc(100% + 8px);
-      right: 0;
-      min-width: 280px;
+      left: 0;
+      right: auto;
+      width: 340px;
+      min-width: 340px;
+      max-width: 360px;
       background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-      border: 1px solid var(--gray-200);
+      border-radius: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06), 0 12px 32px rgba(0,0,0,0.12);
+      border: 1px solid rgba(0,0,0,0.06);
       z-index: 1001;
       display: none;
       overflow: hidden;
+      box-sizing: border-box;
     }
 
     .user-dropdown-header {
-      padding: 18px 16px 14px;
+      padding: 0 12px 0 12px;
       border-bottom: none;
       display: flex;
-      align-items: center;
-      gap: 12px;
+      align-items: flex-start;
+      gap: 10px;
+      position: relative;
+      margin-bottom: 10px;
     }
 
     .user-dropdown-avatar {
-      width: 48px; height: 48px; border-radius: 50%;
+      width: 52px; height: 52px; border-radius: 50%;
       background: var(--brand-primary-50);
       color: var(--brand-primary);
       display: flex; align-items: center; justify-content: center;
-      font-size: 20px; font-weight: 600; flex-shrink: 0;
+      font-size: 22px; font-weight: 600; flex-shrink: 0;
     }
 
     .user-dropdown-info { flex: 1; min-width: 0; }
 
     .user-dropdown-name {
       font-size: 15px; font-weight: 600; color: var(--text);
-      margin-bottom: 4px;
+      line-height: 1.2;
+      margin: 0 0 4px 0;
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      display: block;
     }
 
     .user-dropdown-id {
@@ -514,9 +572,88 @@
       display: flex; align-items: center; gap: 4px;
     }
 
-    .user-dropdown-tags { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+    .user-dropdown-name-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      gap: 8px;
+    }
 
-    .user-dropdown-tags-row { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; align-items: center; }
+    .user-dropdown-name-col {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .user-dropdown-badge-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 6px -8px 0 -60px;
+      padding: 0 8px 0 60px;
+      flex-wrap: nowrap;
+    }
+
+    .user-dropdown-right-badge {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .header-current-badge {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: #F3E8FF;
+      color: #722ED1;
+      font-weight: 500;
+      line-height: 14px;
+      white-space: nowrap;
+    }
+
+    /* 切换企业 独立行 — 顶部第一行 */
+    .user-dropdown-switch-row {
+      display: flex !important;
+      justify-content: flex-end !important;
+      align-items: center !important;
+      padding: 0 0 6px 0 !important;
+      border-top: none !important;
+      border-bottom: none !important;
+    }
+    .user-dropdown-switch-ent-badge {
+      position: static;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1;
+      color: var(--brand-primary);
+      text-decoration: none;
+      background: var(--brand-primary-50, #E8F3FF);
+      border: 1px solid var(--brand-primary-200, #BAE0FF);
+      border-top: none;
+      border-right: none;
+      border-radius: 6px;
+      border-top-left-radius: 0;
+      border-bottom-right-radius: 0;
+      cursor: pointer;
+      transition: all 0.18s;
+      white-space: nowrap;
+      box-sizing: border-box;
+      margin: 0;
+    }
+    .user-dropdown-switch-ent-badge:hover {
+      background: var(--brand-primary);
+      color: #fff;
+      border-top: none;
+      border-right: none;
+    }
+    .user-dropdown-switch-ent-badge svg { display: block; width: 11px; height: 11px; }
 
     .user-dropdown-tag {
       font-size: 11px; padding: 2px 8px; border-radius: 4px;
@@ -538,14 +675,14 @@
     }
 
     .user-dropdown-enter-bar {
-      padding: 12px 16px;
+      padding: 0 12px 10px;
       border-top: none;
-      border-bottom: 1px solid #F2F3F5;
+      border-bottom: none;
       background: transparent;
     }
     .user-dropdown-enter-console {
       display: flex !important; align-items: center !important; justify-content: center !important; gap: 5px !important;
-      width: 100% !important; padding: 10px 16px !important; border-radius: 8px !important;
+      width: 100% !important; padding: 8px 14px !important; border-radius: 8px !important;
       background: var(--brand-primary) !important; color: #fff !important;
       font-size: 13px !important; font-weight: 600 !important;
       text-decoration: none; white-space: nowrap;
@@ -569,10 +706,10 @@
       margin: 0;
     }
 
-    .user-dropdown-body { padding: 6px 0; }
+    .user-dropdown-body { padding: 4px 0; }
 
     .user-dropdown-group-title {
-      padding: 10px 16px 4px;
+      padding: 8px 12px 4px;
       font-size: 11px;
       color: var(--text-muted);
       font-weight: 600;
@@ -581,8 +718,8 @@
     }
 
     .user-dropdown-item {
-      display: flex; align-items: center; gap: 10px;
-      padding: 10px 16px;
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 12px;
       font-size: 13px; color: var(--text-secondary);
       text-decoration: none; border: none; background: none; cursor: pointer;
       width: 100%; text-align: left; transition: background 0.2s;
@@ -625,7 +762,7 @@
       width: 32px; height: 32px; border-radius: 8px;
       background: var(--gray-100);
       color: var(--text-secondary);
-      display: flex; align-items: center; justify-content: center;
+      display: flex; align-items: flex-start; justify-content: center;
       font-size: 13px !important; font-weight: 600 !important; flex-shrink: 0;
     }
 
@@ -637,11 +774,11 @@
     .enterprise-switch-name { font-size: 13px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .enterprise-switch-role { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
-    .user-dropdown-footer { padding: 12px 16px; border-top: 1px solid var(--gray-200); }
+    .user-dropdown-footer { padding: 10px 12px; border-top: 1px solid var(--gray-200); }
 
     .user-dropdown-logout {
-      display: flex; align-items: center; justify-content: center; gap: 6px;
-      width: 100%; padding: 8px; border: 1px solid var(--gray-300);
+      display: flex; align-items: flex-start; justify-content: center; gap: 6px;
+      width: 100%; padding: 6px; border: 1px solid var(--gray-300);
       border-radius: 6px; font-size: 13px; color: var(--text-secondary);
       background: #fff; cursor: pointer; transition: all 0.2s;
     }
@@ -703,7 +840,8 @@
       font-weight: 600;
     }
 
-    .sidebar-link svg { width: 17px; height: 17px; flex-shrink: 0; }
+    .sidebar-link svg { width: 17px; height: 17px; flex-shrink: 0; display: block; overflow: visible; align-self: center; }
+    .sidebar-link span { display: flex; align-items: center; line-height: 1; }
 
     .sidebar-divider { height: 1px; background: var(--gray-200); margin: 10px 16px; }
 
@@ -716,7 +854,7 @@
     }
 
     .page-breadcrumb {
-      display: flex; align-items: center; gap: 8px;
+      display: flex; align-items: flex-start; gap: 8px;
       font-size: 13px; color: var(--text-muted);
       margin-bottom: 18px;  /* 与 project/wallet 完全一致（main-content 内 page-title-wrap 起点相对位置同步） */
     }
@@ -786,8 +924,12 @@
       backdrop-filter: blur(6px);
       display: flex; align-items: center; justify-content: center;
       font-size: 30px; font-weight: 700;
+      line-height: 1;
       border: 2px solid rgba(255,255,255,0.35);
       flex-shrink: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      text-align: center;
+      transform: translateY(-1px);
     }
 
     .welcome-hero-info { flex: 1; min-width: 240px; }
@@ -817,8 +959,11 @@
     }
 
     .welcome-hero-actions {
-      display: flex; flex-direction: column; gap: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
       position: relative; z-index: 2;
+      align-self: center;
     }
 
     .btn-light {
@@ -867,7 +1012,7 @@
     }
 
     .stat-card-head {
-      display: flex; align-items: center; justify-content: space-between;
+      display: flex; align-items: flex-start; justify-content: space-between;
       margin-bottom: 10px;
     }
 
@@ -878,7 +1023,7 @@
 
     .stat-icon {
       width: 32px; height: 32px; border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
+      display: flex; align-items: flex-start; justify-content: center;
     }
     .stat-icon svg { width: 16px; height: 16px; }
 
@@ -895,11 +1040,11 @@
 
     .stat-card-desc {
       font-size: 12px; color: var(--text-muted);
-      display: flex; align-items: center; gap: 6px;
+      display: flex; align-items: flex-start; gap: 6px;
     }
 
     .status-pill {
-      display: inline-flex; align-items: center; gap: 4px;
+      display: inline-flex; align-items: flex-start; gap: 4px;
       padding: 2px 8px; border-radius: 999px;
       font-size: 12px; font-weight: 500;
     }
@@ -920,7 +1065,7 @@
     .card-header {
       padding: 16px 20px;
       border-bottom: none;
-      display: flex; align-items: center; justify-content: space-between;
+      display: flex; align-items: flex-start; justify-content: space-between;
       gap: 12px;
     }
 
@@ -931,15 +1076,16 @@
 
     .card-title::before {
       content: '';
-      width: 3px; height: 14px;
+      width: 4px; height: 14px;
       background: var(--brand-primary);
       border-radius: 2px;
+      flex-shrink: 0;
     }
 
     .card-header-more {
       font-size: 12px; color: var(--brand-primary);
       text-decoration: none; cursor: pointer;
-      display: inline-flex; align-items: center; gap: 2px;
+      display: inline-flex; align-items: flex-start; gap: 2px;
     }
     .card-header-more:hover { text-decoration: underline; }
 
@@ -964,6 +1110,8 @@
       font-size: 14px;
       font-weight: 600;
       color: var(--text-primary, #111827);
+      display: inline-flex;
+      align-items: center;
     }
     .product-section-title::before {
       content: '';
@@ -973,7 +1121,7 @@
       background: var(--accent, #2563eb);
       border-radius: 2px;
       margin-right: 6px;
-      vertical-align: -2px;
+      vertical-align: middle;
     }
     .product-section[data-group="opened"] .product-section-title::before { background: #10b981; }
     .product-section[data-group="unopened"] .product-section-title::before { background: #9ca3af; }
@@ -1030,7 +1178,7 @@
 
     .product-entry-logo {
       width: 52px; height: 52px; border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
+      display: flex; align-items: flex-start; justify-content: center;
       flex-shrink: 0;
     }
     .product-entry-logo svg { width: 26px; height: 26px; }
@@ -1041,7 +1189,7 @@
     .product-entry-badge {
       padding: 3px 10px; border-radius: 999px;
       font-size: 11px; font-weight: 600;
-      display: inline-flex; align-items: center; gap: 4px;
+      display: inline-flex; align-items: flex-start; gap: 4px;
     }
     .badge-done { background: #E8F8EB; color: #00B42A; }
     .badge-todo { background: #FFF3E8; color: #FF7D00; }
@@ -1059,14 +1207,14 @@
     }
 
     .product-entry-foot {
-      display: flex; align-items: center; justify-content: space-between;
+      display: flex; align-items: flex-start; justify-content: space-between;
       margin-top: auto;
       padding-top: 14px;
       border-top: 1px dashed var(--gray-200);
     }
 
     .product-entry-action {
-      display: inline-flex; align-items: center; gap: 4px;
+      display: inline-flex; align-items: flex-start; gap: 4px;
       font-size: 13px !important; font-weight: 600 !important;
     }
     .product-entry.mj .product-entry-action { color: var(--mj-color); }
@@ -1083,7 +1231,7 @@
     /* ===== 企业信息卡、最近动态 ===== */
     .info-list { display: flex; flex-direction: column; }
     .info-list-item {
-      display: flex; align-items: center; justify-content: space-between;
+      display: flex; align-items: flex-start; justify-content: space-between;
       padding: 14px 0;
       border-bottom: 1px solid var(--gray-100);
       gap: 12px;
@@ -1174,7 +1322,7 @@
     .quick-icon {
       width: 36px; height: 36px; border-radius: 9px;
       background: var(--brand-primary-50); color: var(--brand-primary);
-      display: flex; align-items: center; justify-content: center;
+      display: flex; align-items: flex-start; justify-content: center;
       margin-bottom: 10px;
     }
     .quick-icon svg { width: 18px; height: 18px; }
@@ -1182,7 +1330,7 @@
     .quick-title { font-size: 13px !important; font-weight: 600 !important; color: var(--text); margin-bottom: 3px; }
     .quick-desc { font-size: 11px; color: var(--text-muted); }
 
-    /* ===== 弹窗 ===== */
+    /* ===== 弹窗（垂直居中）===== */
     .modal-mask {
       position: fixed; inset: 0;
       background: rgba(0,0,0,0.45);
@@ -1207,12 +1355,12 @@
     .modal-header {
       padding: 18px 22px;
       border-bottom: none;
-      display: flex; align-items: center; justify-content: space-between;
+      display: flex; align-items: flex-start; justify-content: space-between;
     }
     .modal-title { font-size: 16px; font-weight: 600; }
     .modal-close {
       width: 28px; height: 28px; border-radius: 6px;
-      display: flex; align-items: center; justify-content: center;
+      display: flex; align-items: flex-start; justify-content: center;
       cursor: pointer; color: var(--text-muted);
       transition: all 0.15s;
     }
@@ -1276,7 +1424,7 @@
       .welcome-hero-actions .btn-light-ghost { flex: 1; }
     }
   </style>
-</head>
+<style id="__projChipCss">.user-dropdown-project-chip{display:inline-flex;align-items:center;gap:4px;margin-top:8px;margin-bottom:2px;padding:4px 10px;border-radius:6px;background:linear-gradient(135deg,var(--brand-primary-50,#EFF6FF) 0%,#F0F9FF 100%);border:1px solid var(--brand-primary-100,#DBEAFE);font-size:12px;line-height:1.2;max-width:100%;box-sizing:border-box;}.user-dropdown-project-chip .chip-icon{display:inline-flex;align-items:center;color:var(--brand-primary,#3B82F6);flex-shrink:0;}.user-dropdown-project-chip .chip-label{color:var(--brand-primary,#3B82F6);font-weight:500;white-space:nowrap;}.user-dropdown-project-chip .chip-sep{color:var(--text-tertiary,#9CA3AF);margin:0 1px;font-weight:400;}.user-dropdown-project-chip .chip-name{color:var(--text-primary,#111827);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}.user-dropdown-project-chip:hover{background:linear-gradient(135deg,var(--brand-primary-100,#DBEAFE) 0%,#E0F2FE 100%);border-color:var(--brand-primary-300,#93C5FD);}.user-dropdown-project-chip:hover .chip-icon{color:var(--brand-primary-600,#2563EB);}/* 下拉头部"当前登录"徽章 */.header-current-badge{display:inline-flex;align-items:center;height:18px;font-size:11px;font-weight:500;line-height:1;padding:0 7px;border:1px solid #E0C4FF;border-radius:3px;background:#F3E8FF;color:#722ED1;flex-shrink:0;box-sizing:border-box;outline:none;box-shadow:none;text-decoration:none;}.header-current-badge:focus,.header-current-badge:active,.header-current-badge:focus-visible{outline:none;box-shadow:none;border-color:#E0C4FF;}/* 下拉头部角色徽章 */.header-role-badge{display:inline-flex;align-items:center;height:18px;font-size:11px;font-weight:500;line-height:1;padding:0 7px;border:1px solid #D6E4FF;border-radius:3px;background:#EFF6FF;color:#2F54EB;flex-shrink:0;box-sizing:border-box;}/* 下拉头部 母公司/子公司 类型徽章 */.header-ent-type-badge{display:inline-flex;align-items:center;height:18px;font-size:11px;font-weight:500;line-height:1;padding:0 7px;border:1px solid #D9F7BE;border-radius:3px;background:#F6FFED;color:#389E0D;flex-shrink:0;box-sizing:border-box;}.header-ent-type-badge.sub{border-color:#FFE7BA;background:#FFF7E6;color:#D46B08;}.header-badge-sep{font-size:11px;color:#C9CDD4;margin:0 2px;}/* 企业列表右侧√ */.enterprise-current-check{position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--brand-primary,#1677FF);display:flex;align-items:center;justify-content:center;flex-shrink:0;pointer-events:none;}.enterprise-switch-item.active .enterprise-current-check{color:var(--brand-primary,#1677FF);}/* 项目列表样式 */.user-dropdown-project-list{padding:0 8px;}.user-dropdown-project-list .enterprise-switch-item{cursor:default;}/* 切换企业按钮 */.user-dropdown-switch-ent{display:inline-flex !important;align-items:center;height:18px;gap:3px;padding:0 7px;font-size:11px;font-weight:500;line-height:1;color:var(--brand-primary,#1677FF) !important;background:var(--brand-primary-50,#E8F3FF);border:1px solid var(--brand-primary-200,#BAE0FF);border-radius:3px;text-decoration:none !important;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all 0.15s;box-sizing:border-box;outline:none;box-shadow:none;}.user-dropdown-switch-ent:focus,.user-dropdown-switch-ent:active,.user-dropdown-switch-ent:focus-visible{outline:none !important;box-shadow:none !important;text-decoration:none !important;}.user-dropdown-switch-ent:hover{background:var(--brand-primary,#1677FF);color:#fff !important;}.user-dropdown-switch-ent svg{flex-shrink:0;width:12px;height:12px;transition:transform 0.3s ease;}.user-dropdown-switch-ent:hover svg{transform:rotate(360deg);}@media (max-width:480px){.user-dropdown-project-chip .chip-label{display:none;}.user-dropdown-project-chip .chip-sep{display:none;}}/* 子公司卡片样式 */.sub-enterprise-card{display:flex !important;align-items:center !important;gap:6px !important;}.sub-enterprise-card .sub-enterprise-name-tag{display:inline-flex !important;align-items:center !important;gap:3px !important;padding:2px 10px !important;border-radius:12px !important;background:linear-gradient(135deg,#FFF7E6 0%,#FFF1CC 100%) !important;border:1px solid #FFD591 !important;color:#D46B08 !important;font-size:12px !important;font-weight:500 !important;line-height:1.4 !important;white-space:nowrap !important;max-width:240px !important;overflow:hidden !important;text-overflow:ellipsis !important;flex-shrink:0 !important;box-shadow:0 1px 2px rgba(250,140,22,0.08) !important;}.sub-enterprise-card .sub-enterprise-name-tag::before{content:"子" !important;display:inline-flex !important;align-items:center !important;justify-content:center !important;width:16px !important;height:16px !important;border-radius:4px !important;background:linear-gradient(135deg,#FA8C16 0%,#D46B08 100%) !important;color:#FFF !important;font-size:10px !important;font-weight:700 !important;flex-shrink:0 !important;line-height:1 !important;box-shadow:0 1px 2px rgba(250,140,22,0.3) !important;}</style></head>
 <body>
   <!-- 顶部导航 -->
   <div class="topbar">
@@ -1295,24 +1443,82 @@
         </div>
       </div>
       <div class="topbar-right">
-        <div class="topbar-message" id="topbarMessage">
+        <div class="topbar-message has-badge" id="topbarMessage" style="display: flex; visibility: visible;">
           <div class="topbar-message-icon">
-            <svg viewBox="0 0 24 24" fill="none" width="15" height="15"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span class="topbar-message-dot show" id="topbarMessageDot"></span>
+            <svg viewBox="0 0 24 24" fill="none" width="15" height="15"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            <span class="topbar-message-dot" id="topbarMessageDot"></span>
+            <span class="topbar-message-badge" id="topbarMessageBadge" style="display: inline-flex;">3</span>
           </div>
-          <span class="topbar-message-badge" id="topbarMessageBadge">3</span>
           <div class="message-dropdown" id="messageDropdown">
             <div class="message-dropdown-header">
               <span>消息通知</span>
               <a href="javascript:;" class="message-dropdown-clear" id="msgClearAll">全部已读</a>
             </div>
-            <div class="message-dropdown-list" id="messageList">
-              <!-- 动态消息列表 -->
-            </div>
+            <div class="message-dropdown-list" id="messageList"><div class="message-item unread" data-msg-id="msg_001"><div class="message-item-icon order">📋</div><div class="message-item-body"><div class="message-item-title">企业审核通过</div><div class="message-item-desc">您提交的"浙江良巧匠"企业认证已通过审核</div></div><div class="message-item-time">10分钟前</div></div><div class="message-item unread" data-msg-id="msg_002"><div class="message-item-icon system">🔔</div><div class="message-item-body"><div class="message-item-title">系统维护通知</div><div class="message-item-desc">平台将于本周六凌晨2-4点进行系统升级维护</div></div><div class="message-item-time">1小时前</div></div><div class="message-item unread" data-msg-id="msg_003"><div class="message-item-icon promo">🎁</div><div class="message-item-body"><div class="message-item-title">新企业权益礼包</div><div class="message-item-desc">新企业认证完成，赠送3个月会员权益</div></div><div class="message-item-time">今天 09:00</div></div><div class="message-item" data-msg-id="msg_004"><div class="message-item-icon warn">⚠️</div><div class="message-item-body"><div class="message-item-title">账号安全提醒</div><div class="message-item-desc">检测到您的账号在新设备登录，如非本人操作请及时修改密码</div></div><div class="message-item-time">昨天</div></div><div class="message-item" data-msg-id="msg_005"><div class="message-item-icon order">✅</div><div class="message-item-body"><div class="message-item-title">合同签署完成</div><div class="message-item-desc">您与民匠有约的服务合同已签署完成</div></div><div class="message-item-time">2天前</div></div></div>
             <a href="javascript:;" class="message-dropdown-footer" id="msgViewAll">查看全部消息 →</a>
           </div>
         </div>
-        <div class="topbar-user" id="topbarUser"></div>
+        <div class="topbar-user" id="topbarUser" data-global-dropdown="true" style="display: flex; visibility: visible;">
+      <div class="topbar-avatar" id="topbarAvatar">北</div>
+      <div class="topbar-user-meta" id="topbarUserMeta">
+        <span class="topbar-user-name-row">
+          <span class="topbar-user-name" id="topbarUserName">北京百川能源科技有限公司</span>
+          <span class="topbar-ent-chip" id="topbarEntChip" style="display: inline-flex; font-size: 11px;">母公司</span>
+        </span>
+        <div class="topbar-user-chips" id="topbarUserChips"></div>
+      </div>
+      <svg class="topbar-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2"></path></svg>
+      <div class="user-dropdown" id="userDropdown">
+        <!-- 切换企业行：顶部独立一行 -->
+        <div class="user-dropdown-switch-row">
+          <a href="javascript:void(0)" class="user-dropdown-switch-ent-badge" id="switchEnterpriseBtn" data-action="switch-enterprise" title="切换企业" onclick="(function(e){e.preventDefault();e.stopPropagation();var tb=e.target.closest('.topbar-user');if(tb){tb.classList.remove('active');var dd=tb.querySelector('.user-dropdown');if(dd)dd.classList.remove('open');}if(typeof window.openSwitchEntModal==='function'){try{window.openSwitchEntModal();}catch(err){}}else{var m=document.getElementById('switchEntModal');if(m){m.classList.add('open');try{if(typeof window.renderSwitchEntList==='function')window.renderSwitchEntList();}catch(err){}}else{window.location.href='account-center.html';}}return false;})(event);">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" aria-hidden="true">
+              <path d="M21 12a9 9 0 1 1-3.2-6.9" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+              <path d="M21 4v5h-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+            <span>切换公司</span>
+          </a>
+        </div>
+        <div class="user-dropdown-header">
+          <div class="user-dropdown-avatar" id="dropdownAvatar">北</div>
+          <div class="user-dropdown-info">
+            <!-- 名称+ID 左侧 -->
+            <div class="user-dropdown-name-wrap">
+              <div class="user-dropdown-name-col">
+                <div class="user-dropdown-name" id="dropdownName">北京百川能源科技有限公司</div>
+              </div>
+            </div>
+            <!-- 类型标签行：母公司/子公司 + 角色徽章 -->
+            <div class="user-dropdown-badge-row" id="dropdownBadgeRow" style="display:flex;"><span class="header-role-badge">主管理员</span><span class="header-current-badge">当前登录</span></div>
+          </div>
+        </div>
+        <div class="user-dropdown-enter-bar">
+          <a href="account-center.html" class="user-dropdown-enter-console" id="dropdownEnterConsole">
+            <svg viewBox="0 0 24 24" fill="none" width="15" height="15"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><polyline points="9 22 9 12 15 12 15 22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
+            进入控制台
+            <svg viewBox="0 0 24 24" fill="none" width="13" height="13"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          </a>
+        </div>
+        <div class="user-dropdown-body">
+          <div class="user-dropdown-actions">
+            <a href="javascript:void(0)" class="user-dropdown-action" id="addNewEnterprise" data-action="add-new-enterprise" onclick="return window.__onAddNewEnterprise(event);">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+              <span>认证新企业</span>
+            </a>
+            <a href="account-security.html" class="user-dropdown-action">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"></path></svg>
+              <span>账号安全</span>
+            </a>
+          </div>
+        </div>
+        <div class="user-dropdown-footer">
+          <button class="user-dropdown-logout" id="logoutBtn" onclick="return window.__onUserLogout(event);">
+            <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" stroke-width="2"></path><polyline points="16 17 21 12 16 7" stroke="currentColor" stroke-width="2"></polyline><line x1="21" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="2"></line></svg>
+            退出登录
+          </button>
+        </div>
+      </div>
+    </div>
         <a href="#" class="nav-enter-system" id="navEnterSystem" style="display:none;align-items:center;justify-content:center;padding:6px 16px;border-radius:6px;background:var(--brand-primary);color:#fff;font-size:13px;font-weight:500;text-decoration:none;cursor:pointer;transition:all 0.2s;border:none;flex-shrink:0;white-space:nowrap;line-height:1.4;margin-left:12px;">进入系统</a>
       </div>
     </div>
@@ -1324,7 +1530,7 @@
       <div class="sidebar-section-title">产品</div>
       <ul class="sidebar-menu">
         <li><a href="account-center.html" class="sidebar-link active">
-          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/></svg>
+          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"></rect><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"></rect><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"></rect><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"></rect></svg>
           产品中心
         </a></li>
       </ul>
@@ -1332,47 +1538,51 @@
       <div class="sidebar-section-title">企业</div>
       <ul class="sidebar-menu">
         <li><a href="account-realname.html?type=enterprise" class="sidebar-link ">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4" stroke="currentColor" stroke-width="2"/></svg>
+          <svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4" stroke="currentColor" stroke-width="2"></path></svg>
           企业信息
         </a></li>
         <li><a href="account-billing.html" class="sidebar-link ">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"/></svg>
+          <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"></path><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"></polyline></svg>
           合同管理
         </a></li>
         <li><a href="account-bank.html" class="sidebar-link ">
-          <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"/><line x1="2" y1="10" x2="22" y2="10" stroke="currentColor" stroke-width="2"/></svg>
+          <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"></rect><line x1="2" y1="10" x2="22" y2="10" stroke="currentColor" stroke-width="2"></line></svg>
           账户管理
+        </a></li>
+      </ul>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-title">企业管理</div>
+      <ul class="sidebar-menu">
+        <li id="sidebarSubEntMgmt"><a href="account-project.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"></rect><path d="M9 9h6M9 13h4M9 17h5" stroke="currentColor" stroke-width="2"></path></svg>
+          子公司管理
         </a></li>
       </ul>
       <div class="sidebar-divider"></div>
       <div class="sidebar-section-title">财务</div>
       <ul class="sidebar-menu">
         <li><a href="account-wallet.html" class="sidebar-link ">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="2"/></svg>
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="2"></path></svg>
           资金账户
-        </a></li>
-        <li><a href="account-project.html" class="sidebar-link">
-          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M9 9h6M9 13h4M9 17h5" stroke="currentColor" stroke-width="2"/></svg>
-          项目管理
         </a></li>
       </ul>
       <div class="sidebar-divider"></div>
       <div class="sidebar-section-title">设置</div>
       <ul class="sidebar-menu">
         <li><a href="account-permission.html" class="sidebar-link ">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="currentColor" stroke-width="2"/></svg>
+          <svg viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="currentColor" stroke-width="2"></path></svg>
           权限概览
         </a></li>
         <li><a href="account-user.html" class="sidebar-link ">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2"/></svg>
+          <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"></path><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2"></path></svg>
           用户管理
         </a></li>
         <li><a href="account-role.html" class="sidebar-link ">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="2" fill="none"></path></svg>
           角色管理
         </a></li>
         <li><a href="account-security.html" class="sidebar-link ">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/></svg>
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"></path></svg>
           账号安全
         </a></li>
       </ul>
@@ -1390,30 +1600,28 @@
       <!-- 欢迎横幅 -->
       <div class="welcome-hero">
         <div class="welcome-hero-inner">
-          <div class="welcome-hero-avatar" id="heroAvatar">企</div>
+          <div class="welcome-hero-avatar" id="heroAvatar">北</div>
           <div class="welcome-hero-info">
-            <div class="welcome-hello" id="welcomeHello">下午好 👋</div>
-            <div class="welcome-name" id="welcomeName">企业用户，欢迎回到控制台</div>
+            <div class="welcome-hello" id="welcomeHello">凌晨好 👋</div>
+            <div class="welcome-name" id="welcomeName">北京百川能源科技有限公司，欢迎回到控制台</div>
             <div class="welcome-meta">
               <span class="welcome-meta-item">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4" stroke="currentColor" stroke-width="2"/></svg>
-                <span id="welcomeEnt">暂无企业</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4" stroke="currentColor" stroke-width="2"></path></svg>
+                <span id="welcomeEnt">北京百川能源科技有限公司</span>
               </span>
               <span class="welcome-meta-item">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 1 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" stroke="currentColor" stroke-width="2"/></svg>
-                <span id="welcomeMobile">--</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 1 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" stroke="currentColor" stroke-width="2"></path></svg>
+                <span id="welcomeMobile">138****8000</span>
               </span>
               <span class="welcome-meta-item">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><polyline points="12 6 12 12 16 14" stroke="currentColor" stroke-width="2"/></svg>
-                <span id="welcomeLoginTime">--</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"></circle><polyline points="12 6 12 12 16 14" stroke="currentColor" stroke-width="2"></polyline></svg>
+                <span id="welcomeLoginTime">08/27 00:34</span>
               </span>
             </div>
-            <div class="welcome-tags" id="welcomeTags">
-              <span class="welcome-tag">控制台 v1.0</span>
-            </div>
+            <div class="welcome-tags" id="welcomeTags"><span class="welcome-tag">母公司</span><span class="welcome-tag">已实名认证</span><span class="welcome-tag">主管理员</span></div>
           </div>
           <div class="welcome-hero-actions">
-            <a href="verify.html" class="btn-light" id="heroVerifyBtn">去实名认证</a>
+            <a href="account-realname.html" class="btn-light" id="heroVerifyBtn">查看认证信息</a>
           </div>
         </div>
       </div>
@@ -1422,7 +1630,7 @@
       <div class="card" style="margin-bottom:22px;">
         <div class="card-header">
           <div class="card-title">我的产品</div>
-          <span style="font-size:13px;color:var(--text-muted);" id="productCount">1 个已开通 · 2 个未开通</span>
+          <span style="font-size:13px;color:var(--text-muted);" id="productCount">3 个产品 · 0 个已开通 · 3 个未开通</span>
         </div>
         <div class="card-body">
 
@@ -1434,12 +1642,28 @@
             </div>
             <div class="cards-gap cols-3" id="openedProductsContainer">
               <!-- 民匠有约 -->
-              <div class="product-card-new product-minjiang" id="peMinjiang" onclick="enterSystemToPlatform('minjiang');return false;">
+              
+            </div>
+          </div>
+
+          <!-- 未开通 -->
+          <div class="product-section" data-group="unopened" id="unopenedSection" style="display: block;">
+            <div class="product-section-header">
+              <span class="product-section-title">未开通</span>
+              <span class="product-section-count" id="unopenedCount">3</span>
+            </div>
+            <div class="cards-gap cols-3" id="unopenedProductsContainer">
+              <!-- 安心云 -->
+              
+
+              <!-- 城市代理 -->
+              
+            <div class="product-card-new product-minjiang product-pending" id="peMinjiang" onclick="enterSystemToPlatform('minjiang');return false;">
                 <div class="pc-brand-area brand-minjiang">
                   <div class="pc-brand-icon">
                     <img src="https://oss.minjiangyouyue.com/mjlogo/logo02.png" alt="民匠有约">
                   </div>
-                  <span class="pc-badge badge-done" id="badgeMJ">已开通</span>
+                  <span class="pc-badge badge-pending" id="badgeMJ">未开通</span>
                 </div>
                 <div class="pc-body">
                   <div class="pc-name">民匠有约</div>
@@ -1450,26 +1674,11 @@
                     <li>税务代征 · 合规完税</li>
                   </ul>
                   <div class="pc-footer">
-                    <span class="pc-foot-meta" id="footMJ">已开通，点击进入</span>
-                    <span class="pc-cta">
-                      进入工作台
-                      <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </span>
+                    <span class="pc-foot-meta" id="footMJ">完成签约即可开通</span>
+                    <span class="pc-cta">去开通 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 未开通 -->
-          <div class="product-section" data-group="unopened" id="unopenedSection" style="display:none;">
-            <div class="product-section-header">
-              <span class="product-section-title">未开通</span>
-              <span class="product-section-count" id="unopenedCount">0</span>
-            </div>
-            <div class="cards-gap cols-3" id="unopenedProductsContainer">
-              <!-- 安心云 -->
-              <div class="product-card-new product-anxinyun product-pending" id="peAnxinyun" onclick="enterSystemToPlatform('anxinyun');return false;">
+              </div><div class="product-card-new product-anxinyun product-pending" id="peAnxinyun" onclick="enterSystemToPlatform('anxinyun');return false;">
                 <div class="pc-brand-area brand-anxinyun">
                   <div class="pc-brand-icon">
                     <img src="https://oss.minjiangyouyue.com/mjlogo/logo01.png" alt="安心云">
@@ -1486,19 +1695,13 @@
                   </ul>
                   <div class="pc-footer">
                     <span class="pc-foot-meta" id="footAXY">完成签约即可开通</span>
-                    <span class="pc-cta">
-                      去开通
-                      <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </span>
+                    <span class="pc-cta">去开通 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
                   </div>
                 </div>
-              </div>
-
-              <!-- 城市代理 -->
-              <div class="product-card-new product-agent product-pending" id="peAgent" onclick="enterSystemToPlatform('agent');return false;">
+              </div><div class="product-card-new product-agent product-pending" id="peAgent" onclick="enterSystemToPlatform('agent');return false;">
                 <div class="pc-brand-area brand-agent">
                   <div class="pc-brand-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
                   </div>
                   <span class="pc-badge badge-pending" id="badgeAG">未开通</span>
                 </div>
@@ -1512,14 +1715,10 @@
                   </ul>
                   <div class="pc-footer">
                     <span class="pc-foot-meta" id="footAG">完成签约即可开通</span>
-                    <span class="pc-cta">
-                      去开通
-                      <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </span>
+                    <span class="pc-cta">去开通 <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
                   </div>
                 </div>
-              </div>
-            </div>
+              </div></div>
           </div>
 
         </div>
@@ -1528,24 +1727,58 @@
     </main>
   </div>
 
-  <!-- 切换企业弹窗 -->
-  <div class="modal-mask" id="switchModal">
-    <div class="modal">
-      <div class="modal-header">
-        <div class="modal-title">切换企业</div>
-        <div class="modal-close" onclick="closeModal('switchModal')">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  <!-- 切换企业弹窗（带搜索 + 二次选择） -->
+  <div class="modal-mask" id="switchEntModal">
+    <div class="modal" style="max-width:520px;">
+      <div class="modal-header" style="border-bottom:none;padding:16px 20px 12px;">
+        <div style="display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;">
+          <span>选择企业登录</span>
+        </div>
+        <div class="modal-close" onclick="closeSwitchEntModal()">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
         </div>
       </div>
-      <div class="modal-body" id="switchModalBody">
-        <div style="margin-bottom:14px;">
-          <a class="btn btn-primary" style="width:100%;" id="switchAddBtn">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-            添加新企业
-          </a>
+      <div class="modal-body" style="padding:0 20px 20px;">
+        <!-- 搜索框 -->
+        <div style="position:relative;margin-bottom:14px;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"></circle><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+          <input type="text" id="switchEntSearch" placeholder="搜索企业名称" style="width:100%;padding:10px 12px 10px 36px;border:1px solid var(--border-color,#e5e5e5);border-radius:8px;font-size:13px;outline:none;transition:border-color 0.15s;" onfocus="this.style.borderColor='var(--brand-primary,#1677FF)'" onblur="this.style.borderColor='var(--border-color,#e5e5e5)'" oninput="handleSwitchEntSearch(this.value)">
         </div>
-        <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">已加入企业</div>
-        <div id="switchEnterpriseList" style="display:flex;flex-direction:column;gap:6px;"></div>
+        <!-- 企业列表统计 -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <span id="switchEntCount" style="font-size:12px;color:var(--text-muted);"></span>
+        </div>
+        <!-- 企业列表 -->
+        <div id="switchEntList" style="display:flex;flex-direction:column;gap:8px;max-height:360px;overflow-y:auto;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 子公司选择弹窗（二级弹窗） -->
+  <div class="modal-mask" id="switchSubEntModal">
+    <div class="modal" style="max-width:480px;">
+      <div class="modal-header" style="border-bottom:none;padding:16px 20px 12px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="switch-sub-ent-back" onclick="backToEntList()" style="width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-muted);transition:all 0.15s;" onmouseover="this.style.background='var(--gray-100,#f5f5f5)'" onmouseout="this.style.background='transparent'">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          </div>
+          <div style="text-align:left;">
+            <div style="font-size:15px;font-weight:600;text-align:left;" id="switchSubEntTitle">选择子公司</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:2px;text-align:left;" id="switchSubEntSubtitle"></div>
+          </div>
+        </div>
+        <div class="modal-close" onclick="closeSubEntModal()">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+        </div>
+      </div>
+      <div class="modal-body" style="padding:0 20px 20px;">
+        <!-- 子公司搜索框 -->
+        <div style="position:relative;margin-bottom:14px;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"></circle><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+          <input type="text" id="switchSubEntSearch" placeholder="搜索子公司名称" style="width:100%;padding:10px 12px 10px 36px;border:1px solid var(--border-color,#e5e5e5);border-radius:8px;font-size:13px;outline:none;transition:border-color 0.15s;" onfocus="this.style.borderColor='var(--brand-primary,#1677FF)'" onblur="this.style.borderColor='var(--border-color,#e5e5e5)'" oninput="handleSwitchSubEntSearch(this.value)">
+        </div>
+        <!-- 子公司列表 -->
+        <div id="switchSubEntList" style="display:flex;flex-direction:column;gap:8px;max-height:360px;overflow-y:auto;"></div>
       </div>
     </div>
   </div>
@@ -1556,7 +1789,7 @@
       <div class="modal-header">
         <div class="modal-title">添加新企业</div>
         <div class="modal-close" onclick="closeModal('addModal')">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
         </div>
       </div>
       <div class="modal-body">
@@ -1611,6 +1844,97 @@
     }
 
     // ===== 企业管理 =====
+    // ===== 默认子公司数据（与 account-project.html 保持一致）=====
+    function ensureDefaultProjects() {
+      var stored = localStorage.getItem('mjyy_projects');
+      if (stored) {
+        try {
+          var arr = JSON.parse(stored);
+          if (Array.isArray(arr) && arr.length > 0) return arr;
+        } catch(e) {}
+      }
+      var defaultProjects = [
+        { id:'PRJ-2026-001', product:'mjyy', name:'杭州地铁保洁子公司', owner:'小赵', phone:'17857069096',
+          balance:28500, totalIn:50000, totalOut:21500, status:'active', createdAt:'2025-08-12 09:19:32',
+          desc:'地铁1号线保洁服务', subs:['U002','U004'] },
+        { id:'PRJ-2026-002', product:'mjyy', name:'阿里巴巴园区保洁', owner:'小李', phone:'13912345678',
+          balance:18700, totalIn:30000, totalOut:11300, status:'active', createdAt:'2025-09-01 14:32:18',
+          desc:'园区日常保洁', subs:['U003','U006','U007'] },
+        { id:'PRJ-2026-003', product:'mjyy', name:'万达广场安保子公司', owner:'小王', phone:'13700123456',
+          balance:0, totalIn:15000, totalOut:15000, status:'inactive', createdAt:'2025-10-15 10:08:45',
+          desc:'安保服务外包', subs:[] }
+      ];
+      localStorage.setItem('mjyy_projects', JSON.stringify(defaultProjects));
+      return defaultProjects;
+    }
+
+    // ===== 项目数据 → 企业列表同步 =====
+    function syncProjectsToEnterprises(parentEntId, list) {
+      var projList = ensureDefaultProjects();
+      var parentEnt = list.find(function(e) { return e.id === parentEntId; });
+      var parentId = parentEntId;
+      if (parentEnt && parentEnt.parentId) parentId = parentEnt.parentId;
+      
+      var changed = false;
+      for (var i = 0; i < projList.length; i++) {
+        var p = projList[i];
+        if (!p || !p.id) continue;
+        var subEntId = 'PROJ:' + p.id;
+        var existingIdx = -1;
+        for (var j = 0; j < list.length; j++) {
+          if (list[j] && list[j].id === subEntId) { existingIdx = j; break; }
+        }
+        var subEnt = {
+          id: subEntId,
+          name: p.name,
+          creditCode: p.creditCode || '',
+          legalMobile: p.phone || '',
+          role: '子管理员',
+          parentId: parentId,
+          verified: true,
+          status: p.status === 'inactive' ? 'inactive' : 'active',
+          product: p.product || 'mjyy',
+          balance: p.balance || 0,
+          projectId: p.id,
+          createdAt: p.createdAt || Date.now(),
+          isDefault: false
+        };
+        if (existingIdx >= 0) {
+          subEnt.createdAt = list[existingIdx].createdAt || subEnt.createdAt;
+          var oldEnt = list[existingIdx];
+          if (oldEnt.name !== subEnt.name ||
+              oldEnt.status !== subEnt.status ||
+              oldEnt.balance !== subEnt.balance ||
+              oldEnt.parentId !== subEnt.parentId) {
+            list[existingIdx] = subEnt;
+            changed = true;
+          }
+        } else {
+          list.push(subEnt);
+          changed = true;
+        }
+      }
+      
+      var validIds = {};
+      for (var k = 0; k < projList.length; k++) {
+        if (projList[k] && projList[k].id) validIds['PROJ:' + projList[k].id] = true;
+      }
+      var filtered = [];
+      for (var m = 0; m < list.length; m++) {
+        var ent = list[m];
+        if (ent && /^PROJ:/.test(ent.id)) {
+          if (validIds[ent.id]) filtered.push(ent);
+          else changed = true;
+        } else {
+          filtered.push(ent);
+        }
+      }
+      if (changed) {
+        localStorage.setItem('mjyy_enterprise_list', JSON.stringify(filtered));
+      }
+      return { list: filtered, changed: changed };
+    }
+
     function ensureEnterprises() {
       var list = localStorage.getItem('mjyy_enterprise_list');
       if (list) {
@@ -1622,6 +1946,37 @@
         list = [defaultEnt];
         localStorage.setItem('mjyy_enterprise_list', JSON.stringify(list));
         localStorage.setItem('mjyy_current_enterprise_id', defaultEnt.id);
+        // 初始化账号类型
+        localStorage.setItem('mjyy_account_type', 'main');
+      }
+      // 确保默认 projects 数据存在
+      ensureDefaultProjects();
+      // 同步项目数据到企业列表（确保子公司数据一致）
+      var curId = localStorage.getItem('mjyy_current_enterprise_id');
+      var curEnt = curId ? list.find(function(e) { return e.id === curId; }) : null;
+      if (!curEnt) curEnt = list[0];
+      if (curEnt) {
+        var parentEntId = curEnt.id;
+        if (curEnt.parentId) parentEntId = curEnt.parentId;
+        var syncResult = syncProjectsToEnterprises(parentEntId, list);
+        list = syncResult.list;
+        if (syncResult.changed) {
+          localStorage.setItem('mjyy_enterprise_list', JSON.stringify(list));
+        }
+      }
+      // 确保账号类型与当前企业的角色一致（不是企业类型）
+      if (curEnt) {
+        var currentType = localStorage.getItem('mjyy_account_type');
+        var correctType = null;
+        if (curEnt.role && /子管理员|子账号/.test(curEnt.role)) {
+          correctType = 'sub';
+        } else if (curEnt.role && /主管理员|主账号/.test(curEnt.role)) {
+          correctType = 'main';
+        }
+        // 如果角色明确且与当前不一致，则更新
+        if (correctType && currentType !== correctType) {
+          localStorage.setItem('mjyy_account_type', correctType);
+        }
       }
       // 清理企业名称中的"微信用户"残留
       var dirty = false;
@@ -1646,28 +2001,73 @@
       }
       var identityVerified = localStorage.getItem('mjyy_identity_verified') === 'true';
       var authType = localStorage.getItem('mjyy_auth_type') || 'enterprise';
-      var name = enterpriseData.companyName
-        || userData.name
-        || ((userData.phone || userData.mobile) ? (userData.phone || userData.mobile).replace(/^(\d{3})\d{4}(\d{4})$/, '$1****$2') + ' 的企业' : null)
-        || '我的企业';
+      
+      // 如果已有认证的企业信息，使用它；否则生成独立的母公司模拟数据
+      var hasRealData = enterpriseData.companyName 
+        || enterpriseData.creditCode 
+        || enterpriseData.credit_code;
+      
+      var name, creditCode, legalMobile;
+      
+      if (hasRealData) {
+        name = enterpriseData.companyName || '深圳星耀智造股份有限公司';
+        creditCode = enterpriseData.creditCode || enterpriseData.credit_code || '91440300MA5D7Z9X1Y2';
+        legalMobile = userData.phone || userData.mobile || '13900139000';
+      } else {
+        // 独立的母公司模拟数据（与子公司数据完全不同）
+        name = '深圳星耀智造股份有限公司';
+        creditCode = '91440300MA5D7Z9X1Y2';
+        legalMobile = '13900139000';
+        // 同步到 enterprise_data 供其他页面使用
+        enterpriseData.companyName = name;
+        enterpriseData.creditCode = creditCode;
+        localStorage.setItem('mjyy_enterprise_data', JSON.stringify(enterpriseData));
+        if (!userData.name || userData.name === '微信用户') {
+          userData.name = '张总';
+          localStorage.setItem('mjyy_user_data', JSON.stringify(userData));
+        }
+        localStorage.setItem('mjyy_identity_verified', 'true');
+      }
+      
       return {
-        id: 'ENT' + Date.now(),
+        id: 'ENT_PARENT_' + Date.now(),
         name: name,
-        creditCode: enterpriseData.creditCode || enterpriseData.credit_code || '',
-        legalMobile: userData.phone || userData.mobile || '',
+        creditCode: creditCode,
+        legalMobile: legalMobile,
         authType: authType,
-        verified: identityVerified,
-        role: '主账号管理员',
+        verified: true,
+        role: '主管理员',
         createdAt: Date.now(),
-        isDefault: true
+        isDefault: true,
+        type: 'parent'
       };
     }
 
     function getCurrentEnterprise() {
       var list = ensureEnterprises();
       var curId = localStorage.getItem('mjyy_current_enterprise_id');
+      var fromAdd = localStorage.getItem('mjyy_from_add_enterprise') === 'true';
+      if (!curId) {
+        if (!fromAdd && list.length > 0) {
+          var fb = list.find(function(e) { return e && !e.parentId; }) || list[0];
+          if (fb) {
+            localStorage.setItem('mjyy_current_enterprise_id', fb.id);
+            return fb;
+          }
+        }
+        return list[0] || null;
+      }
       var cur = list.find(function(e) { return e.id === curId; });
-      if (!cur) cur = list[0];
+      if (!cur) {
+        if (!fromAdd && list.length > 0) {
+          var fb2 = list.find(function(e) { return e && !e.parentId; }) || list[0];
+          if (fb2) {
+            localStorage.setItem('mjyy_current_enterprise_id', fb2.id);
+            return fb2;
+          }
+        }
+        return list[0] || null;
+      }
       return cur;
     }
 
@@ -1677,6 +2077,14 @@
       if (!ent) return;
       localStorage.setItem('mjyy_current_enterprise_id', ent.id);
       localStorage.setItem('mjyy_last_enterprise_id', ent.id);
+      // 账号类型根据角色判断（不是根据企业类型）
+      // 如果企业有明确的角色定义，则根据角色判断
+      if (ent.role && /子管理员|子账号/.test(ent.role)) {
+        localStorage.setItem('mjyy_account_type', 'sub');
+      } else if (ent.role && /主管理员|主账号/.test(ent.role)) {
+        localStorage.setItem('mjyy_account_type', 'main');
+      }
+      // 如果角色不明确，保留当前账号类型不变
       // 根据选中的企业状态同步认证状态
       if (ent.creditCode || ent.verified) {
         localStorage.setItem('mjyy_identity_verified', 'true');
@@ -1706,7 +2114,7 @@
         legalMobile: payload.legalMobile || '',
         authType: 'enterprise',
         verified: false,
-        role: payload.joinType === 'join' ? '员工' : '主账号管理员',
+        role: payload.joinType === 'join' ? '员工' : '主管理员',
         createdAt: Date.now(),
         isDefault: false,
         inviteCode: payload.inviteCode || ''
@@ -1714,14 +2122,387 @@
       list.push(ent);
       localStorage.setItem('mjyy_enterprise_list', JSON.stringify(list));
       localStorage.setItem('mjyy_current_enterprise_id', ent.id);
+      // 新添加的企业默认是母公司（主管理员）
+      localStorage.setItem('mjyy_account_type', 'main');
       window.location.reload();
     }
 
     function openModal(id) { document.getElementById(id).classList.add('open'); }
     function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
+    // ===== 切换企业弹窗逻辑 =====
+    var switchEntSearchKeyword = '';
+    var switchSubEntSearchKeyword = ''; // 子公司搜索关键字
+    var switchEntData = null; // 缓存企业数据
+    var switchSubEntList = []; // 当前选中企业的子公司列表
+
+    function getVerifiedEnterprises() {
+      var list = ensureEnterprises();
+      // 过滤已认证的企业
+      var verified = list.filter(function(ent) {
+        return ent.verified || ent.creditCode;
+      });
+      // 如果没有已认证的企业，显示所有企业
+      if (verified.length === 0) return list;
+      return verified;
+    }
+
+    // 获取指定企业的子公司列表
+    function getSubEnterprises(parentEntId) {
+      var list = ensureEnterprises();
+      // 找到母公司
+      var parentEnt = list.find(function(e) { return e.id === parentEntId; });
+      if (!parentEnt) return [];
+
+      // 只返回真正有 parentId 指向该母公司的企业
+      var byParent = list.filter(function(e) {
+        return e.parentId === parentEntId;
+      });
+      return byParent;
+    }
+
+    function renderSwitchEntList() {
+      var allList = getVerifiedEnterprises();
+      var fullList = ensureEnterprises();
+
+      // 一级弹窗始终显示母公司列表（无 parentId 的企业）
+      var filteredList = allList.filter(function(ent) {
+        return !ent.parentId;
+      });
+
+      // 如果过滤后列表为空，回退到全列表
+      if (filteredList.length === 0) filteredList = allList;
+
+      var currentId = localStorage.getItem('mjyy_current_enterprise_id');
+      var accountType = localStorage.getItem('mjyy_account_type') || 'main';
+
+      // 查找当前子公司的母公司 ID（用于子公司登录时高亮母公司并置顶）
+      // 使用 fullList（完整列表）而非 allList（已认证列表）来查找，避免子公司被过滤掉
+      var highlightParentId = null;
+      if (accountType === 'sub' && currentId) {
+        var curEnt = fullList.find(function(e) { return e && e.id === currentId; });
+        if (curEnt && curEnt.parentId) {
+          highlightParentId = curEnt.parentId;
+        }
+        // 如果在 fullList 中找不到，再尝试 allList
+        if (!highlightParentId) {
+          curEnt = allList.find(function(e) { return e && e.id === currentId; });
+          if (curEnt && curEnt.parentId) {
+            highlightParentId = curEnt.parentId;
+          }
+        }
+      }
+
+      // 搜索过滤
+      var list = filteredList;
+      if (switchEntSearchKeyword) {
+        var keyword = switchEntSearchKeyword.toLowerCase();
+        list = filteredList.filter(function(ent) {
+          return ent.name && ent.name.toLowerCase().indexOf(keyword) !== -1;
+        });
+      }
+
+      // 排序：将高亮的母公司置顶
+      if (highlightParentId) {
+        list = list.slice().sort(function(a, b) {
+          if (a.id === highlightParentId) return -1;
+          if (b.id === highlightParentId) return 1;
+          return 0;
+        });
+      }
+
+      // 渲染企业列表
+      var html = '';
+      list.forEach(function(ent) {
+        // 判断是否高亮（当前主登录或子公司登录时的母公司）
+        var isActive = false;
+        if (accountType === 'main') {
+          isActive = (currentId === ent.id);
+        } else if (accountType === 'sub') {
+          isActive = (highlightParentId === ent.id);
+        }
+        var firstChar = ent.name ? ent.name.charAt(0) : '企';
+        var roleLabel = ent.role || '主管理员';
+
+        // 计算子公司数量
+        var subCount = getSubEnterprises(ent.id).length;
+
+        // 根据场景决定显示的按钮/徽章
+        var actionHtml = '';
+        if (isActive && accountType === 'main') {
+          // 主管理员登录时：显示"当前登录"徽章
+          actionHtml = '<div style="padding:5px 10px;border-radius:6px;background:var(--brand-primary,#1677FF);color:#fff;font-size:12px;font-weight:500;">当前登录</div>' +
+            (subCount > 0 ?
+              '<div class="switch-ent-sub-btn" data-ent-id="' + ent.id + '" style="padding:5px 10px;border-radius:6px;background:#fff;color:var(--text-regular,rgba(0,0,0,0.85));font-size:12px;font-weight:500;cursor:pointer;flex-shrink:0;border:1px solid var(--border-color,#e5e5e5);display:flex;align-items:center;gap:4px;transition:all 0.15s;" onmouseover="this.style.borderColor=\'var(--brand-primary,#1677FF)\';this.style.color=\'var(--brand-primary,#1677FF)\'" onmouseout="this.style.borderColor=\'var(--border-color,#e5e5e5)\';this.style.color=\'var(--text-regular,rgba(0,0,0,0.85))\';">子公司登录<svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'
+              : '');
+        } else if (isActive && accountType === 'sub') {
+          // 子公司登录时：显示"登录"按钮（切换到母公司）+ "子公司登录"按钮
+          actionHtml = '<div class="switch-ent-login-btn" data-ent-id="' + ent.id + '" style="padding:6px 14px;border-radius:6px;background:linear-gradient(135deg,#1677FF 0%,#4096FF 100%);color:#fff;font-size:12px;font-weight:500;cursor:pointer;flex-shrink:0;box-shadow:0 2px 4px rgba(22,119,255,0.2);transition:all 0.15s;" onmouseover="this.style.transform=\'translateY(-1px)\';this.style.boxShadow=\'0 4px 8px rgba(22,119,255,0.3)\'" onmouseout="this.style.transform=\'translateY(0)\';this.style.boxShadow=\'0 2px 4px rgba(22,119,255,0.2)\';">登录</div>' +
+            (subCount > 0 ?
+              '<div class="switch-ent-sub-btn" data-ent-id="' + ent.id + '" style="padding:5px 10px;border-radius:6px;background:#fff;color:var(--text-regular,rgba(0,0,0,0.85));font-size:12px;font-weight:500;cursor:pointer;flex-shrink:0;border:1px solid var(--border-color,#e5e5e5);display:flex;align-items:center;gap:4px;transition:all 0.15s;" onmouseover="this.style.borderColor=\'var(--brand-primary,#1677FF)\';this.style.color=\'var(--brand-primary,#1677FF)\'" onmouseout="this.style.borderColor=\'var(--border-color,#e5e5e5)\';this.style.color=\'var(--text-regular,rgba(0,0,0,0.85))\';">子公司登录<svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'
+              : '');
+        } else {
+          // 未激活状态：显示常规按钮
+          actionHtml = (subCount > 0 ?
+            '<div class="switch-ent-login-btn" data-ent-id="' + ent.id + '" style="padding:6px 14px;border-radius:6px;background:linear-gradient(135deg,#1677FF 0%,#4096FF 100%);color:#fff;font-size:12px;font-weight:500;cursor:pointer;flex-shrink:0;box-shadow:0 2px 4px rgba(22,119,255,0.2);transition:all 0.15s;" onmouseover="this.style.transform=\'translateY(-1px)\';this.style.boxShadow=\'0 4px 8px rgba(22,119,255,0.3)\'" onmouseout="this.style.transform=\'translateY(0)\';this.style.boxShadow=\'0 2px 4px rgba(22,119,255,0.2)\';">登录</div>' +
+              '<div class="switch-ent-sub-btn" data-ent-id="' + ent.id + '" style="padding:5px 10px;border-radius:6px;background:#fff;color:var(--text-regular,rgba(0,0,0,0.85));font-size:12px;font-weight:500;cursor:pointer;flex-shrink:0;border:1px solid var(--border-color,#e5e5e5);display:flex;align-items:center;gap:4px;transition:all 0.15s;" onmouseover="this.style.borderColor=\'var(--brand-primary,#1677FF)\';this.style.color=\'var(--brand-primary,#1677FF)\'" onmouseout="this.style.borderColor=\'var(--border-color,#e5e5e5)\';this.style.color=\'var(--text-regular,rgba(0,0,0,0.85))\';">子公司登录<svg viewBox="0 0 24 24" width="12" height="12" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'
+              :
+              '<div class="switch-ent-login-btn" data-ent-id="' + ent.id + '" style="padding:6px 16px;border-radius:6px;background:linear-gradient(135deg,#1677FF 0%,#4096FF 100%);color:#fff;font-size:12px;font-weight:500;cursor:pointer;flex-shrink:0;box-shadow:0 2px 4px rgba(22,119,255,0.2);transition:all 0.15s;" onmouseover="this.style.transform=\'translateY(-1px)\';this.style.boxShadow=\'0 4px 8px rgba(22,119,255,0.3)\'" onmouseout="this.style.transform=\'translateY(0)\';this.style.boxShadow=\'0 2px 4px rgba(22,119,255,0.2)\';">登录</div>'
+            );
+        }
+
+        html += '<div class="switch-ent-item' + (isActive ? ' active' : '') + '" data-ent-id="' + ent.id + '" ' +
+          'style="padding:14px 16px;border-radius:10px;display:flex;align-items:center;gap:12px;' +
+          (isActive ? 'background:var(--brand-primary-50,#E8F3FF);border:1px solid var(--brand-primary-200,#BAE0FF);' : 'background:#fff;border:1px solid var(--border-color,#f0f0f0);') +
+          'transition:all 0.15s;" onmouseover="if(!this.classList.contains(\'active\')){this.style.borderColor=\'var(--brand-primary-200,#BAE0FF)\';this.style.background=\'var(--brand-primary-50,#FAFCFF)\';}" onmouseout="if(!this.classList.contains(\'active\')){this.style.borderColor=\'var(--border-color,#f0f0f0)\';this.style.background=\'#fff\';}">' +
+          '<div class="switch-ent-icon" style="width:40px;height:40px;border-radius:10px;background:' + (isActive ? 'var(--brand-primary,#1677FF)' : 'var(--brand-primary-50,#E8F3FF)') + ';color:' + (isActive ? '#fff' : 'var(--brand-primary,#1677FF)') + ';display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;flex-shrink:0;">' + firstChar + '</div>' +
+          '<div class="switch-ent-info" style="flex:1;min-width:0;text-align:left;">' +
+          '<div class="switch-ent-name" style="font-size:14px;font-weight:600;color:var(--text-primary,#1f1f1f);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left;">' + ent.name + '</div>' +
+          '<div class="switch-ent-meta" style="font-size:12px;color:var(--text-muted);margin-top:3px;display:flex;align-items:center;gap:6px;">' +
+          '<span>' + roleLabel + '</span>' +
+          (subCount > 0 ? '<span style="padding:2px 6px;border-radius:4px;background:#F3F4F6;color:#6B7280;">' + subCount + '个子公司</span>' : '') +
+          '</div>' +
+          '</div>' +
+          '<div class="switch-ent-action" style="flex-shrink:0;display:flex;align-items:center;gap:8px;">' +
+          actionHtml +
+          '</div>' +
+          '</div>';
+      });
+
+      var container = document.getElementById('switchEntList');
+      if (container) container.innerHTML = html || '<div style="text-align:center;padding:40px 20px;color:var(--text-muted);font-size:13px;">' +
+        (switchEntSearchKeyword ? '未找到匹配的企业' : '暂无企业') + '</div>';
+
+      // 更新计数
+      var countEl = document.getElementById('switchEntCount');
+      if (countEl) {
+        if (switchEntSearchKeyword) {
+          countEl.textContent = '搜索到 ' + list.length + ' 家企业';
+        } else {
+          countEl.textContent = '共 ' + filteredList.length + ' 家企业';
+        }
+      }
+    }
+
+    // 搜索处理
+    function handleSwitchEntSearch(value) {
+      switchEntSearchKeyword = (value || '').trim();
+      renderSwitchEntList();
+    }
+
+    function openSwitchEntModal() {
+      try { switchEntSearchKeyword = ''; } catch(e) {}
+      try { switchSubEntSearchKeyword = ''; } catch(e) {}
+      try {
+        var searchInput = document.getElementById('switchEntSearch');
+        if (searchInput) searchInput.value = '';
+      } catch(e) {}
+      try { renderSwitchEntList(); } catch(e) { console.error('[openSwitchEntModal] renderSwitchEntList failed:', e); }
+      try {
+        var m = document.getElementById('switchEntModal');
+        if (m) m.classList.add('open');
+      } catch(e) { console.error('[openSwitchEntModal] openModal failed:', e); }
+    }
+    // 暴露到 window，供兜底绑定使用
+    window.__accountCenterOpenSwitchEnt = openSwitchEntModal;
+    window.__accountCenterRenderSwitchEntList = renderSwitchEntList;
+
+    function closeSwitchEntModal() {
+      closeModal('switchEntModal');
+    }
+
+    // 打开子公司选择弹窗
+    function openSubEntModal(parentEntId) {
+      var list = ensureEnterprises();
+      var parentEnt = list.find(function(e) { return e.id === parentEntId; });
+      if (!parentEnt) return;
+
+      // 获取子公司列表
+      var subList = getSubEnterprises(parentEntId);
+      switchSubEntList = subList;
+      switchSubEntSearchKeyword = '';
+
+      // 更新标题
+      var titleEl = document.getElementById('switchSubEntTitle');
+      var subtitleEl = document.getElementById('switchSubEntSubtitle');
+      if (titleEl) titleEl.textContent = '选择登录的子公司';
+      if (subtitleEl) subtitleEl.textContent = parentEnt.name + ' · 共 ' + subList.length + ' 个子公司';
+
+      // 清空搜索框
+      var subEntSearch = document.getElementById('switchSubEntSearch');
+      if (subEntSearch) subEntSearch.value = '';
+
+      // 渲染子公司列表
+      renderSwitchSubEntList();
+
+      // 打开二级弹窗
+      closeModal('switchEntModal');
+      openModal('switchSubEntModal');
+    }
+
+    // 渲染子公司列表
+    function renderSwitchSubEntList() {
+      var list = switchSubEntList;
+      // 搜索过滤
+      if (switchSubEntSearchKeyword) {
+        var keyword = switchSubEntSearchKeyword.toLowerCase();
+        list = switchSubEntList.filter(function(ent) {
+          return ent.name && ent.name.toLowerCase().indexOf(keyword) !== -1;
+        });
+      }
+
+      var currentId = localStorage.getItem('mjyy_current_enterprise_id');
+
+      // 渲染子公司列表
+      var html = '';
+      list.forEach(function(ent) {
+        var isActive = (currentId === ent.id);
+        var firstChar = ent.name ? ent.name.charAt(0) : '企';
+        var roleLabel = ent.role || '子管理员';
+
+        html += '<div class="switch-sub-ent-item' + (isActive ? ' active' : '') + '" data-ent-id="' + ent.id + '" ' +
+          'style="padding:12px 14px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:10px;' +
+          (isActive ? 'background:var(--brand-primary-50,#E8F3FF);border:1px solid var(--brand-primary-200,#BAE0FF);' : 'background:#fff;border:1px solid var(--border-color,#f0f0f0);') +
+          'transition:all 0.15s;" onmouseover="if(!this.classList.contains(\'active\')){this.style.borderColor=\'var(--brand-primary-200,#BAE0FF)\';}" onmouseout="if(!this.classList.contains(\'active\')){this.style.borderColor=\'var(--border-color,#f0f0f0)\';}">' +
+          '<div style="width:36px;height:36px;border-radius:8px;background:' + (isActive ? 'var(--brand-primary,#1677FF)' : 'var(--brand-primary-50,#E8F3FF)') + ';color:' + (isActive ? '#fff' : 'var(--brand-primary,#1677FF)') + ';display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;flex-shrink:0;">' + firstChar + '</div>' +
+          '<div style="flex:1;min-width:0;text-align:left;">' +
+          '<div style="font-size:13px;font-weight:500;color:var(--text-primary,#1f1f1f);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left;">' + ent.name + '</div>' +
+          '<div style="font-size:12px;color:var(--text-muted);margin-top:2px;text-align:left;">' +
+          '<span>' + roleLabel + '</span>' +
+          '</div>' +
+          '</div>' +
+          (isActive ? 
+            '<div style="padding:5px 10px;border-radius:6px;background:var(--brand-primary,#1677FF);color:#fff;font-size:12px;font-weight:500;flex-shrink:0;">当前登录</div>' :
+            '<div class="switch-sub-ent-login-btn" style="padding:6px 14px;border-radius:6px;background:linear-gradient(135deg,#1677FF 0%,#4096FF 100%);color:#fff;font-size:12px;font-weight:500;flex-shrink:0;box-shadow:0 2px 4px rgba(22,119,255,0.2);cursor:pointer;transition:all 0.15s;" onmouseover="this.style.transform=\'translateY(-1px)\';this.style.boxShadow=\'0 4px 8px rgba(22,119,255,0.3)\'" onmouseout="this.style.transform=\'translateY(0)\';this.style.boxShadow=\'0 2px 4px rgba(22,119,255,0.2)\';">登录</div>'
+          ) +
+          '</div>';
+      });
+
+      var container = document.getElementById('switchSubEntList');
+      if (container) container.innerHTML = html || '<div style="text-align:center;padding:30px 20px;color:var(--text-muted);font-size:13px;">' +
+        (switchSubEntSearchKeyword ? '未找到匹配的子公司' : '暂无子公司') + '</div>';
+
+      // 更新副标题
+      var subtitleEl = document.getElementById('switchSubEntSubtitle');
+      if (subtitleEl) {
+        if (switchSubEntSearchKeyword) {
+          subtitleEl.textContent = '搜索到 ' + list.length + ' 个子公司';
+        } else {
+          subtitleEl.textContent = '共 ' + switchSubEntList.length + ' 个子公司';
+        }
+      }
+    }
+
+    // 子公司搜索处理
+    function handleSwitchSubEntSearch(value) {
+      switchSubEntSearchKeyword = (value || '').trim();
+      renderSwitchSubEntList();
+    }
+
+    function closeSubEntModal() {
+      closeModal('switchSubEntModal');
+      switchSubEntList = [];
+    }
+
+    function backToEntList() {
+      closeModal('switchSubEntModal');
+      openModal('switchEntModal');
+    }
+
+    function switchToEnterprise(entId) {
+      var list = ensureEnterprises();
+      var ent = list.find(function(e) { return e.id === entId; });
+      if (!ent) return;
+
+      // 保存当前企业
+      localStorage.setItem('mjyy_current_enterprise_id', ent.id);
+      localStorage.setItem('mjyy_last_enterprise_id', ent.id);
+
+      // 根据企业角色同步账号类型
+      var role = ent.role || '';
+      var isSubByRole = /子管理员|子账号|员工|普通成员/.test(role);
+      var isSubByParent = !!ent.parentId; // 有 parentId 的企业一定是子公司
+      if (isSubByRole || isSubByParent) {
+        localStorage.setItem('mjyy_account_type', 'sub');
+      } else {
+        localStorage.setItem('mjyy_account_type', 'main');
+      }
+
+      // 更新认证状态
+      if (ent.creditCode || ent.verified) {
+        localStorage.setItem('mjyy_identity_verified', 'true');
+        var entData = JSON.parse(localStorage.getItem('mjyy_enterprise_data') || '{}');
+        entData.companyName = ent.name;
+        entData.creditCode = ent.creditCode || entData.creditCode;
+        localStorage.setItem('mjyy_enterprise_data', JSON.stringify(entData));
+      }
+
+      // 关闭所有弹窗并刷新页面
+      closeModal('switchSubEntModal');
+      closeModal('switchEntModal');
+      window.location.reload();
+    }
+
     // ===== 页面初始化 =====
     (function() {
+      // 先注册切换企业弹窗的兜底绑定，确保首次加载时按钮可用
+      // 即使下方初始化出错，这个绑定也会保证点击事件被正确响应
+      var __bindSwitchEntFallback = function() {
+        // 防止重复绑定
+        if (window.__switchEntFallbackBound) return;
+        window.__switchEntFallbackBound = true;
+
+        var handler = function(e) {
+          var btn = e.target.closest('#switchEnterpriseBtn, #switchEnterpriseAction, #switchEnterpriseLink, #globalSwitchEnterprise, .user-dropdown-switch-ent-badge');
+          if (!btn) return;
+          e.preventDefault();
+          e.stopPropagation();
+          try {
+            // 先关闭下拉
+            var tb = btn.closest('.topbar-user');
+            if (tb) {
+              tb.classList.remove('active');
+              var dd = tb.querySelector('.user-dropdown');
+              if (dd) dd.classList.remove('open');
+            }
+            // 依次尝试多种方式打开弹窗
+            if (typeof window.openSwitchEntModal === 'function') {
+              window.openSwitchEntModal();
+              return;
+            }
+            if (typeof window.__accountCenterOpenSwitchEnt === 'function') {
+              window.__accountCenterOpenSwitchEnt();
+              return;
+            }
+            var m = document.getElementById('switchEntModal');
+            if (m) {
+              m.classList.add('open');
+              try {
+                if (typeof window.renderSwitchEntList === 'function') window.renderSwitchEntList();
+              } catch(err) {}
+              return;
+            }
+          } catch(err) {
+            console.error('[switchEnt fallback] error:', err);
+            try {
+              var m2 = document.getElementById('switchEntModal');
+              if (m2) m2.classList.add('open');
+            } catch(e2) {}
+          }
+        };
+        document.addEventListener('click', handler);
+      };
+      // 立即注册兜底绑定
+      try { __bindSwitchEntFallback(); } catch(e) {}
+      // DOMContentLoaded 后再次注册（确保 main.js/enterprise-switch.js 加载后仍有绑定）
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+          try { __bindSwitchEntFallback(); } catch(e) {}
+        });
+      } else {
+        try { __bindSwitchEntFallback(); } catch(e) {}
+      }
+
       var isLoggedIn = localStorage.getItem('mjyy_logged_in') === 'true';
       if (!isLoggedIn) { window.location.href = 'login.html'; return; }
 
@@ -1743,21 +2524,73 @@
       }
 
       var displayName = '';
-      var enterprise = getCurrentEnterprise() || { name: '我的企业', role: '主账号管理员', verified: false, isDefault: true, creditCode: '' };
+      var enterprise = getCurrentEnterprise();
+      
+      // 如果 enterprise 为空，尝试从其他来源获取
+      if (!enterprise) {
+        var _listRaw = localStorage.getItem('mjyy_enterprise_list');
+        var _list = [];
+        if (_listRaw) { try { _list = JSON.parse(_listRaw); } catch(e) {} }
+        
+        // 1. 尝试从 enterpriseData 获取
+        var _entData = JSON.parse(localStorage.getItem('mjyy_enterprise_data') || '{}');
+        if (_entData && _entData.companyName) {
+          enterprise = {
+            name: _entData.companyName,
+            id: localStorage.getItem('mjyy_current_enterprise_id') || '',
+            parentId: _entData.parentId || null,
+            verified: _entData.verified || true,
+            creditCode: _entData.creditCode || '',
+            role: '主管理员'
+          };
+          console.log('[account-center] 从enterpriseData恢复企业:', enterprise.name);
+        }
+        // 2. 如果还是为空，从企业列表取第一个
+        if (!enterprise && _list.length > 0) {
+          var _curId = localStorage.getItem('mjyy_current_enterprise_id');
+          if (_curId) {
+            enterprise = _list.find(function(e) { return e && e.id === _curId; });
+          }
+          if (!enterprise) {
+            enterprise = _list.find(function(e) { return e && !e.parentId; });
+            if (enterprise) {
+              localStorage.setItem('mjyy_current_enterprise_id', enterprise.id);
+            }
+          }
+          if (enterprise) {
+            console.log('[account-center] 从企业列表获取企业:', enterprise.name);
+          }
+        }
+        // 3. 最后兜底
+        if (!enterprise) {
+          enterprise = { name: '杭州云创科技有限公司', role: '主管理员', verified: true, isDefault: true, creditCode: '', parentId: null };
+          console.log('[account-center] 使用兜底企业:', enterprise.name);
+        }
+      }
+
+      // 判断当前角色
+      var isSubAdmin = !!(enterprise && (enterprise.parentId || (enterprise.role && /子管理员|子账号/.test(enterprise.role))));
+      var isParentAdmin = !!(enterprise && enterprise.role && /主管理员|主账号/.test(enterprise.role));
+      var entTypeLabel = isSubAdmin ? '子公司' : '母公司';
+
+      // 子管理员：隐藏"子公司管理"菜单
+      if (isSubAdmin) {
+        var subEntMgmt = document.getElementById('sidebarSubEntMgmt');
+        if (subEntMgmt) subEntMgmt.style.display = 'none';
+      }
 
       // ---------- 顶部右侧账号的显示名：
-      //  【规则】
-      //   1. 只要有企业信息（即 enterprise 不为默认"我的企业"占位），一律显示企业名称；
+      //   1. 只要有企业信息，一律显示企业名称；
       //   2. 企业信息为空但已认证，显示认证主体；
       //   3. 未认证 并且 没有企业信息 → 才允许显示脱敏手机号；
       //   4. 都没有 → 「企业用户」
-      var hasRealEnterprise = !!(enterprise && enterprise.name && enterprise.name !== '我的企业');
+      var hasRealEnterprise = !!(enterprise && enterprise.name);
       var accountType = localStorage.getItem('mjyy_account_type') || 'main';
 
       if (hasRealEnterprise) {
         displayName = enterprise.name;
-      } else if (identityVerified && enterprise && enterprise.name) {
-        displayName = enterprise.name;
+      } else if (identityVerified && userData.mobile) {
+        displayName = maskMobile(userData.mobile);
       } else if (!identityVerified && userData.mobile) {
         // 未认证的情况下才显示手机号
         displayName = maskMobile(userData.mobile);
@@ -1784,6 +2617,8 @@
 
       var welcomeTags = document.getElementById('welcomeTags');
       welcomeTags.innerHTML = '';
+      // 母公司/子公司标签
+      var tEntType = document.createElement('span'); tEntType.className = 'welcome-tag'; tEntType.textContent = entTypeLabel; welcomeTags.appendChild(tEntType);
       if (identityVerified) {
         var t1 = document.createElement('span'); t1.className = 'welcome-tag'; t1.textContent = '已实名认证'; welcomeTags.appendChild(t1);
       } else {
@@ -1819,10 +2654,27 @@
 
       // 产品状态：分组展示（已开通 / 未开通）
       var productConfig = [
-        { id: 'peMinjiang', badgeId: 'badgeMJ', footId: 'footMJ', ctaText: '进入工作台', ctaPending: '去开通', signed: mjSigned },
-        { id: 'peAnxinyun', badgeId: 'badgeAXY', footId: 'footAXY', ctaText: '进入工作台', ctaPending: '去开通', signed: axySigned },
-        { id: 'peAgent', badgeId: 'badgeAG', footId: 'footAG', ctaText: '进入工作台', ctaPending: '去开通', signed: agSigned }
+        { id: 'peMinjiang', productKey: 'minjiang', badgeId: 'badgeMJ', footId: 'footMJ', ctaText: '进入工作台', ctaPending: '去开通', signed: mjSigned },
+        { id: 'peAnxinyun', productKey: 'anxinyun', badgeId: 'badgeAXY', footId: 'footAXY', ctaText: '进入工作台', ctaPending: '去开通', signed: axySigned },
+        { id: 'peAgent', productKey: 'agent', badgeId: 'badgeAG', footId: 'footAG', ctaText: '进入工作台', ctaPending: '去开通', signed: agSigned }
       ];
+
+      var subAccountAllowedProducts = null;
+
+      if (accountType === 'sub') {
+        var _entList = [];
+        try { _entList = JSON.parse(localStorage.getItem('mjyy_enterprise_list') || '[]'); } catch (e) {}
+        var _entId = localStorage.getItem('mjyy_current_enterprise_id');
+        var _curEnt = _entList.find(function(e) { return e.id === _entId; });
+        if (_curEnt) {
+          var _configured = _curEnt.products || _curEnt.productConfig;
+          if (Array.isArray(_configured) && _configured.length > 0) {
+            subAccountAllowedProducts = _configured.map(function(p) {
+              return (typeof p === 'string') ? p : (p.key || p.id || p.productKey);
+            });
+          }
+        }
+      }
 
       function renderProductGroups() {
         var openedContainer = document.getElementById('openedProductsContainer');
@@ -1846,6 +2698,19 @@
           var isSigned = cfg.signed && identityVerified;
 
           if (!card) return;
+
+          if (accountType === 'sub') {
+            if (!subAccountAllowedProducts || subAccountAllowedProducts.length === 0) {
+              card.style.display = 'none';
+              return;
+            }
+            if (subAccountAllowedProducts.indexOf(cfg.productKey) === -1) {
+              card.style.display = 'none';
+              return;
+            }
+          } else {
+            card.style.display = '';
+          }
 
           // 更新徽章
           if (badge) {
@@ -1910,65 +2775,75 @@
 
       renderProductGroups();
 
-      // 企业列表渲染 - 只渲染弹窗中的企业列表（下拉菜单由main.js处理）
-      function renderEnterpriseLists() {
-        var current = getCurrentEnterprise();
-        var currentId = localStorage.getItem('mjyy_current_enterprise_id');
-        var list = ensureEnterprises();
-        var lastUsedId = localStorage.getItem('mjyy_last_enterprise_id');
-
-        // 置顶：最近使用 > 当前 > 默认
-        list = list.slice().sort(function(a, b) {
-          function score(e) {
-            var s = 0;
-            if (lastUsedId && e.id === lastUsedId) s += 10;
-            if (currentId && e.id === currentId) s += 5;
-            if (e.isDefault) s += 2;
-            return s;
-          }
-          return score(b) - score(a);
-        });
-
-        // 只渲染弹窗中的企业列表（switchEnterpriseList）
-        var html2 = '';
-        list.forEach(function(ent) {
-          var active = (currentId && ent.id === currentId) ? ' active' : '';
-          var firstChar = ent.name ? ent.name.charAt(0) : '企';
-          // 只有当存在 currentId 且匹配时才显示"当前登录"
-          var currentTag = (currentId && ent.id === currentId) ? '<span class="enterprise-current-badge">当前登录</span>' : '';
-          html2 += '<div class="enterprise-switch-item' + active + '" data-id="' + ent.id + '" style="padding:12px;">' +
-            '<div class="enterprise-switch-icon">' + firstChar + '</div>' +
-            '<div class="enterprise-switch-info">' +
-            '<div class="enterprise-switch-name-row" style="font-size:14px;"><span class="enterprise-switch-name">' + ent.name + '</span></div>' +
-            '<div class="enterprise-switch-role">' + (ent.role || '主账号管理员') + (ent.verified ? ' · 已认证' : ' · 待认证') + '</div>' +
-            '</div>' + currentTag + '</div>';
-        });
-        var container2 = document.getElementById('switchEnterpriseList');
-        if (container2) container2.innerHTML = html2;
-      }
-      renderEnterpriseLists();
-
       // 使用事件委托绑定弹窗相关事件（确保在 main.js 替换 DOM 后仍然有效）
-      document.addEventListener('click', function(e) {
-        // 打开切换企业弹窗
-        var switchBtn = e.target.closest('#switchEnterpriseBtn, #switchEnterpriseAction, #switchEnterpriseLink, #globalSwitchEnterprise');
-        if (switchBtn) {
+      var __delegatedBound = false;
+      var __bindDelegatedHandlers = function() {
+        if (__delegatedBound) return;
+        __delegatedBound = true;
+        document.addEventListener('click', function(e) {
+          // 打开切换企业弹窗
+          var switchEntBtn = e.target.closest('#switchEnterpriseBtn, #switchEnterpriseAction, #switchEnterpriseLink, #globalSwitchEnterprise, .user-dropdown-switch-ent-badge');
+          if (switchEntBtn) {
+            e.preventDefault(); e.stopPropagation();
+            try {
+              if (typeof openSwitchEntModal === 'function') {
+                openSwitchEntModal();
+              } else if (typeof window.openSwitchEntModal === 'function') {
+                window.openSwitchEntModal();
+              } else if (typeof window.__accountCenterOpenSwitchEnt === 'function') {
+                window.__accountCenterOpenSwitchEnt();
+              } else {
+                // 兜底：直接 DOM 操作
+                var m = document.getElementById('switchEntModal');
+                if (m) {
+                  m.classList.add('open');
+                  try { if (typeof renderSwitchEntList === 'function') renderSwitchEntList(); } catch(err) {}
+                }
+              }
+            } catch(err) {
+              console.error('[switchEnt delegated] error:', err);
+              var m = document.getElementById('switchEntModal');
+              if (m) m.classList.add('open');
+            }
+            return;
+          }
+        // 登录按钮 - 直接切换登录
+        var loginBtn = e.target.closest('#switchEntList .switch-ent-login-btn');
+        if (loginBtn) {
           e.preventDefault(); e.stopPropagation();
-          openModal('switchModal');
+          var loginEntId = loginBtn.getAttribute('data-ent-id');
+          if (loginEntId) switchToEnterprise(loginEntId);
           return;
         }
-        // 从下拉菜单打开添加新企业弹窗（#globalAddNewEnterprise 由 main.js 全局处理跳转）
+        // 子公司登录按钮 - 打开子公司选择弹窗
+        var subBtn = e.target.closest('#switchEntList .switch-ent-sub-btn');
+        if (subBtn) {
+          e.preventDefault(); e.stopPropagation();
+          var subEntId = subBtn.getAttribute('data-ent-id');
+          if (subEntId) openSubEntModal(subEntId);
+          return;
+        }
+        // 企业列表项点击 - 已移除卡片点击跳转，仅通过按钮操作
+        // 子公司登录按钮 - 切换登录
+        var subLoginBtn = e.target.closest('#switchSubEntList .switch-sub-ent-login-btn');
+        if (subLoginBtn) {
+          e.preventDefault(); e.stopPropagation();
+          var subEntId = subLoginBtn.closest('.switch-sub-ent-item').getAttribute('data-ent-id');
+          if (subEntId) switchToEnterprise(subEntId);
+          return;
+        }
+        // 子公司列表项点击 - 切换登录
+        var subEntItem = e.target.closest('#switchSubEntList .switch-sub-ent-item');
+        if (subEntItem) {
+          e.preventDefault(); e.stopPropagation();
+          var subEntId = subEntItem.getAttribute('data-ent-id');
+          if (subEntId) switchToEnterprise(subEntId);
+          return;
+        }
+        // 从下拉菜单打开添加新企业弹窗
         var addNewEnt = e.target.closest('#addNewEnterprise, [data-action="add-new-enterprise"]');
         if (addNewEnt) {
           e.preventDefault(); e.stopPropagation();
-          openModal('addModal');
-          return;
-        }
-        // 从弹窗中打开添加企业弹窗
-        var switchAddBtn = e.target.closest('#switchAddBtn');
-        if (switchAddBtn) {
-          e.preventDefault();
-          closeModal('switchModal');
           openModal('addModal');
           return;
         }
@@ -2011,6 +2886,10 @@
           if (e.target === mask) mask.classList.remove('open');
         });
       });
+      };
+
+      // 绑定事件委托（确保在 main.js 替换 DOM 后仍然有效）
+      try { __bindDelegatedHandlers(); } catch(e) {}
 
       // =========================================================
       // ⚠️ 顶部栏下拉交互（账号卡片 / 消息图标）—— 已统一由 js/main.js 中
@@ -2034,8 +2913,17 @@
       try{run()}catch(e){}
       document.addEventListener("DOMContentLoaded", run);
       setTimeout(run, 50); setTimeout(run, 300);
+      // 在所有脚本执行完成后，再次刷新账号卡片（确保企业信息正确显示）
+      setTimeout(function() {
+        if (typeof window.refreshGlobalDropdownCard === 'function') {
+          try { window.refreshGlobalDropdownCard(); } catch(e) {}
+        }
+      }, 500);
     })();
   </script>
-<script src="js/main.js?v=51"></script>
-</body>
-</html>
+<script src="js/main.js?v=1787805187"></script>
+<script src="js/enterprise-switch.js?v=1787804018"></script>
+<div id="__versionBadge" style="position:fixed;bottom:8px;right:8px;z-index:99999;font:10px/1.2 -apple-system,BlinkMacSystemFont,sans-serif;color:#8c8c8c;background:rgba(255,255,255,.85);border:1px solid #e5e5e5;border-radius:4px;padding:3px 7px;backdrop-filter:blur(4px);pointer-events:none;user-select:none;">CSS v54 · JS v57</div>
+
+
+</body></html>

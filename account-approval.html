@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>审批中心 - 民匠有约</title>
+  <link rel="stylesheet" href="css/style.css?v=2025fix10">
+  <style>
+    :root {
+      --brand-primary: #1677FF;
+      --brand-primary-dark: #0958D9;
+      --brand-primary-50: #E6F4FF;
+      --brand-primary-100: #BAE0FF;
+      --sidebar-width: 240px;
+      --gray-50: #F7F8FA;
+      --gray-100: #F2F3F5;
+      --gray-200: #E5E6EB;
+      --gray-300: #C9CDD4;
+      --text: #1D2129;
+      --text-regular: #4E5969;
+      --text-secondary: #86909C;
+      --text-placeholder: #C9CDD4;
+      --success: #00B42A;
+      --warning: #FF7D00;
+      --danger: #F53F3F;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #f5f6f7; color: var(--text); min-height: 100vh; line-height: 1.6;
+      overflow-y: scroll;
+    }
+    /* ===== 顶部导航 ===== */
+    .topbar { background:#fff; border-bottom:none; height:60px; width:100%; position:fixed; top:0; left:0; right:0; z-index:1000; padding:0; }
+    .topbar-inner { max-width:1440px; width:100%; margin:0 auto; padding:0 40px; height:100%; display:flex; align-items:center; justify-content:space-between; }
+    .topbar-divider { width:1px; height:20px; background:var(--gray-200); margin:0 12px; }
+    .topbar-brand { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text); }
+    .topbar-title { font-size:17px; font-weight:700; letter-spacing:0.3px; }
+    .topbar-breadcrumb { display:flex; align-items:center; gap:4px; font-size:13px; color:var(--text-regular); line-height:1; }
+    .topbar-breadcrumb a { color:var(--text-secondary); text-decoration:none; transition:color 0.15s; }
+    .topbar-breadcrumb a:hover { color:var(--brand-primary); }
+    .topbar-bc-sep { color:var(--text-placeholder); font-size:12px; margin:0 2px; }
+    .topbar-bc-current { color:var(--text); font-weight:500; }
+    .topbar-right { display:flex; align-items:center; gap:8px; }
+    .topbar-back { font-size:13px; color:var(--text-secondary); text-decoration:none; display:flex; align-items:center; gap:6px; }
+    .topbar-back:hover { color:var(--brand-primary); }
+    .topbar-user { position:relative; display:flex; align-items:center; gap:10px; padding:6px 12px 6px 8px; border-radius:10px; cursor:pointer; transition:background 0.2s; background:#fff; border:1px solid var(--gray-200); }
+    .topbar-user:hover { background:var(--gray-50); border-color:var(--gray-300); }
+    /* ===== 侧边栏 ===== */
+    .page-layout { display:flex; min-height:100vh; padding-top:60px; }
+    .sidebar { width:var(--sidebar-width); background:#fff; border-right:1px solid var(--gray-200); position:fixed; top:60px; bottom:0; left:0; overflow-y:auto; padding:16px 0; z-index:100; }
+    .sidebar-section-title { font-size:11px; color:var(--text-secondary); padding:8px 16px 6px; font-weight:500; letter-spacing:0.5px; text-transform:uppercase; }
+    .sidebar-menu { list-style:none; }
+    .sidebar-link { display:flex; align-items:center; gap:10px; padding:9px 16px; font-size:14px; color:var(--text-regular); text-decoration:none; transition:all 0.15s; border-left:3px solid transparent; }
+    .sidebar-link:hover { color:var(--brand-primary); background:var(--gray-100); }
+    .sidebar-link.active { color:var(--brand-primary); background:var(--brand-primary-50); border-left-color:var(--brand-primary); font-weight:500; }
+    .sidebar-link svg { width:17px; height:17px; flex-shrink:0; display: block; overflow: visible; align-self: center; }
+    .sidebar-divider { height:1px; background:var(--gray-200); margin:10px 16px; }
+    .main-content { margin-left:var(--sidebar-width); padding:24px 32px; flex:1; max-width:calc(100vw - var(--sidebar-width)); }
+    /* ===== 页面标题 ===== */
+    .page-title-wrap { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+    .page-title { font-size:22px; font-weight:600; color:var(--text); }
+    .page-subtitle { font-size:13px; color:var(--text-secondary); margin-top:4px; }
+    /* ===== 按钮 ===== */
+    .btn { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:8px; font-size:14px; border:none; cursor:pointer; transition:all 0.15s; text-decoration:none; }
+    .btn-primary { background:var(--brand-primary); color:#fff; }
+    .btn-primary:hover { background:var(--brand-primary-dark); }
+    .btn-outline { background:#fff; border:1px solid var(--gray-300); color:var(--text-regular); }
+    .btn-outline:hover { border-color:var(--brand-primary); color:var(--brand-primary); }
+    .btn-danger-outline { background:#fff; border:1px solid var(--danger); color:var(--danger); }
+    .btn-danger-outline:hover { background:#FFF1F0; }
+    .btn-success { background:var(--success); color:#fff; }
+    .btn-success:hover { background:#009A26; }
+    .btn-sm { padding:4px 10px; font-size:12px; border-radius:6px; }
+    .btn:disabled { opacity:0.5; cursor:not-allowed; }
+    /* ===== 卡片 ===== */
+    .card { background:#fff; border-radius:12px; box-shadow:0 1px 4px rgba(0,0,0,0.04); margin-bottom:20px; }
+    .card-body { padding:20px 24px; }
+    .card-header { padding:16px 24px; border-bottom:1px solid var(--gray-200); display:flex; align-items:center; justify-content:space-between; }
+    .card-title { font-size:15px; font-weight:600; }
+    /* ===== 概览 ===== */
+    .overview-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
+    .ov-item { display:flex; flex-direction:column; gap:6px; }
+    .ov-label { font-size:12px; color:var(--text-secondary); }
+    .ov-value { font-size:24px; font-weight:700; color:var(--text); }
+    .ov-value.primary { color:var(--brand-primary); }
+    .ov-value.danger { color:var(--danger); }
+    .ov-value.success { color:var(--success); }
+    .ov-value.warning { color:var(--warning); }
+    /* ===== Tab 栏 ===== */
+    .tab-bar { display:flex; gap:0; border-bottom:1px solid var(--gray-200); margin-bottom:16px; }
+    .tab-item { padding:10px 20px; font-size:14px; color:var(--text-secondary); cursor:pointer; border-bottom:2px solid transparent; transition:all 0.15s; position:relative; }
+    .tab-item:hover { color:var(--brand-primary); }
+    .tab-item.active { color:var(--brand-primary); border-bottom-color:var(--brand-primary); font-weight:500; }
+    .tab-badge { display:inline-block; min-width:18px; height:18px; padding:0 6px; border-radius:9px; background:var(--danger); color:#fff; font-size:11px; font-weight:500; text-align:center; line-height:18px; margin-left:6px; }
+    .tab-badge.muted { background:var(--gray-300); color:#fff; }
+    .tab-panel { display:none; }
+    .tab-panel.active { display:block; }
+    /* ===== 审批卡片 ===== */
+    .approval-card { background:#fff; border:1px solid var(--gray-200); border-radius:12px; margin-bottom:14px; overflow:hidden; transition:box-shadow 0.2s; }
+    .approval-card:hover { box-shadow:0 2px 8px rgba(22,119,255,0.08); }
+    .approval-card-head { display:flex; align-items:flex-start; justify-content:space-between; padding:16px 20px; border-bottom:1px dashed var(--gray-200); gap:16px; }
+    .ap-head-left { flex:1; min-width:0; }
+    .ap-title { font-size:15px; font-weight:600; color:var(--text); margin-bottom:4px; word-break:break-all; }
+    .ap-meta { display:flex; flex-wrap:wrap; gap:8px 16px; font-size:12px; color:var(--text-secondary); }
+    .ap-meta-item { display:flex; align-items:center; gap:4px; }
+    .ap-no { font-family:Menlo,Consolas,monospace; color:var(--text-secondary); }
+    .ap-amount { color:var(--brand-primary); font-weight:600; }
+    .ap-status-tag { font-size:12px; padding:3px 10px; border-radius:11px; font-weight:500; white-space:nowrap; }
+    .ap-status-pending { background:#E6F4FF; color:var(--brand-primary); }
+    .ap-status-approving { background:#FFF7E8; color:var(--warning); }
+    .ap-status-approved { background:#E8FFEA; color:var(--success); }
+    .ap-status-rejected { background:#FFF1F0; color:var(--danger); }
+    .ap-status-executed { background:#E8FFEA; color:var(--success); }
+    .ap-status-cancelled { background:var(--gray-100); color:var(--text-secondary); }
+    .ap-status-failed { background:#FFF1F0; color:var(--danger); }
+    .approval-card-body { padding:16px 20px; }
+    .ap-nodes { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+    .ap-node { flex:1; min-width:200px; padding:10px 12px; background:var(--gray-50); border:1px solid var(--gray-200); border-radius:8px; font-size:12px; }
+    .ap-node-title { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+    .ap-node-seq { font-weight:600; color:var(--text); }
+    .ap-node-status { font-size:11px; padding:1px 8px; border-radius:8px; }
+    .ap-node-status.pending { background:var(--gray-100); color:var(--text-secondary); }
+    .ap-node-status.approved { background:#E8FFEA; color:var(--success); }
+    .ap-node-status.rejected { background:#FFF1F0; color:var(--danger); }
+    .ap-node-meta { color:var(--text-secondary); line-height:1.7; }
+    .ap-node-meta b { color:var(--text-regular); font-weight:500; }
+    .ap-actions { display:flex; gap:8px; align-items:center; flex-wrap:wrap; padding-top:8px; border-top:1px dashed var(--gray-200); }
+    .ap-comment-input { flex:1; min-width:200px; padding:6px 10px; border:1px solid var(--gray-300); border-radius:6px; font-size:13px; font-family:inherit; }
+    .ap-comment-input:focus { outline:none; border-color:var(--brand-primary); box-shadow:0 0 0 2px var(--brand-primary-50); }
+    .ap-target-info { background:var(--brand-primary-50); border-radius:6px; padding:8px 12px; font-size:12px; color:var(--text-regular); margin-bottom:10px; }
+    .ap-target-info b { color:var(--brand-primary); }
+    .ap-exec-result { margin-top:10px; padding:8px 12px; border-radius:6px; font-size:12px; }
+    .ap-exec-result.ok { background:#E8FFEA; color:var(--success); }
+    .ap-exec-result.fail { background:#FFF1F0; color:var(--danger); }
+    /* ===== 表格 ===== */
+    .data-table { width:100%; border-collapse:collapse; font-size:13px; }
+    .data-table th { text-align:left; padding:10px 12px; background:var(--gray-50); color:var(--text-secondary); font-weight:500; border-bottom:1px solid var(--gray-200); white-space:nowrap; }
+    .data-table td { padding:12px; border-bottom:1px solid var(--gray-100); vertical-align:middle; }
+    .data-table tr:hover td { background:var(--gray-50); }
+    .data-table .empty-row td { text-align:center; color:var(--text-placeholder); padding:40px; }
+    .table-actions { display:flex; gap:6px; flex-wrap:wrap; }
+    .table-action { font-size:12px; color:var(--brand-primary); cursor:pointer; text-decoration:none; padding:2px 6px; border-radius:4px; background:none; border:none; font-family:inherit; }
+    .table-action:hover { background:var(--brand-primary-50); }
+    .table-action.danger { color:var(--danger); }
+    .table-action.danger:hover { background:#FFF1F0; }
+    .table-action.muted { color:var(--text-placeholder); cursor:not-allowed; }
+    /* ===== 状态标签 ===== */
+    .status-dot { display:inline-block; width:6px; height:6px; border-radius:50%; margin-right:6px; vertical-align:middle; }
+    /* ===== 模态框 ===== */
+    .modal-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.45); z-index:2000; display:none; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.25s ease; }
+    .modal-overlay.show { display:flex; opacity:1; pointer-events:auto; }
+    .modal-content { background:#fff; border-radius:12px; width:560px; max-width:90vw; max-height:90vh; overflow:hidden; display:flex; flex-direction:column; }
+    .modal-content.lg { width:720px; }
+    .modal-header { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid var(--gray-200); }
+    .modal-title { font-size:16px; font-weight:600; }
+    .modal-close { width:28px; height:28px; display:flex; align-items:center; justify-content:center; cursor:pointer; border-radius:6px; color:var(--text-secondary); border:none; background:none; font-size:18px; }
+    .modal-close:hover { background:var(--gray-100); color:var(--text); }
+    .modal-body { padding:20px; overflow-y:auto; flex:1; }
+    .modal-footer { display:flex; justify-content:flex-end; gap:8px; padding:12px 20px; border-top:1px solid var(--gray-200); }
+    .form-group { margin-bottom:16px; }
+    .form-label { display:block; font-size:13px; color:var(--text-regular); margin-bottom:6px; font-weight:500; }
+    .form-label .req { color:var(--danger); }
+    .form-input, .form-select, .form-textarea { width:100%; padding:8px 12px; border:1px solid var(--gray-300); border-radius:8px; font-size:14px; color:var(--text); background:#fff; transition:border-color 0.15s; font-family:inherit; }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { outline:none; border-color:var(--brand-primary); box-shadow:0 0 0 2px var(--brand-primary-50); }
+    .form-textarea { resize:vertical; min-height:80px; }
+    .form-hint { font-size:12px; color:var(--text-secondary); margin-top:4px; }
+    .form-row { display:flex; gap:12px; }
+    .form-row .form-group { flex:1; }
+    .modal-msg { font-size:13px; padding:8px 12px; border-radius:6px; margin-bottom:12px; display:none; }
+    .modal-msg.show { display:block; }
+    .modal-msg.error { background:#FFF1F0; color:var(--danger); }
+    .modal-msg.success { background:#E8FFEA; color:var(--success); }
+    .modal-msg.warning { background:#FFF7E8; color:var(--warning); }
+    .switch { position:relative; display:inline-block; width:38px; height:20px; }
+    .switch input { opacity:0; width:0; height:0; }
+    .switch-slider { position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background:var(--gray-300); transition:0.2s; border-radius:20px; }
+    .switch-slider:before { position:absolute; content:""; height:14px; width:14px; left:3px; bottom:3px; background:#fff; transition:0.2s; border-radius:50%; }
+    .switch input:checked + .switch-slider { background:var(--brand-primary); }
+    .switch input:checked + .switch-slider:before { transform:translateX(18px); }
+    .level-list { border:1px solid var(--gray-200); border-radius:8px; padding:8px 12px; background:var(--gray-50); }
+    .level-row { display:flex; align-items:center; gap:8px; padding:6px 0; border-bottom:1px dashed var(--gray-200); }
+    .level-row:last-child { border-bottom:none; }
+    .level-seq { width:24px; height:24px; border-radius:50%; background:var(--brand-primary); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; flex-shrink:0; }
+    .level-desc { flex:1; font-size:13px; color:var(--text-regular); }
+    .level-roles { font-size:11px; color:var(--text-secondary); margin-top:2px; }
+    .level-roles .role-chip { display:inline-block; padding:1px 8px; background:#fff; border:1px solid var(--gray-300); border-radius:8px; margin-right:4px; }
+    /* 空态 */
+    .empty-state { text-align:center; padding:60px 20px; color:var(--text-placeholder); }
+    .empty-state svg { width:48px; height:48px; opacity:0.4; margin-bottom:12px; }
+    .empty-state-text { font-size:14px; }
+    /* 分页 */
+    .pagination { display:flex; align-items:center; justify-content:space-between; padding:12px 0 0; }
+    .pagination-info { font-size:12px; color:var(--text-secondary); }
+    .filter-bar { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:12px; }
+    .filter-bar .form-select, .filter-bar .form-input { width:auto; min-width:140px; padding:6px 10px; font-size:13px; }
+    /* 响应式 */
+    @media (max-width:900px) {
+      .sidebar { display:none; }
+      .main-content { margin-left:0; padding:16px; }
+      .overview-grid { grid-template-columns:repeat(2,1fr); }
+      .approval-card-head { flex-direction:column; align-items:flex-start; }
+      .ap-head-left { width:100%; }
+    }
+  </style>
+
+<script src="js/switch-ent-handler.js?v=10"></script>
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div style="display:flex;align-items:center;gap:20px;">
+        <a href="account-center.html" class="topbar-brand">
+          <img src="https://oss.minjiangyouyue.com/mjlogo/logo02.png" alt="logo" style="height:34px;border-radius:8px;">
+          <span class="topbar-title">控制台</span>
+        </a>
+        <div class="topbar-breadcrumb">
+          <a href="index.html">首页</a>
+          <span class="topbar-bc-sep">/</span>
+          <a href="account-center.html">控制台</a>
+          <span class="topbar-bc-sep">/</span>
+          <span class="topbar-bc-current">审批中心</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <a href="account-center.html" class="topbar-back">
+          <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M19 12H5" stroke="currentColor" stroke-width="2"/><path d="M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2"/></svg>
+          返回
+        </a>
+        <div class="topbar-message" id="topbarMessage">
+          <div class="topbar-message-icon">
+            <svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="topbar-message-dot" id="topbarMessageDot"></span>
+            <span class="topbar-message-badge" id="topbarMessageBadge" style="display:none;">3</span>
+          </div>
+          <div class="message-dropdown" id="messageDropdown">
+            <div class="message-dropdown-header">
+              <span>消息通知</span>
+              <a href="javascript:;" class="message-dropdown-clear" id="msgClearAll">全部已读</a>
+            </div>
+            <div class="message-dropdown-list" id="messageList">
+              <!-- 动态消息列表 -->
+            </div>
+            <a href="javascript:;" class="message-dropdown-footer" id="msgViewAll">查看全部消息 →</a>
+          </div>
+        </div>
+        <div class="topbar-user" id="topbarUser"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 页面主体 -->
+  <div class="page-layout">
+    <!-- 左侧边栏 -->
+    <aside class="sidebar">
+      <div class="sidebar-section-title">产品</div>
+      <ul class="sidebar-menu">
+        <li><a href="account-center.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/></svg>
+          产品中心
+        </a></li>
+      </ul>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-title">企业</div>
+      <ul class="sidebar-menu">
+        <li><a href="account-realname.html?type=enterprise" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4" stroke="currentColor" stroke-width="2"/></svg>
+          企业信息
+        </a></li>
+        <li><a href="account-billing.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"/></svg>
+          合同管理
+        </a></li>
+        <li><a href="account-bank.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"/><line x1="2" y1="10" x2="22" y2="10" stroke="currentColor" stroke-width="2"/></svg>
+          账户管理
+        </a></li>
+      </ul>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-title">企业管理</div>
+      <ul class="sidebar-menu">
+        <li id="sidebarSubEntMgmt"><a href="account-project.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M9 9h6M9 13h4M9 17h5" stroke="currentColor" stroke-width="2"/></svg>
+          子公司管理
+        </a></li>
+      </ul>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-title">财务</div>
+      <ul class="sidebar-menu">
+        <li><a href="account-wallet.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="2"/></svg>
+          资金账户
+        </a></li>
+        <li><a href="account-approval.html" class="sidebar-link active">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="currentColor" stroke-width="2"/></svg>
+          审批中心
+        </a></li>
+      </ul>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-title">设置</div>
+      <ul class="sidebar-menu">
+        <li><a href="account-permission.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="currentColor" stroke-width="2"/></svg>
+          权限概览
+        </a></li>
+
+        <li><a href="account-user.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2"/></svg>
+          用户管理
+        </a></li>
+        <li><a href="account-role.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+          角色管理
+        </a></li>
+        <li><a href="account-security.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/></svg>
+          账号安全
+        </a></li>
+      </ul>
+    </aside>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+      <div class="page-title-wrap">
+        <div>
+          <div class="page-title">审批中心</div>
+          <div class="page-subtitle">多级审批流转、操作日志审计与规则配置，保障资金账户敏感操作合规。</div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-outline" onclick="switchTab('logs')" id="btnGotoLogs">
+            <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"/><line x1="8" y1="13" x2="16" y2="13" stroke="currentColor" stroke-width="2"/><line x1="8" y1="17" x2="14" y2="17" stroke="currentColor" stroke-width="2"/></svg>
+            操作日志
+          </button>
+          <button class="btn btn-primary" onclick="switchTab('pending')" id="btnGotoPending">
+            <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M12 8v4l3 3" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/></svg>
+            待我审批
+          </button>
+        </div>
+      </div>
+
+      <!-- 概览卡片 -->
+      <div class="card">
+        <div class="card-body">
+          <div class="overview-grid">
+            <div class="ov-item">
+              <div class="ov-label">待我审批</div>
+              <div class="ov-value primary" id="ovPending">0</div>
+            </div>
+            <div class="ov-item">
+              <div class="ov-label">我发起的（审批中）</div>
+              <div class="ov-value warning" id="ovMyInProgress">0</div>
+            </div>
+            <div class="ov-item">
+              <div class="ov-label">本月已通过</div>
+              <div class="ov-value success" id="ovApproved30d">0</div>
+            </div>
+            <div class="ov-item">
+              <div class="ov-label">本月已驳回</div>
+              <div class="ov-value danger" id="ovRejected30d">0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 栏 -->
+      <div class="tab-bar">
+        <div class="tab-item active" data-tab="pending" onclick="switchTab('pending')">待我审批<span class="tab-badge" id="badgePending" style="display:none;">0</span></div>
+        <div class="tab-item" data-tab="done" onclick="switchTab('done')">已办审批</div>
+        <div class="tab-item" data-tab="mine" onclick="switchTab('mine')">我发起的</div>
+        <div class="tab-item" data-tab="rules" onclick="switchTab('rules')">审批规则</div>
+        <div class="tab-item" data-tab="logs" onclick="switchTab('logs')">操作日志</div>
+      </div>
+
+      <!-- ===== 待我审批 ===== -->
+      <div class="tab-panel active" id="panelPending">
+        <div class="filter-bar">
+          <select class="form-select" id="filterPendingRule" onchange="renderPending()">
+            <option value="">全部规则</option>
+          </select>
+          <select class="form-select" id="filterPendingType" onchange="renderPending()">
+            <option value="">全部操作类型</option>
+          </select>
+        </div>
+        <div id="pendingList"></div>
+      </div>
+
+      <!-- ===== 已办审批 ===== -->
+      <div class="tab-panel" id="panelDone">
+        <div class="filter-bar">
+          <select class="form-select" id="filterDoneStatus" onchange="renderDone()">
+            <option value="">全部结果</option>
+            <option value="approved">已通过</option>
+            <option value="rejected">已驳回</option>
+            <option value="executed">已执行</option>
+            <option value="failed">执行失败</option>
+            <option value="cancelled">已撤销</option>
+          </select>
+          <input class="form-input" id="filterDoneKeyword" placeholder="搜索单号/标题/操作人" oninput="renderDone()">
+        </div>
+        <div class="card">
+          <div class="card-body" style="padding:0;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>审批单号</th>
+                  <th>标题</th>
+                  <th>规则</th>
+                  <th>金额</th>
+                  <th>申请人</th>
+                  <th>我的决策</th>
+                  <th>最终状态</th>
+                  <th>操作时间</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="doneTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== 我发起的 ===== -->
+      <div class="tab-panel" id="panelMine">
+        <div class="filter-bar">
+          <select class="form-select" id="filterMineStatus" onchange="renderMine()">
+            <option value="">全部状态</option>
+            <option value="pending">待审批</option>
+            <option value="approving">审批中</option>
+            <option value="approved">已通过</option>
+            <option value="rejected">已驳回</option>
+            <option value="executed">已执行</option>
+            <option value="failed">执行失败</option>
+            <option value="cancelled">已撤销</option>
+          </select>
+          <button class="btn btn-outline btn-sm" onclick="renderMine()">刷新</button>
+        </div>
+        <div id="mineList"></div>
+      </div>
+
+      <!-- ===== 审批规则 ===== -->
+      <div class="tab-panel" id="panelRules">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">审批规则配置</div>
+            <span style="font-size:12px;color:var(--text-secondary);">规则按 operationType + 金额阈值匹配，命中即触发审批</span>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>规则名称</th>
+                  <th>触发条件</th>
+                  <th>操作类型</th>
+                  <th>审批层级</th>
+                  <th>自动执行</th>
+                  <th>启用</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="rulesTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== 操作日志 ===== -->
+      <div class="tab-panel" id="panelLogs">
+        <div class="filter-bar">
+          <select class="form-select" id="filterLogModule" onchange="renderLogs()">
+            <option value="">全部模块</option>
+            <option value="approval">审批</option>
+            <option value="fund">资金账户</option>
+            <option value="dept">组织架构</option>
+            <option value="project">项目</option>
+            <option value="auth">认证</option>
+          </select>
+          <select class="form-select" id="filterLogResult" onchange="renderLogs()">
+            <option value="">全部结果</option>
+            <option value="success">成功</option>
+            <option value="failed">失败</option>
+          </select>
+          <input class="form-input" id="filterLogKeyword" placeholder="搜索操作人/对象/详情" oninput="renderLogs()">
+          <button class="btn btn-outline btn-sm" onclick="renderLogs()">刷新</button>
+        </div>
+        <div class="card">
+          <div class="card-body" style="padding:0;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>时间</th>
+                  <th>模块</th>
+                  <th>操作</th>
+                  <th>操作人</th>
+                  <th>部门</th>
+                  <th>目标对象</th>
+                  <th>详情</th>
+                  <th>结果</th>
+                </tr>
+              </thead>
+              <tbody id="logsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- 审批决策模态框 -->
+  <div class="modal-overlay" id="decisionModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title" id="decisionModalTitle">审批决策</div>
+        <button class="modal-close" onclick="closeModal('decisionModal')">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-msg" id="decisionModalMsg"></div>
+        <div id="decisionModalContent"></div>
+        <div class="form-group" style="margin-top:16px;">
+          <label class="form-label">审批意见<span style="color:var(--text-secondary);font-weight:400;">（可选）</span></label>
+          <textarea class="form-textarea" id="decisionComment" placeholder="请输入审批意见，驳回时建议说明原因"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('decisionModal')">取消</button>
+        <button class="btn btn-danger-outline" id="btnReject" onclick="submitDecision('rejected')">驳回</button>
+        <button class="btn btn-success" id="btnApprove" onclick="submitDecision('approved')">通过</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 审批详情模态框 -->
+  <div class="modal-overlay" id="detailModal">
+    <div class="modal-content lg">
+      <div class="modal-header">
+        <div class="modal-title">审批详情</div>
+        <button class="modal-close" onclick="closeModal('detailModal')">×</button>
+      </div>
+      <div class="modal-body" id="detailModalBody"></div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('detailModal')">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 规则编辑模态框 -->
+  <div class="modal-overlay" id="ruleModal">
+    <div class="modal-content lg">
+      <div class="modal-header">
+        <div class="modal-title" id="ruleModalTitle">编辑审批规则</div>
+        <button class="modal-close" onclick="closeModal('ruleModal')">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-msg" id="ruleModalMsg"></div>
+        <div class="form-group">
+          <label class="form-label">规则名称</label>
+          <input class="form-input" id="ruleName" disabled>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">触发金额阈值（元）<span class="req">*</span></label>
+            <input class="form-input" id="ruleMinAmount" type="number" min="0" step="0.01">
+            <div class="form-hint">操作金额 ≥ 此值才触发审批（无金额操作填 0）</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">是否自动执行</label>
+            <select class="form-select" id="ruleAutoExecute">
+              <option value="true">审批通过后自动执行</option>
+              <option value="false">需手动执行</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">触发操作类型</label>
+          <div id="ruleOpTypes" style="padding:10px 12px;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:8px;font-size:13px;color:var(--text-regular);"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">审批层级配置</label>
+          <div class="level-list" id="ruleLevels"></div>
+          <div class="form-hint">每级可配置多个角色（任一角色审批即通过本级）。角色来源于现有简单角色体系：主管理员 / 部门负责人 / 财务主管</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">是否启用</label>
+          <label class="switch"><input type="checkbox" id="ruleEnabled"><span class="switch-slider"></span></label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('ruleModal')">取消</button>
+        <button class="btn btn-primary" onclick="saveRule()">保存规则</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/main.js?v=1787772022"></script>
+<script src="js/enterprise-switch.js?v=19"></script>
+  <script>
+    // ===== 当前审批单操作上下文 =====
+    var currentDecisionApprovalId = null;
+    var currentEditRuleId = null;
+    var ROLE_OPTIONS = ['主管理员', '部门负责人', '财务主管'];
+
+    // ===== Tab 切换 =====
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-item').forEach(function (el) { el.classList.toggle('active', el.dataset.tab === tab); });
+      document.querySelectorAll('.tab-panel').forEach(function (el) { el.classList.remove('active'); });
+      var panelMap = { pending: 'panelPending', done: 'panelDone', mine: 'panelMine', rules: 'panelRules', logs: 'panelLogs' };
+      var panel = document.getElementById(panelMap[tab]);
+      if (panel) panel.classList.add('active');
+      if (tab === 'pending') renderPending();
+      if (tab === 'done') renderDone();
+      if (tab === 'mine') renderMine();
+      if (tab === 'rules') renderRules();
+      if (tab === 'logs') renderLogs();
+    }
+
+    // ===== 工具：状态文案与样式 =====
+    function statusText(s) {
+      return { pending: '待审批', approving: '审批中', approved: '已通过', rejected: '已驳回', executed: '已执行', cancelled: '已撤销', failed: '执行失败' }[s] || s;
+    }
+    function statusClass(s) {
+      return 'ap-status-' + s;
+    }
+    function nodeStatusText(d) {
+      return { pending: '待决策', approved: '已通过', rejected: '已驳回' }[d] || d;
+    }
+    function fmtAmount(n) {
+      n = Number(n || 0);
+      return '¥ ' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+    function fmtDate(ts) {
+      if (!ts) return '-';
+      try { return window.MJYYApproval.fmtDate(ts); } catch (e) {
+        var d = new Date(ts);
+        function p(x) { return x < 10 ? '0' + x : '' + x; }
+        return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
+      }
+    }
+    function opTypeText(t) {
+      var map = {
+        allocate_to_dept: '划拨到部门', recall_from_dept: '从部门回收',
+        recharge_main: '主账号充值',
+        freeze_dept_account: '冻结账户', unfreeze_dept_account: '解冻账户',
+        close_dept_account: '注销账户', adjust_dept_account: '账户调账'
+      };
+      return map[t] || t;
+    }
+    function escapeHtml(s) {
+      if (s == null) return '';
+      return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; });
+    }
+
+    // ===== 渲染：概览数字 =====
+    function renderOverview() {
+      if (!window.MJYYApproval) return;
+      var pending = window.MJYYApproval.myPending();
+      var mine = window.MJYYApproval.mySubmitted();
+      var now = Date.now(), monthAgo = now - 30 * 24 * 3600 * 1000;
+      var approved30 = 0, rejected30 = 0;
+      // 第四阶段：按数据权限过滤可见审批单（部门用户仅统计本部门相关审批）
+      var all = window.MJYYApproval.list();
+      if (window.MJYYPermission) all = window.MJYYPermission.filterApprovals(all);
+      all.forEach(function (a) {
+        if (a.createdAt >= monthAgo) {
+          if (a.status === 'approved' || a.status === 'executed') approved30++;
+          if (a.status === 'rejected') rejected30++;
+        }
+      });
+      var myInProgress = mine.filter(function (a) { return a.status === 'pending' || a.status === 'approving'; }).length;
+      document.getElementById('ovPending').textContent = pending.length;
+      document.getElementById('ovMyInProgress').textContent = myInProgress;
+      document.getElementById('ovApproved30d').textContent = approved30;
+      document.getElementById('ovRejected30d').textContent = rejected30;
+      var badge = document.getElementById('badgePending');
+      if (pending.length > 0) { badge.textContent = pending.length; badge.style.display = 'inline-block'; }
+      else { badge.style.display = 'none'; }
+    }
+
+    // ===== 渲染：待我审批 =====
+    function fillRuleFilter() {
+      try {
+        var rules = window.MJYYApproval.getRules();
+        var selPending = document.getElementById('filterPendingRule');
+        var selPendingType = document.getElementById('filterPendingType');
+        if (selPending && selPending.options.length <= 1) {
+          rules.forEach(function (r) {
+            var o = document.createElement('option'); o.value = r.code; o.textContent = r.name; selPending.appendChild(o);
+          });
+        }
+        var types = ['allocate_to_dept', 'recall_from_dept', 'recharge_main', 'freeze_dept_account', 'unfreeze_dept_account', 'close_dept_account', 'adjust_dept_account'];
+        if (selPendingType && selPendingType.options.length <= 1) {
+          types.forEach(function (t) {
+            var o = document.createElement('option'); o.value = t; o.textContent = opTypeText(t); selPendingType.appendChild(o);
+          });
+        }
+      } catch (e) {}
+    }
+
+    function renderPending() {
+      fillRuleFilter();
+      var container = document.getElementById('pendingList');
+      if (!window.MJYYApproval) { container.innerHTML = '<div class="empty-state"><div class="empty-state-text">审批组件未加载</div></div>'; return; }
+      var ruleCode = document.getElementById('filterPendingRule').value;
+      var opType = document.getElementById('filterPendingType').value;
+      var list = window.MJYYApproval.myPending();
+      if (ruleCode) list = list.filter(function (a) { return a.ruleCode === ruleCode; });
+      if (opType) list = list.filter(function (a) { return a.operationType === opType; });
+      renderOverview();
+      if (list.length === 0) {
+        container.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="currentColor" stroke-width="1.5"/></svg><div class="empty-state-text">暂无待审批任务</div></div>';
+        return;
+      }
+      container.innerHTML = list.map(function (a) { return approvalCardHtml(a, { mode: 'pending' }); }).join('');
+    }
+
+    // ===== 渲染：已办审批（我决策过的） =====
+    function renderDone() {
+      var tbody = document.getElementById('doneTableBody');
+      if (!window.MJYYApproval) { tbody.innerHTML = '<tr class="empty-row"><td colspan="9">审批组件未加载</td></tr>'; return; }
+      var me = window.MJYYApproval.getCurrentOperator();
+      var status = document.getElementById('filterDoneStatus').value;
+      var keyword = (document.getElementById('filterDoneKeyword').value || '').trim().toLowerCase();
+      var list = window.MJYYApproval.list();
+      // 我决策过的 = nodes 中存在 approver == me
+      list = list.filter(function (a) {
+        return (a.nodes || []).some(function (n) { return n.approver === me && n.decision !== 'pending'; });
+      });
+      if (status) list = list.filter(function (a) { return a.status === status; });
+      if (keyword) {
+        list = list.filter(function (a) {
+          return (a.no || '').toLowerCase().indexOf(keyword) >= 0
+            || (a.title || '').toLowerCase().indexOf(keyword) >= 0
+            || (a.applicant || '').toLowerCase().indexOf(keyword) >= 0;
+        });
+      }
+      list.sort(function (x, y) { return (y.updatedAt || 0) - (x.updatedAt || 0); });
+      if (list.length === 0) { tbody.innerHTML = '<tr class="empty-row"><td colspan="9">暂无已办审批</td></tr>'; return; }
+      tbody.innerHTML = list.map(function (a) {
+        var myNode = (a.nodes || []).find(function (n) { return n.approver === me; });
+        var myDecision = myNode ? nodeStatusText(myNode.decision) : '-';
+        var myDecisionCls = myNode && myNode.decision === 'approved' ? 'status-active' : (myNode && myNode.decision === 'rejected' ? 'status-frozen' : '');
+        return '<tr>'
+          + '<td class="ap-no">' + escapeHtml(a.no) + '</td>'
+          + '<td>' + escapeHtml(a.title) + '</td>'
+          + '<td>' + escapeHtml(a.ruleName) + '</td>'
+          + '<td>' + (a.amount > 0 ? '<span class="ap-amount">' + fmtAmount(a.amount) + '</span>' : '-') + '</td>'
+          + '<td>' + escapeHtml(a.applicant) + (a.applicantDeptName ? '<br><span style="color:var(--text-secondary);font-size:11px;">' + escapeHtml(a.applicantDeptName) + '</span>' : '') + '</td>'
+          + '<td><span class="status-tag ' + myDecisionCls + '">' + myDecision + '</span></td>'
+          + '<td><span class="ap-status-tag ' + statusClass(a.status) + '">' + statusText(a.status) + '</span></td>'
+          + '<td style="font-size:12px;color:var(--text-secondary);">' + fmtDate(a.updatedAt) + '</td>'
+          + '<td><button class="table-action" onclick="viewDetail(\'' + a.id + '\')">详情</button></td>'
+          + '</tr>';
+      }).join('');
+    }
+
+    // ===== 渲染：我发起的 =====
+    function renderMine() {
+      var container = document.getElementById('mineList');
+      if (!window.MJYYApproval) { container.innerHTML = '<div class="empty-state"><div class="empty-state-text">审批组件未加载</div></div>'; return; }
+      var status = document.getElementById('filterMineStatus').value;
+      var list = window.MJYYApproval.mySubmitted();
+      if (status) list = list.filter(function (a) { return a.status === status; });
+      list.sort(function (x, y) { return (y.createdAt || 0) - (x.createdAt || 0); });
+      renderOverview();
+      if (list.length === 0) {
+        container.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="1.5"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="1.5"/></svg><div class="empty-state-text">暂无我发起的审批</div></div>';
+        return;
+      }
+      container.innerHTML = list.map(function (a) { return approvalCardHtml(a, { mode: 'mine' }); }).join('');
+    }
+
+    // ===== 审批卡片 HTML =====
+    function approvalCardHtml(a, opts) {
+      var mode = opts.mode || 'pending';
+      var nodesHtml = (a.nodes || []).map(function (n, idx) {
+        var st = n.decision || 'pending';
+        var roles = (n.roleNames || []).map(function (r) { return '<span class="role-chip">' + escapeHtml(r) + '</span>'; }).join('');
+        var approverHtml = n.approver ? '<b>审批人：</b>' + escapeHtml(n.approver) : '';
+        var commentHtml = n.comment ? '<br><b>意见：</b>' + escapeHtml(n.comment) : '';
+        var decidedHtml = n.decidedAt ? '<br><b>时间：</b>' + fmtDate(n.decidedAt) : '';
+        var isCurrent = (idx === a.currentLevel && (a.status === 'pending' || a.status === 'approving'));
+        var seqStyle = isCurrent ? 'background:var(--warning);' : (st === 'approved' ? 'background:var(--success);' : (st === 'rejected' ? 'background:var(--danger);' : ''));
+        return '<div class="ap-node" style="' + (isCurrent ? 'border-color:var(--warning);background:#FFF7E8;' : '') + '">'
+          + '<div class="ap-node-title">'
+          + '<span class="ap-node-seq"><span class="status-dot" style="background:' + (isCurrent ? 'var(--warning)' : 'currentColor') + '"></span>第' + (idx + 1) + '级</span>'
+          + '<span class="ap-node-status ' + st + '">' + nodeStatusText(st) + '</span>'
+          + '</div>'
+          + '<div class="ap-node-meta">'
+          + '<div><b>角色：</b>' + roles + '</div>'
+          + '<div style="margin-top:2px;">' + (n.description || '') + '</div>'
+          + approverHtml + commentHtml + decidedHtml
+          + '</div>'
+          + '</div>';
+      }).join('');
+
+      var targetHtml = '';
+      if (a.targetName) {
+        targetHtml = '<div class="ap-target-info"><b>目标对象：</b>' + escapeHtml(a.targetName)
+          + (a.targetType ? ' <span style="color:var(--text-secondary);">(' + escapeHtml(a.targetType) + ')</span>' : '')
+          + (a.applicantDeptName ? ' &nbsp;|&nbsp; <b>申请部门：</b>' + escapeHtml(a.applicantDeptName) : '')
+          + '</div>';
+      }
+
+      var payloadHtml = '';
+      if (a.payload && Object.keys(a.payload).length) {
+        var pRows = [];
+        for (var k in a.payload) {
+          if (a.payload.hasOwnProperty(k)) pRows.push('<b>' + escapeHtml(k) + ':</b> ' + escapeHtml(JSON.stringify(a.payload[k])));
+        }
+        if (pRows.length) payloadHtml = '<div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;padding:8px 10px;background:var(--gray-50);border-radius:6px;">' + pRows.join(' &nbsp;|&nbsp; ') + '</div>';
+      }
+
+      var execResultHtml = '';
+      if (a.executeResult) {
+        var cls = a.executeResult.ok ? 'ok' : 'fail';
+        var label = a.executeResult.ok ? '执行成功' : '执行失败';
+        execResultHtml = '<div class="ap-exec-result ' + cls + '"><b>' + label + '</b>：' + escapeHtml(a.executeResult.msg || '无返回信息') + (a.executedAt ? ' <span style="color:var(--text-secondary);">(' + fmtDate(a.executedAt) + ')</span>' : '') + '</div>';
+      }
+
+      // 操作按钮
+      var actionsHtml = '<div class="ap-actions">';
+      if (mode === 'pending') {
+        var check = window.MJYYApproval.canApprove(a.id);
+        actionsHtml += '<input class="ap-comment-input" id="comment_' + a.id + '" placeholder="请输入审批意见（可选）">'
+          + '<button class="btn btn-danger-outline btn-sm" onclick="openDecision(\'' + a.id + '\', \'rejected\')" ' + (check.can ? '' : 'disabled') + '>驳回</button>'
+          + '<button class="btn btn-success btn-sm" onclick="openDecision(\'' + a.id + '\', \'approved\')" ' + (check.can ? '' : 'disabled') + '>通过</button>';
+      } else if (mode === 'mine') {
+        var canCancel = (a.status === 'pending' || a.status === 'approving');
+        var canExec = (a.status === 'approved' && a.executorFn && !a.autoExecute);
+        actionsHtml += '<button class="btn btn-outline btn-sm" onclick="viewDetail(\'' + a.id + '\')">详情</button>';
+        if (canExec) actionsHtml += '<button class="btn btn-primary btn-sm" onclick="manualExecute(\'' + a.id + '\')">手动执行</button>';
+        if (canCancel) actionsHtml += '<button class="btn btn-danger-outline btn-sm" onclick="cancelMine(\'' + a.id + '\')">撤销</button>';
+      }
+      actionsHtml += '</div>';
+
+      return '<div class="approval-card">'
+        + '<div class="approval-card-head">'
+        + '<div class="ap-head-left">'
+        + '<div class="ap-title">' + escapeHtml(a.title) + '</div>'
+        + '<div class="ap-meta">'
+        + '<span class="ap-meta-item ap-no">' + escapeHtml(a.no) + '</span>'
+        + '<span class="ap-meta-item">规则：' + escapeHtml(a.ruleName) + '</span>'
+        + '<span class="ap-meta-item">操作：' + opTypeText(a.operationType) + '</span>'
+        + (a.amount > 0 ? '<span class="ap-meta-item">金额：<span class="ap-amount">' + fmtAmount(a.amount) + '</span></span>' : '')
+        + '<span class="ap-meta-item">申请人：' + escapeHtml(a.applicant) + '</span>'
+        + '<span class="ap-meta-item">发起：' + fmtDate(a.createdAt) + '</span>'
+        + '</div>'
+        + '</div>'
+        + '<span class="ap-status-tag ' + statusClass(a.status) + '">' + statusText(a.status) + '</span>'
+        + '</div>'
+        + '<div class="approval-card-body">'
+        + targetHtml
+        + payloadHtml
+        + '<div class="ap-nodes">' + nodesHtml + '</div>'
+        + execResultHtml
+        + actionsHtml
+        + '</div>'
+        + '</div>';
+    }
+
+    // ===== 审批决策模态框 =====
+    function openDecision(approvalId, preDecision) {
+      currentDecisionApprovalId = approvalId;
+      var a = window.MJYYApproval.find(approvalId);
+      if (!a) { alert('审批单不存在'); return; }
+      document.getElementById('decisionModalTitle').textContent = '审批决策 · ' + (preDecision === 'approved' ? '通过' : '驳回');
+      var html = '<div style="font-size:13px;line-height:1.8;">'
+        + '<div><b>审批单号：</b><span class="ap-no">' + escapeHtml(a.no) + '</span></div>'
+        + '<div><b>标题：</b>' + escapeHtml(a.title) + '</div>'
+        + '<div><b>规则：</b>' + escapeHtml(a.ruleName) + '</div>'
+        + '<div><b>申请人：</b>' + escapeHtml(a.applicant) + (a.applicantDeptName ? '（' + escapeHtml(a.applicantDeptName) + '）' : '') + '</div>'
+        + (a.amount > 0 ? '<div><b>金额：</b><span class="ap-amount">' + fmtAmount(a.amount) + '</span></div>' : '')
+        + (a.targetName ? '<div><b>目标对象：</b>' + escapeHtml(a.targetName) + '</div>' : '')
+        + '</div>';
+      document.getElementById('decisionModalContent').innerHTML = html;
+      document.getElementById('decisionComment').value = '';
+      // 高亮预设决策按钮
+      document.getElementById('btnApprove').classList.toggle('btn-success', preDecision === 'approved');
+      document.getElementById('btnReject').classList.toggle('btn-danger-outline', preDecision === 'rejected');
+      showModal('decisionModal');
+    }
+
+    function submitDecision(decision) {
+      if (!currentDecisionApprovalId) return;
+      var comment = document.getElementById('decisionComment').value.trim();
+      var result = window.MJYYApproval.decide(currentDecisionApprovalId, decision, comment);
+      var msgEl = document.getElementById('decisionModalMsg');
+      msgEl.className = 'modal-msg';
+      if (result.ok) {
+        closeModal('decisionModal');
+        var msg = decision === 'approved' ? '审批通过' : '已驳回';
+        if (result.finalStatus === 'approved' && result.executed) {
+          msg += '，审批单已自动执行' + (result.executeResult && result.executeResult.ok ? '成功' : '失败');
+        } else if (result.finalStatus === 'approving') {
+          msg += '，进入下一级审批';
+        }
+        alert(msg);
+        // 刷新当前页
+        var activeTab = document.querySelector('.tab-item.active');
+        if (activeTab) switchTab(activeTab.dataset.tab);
+        else renderPending();
+      } else {
+        msgEl.classList.add('show', 'error');
+        msgEl.textContent = result.msg || '操作失败';
+      }
+    }
+
+    // ===== 手动执行（我发起的，approved 且未自动执行） =====
+    function manualExecute(approvalId) {
+      if (!confirm('确认执行此审批单？此操作将触发业务执行。')) return;
+      var result = window.MJYYApproval.execute(approvalId);
+      if (result.ok) {
+        alert('执行成功：' + (result.msg || '操作完成'));
+      } else {
+        alert('执行失败：' + (result.msg || '未知错误'));
+      }
+      renderMine();
+    }
+
+    // ===== 撤销审批 =====
+    function cancelMine(approvalId) {
+      var reason = prompt('请输入撤销原因（可选）：', '');
+      if (reason === null) return;
+      var result = window.MJYYApproval.cancel(approvalId, reason);
+      if (result.ok) { alert('已撤销'); renderMine(); }
+      else { alert(result.msg || '撤销失败'); }
+    }
+
+    // ===== 审批详情 =====
+    function viewDetail(approvalId) {
+      var a = window.MJYYApproval.find(approvalId);
+      if (!a) { alert('审批单不存在'); return; }
+      document.getElementById('detailModalBody').innerHTML = approvalCardHtml(a, { mode: 'detail' });
+      showModal('detailModal');
+    }
+
+    // ===== 渲染：审批规则 =====
+    function renderRules() {
+      var tbody = document.getElementById('rulesTableBody');
+      if (!window.MJYYApproval) { tbody.innerHTML = '<tr class="empty-row"><td colspan="7">审批组件未加载</td></tr>'; return; }
+      var rules = window.MJYYApproval.getRules();
+      if (rules.length === 0) { tbody.innerHTML = '<tr class="empty-row"><td colspan="7">暂无审批规则</td></tr>'; return; }
+      tbody.innerHTML = rules.map(function (r) {
+        var cond = r.condition || {};
+        var opTypeTexts = (cond.operationTypes || []).map(opTypeText).join('、');
+        var condText = cond.minAmount > 0 ? '金额 ≥ ' + fmtAmount(cond.minAmount) : '不限金额';
+        var levelsText = (r.levels || []).map(function (lv, i) {
+          return '第' + (i + 1) + '级：' + (lv.roleNames || []).join('/');
+        }).join(' → ');
+        return '<tr>'
+          + '<td><b>' + escapeHtml(r.name) + '</b><br><span style="font-size:11px;color:var(--text-secondary);font-family:Menlo,Consolas,monospace;">' + escapeHtml(r.code) + '</span></td>'
+          + '<td>' + condText + '</td>'
+          + '<td style="font-size:12px;">' + escapeHtml(opTypeTexts) + '</td>'
+          + '<td style="font-size:12px;color:var(--text-regular);">' + escapeHtml(levelsText) + '</td>'
+          + '<td>' + (r.autoExecute ? '<span class="status-tag status-active">自动</span>' : '<span class="status-tag status-closed">手动</span>') + '</td>'
+          + '<td><label class="switch"><input type="checkbox" ' + (r.enabled ? 'checked' : '') + ' onchange="toggleRule(\'' + r.id + '\', this.checked)"><span class="switch-slider"></span></label></td>'
+          + '<td><button class="table-action" onclick="editRule(\'' + r.id + '\')">编辑</button></td>'
+          + '</tr>';
+      }).join('');
+    }
+
+    function toggleRule(ruleId, enabled) {
+      var rules = window.MJYYApproval.getRules();
+      for (var i = 0; i < rules.length; i++) {
+        if (rules[i].id === ruleId) {
+          rules[i].enabled = enabled;
+          rules[i].updatedAt = Date.now();
+          window.MJYYApproval.setRules(rules);
+          if (window.MJYYOpLog) {
+            window.MJYYOpLog.add('approval', 'toggle_rule', window.MJYYApproval.getCurrentOperator(), null, 'rule', ruleId, rules[i].name, (enabled ? '启用' : '停用') + '审批规则：' + rules[i].name, 'success');
+          }
+          return;
+        }
+      }
+    }
+
+    function editRule(ruleId) {
+      var rules = window.MJYYApproval.getRules();
+      var r = null;
+      for (var i = 0; i < rules.length; i++) { if (rules[i].id === ruleId) { r = rules[i]; break; } }
+      if (!r) { alert('规则不存在'); return; }
+      currentEditRuleId = ruleId;
+      document.getElementById('ruleModalTitle').textContent = '编辑审批规则 · ' + r.name;
+      document.getElementById('ruleName').value = r.name;
+      document.getElementById('ruleMinAmount').value = (r.condition && r.condition.minAmount) || 0;
+      document.getElementById('ruleAutoExecute').value = String(r.autoExecute);
+      document.getElementById('ruleEnabled').checked = !!r.enabled;
+      document.getElementById('ruleOpTypes').textContent = (r.condition && r.condition.operationTypes || []).map(opTypeText).join('、');
+      // 渲染层级
+      var levelsHtml = (r.levels || []).map(function (lv, idx) {
+        var roleChips = ROLE_OPTIONS.map(function (role) {
+          var checked = (lv.roleNames || []).indexOf(role) >= 0 ? 'checked' : '';
+          return '<label style="margin-right:12px;font-size:13px;"><input type="checkbox" data-level="' + idx + '" data-role="' + role + '" ' + checked + '> ' + role + '</label>';
+        }).join('');
+        return '<div class="level-row">'
+          + '<div class="level-seq">' + (idx + 1) + '</div>'
+          + '<div style="flex:1;">'
+          + '<div class="level-desc">' + escapeHtml(lv.description || '') + '</div>'
+          + '<div class="level-roles">' + roleChips + '</div>'
+          + '</div>'
+          + '</div>';
+      }).join('');
+      document.getElementById('ruleLevels').innerHTML = levelsHtml || '<div style="text-align:center;color:var(--text-placeholder);padding:16px;">无层级配置</div>';
+      document.getElementById('ruleModalMsg').className = 'modal-msg';
+      showModal('ruleModal');
+    }
+
+    function saveRule() {
+      if (!currentEditRuleId) return;
+      var rules = window.MJYYApproval.getRules();
+      var r = null, rIdx = -1;
+      for (var i = 0; i < rules.length; i++) { if (rules[i].id === currentEditRuleId) { r = rules[i]; rIdx = i; break; } }
+      if (!r) { alert('规则不存在'); return; }
+      var msgEl = document.getElementById('ruleModalMsg');
+      msgEl.className = 'modal-msg';
+      var minAmount = parseFloat(document.getElementById('ruleMinAmount').value);
+      if (isNaN(minAmount) || minAmount < 0) {
+        msgEl.classList.add('show', 'error'); msgEl.textContent = '金额阈值必须为非负数'; return;
+      }
+      // 收集层级角色
+      var checks = document.querySelectorAll('#ruleLevels input[type="checkbox"]');
+      var levelMap = {};
+      checks.forEach(function (c) {
+        var lv = parseInt(c.dataset.level);
+        var role = c.dataset.role;
+        if (!levelMap[lv]) levelMap[lv] = [];
+        if (c.checked) levelMap[lv].push(role);
+      });
+      var newLevels = (r.levels || []).map(function (lv, idx) {
+        var roles = levelMap[idx] || [];
+        return { seq: lv.seq, roleNames: roles, description: lv.description || '' };
+      });
+      // 校验：每级至少一个角色
+      for (var i = 0; i < newLevels.length; i++) {
+        if (!newLevels[i].roleNames.length) {
+          msgEl.classList.add('show', 'error'); msgEl.textContent = '第' + (i + 1) + '级必须至少选择一个角色'; return;
+        }
+      }
+      r.condition = r.condition || {};
+      r.condition.minAmount = minAmount;
+      r.autoExecute = document.getElementById('ruleAutoExecute').value === 'true';
+      r.enabled = document.getElementById('ruleEnabled').checked;
+      r.levels = newLevels;
+      r.updatedAt = Date.now();
+      rules[rIdx] = r;
+      window.MJYYApproval.setRules(rules);
+      if (window.MJYYOpLog) {
+        window.MJYYOpLog.add('approval', 'update_rule', window.MJYYApproval.getCurrentOperator(), null, 'rule', r.id, r.name, '修改审批规则：' + r.name, 'success');
+      }
+      closeModal('ruleModal');
+      renderRules();
+      alert('规则已保存');
+    }
+
+    // ===== 渲染：操作日志（按权限过滤） =====
+    function renderLogs() {
+      var tbody = document.getElementById('logsTableBody');
+      if (!window.MJYYOpLog) { tbody.innerHTML = '<tr class="empty-row"><td colspan="8">日志组件未加载</td></tr>'; return; }
+      var module = document.getElementById('filterLogModule').value;
+      var result = document.getElementById('filterLogResult').value;
+      var keyword = (document.getElementById('filterLogKeyword').value || '').trim().toLowerCase();
+      var filter = {};
+      if (module) filter.module = module;
+      if (result) filter.result = result;
+      var list = window.MJYYOpLog.list(filter);
+      // 第四阶段：按数据权限过滤操作日志（部门用户仅可见本人或本部门相关日志）
+      if (window.MJYYPermission) list = window.MJYYPermission.filterOpLogs(list);
+      if (keyword) {
+        list = list.filter(function (l) {
+          return (l.operator || '').toLowerCase().indexOf(keyword) >= 0
+            || (l.targetName || '').toLowerCase().indexOf(keyword) >= 0
+            || (l.detail || '').toLowerCase().indexOf(keyword) >= 0;
+        });
+      }
+      if (list.length === 0) { tbody.innerHTML = '<tr class="empty-row"><td colspan="8">暂无操作日志</td></tr>'; return; }
+      tbody.innerHTML = list.slice(0, 200).map(function (l) {
+        var resultTag = l.result === 'success'
+          ? '<span class="status-tag status-active">成功</span>'
+          : '<span class="status-tag status-frozen">失败</span>';
+        return '<tr>'
+          + '<td style="font-size:12px;color:var(--text-secondary);white-space:nowrap;">' + fmtDate(l.createdAt) + '</td>'
+          + '<td>' + escapeHtml(l.module || '-') + '</td>'
+          + '<td style="font-size:12px;">' + escapeHtml(l.action || '-') + '</td>'
+          + '<td>' + escapeHtml(l.operator || '-') + '</td>'
+          + '<td style="font-size:12px;">' + escapeHtml(l.operatorDeptName || '-') + '</td>'
+          + '<td style="font-size:12px;">' + escapeHtml(l.targetName || '-') + '</td>'
+          + '<td style="font-size:12px;color:var(--text-regular);max-width:360px;word-break:break-all;">' + escapeHtml(l.detail || '-') + '</td>'
+          + '<td>' + resultTag + '</td>'
+          + '</tr>';
+      }).join('');
+      // 更新分页信息
+      var info = document.createElement('div');
+      info.className = 'pagination-info';
+      info.textContent = '共 ' + list.length + ' 条日志' + (list.length > 200 ? '（仅显示前 200 条）' : '');
+      var pagination = document.querySelector('#panelLogs .pagination');
+      if (!pagination) {
+        pagination = document.createElement('div');
+        pagination.className = 'pagination';
+        document.getElementById('panelLogs').appendChild(pagination);
+      }
+      pagination.innerHTML = '<div></div>';
+      pagination.appendChild(info);
+    }
+
+    // ===== 模态框通用 =====
+    function showModal(id) {
+      var el = document.getElementById(id);
+      if (el) el.classList.add('show');
+    }
+    function closeModal(id) {
+      var el = document.getElementById(id);
+      if (el) el.classList.remove('show');
+    }
+    // 点击遮罩关闭
+    document.querySelectorAll('.modal-overlay').forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        if (e.target === el) el.classList.remove('show');
+      });
+    });
+
+    // ===== 初始化顶部用户卡片（复用全局函数） =====
+    function initTopbarUser() {
+      var el = document.getElementById('topbarUser');
+      if (!el) return;
+      try {
+        var ud = JSON.parse(localStorage.getItem('mjyy_user_data') || '{}');
+        var name = ud.username || ud.name || ud.realName || '当前用户';
+        var accountType = localStorage.getItem('mjyy_account_type') || 'main';
+        var typeLabel = accountType === 'main' ? '主账号' : '子账号';
+        var roles = window.MJYYApproval ? window.MJYYApproval.getCurrentUserRoles() : [];
+        el.innerHTML = '<div style="width:30px;height:30px;border-radius:50%;background:var(--brand-primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;">' + escapeHtml(name.charAt(0)) + '</div>'
+          + '<div style="display:flex;flex-direction:column;line-height:1.2;">'
+          + '<span style="font-size:13px;font-weight:500;">' + escapeHtml(name) + '</span>'
+          + '<span style="font-size:11px;color:var(--text-secondary);">' + typeLabel + (roles.length ? ' · ' + roles.join('/') : '') + '</span>'
+          + '</div>';
+      } catch (e) {
+        el.textContent = '当前用户';
+      }
+    }
+
+    // ===== 启动 =====
+    function init() {
+      initTopbarUser();
+
+      var accountType = localStorage.getItem('mjyy_account_type');
+      if (accountType === 'sub') {
+        var subEntMgmt = document.getElementById('sidebarSubEntMgmt');
+        if (subEntMgmt) subEntMgmt.style.display = 'none';
+      }
+
+      if (!window.MJYYApproval) {
+        document.getElementById('pendingList').innerHTML = '<div class="empty-state"><div class="empty-state-text" style="color:var(--danger);">审批组件未加载，请检查 js/main.js</div></div>';
+        return;
+      }
+      renderOverview();
+      renderPending();
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  </script>
+</body>
+</html>
