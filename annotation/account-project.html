@@ -1,0 +1,3939 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>子公司管理 - 民匠有约</title>
+  <link rel="stylesheet" href="css/style.css?v=2025fix10">
+  <style>
+    :root {
+      --brand-primary: #1677FF;
+      --brand-primary-dark: #0958D9;
+      --brand-primary-50: #E6F4FF;
+      --brand-primary-100: #BAE0FF;
+      --sidebar-width: 240px;
+      --gray-50: #F7F8FA;
+      --gray-100: #F2F3F5;
+      --gray-200: #E5E6EB;
+      --gray-300: #C9CDD4;
+      --text: #1D2129;
+      --text-regular: #4E5969;
+      --text-secondary: #86909C;
+      --text-placeholder: #C9CDD4;
+      --text-muted: #86909C;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #f5f6f7; color: var(--text); min-height: 100vh; line-height: 1.6;
+      /* 强制预留 8px 纵向滚动条槽 → 不同高度页面切换时（长表格 vs 短内容），max-width:1440 居中的水平坐标不会跳 7~8 像素（解决用户说"顶部 logo/面包屑/账户区和其他页面对不齐"的水平飘移问题）*/
+      overflow-y: scroll;
+    }
+
+    /* ===== 顶部导航（对齐 account-wallet） ===== */
+    .topbar {
+      background: #fff;
+      border-bottom: none;
+      height: 60px;
+      width: 100%;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 0;
+    }
+    .topbar-inner {
+      max-width: 1440px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 40px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .topbar-divider { width: 1px; height: 20px; background: var(--gray-200); margin: 0 12px; }
+    .topbar-crumb { font-size: 14px; color: var(--text-secondary); }
+    .topbar-crumb b { color: var(--text); font-weight: 600; }
+    .topbar-right { display: flex; align-items: center; gap: 8px; }
+    .topbar-brand {
+      display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text);
+    }
+    .topbar-title { font-size: 17px; font-weight: 700; letter-spacing: 0.3px; }
+    .topbar-breadcrumb {
+      display: flex; align-items: center; gap: 4px;
+      font-size: 13px; color: var(--text-regular); line-height: 1;
+    }
+    .topbar-breadcrumb a { color: var(--text-secondary); text-decoration: none; transition: color 0.15s; }
+    .topbar-breadcrumb a:hover { color: var(--brand-primary); }
+    .topbar-bc-sep { color: var(--text-placeholder); font-size: 12px; margin: 0 2px; }
+    .topbar-bc-current { color: var(--text); font-weight: 500; }
+
+    .topbar-back {
+      font-size: 13px; color: var(--text-secondary); text-decoration: none;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .topbar-back:hover { color: var(--brand-primary); }
+
+    .topbar-user {
+      min-width: 280px; position: relative; display: flex; align-items: center; gap: 10px;
+      padding: 6px 12px 6px 8px; border-radius: 10px; cursor: pointer;
+      transition: background 0.2s; background: #fff; border: 1px solid var(--gray-200);
+      box-sizing: border-box;
+    }
+    .topbar-user:hover { background: var(--gray-50); border-color: var(--gray-300); }
+    .topbar-user.active { background: var(--gray-50); border-color: var(--gray-300); }
+    .topbar-user .user-dropdown.open,
+    .topbar-user.active .user-dropdown { display: block; opacity: 1; visibility: visible; }
+    .topbar-user .topbar-avatar { flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .topbar-user .topbar-user-meta { display: flex; align-items: center; min-width: 0; }
+    .topbar-user .topbar-chevron { display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .topbar-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand-primary) 0%, #1E88FF 100%);
+      color: #fff; display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 600;
+      box-shadow: 0 2px 6px rgba(22, 119, 255, 0.25); flex-shrink: 0;
+    }
+    .topbar-user-meta { display: flex; align-items: center; gap: 8px; max-width: 360px; min-width: 0; }
+    .topbar-user-name-row { display: inline-flex; align-items: center; gap: 6px; max-width: 220px; }
+    .topbar-account-badge {
+      font-size: 10px; padding: 0 5px; border-radius: 4px;
+      background: var(--brand-primary-50); color: var(--brand-primary); font-weight: 500;
+      line-height: 16px; flex-shrink: 0;
+    }
+    .topbar-account-badge.sub { background: #FFF7E6; color: #FF7D00; }
+    .topbar-user-name {
+      font-size: 13px; font-weight: 600; color: var(--text);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.4;
+    }
+    .topbar-ent-chip {
+      font-size: 10px; padding: 1px 6px; border-radius: 4px;
+      line-height: 14px; font-weight: 500;
+      border: 1px solid #D9F7BE; background: #F6FFED; color: #389E0D;
+      display: inline-flex; align-items: center; white-space: nowrap; flex-shrink: 0;
+    }
+    .topbar-ent-chip.sub { border-color: #FFE7BA; background: #FFF7E6; color: #D46B08; }
+    .topbar-user-chips {
+      display: inline-flex; align-items: center; gap: 6px;
+      flex-wrap: nowrap; flex-shrink: 0;
+    }
+    .topbar-user-chip {
+      font-size: 10px; display: inline-flex; align-items: center;
+      white-space: nowrap; padding: 1px 6px; border-radius: 4px; line-height: 16px;
+      font-weight: 600; border: 1px solid transparent;
+    }
+    .topbar-user-chip.admin   { background: #EDF4FF; color: #1677FF; border-color: #C7DBFF; }
+    .topbar-user-chip.sub     { background: #FFF7E6; color: #FF7D00; border-color: #FFD591; }
+    .topbar-user-chip.verified   { background: #F0F9EB; color: #52C41A; border-color: #B7EB8F; }
+    .topbar-user-chip.unverified { background: #FFF2E8; color: #FA8C16; border-color: #FFD591; }
+    .topbar-user-chip.phone   { background: var(--gray-100); color: var(--text-secondary); border-color: var(--gray-200); }
+
+    /* 消息通知 */.topbar-message {
+      position: relative; display: flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border-radius: 8px;
+      color: var(--text-secondary); cursor: pointer;
+      transition: all 0.2s; user-select: none; flex-shrink: 0; flex-shrink: 0;
+    }
+    .topbar-message:hover { background: var(--gray-100); color: var(--brand-primary); }
+    .topbar-message:hover .topbar-message-icon { color: var(--brand-primary); }
+    .topbar-message-icon {
+      width: 22px; height: 22px; display: flex; align-items: center; justify-content: center;
+      color: var(--text-secondary); transition: all 0.2s; flex-shrink: 0; position: relative;
+    }
+    .topbar-message-icon svg { width: 20px !important; height: 20px !important; }
+    .topbar-message-dot {
+      position: absolute; top: -2px;
+      right: -2px;width: 8px; height: 8px; border-radius: 50%;
+      background: #F53F3F; display: none; z-index: 5;
+      box-shadow: 0 0 0 2px #fff;
+    }
+    .topbar-message-dot.show { display: block; }
+    .topbar-message.has-badge .topbar-message-dot { display: none !important; }
+    .topbar-message .topbar-message-badge {
+      position: absolute; top: -3px;
+      right: -6px;
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 16px; height: 14px; padding: 0 4px; border-radius: 7px;
+      background: #F53F3F; color: #fff; font-size: 9px; font-weight: 600;
+      text-align: center; line-height: 1; border: 2px solid #fff;
+      box-sizing: border-box; z-index: 10;
+      box-shadow: 0 1px 3px rgba(245, 63, 63, 0.4);
+    }
+    .message-dropdown {
+      position: absolute; top: calc(100% + 8px); right: 0; width: 340px;
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      border: 1px solid var(--gray-200);
+      z-index: 1000; display: none; overflow: hidden;
+    }
+    .topbar-message.open .message-dropdown { display: block; }
+    .message-dropdown-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      padding: 14px 16px 10px; font-weight: 600; font-size: 14px; color: var(--text);
+    }
+    .message-dropdown-clear {
+      font-size: 12px; color: var(--brand-primary); font-weight: 500; text-decoration: none;
+    }
+    .message-dropdown-clear:hover { text-decoration: underline; }
+    .message-dropdown-list { max-height: 320px; overflow-y: auto; }
+    .message-item {
+      display: flex; gap: 10px; padding: 12px 16px;
+      border-bottom: 1px solid var(--gray-100); cursor: pointer;
+      transition: background 0.15s;
+    }
+    .message-item:last-child { border-bottom: none; }
+    .message-item:hover { background: var(--gray-50); }
+    .message-item.unread { background: #F7FAFF; }
+    .message-item.unread .message-item-title { font-weight: 600; }
+    .message-item-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; font-size: 14px;
+    }
+    .message-item-icon.system { background: #E8F3FF; color: #1677FF; }
+    .message-item-icon.order  { background: #E8F8EB; color: #00B42A; }
+    .message-item-icon.warn   { background: #FFF2E8; color: #FA8C16; }
+    .message-item-icon.promo  { background: #F3E8FF; color: #722ED1; }
+    .message-item-body { flex: 1; min-width: 0; }
+    .message-item-title {
+      font-size: 13px; color: var(--text); margin-bottom: 2px;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .message-item-desc {
+      font-size: 12px; color: var(--text-secondary);
+      overflow: hidden; text-overflow: ellipsis;
+      display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;
+    }
+    .message-item-time {
+      font-size: 11px; color: var(--text-muted); flex-shrink: 0; white-space: nowrap;
+    }
+    .message-dropdown-footer {
+      display: block; text-align: center; padding: 12px;
+      font-size: 13px; color: var(--brand-primary);
+      text-decoration: none; border-top: 1px solid var(--gray-100); font-weight: 500;
+    }
+    .message-dropdown-footer:hover { background: var(--gray-50); }
+    .message-empty {
+      text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 13px;
+    }
+
+    .topbar-chevron {
+      width: 14px; height: 14px; color: var(--text-muted); transition: transform 0.2s;
+    }
+    .topbar-user.open .topbar-chevron,
+    .topbar-user.active .topbar-chevron { transform: rotate(180deg); }
+
+    .user-dropdown {
+      position: absolute; top: calc(100% + 8px); right: 0; min-width: 280px;
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      border: 1px solid var(--gray-200);
+      z-index: 1001; display: none; overflow: hidden;
+    }
+    .user-dropdown-header {
+      padding: 36px 90px 16px 16px;
+      border-bottom: none;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      position: relative;
+      position: relative;
+    }
+    .user-dropdown-avatar {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--brand-primary-50); color: var(--brand-primary);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 600; flex-shrink: 0;
+    }
+    .user-dropdown-info { flex: 1; min-width: 0; }
+    .user-dropdown-name {
+      font-size: 15px; font-weight: 600; color: var(--text);
+      margin-bottom: 2px;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .user-dropdown-id {
+      font-size: 12px; color: var(--text-muted);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .user-dropdown-tags { display: flex; gap: 6px; margin-top: 6px; }
+    .user-dropdown-tag {
+      font-size: 11px; padding: 2px 8px; border-radius: 4px;
+      background: var(--brand-primary-50); color: var(--brand-primary); font-weight: 500;
+    }
+    .user-dropdown-tag.verified { background: #E8F8EB; color: #00B42A; }
+    .user-dropdown-body { padding: 8px 0; }
+    .user-dropdown-group { padding: 4px 0; }
+    .user-dropdown-group-title {
+      padding: 8px 16px 4px; font-size: 12px;
+      color: var(--text-muted); font-weight: 500;
+    }
+    .user-dropdown-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 16px; font-size: 13px;
+      color: var(--text-secondary); text-decoration: none;
+      border: none; background: none; cursor: pointer;
+      width: 100%; text-align: left; transition: background 0.2s;
+    }
+    .user-dropdown-item:hover { background: var(--gray-100); color: var(--text); }
+    .user-dropdown-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .user-dropdown-divider { height: 1px; background: var(--gray-100); margin: 4px 0; }
+    .user-dropdown-footer { padding: 8px 16px 12px; }
+    .user-dropdown-logout {
+      width: 100%; padding: 9px 12px;
+      background: #FFF1F0; color: #F53F3F;
+      border: 1px solid #FFD1CC; border-radius: 8px;
+      font-size: 13px; font-weight: 500; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .user-dropdown-logout:hover { background: #FFE4E1; border-color: #FFB4AD; }
+
+    .wallet-tab {
+      padding: 10px 20px; font-size: 14px; cursor: pointer;
+      border-bottom: 2px solid transparent; margin-bottom: -1px;
+      color: var(--text-secondary); transition: all 0.15s;
+    }
+    .wallet-tab:hover { color: var(--brand-primary); }
+    .wallet-tab.active { color: var(--brand-primary); border-bottom-color: var(--brand-primary); font-weight: 500; }
+    .wallet-tab-panel { display: block; }
+    .status-tag {
+      display: inline-block; padding: 2px 8px; border-radius: 4px;
+      font-size: 12px; font-weight: 500;
+      background: #E8F8EB; color: #00B42A;
+    }
+    .status-tag.pending { background: #FFF3E8; color: #FF7D00; }
+    .status-tag.failed  { background: #FFF1F0; color: #F53F3F; }
+
+    .tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:12px; font-weight:500; }
+    .tag-success { background:#E8F8EB; color:#00B42A; }
+    .tag-warning { background:#FFF3E8; color:#FF7D00; }
+    .tag-info    { background:#E8F3FF; color:#1677FF; }
+    .tag-error   { background:#FFF1F0; color:#F53F3F; }
+    .tag-default { background:var(--gray-100); color:var(--text-regular); }
+    .tag-product-mjyy { background:#E6F4FF; color:#1677FF; }   /* 民匠有约 */
+
+    /* chip (用户标签，可移除) */
+    .chip { display:inline-flex; align-items:center; gap:6px; padding:2px 8px 2px 10px; border-radius:999px; background:var(--gray-50); border:1px solid var(--gray-200); font-size:12px; color:var(--text-regular); line-height:20px; }
+    .chip .chip-avatar { width:16px;height:16px;border-radius:50%;background:var(--brand-primary-50);color:var(--brand-primary);display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;line-height:1;font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;transform:translateY(-0.5px); }
+    .chip .chip-name  { max-width:100px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .chip .chip-close { width:14px;height:14px;border-radius:50%;background:transparent;color:var(--text-muted);cursor:pointer;display:inline-flex;align-items:center;justify-content:center; }
+    .chip .chip-close:hover { background:var(--gray-200); color:var(--text); }
+    .chips { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+    .chip-add { padding:2px 10px; background:var(--gray-50); border:1px dashed var(--gray-300); color:var(--text-secondary); font-size:12px; border-radius:999px; cursor:pointer; line-height:20px; }
+    .chip-add:hover { color:var(--brand-primary); border-color:var(--brand-primary); background:var(--brand-primary-50); }
+
+    .btn-link { padding:0; background:transparent; border:none; color:var(--brand-primary); cursor:pointer; font-size:13px; text-decoration:none; margin-right:8px; }
+    .btn-link:last-child { margin-right:0; }
+    .btn-link:hover { text-decoration:underline; }
+    .btn-link.danger { color:#F53F3F; }
+    .btn-link.warning { color:#FF7D00; }
+    .btn-link:disabled, .btn-link[disabled] { color:var(--text-placeholder); cursor:not-allowed; text-decoration:none; }
+    .btn-link[disabled]:hover { text-decoration:none; }
+
+    /* ===== 页面主体布局（对齐 account-wallet） ===== */
+    .page-layout {
+      display: flex;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding-top: 60px;
+      min-height: 100vh;
+    }
+    .sidebar {
+      width: var(--sidebar-width);
+      background: #fff;
+      border-right: 1px solid var(--gray-200);
+      position: fixed;
+      top: 60px; bottom: 0;
+      left: calc((100vw - 1440px) / 2);
+      overflow-y: auto;
+      padding: 14px 0 24px;
+    }
+    .sidebar-section-title {
+      padding: 10px 20px 6px; font-size: 11px;
+      color: var(--text-muted); font-weight: 600; letter-spacing: 0.5px;
+    }
+    .sidebar-menu { list-style: none; }
+    .sidebar-link {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 20px; margin: 1px 8px;
+      border-radius: 8px; font-size: 14px;
+      color: var(--text-secondary); text-decoration: none;
+      transition: all 0.15s; cursor: pointer;
+    }
+    .sidebar-link:hover { color: var(--brand-primary); background: var(--gray-100); }
+    .sidebar-link.active {
+      color: var(--brand-primary);
+      background: var(--brand-primary-50);
+      font-weight: 600;
+    }
+    .sidebar-link svg { width: 17px; height: 17px; flex-shrink: 0; display: block; overflow: visible; align-self: center; }
+    .sidebar-link span { display: flex; align-items: center; line-height: 1; }
+    .sidebar-divider { height: 1px; background: var(--gray-200); margin: 10px 16px; }
+    .main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      padding: 24px 32px 40px;
+      min-width: 0;
+    }
+    /* ===== 面包屑（与 account-wallet / account-center 三页逐字符一致） ===== */
+    .page-breadcrumb {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 18px;   /* 与 account-center 基线相同（之前 20 → 现在 18）保证 topbar→main-content 起点间距统一 */
+    }
+    .page-breadcrumb a { color: inherit; text-decoration: none; }
+    .page-breadcrumb a:hover { color: var(--brand-primary); }
+    .page-breadcrumb .bc-sep { color: var(--text-placeholder); }
+    .page-breadcrumb .bc-current { color: var(--text); font-weight: 500; }
+
+    /* ===== main-content 标题结构（与 产品中心 account-center / 资金账户 account-wallet 三页逐字符一致）
+       · .page-title-wrap 外层 flex，margin-bottom:22px 控制与下方统计/工具区的间距
+       · 不再在 main-content 里放第二段「控制台 / X」内面包屑（与产品中心基线完全一致 → page-title.y = main-content.top + 24 padding = 84）
+       · .breadcrumb 旧样式已删除，避免和 wallet 早期遗留类冲突 ================= */
+    .page-title-wrap {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 22px; flex-wrap: wrap; gap: 12px;
+    }
+    .page-title { font-size: 24px; font-weight: 700; line-height: 1.2; }
+    .page-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+    .page-actions { display: flex; align-items: center; gap: 10px; }
+
+    @media (max-width: 1440px) {
+      .sidebar { left: 0; }
+    }
+    @media (max-width: 768px) {
+      .topbar-inner { padding: 0 16px; }
+      .page-layout { flex-direction: column; }
+      .sidebar { position: relative; top: 0; width: 100%; border-right: none; }
+      .main-content { margin-left: 0; padding: 16px; }
+    }
+
+    /* ===== 卡片（对齐 wallet，加 1px 边框） ===== */
+    .card { background:#fff; border-radius:12px; border:1px solid var(--gray-200); margin-bottom:20px; overflow:hidden; }
+    .card-header { padding:16px 20px; border-bottom:none; display:flex; align-items:center; justify-content:space-between; }
+    .card-title { font-size:16px; font-weight:600; }
+    .card-body { padding:20px; }
+
+    /* ===== 统计卡片 ===== */
+    .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:16px; }
+    .stat-card { background:#fff; border-radius:12px; padding:20px 24px; box-shadow:0 1px 3px rgba(0,0,0,0.04); }
+    .stat-card-label { font-size:13px; color:var(--text-secondary); margin-bottom:8px; display:flex; align-items:center; gap:6px; }
+    .stat-card-value { font-size:28px; font-weight:700; }
+    .stat-card-sub { font-size:12px; color:var(--text-placeholder); margin-top:4px; }
+    .stat-card.primary .stat-card-value { color:var(--brand-primary); }
+    .stat-card.success .stat-card-value { color:#0C9A74; }
+    .stat-card.warning .stat-card-value { color:#FA8C16; }
+
+    /* ===== 按钮 ===== */
+    .btn-primary { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; background:var(--brand-primary); color:#fff; border:none; border-radius:8px; font-size:14px; font-weight:500; cursor:pointer; transition:all .15s; text-decoration:none; }
+    .btn-primary:hover { background:var(--brand-primary-dark); }
+    .btn-primary svg { width:14px; height:14px; }
+    /* 参考 account-user.html「添加成员」弹窗的取消按钮：白底 + 灰色描边 + 字号 13 */
+    .btn-default { display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:8px 16px; background:#fff; color:var(--text); border:1px solid var(--gray-300); border-radius:6px; font-size:13px; font-weight:500; cursor:pointer; transition:all .15s; text-decoration:none; }
+    .btn-default:hover { border-color:var(--brand-primary); color:var(--brand-primary); }
+    .btn-secondary { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; background:#fff; color:var(--text); border:1px solid var(--gray-300); border-radius:8px; font-size:14px; cursor:pointer; transition:all .15s; text-decoration:none; }
+    .btn-secondary:hover { border-color:var(--brand-primary); color:var(--brand-primary); }
+    .btn-danger { color:#F53F3F; font-size:13px; cursor:pointer; background:none; border:none; }
+    .btn-danger:hover { text-decoration:underline; }
+    .btn-link { color:var(--brand-primary); font-size:13px; cursor:pointer; background:none; border:none; text-decoration:none; margin-right:12px; }
+    .btn-link:hover { text-decoration:underline; }
+
+    /* ===== 搜索栏 ===== */
+    .search-bar { display:flex; align-items:center; gap:12px; margin-bottom:16px; flex-wrap:wrap; }
+    .search-input { padding:8px 12px; border:1px solid var(--gray-300); border-radius:8px; font-size:14px; width:220px; }
+    .search-input:focus { outline:none; border-color:var(--brand-primary); box-shadow:0 0 0 3px rgba(22,119,255,0.1); }
+    .search-select { padding:8px 32px 8px 12px; border:1px solid var(--gray-300); border-radius:8px; font-size:14px; background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 10px center; appearance:none; }
+
+    /* ===== 子公司列表表格：完全复用用户管理的双表拆分模式 ===== */
+    .project-grid {
+      display: flex;
+      align-items: stretch;
+      border: 1px solid var(--gray-100);
+      border-radius: 8px;
+      background: #fff;
+      overflow: hidden;
+    }
+    .project-scroll-wrap {
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow-x: auto;
+      overflow-y: hidden;
+      position: relative;
+    }
+    .project-actions-fixed {
+      flex: 0 0 280px;
+      width: 280px;
+      min-width: 280px;
+      max-width: 280px;
+      border-left: 1px solid var(--gray-100);
+      background: #fff;
+      box-shadow: -6px 0 16px -10px rgba(0,0,0,0.1);
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    /* 两表共用相同的表格模型 */
+    table.data-table-project,
+    .project-actions-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 14px;
+      table-layout: fixed;
+    }
+    table.data-table-project { min-width: 1320px; }
+
+    /* 两表 thead/th 完全一致 */
+    table.data-table-project thead,
+    .project-actions-table thead { height: 48px; line-height: 48px; }
+    table.data-table-project thead tr,
+    .project-actions-table thead tr { height: 48px; }
+
+    table.data-table-project th, table.data-table-project td,
+    .project-actions-table th, .project-actions-table td {
+      padding: 0 16px;
+      margin: 0;
+      text-align: left;
+      border-bottom: 1px solid var(--gray-100);
+      background: #fff;
+      vertical-align: middle;
+      box-sizing: border-box;
+      white-space: normal;
+      overflow: visible;
+      height: 56px;
+      line-height: 1.4;
+    }
+
+    /* th 统一强制 48px 高 */
+    table.data-table-project thead th,
+    .project-actions-table thead th {
+      height: 48px !important;
+      min-height: 48px;
+      max-height: 48px;
+      line-height: 48px;
+      background: #fafafa;
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 13px;
+      white-space: nowrap;
+      border-bottom: 1px solid var(--gray-100);
+      position: static;
+      z-index: 1;
+      box-sizing: border-box;
+    }
+
+    /* 右表表头/单元格居中 */
+    .project-actions-table thead th { text-align: center; }
+    .project-actions-table tbody td { text-align: center; }
+
+    /* 允许换行的列 */
+    table.data-table-project td.col-sub,
+    table.data-table-project td.col-name,
+    table.data-table-project td.col-amounts {
+      white-space: normal;
+      word-break: break-word;
+    }
+
+    /* 不换行的列 */
+    table.data-table-project td.col-product,
+    table.data-table-project td.col-id,
+    table.data-table-project td.col-owner,
+    table.data-table-project td.col-phone,
+    table.data-table-project td.col-balance,
+    table.data-table-project td.col-status,
+    table.data-table-project td.col-created {
+      white-space: nowrap;
+    }
+
+    /* hover 同步 */
+    table.data-table-project tbody tr.is-hover td,
+    table.data-table-project tbody tr:hover td,
+    .project-actions-table tbody tr.is-hover td,
+    .project-actions-table tbody tr:hover td {
+      background: #fafafa;
+    }
+
+    /* 行高基准 */
+    table.data-table-project tbody tr,
+    .project-actions-table tbody tr { height: 56px; }
+
+    /* 列宽（左表 10 列） */
+    table.data-table-project col.col-product  { width: 88px; }
+    table.data-table-project col.col-id      { width: 110px; }
+    table.data-table-project col.col-name    { width: 160px; }
+    table.data-table-project col.col-owner   { width: 80px;  }
+    table.data-table-project col.col-phone   { width: 120px; }
+    table.data-table-project col.col-subs    { width: 240px; }
+    table.data-table-project col.col-balance { width: 120px; }
+    table.data-table-project col.col-amounts { width: 110px; }
+    table.data-table-project col.col-status  { width: 80px;  }
+    table.data-table-project col.col-created { width: 156px; }
+
+    table.data-table-project .tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+      min-height: 20px;
+    }
+
+    /* 操作按钮容器 */
+    .action-cell {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3px 2px;
+      align-items: flex-start;
+      align-content: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 100%;
+      margin: 0 auto;
+      line-height: 1.3;
+      padding: 4px 0;
+      box-sizing: border-box;
+      text-align: center;
+    }
+    .action-cell::after {
+      content: '';
+      flex: 0 0 calc((100% - 2px) / 3);
+      max-width: calc((100% - 2px) / 3);
+      display: block;
+      height: 0;
+      pointer-events: none;
+    }
+    .action-cell .btn-link {
+      flex: 0 0 calc((100% - 2px) / 3);
+      max-width: calc((100% - 2px) / 3);
+      min-width: 0;
+      box-sizing: border-box;
+      padding: 4px 2px;
+      margin: 0 auto;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 12px;
+      border-radius: 3px;
+      min-height: 24px;
+      line-height: 1.3;
+    }
+    .action-cell .btn-link:hover:not(:disabled) {
+      background: rgba(22, 119, 255, 0.08);
+      text-decoration: none;
+    }
+    .action-cell .btn-link.danger:hover:not(:disabled)  { background: rgba(245, 63, 63, 0.08); }
+    .action-cell .btn-link.warning:hover:not(:disabled) { background: rgba(255, 125, 0, 0.08); }
+    .action-cell .btn-link:disabled { background: transparent !important; }
+
+    /* 滚动条样式 */
+    .project-scroll-wrap::-webkit-scrollbar { height: 10px; }
+    .project-scroll-wrap::-webkit-scrollbar-track { background: #F2F3F5; border-radius: 999px; }
+    .project-scroll-wrap::-webkit-scrollbar-thumb { background: #CDD0D6; border-radius: 999px; border: 2px solid #F2F3F5; }
+    .project-scroll-wrap { scrollbar-width: thin; scrollbar-color: #CDD0D6 #F2F3F5; }
+
+    /* 资金流水表保持原结构 */
+    .table-wrap {
+      overflow-x: auto;
+      overflow-y: visible;
+      position: relative;
+      padding-bottom: 8px;
+    }
+    table.data-table { width:100%; min-width: 900px; border-collapse:separate; border-spacing:0; table-layout:auto; writing-mode:horizontal-tb; direction:ltr; }
+    table.data-table th { padding:12px 16px; text-align:left; font-size:13px; color:var(--text-secondary); font-weight:500; background:var(--gray-50); border-bottom:1px solid var(--gray-200); position:sticky; top:0; z-index:1; }
+    table.data-table td { padding:14px 16px; font-size:14px; border-bottom:1px solid var(--gray-100); vertical-align:middle; }
+    table.data-table tr:hover td { background:var(--gray-50); }
+    table.data-table .tag { display:inline-block; padding:2px 8px; border-radius:4px; font-size:12px; font-weight:500; }
+
+    .tag-success { background:#E6FFFB; color:#0C9A74; }
+    .tag-warning { background:#FFF7E6; color:#FA8C16; }
+    .tag-danger { background:#FFF2F0; color:#F53F3F; }
+    .tag-info { background:var(--brand-primary-50); color:var(--brand-primary); }
+
+    /* ===== 弹窗（与 资金账户 account-wallet.html 三套弹窗 样式 token 逐字符一致 → 用户视觉风格统一）
+       Wallet 标准（退款/监管账户弹窗）取值来源：
+         overlay  : rgba(0,0,0,0.45) · z-index 9999 · fixed inset 0 · flex center
+         card     : #fff · border-radius:12px · max-width:520px · width:90% · shadow 0 12px 40px rgba(0,0,0,0.15) · overflow:hidden
+         header   : padding 20px 28px · border-bottom 1px solid #F2F3F5 · space-between flex
+         title    : 16px · 600 · #1F2329 · LEFT ALIGNED （父容器 justify-content:space-between 也生效，按 Experience 1223722 + Experience 652378
+                    必须父子 + 后代多节点同时设置，避免缓存/外部 main.js 初始化重写 text-align:center 冲掉用户要求「新建子公司标题都左对齐」→ 因此我们在此
+                    给 header/title 设置 text-align:left !important 强覆盖，并对 .modal-header 内所有后代元素 * 全部传导 left，避免内部 span/自定义富文本被居中）
+         close-X  : 背景无边 · cursor pointer · font-size:20px · #8F959E · padding 4px · line-height:1（与 wallet 的 × 按钮样式严格相等）
+         body     : padding 24px 28px · 内部 overflow 自己管
+         footer   : padding 16px 28px · border-top 1px solid #F2F3F5 · space-between + align-items:center flex（允许左边放提示文本，右边按钮，与 wallet 退款弹窗同构）
+    ================================================================================================= */
+    .modal-overlay { display:none; position:fixed; top:0;left:0;right:0;bottom:0; background:rgba(0,0,0,0.45); z-index:9999; align-items:center; justify-content:center; }
+    .modal-overlay.active { display:flex; }
+    .modal {
+      background:#fff;
+      border-radius:12px;
+      width: 520px;            /* wallet 大号表单弹窗 max-width:520px 基线 */
+      max-width: 90%;          /* 与 wallet `width:90%` 移动端收敛一致（保留宽度=桌面 520px；小屏不超过 90%）*/
+      max-height: 90vh;
+      overflow: hidden;        /* 卡片级不出现滚动条，裁剪圆角（与 wallet card 同），滚动交给 .modal-body */
+      box-shadow: 0 12px 40px rgba(0,0,0,0.15);  /* wallet shadow = 0 12px 40px（旧 project 0 8px → 升级到 12 更重、更有层次）*/
+    }
+    .modal-header {
+      padding: 20px 28px;                  /* wallet header padding: 20x28（旧 project 18x24 → 加大，视觉呼吸感与 wallet 一致）*/
+      border-bottom: 1px solid #F2F3F5;    /* wallet 明确色值 #F2F3F5（旧 project 用 var(--gray-100) 可能主题差异 → 统一）*/
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;       /* 父容器明确 space-between → 标题左 / close 右上角，Experience 1223722 要求父子同时设置防默认居中 */
+      align-items: flex-start;
+      gap: 12px;
+      /* Experience 652378：父容器 text-align + 强覆盖 !important，避免外部样式/缓存/main.js 异步初始化写回居中
+         └─ .modal-header, .modal-header * 所有后代（含可能的 span/strong/em/自定义小副标题）全部传导 text-align:left
+         └─ 用户明确反馈"新建子公司的标题都左对齐" → 这里使用双重 !important 保证任何覆盖规则都无法再改成 center */
+      text-align: left !important;
+    }
+    .modal-header,
+    .modal-header *,
+    .modal-header *::before,
+    .modal-header *::after {
+      text-align: left !important;
+    }
+    .modal-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1F2329;                      /* wallet 标题明确用 #1F2329（旧 project 用 var(--text) 可能不一致）*/
+      /* Experience 1223722：文本节点本身也要 !important left-aligned
+         └─ 父容器 + 子节点双强覆盖 + 后代继承三重覆盖，任何覆盖顺序/缓存/外部脚本写 style="text-align:center" 都失效（见下脚本轮询兜底再把 style 属性同步）*/
+      text-align: left !important;
+      flex: 1 1 auto;
+      line-height: 1.5;
+    }
+    .modal-close {
+      cursor: pointer;
+      color: #8F959E;                       /* wallet close 明确色值 #8F959E（旧 project var(--text-placeholder) → 统一）*/
+      font-size: 20px;                      /* wallet 20px（旧 project 22 → 与 wallet 一样更精致）*/
+      background: none;
+      border: none;
+      padding: 4px;                         /* wallet padding:4px（旧 project 28×28 box → 改成与 wallet 完全同值）*/
+      line-height: 1;                       /* wallet line-height:1（紧凑，不撑开 header 高度）*/
+      flex: 0 0 auto;                       /* 固定不被压缩，始终在最右上角 */
+    }
+    .modal-close:hover { color: #1F2329; background: transparent; }  /* wallet 无 hover 背景，仅加深文字；避免 project 原灰色 hover 块不一致 */
+    .modal-body {
+      padding: 24px 28px;                   /* wallet body padding:24x28（旧 project 20x24 → 加大）*/
+      max-height: calc(90vh - 140px);       /* header~64px + footer~60px + safe 16px，滚动条放到 body 不放到卡片 */
+      overflow-y: auto;
+    }
+    .modal-footer {
+      padding: 16px 28px;                   /* wallet footer padding 16x28（旧 project 16x24 → 对齐）*/
+      border-top: 1px solid #F2F3F5;        /* wallet 明确 #F2F3F5 */
+      display: flex;
+      justify-content: space-between;       /* wallet footer 用 space-between（左：提示文字 / 右：按钮；与退款弹窗同构，向后兼容）*/
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .modal-footer-hint { font-size: 12px; color: #8F959E; } /* wallet 底部灰色小字，与退款弹窗的「提交后 T+1…」同规格 */
+    .modal-footer-buttons { display: flex; gap: 12px; justify-content: flex-end; }
+    /* 弹窗底部按钮样式 — 与 wallet 取消/提交按钮精确同规格 */
+    .btn-modal-cancel {
+      padding: 8px 20px;
+      border: 1px solid #E5E6EB;           /* wallet cancel 边框色值 */
+      background: #fff;
+      color: #4E5969;                       /* wallet cancel 文字 #4E5969 */
+      border-radius: 6px;                   /* wallet 圆角 6（project 原 8 → 统一）*/
+      font-size: 14px;
+      cursor: pointer;
+      line-height: 1.4;
+    }
+    .btn-modal-primary {
+      padding: 8px 20px;
+      border: none;
+      background: #1677FF;                  /* wallet 建设性操作（如转账/前往绑卡）主色蓝色 #1677FF */
+      color: #fff;
+      border-radius: 6px;                   /* wallet 6 圆角 */
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+    .btn-modal-primary.danger { background: #F53F3F; }   /* wallet 破坏性操作（提交退款申请）用红色 #F53F3F，project 删除/停用 confirm 使用 */
+    /* 表单元素 — 与 wallet input/select 同 token */
+    .form-group { margin-bottom: 16px; }
+    .form-label { display:block; font-size:13px; color:#1F2329; margin-bottom:6px; font-weight:500; }
+    .form-label .req { color:#F53F3F; }
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid #E5E6EB;            /* wallet 输入框边框 #E5E6EB（旧 project gray-300 → 统一）*/
+      border-radius: 8px;
+      font-size: 14px;
+      background: #fff;
+      color: #1F2329;
+      transition: border-color .15s, box-shadow .15s;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+    .form-input.is-error, .form-select.is-error, .form-textarea.is-error {
+      border-color: #F53F3F;
+      box-shadow: 0 0 0 3px rgba(245,63,63,0.10);
+    }
+    .form-error-text {
+      display: block;
+      font-size: 12px;
+      color: #F53F3F;
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+    .form-global-msg {
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-bottom: 14px;
+      display: none;
+    }
+    .form-global-msg.show  { display: block; }
+    .form-global-msg.error { background: #FFF2F0; color: #F53F3F; border: 1px solid #FFCCC7; }
+    .form-global-msg.ok    { background: #F1FFF6; color: #00B42A; border: 1px solid #CBF1C8; }
+    /* 页面级可调试提示条：任何 JS 异常都会以红色 3.5s 展示在右下角，用户可直接看到反馈 */
+    #_pageDebugToast{
+      position: fixed; right: 20px; bottom: 24px; z-index: 2147483646;
+      max-width: 420px; min-width: 260px;
+      padding: 12px 16px 12px 40px;
+      border-radius: 10px;
+      font-size: 13px; line-height: 1.5; font-weight: 500;
+      box-shadow: 0 10px 30px rgba(15,23,42,0.18);
+      background-repeat: no-repeat;
+      background-position: 14px 12px;
+      background-size: 18px 18px;
+      pointer-events: auto;
+      transition: opacity .18s ease, transform .18s ease;
+      opacity: 0; transform: translateY(8px);
+    }
+    #_pageDebugToast._show{ opacity: 1; transform: translateY(0); }
+    #_pageDebugToast._ok{
+      background-color: #F1FFF6; color: #00B42A; border: 1px solid #CBF1C8;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%2300B42A' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+    }
+    #_pageDebugToast._info{
+      background-color: #FFF8E6; color: #B07A00; border: 1px solid #F6D99A;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23B07A00' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cline x1='12' y1='16' x2='12' y2='12'/%3E%3Cline x1='12' y1='8' x2='12.01' y2='8'/%3E%3C/svg%3E");
+    }
+    #_pageDebugToast._err{
+      background-color: #FFF2F0; color: #F53F3F; border: 1px solid #FFCCC7;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23F53F3F' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cline x1='15' y1='9' x2='9' y2='15'/%3E%3Cline x1='9' y1='9' x2='15' y2='15'/%3E%3C/svg%3E");
+    }
+    #_pageDebugToast ._dbt_t{ font-weight: 600; margin-bottom: 4px; }
+    #_pageDebugToast ._dbt_b{ opacity: .9; }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { outline:none; border-color:var(--brand-primary); box-shadow:0 0 0 3px rgba(22,119,255,0.1); }
+    .form-input:disabled { background:var(--gray-50); color:var(--text-secondary); }
+    .form-hint { font-size:12px; color:var(--text-placeholder); margin-top:4px; line-height: 1.5; }
+    /* ===== 子公司新建/编辑弹窗：参考「添加成员」弹窗的紧凑左对齐样式 ===== */
+    .project-create-modal { width: 520px; max-width: 92vw; }
+    .project-create-modal .modal-body { padding: 20px 24px; }
+    .project-create-modal .modal-footer { padding: 12px 24px; justify-content: flex-end; }
+    /* 强制表单元素左对齐（覆盖原居中样式，与 account-user.html 中 member-modal 保持一致）*/
+    .project-create-modal .form-label { text-align: left !important; display: block; }
+    .project-create-modal .form-group { text-align: left !important; margin-bottom: 14px; }
+    .project-create-modal .form-hint { text-align: left; }
+    /* 双列布局：产品归属+子公司编号 / 主管理员+用户手机号 */
+    .form-row-2col {
+      display: flex;
+      gap: 16px;
+      text-align: left;
+    }
+    .form-row-2col .form-group {
+      flex: 1;
+      margin-bottom: 14px;
+    }
+    /* 信息提示块：参考 account-user.html 的 .form-tip，带 icon + 浅灰背景 */
+    .form-tip {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-placeholder);
+      line-height: 1.5;
+      margin-top: 6px;
+      padding: 10px 12px;
+      background: #F7F8FA;
+      border-radius: 6px;
+      text-align: left;
+    }
+    .form-tip svg { flex-shrink: 0; margin-top: 1px; }
+    @media (max-width: 640px) {
+      .project-create-modal { width: 94vw; }
+      .form-row-2col { flex-direction: column; gap: 12px; }
+      .form-row-2col .form-group { margin-bottom: 14px; }
+    }
+    .form-amount { font-size:24px; font-weight:700; color:var(--brand-primary); }
+    .form-amount .currency { font-size:14px; font-weight:500; margin-right:4px; }
+    .quick-amounts { display:flex; gap:8px; margin-top:8px; }
+    .quick-amount-btn { padding:4px 12px; border:1px solid var(--gray-300); border-radius:6px; background:#fff; font-size:13px; cursor:pointer; transition:all .15s; }
+    .quick-amount-btn:hover { border-color:var(--brand-primary); color:var(--brand-primary); }
+
+    /* ===== 划拨记录 ===== */
+    .record-tabs { display:flex; gap:0; margin-bottom:20px; border-bottom:1px solid var(--gray-200); }
+    .record-tab { padding:10px 20px; font-size:14px; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; color:var(--text-secondary); }
+    .record-tab.active { color:var(--brand-primary); border-bottom-color:var(--brand-primary); font-weight:500; }
+
+    .flow-in { color:#0C9A74; font-weight:500; }
+    .flow-out { color:#F53F3F; font-weight:500; }
+
+    /* ===== 分页 ===== */
+    .pagination { display:flex; align-items:center; justify-content:space-between; padding:14px 24px; border-top:1px solid var(--gray-100); }
+    .pagination-info { font-size:13px; color:var(--text-secondary); }
+    .pagination-controls { display:flex; align-items:center; gap:8px; }
+    .pagination-btn { min-width:32px; height:32px; padding:0 10px; border:1px solid var(--gray-300); background:#fff; border-radius:6px; font-size:13px; cursor:pointer; }
+    .pagination-btn:hover { border-color:var(--brand-primary); color:var(--brand-primary); }
+    .pagination-btn.active { background:var(--brand-primary); color:#fff; border-color:var(--brand-primary); }
+    .pagination-btn:disabled { cursor:not-allowed; opacity:0.5; }
+    .pagination-size { padding:6px 10px; border:1px solid var(--gray-300); border-radius:6px; font-size:13px; background:#fff; }
+
+    /* ===== 空状态 ===== */
+    .empty-state { text-align:center; padding:60px 20px; color:var(--text-placeholder); }
+    .empty-state-icon { font-size:48px; margin-bottom:12px; }
+
+    /* ===== 提示条 ===== */
+    .alert-info { padding:12px 16px; background:var(--brand-primary-50); border:1px solid var(--brand-primary-100); border-radius:8px; color:var(--brand-primary); font-size:13px; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+    .alert-warning { padding:12px 16px; background:#FFF7E6; border:1px solid #FFE7BA; border-radius:8px; color:#FA8C16; font-size:13px; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+
+    .hidden { display:none !important; }
+  </style>
+
+  <!-- =================================== 最前置（main.js / DOMContentLoaded 前运行）
+       强制鉴权 / 登录守卫 / Topbar 绕过 + 预置 Demo 登录态与成功银行卡
+       （preview / sandbox / 本地无 localStorage 场景都能直接进入页面，不再跳 login.html）
+       =================================== -->
+  <script>
+    (function () {
+      try {
+        window.SKIP_LOGIN_CHECK = true;
+        window.SKIP_TOPBAR_DISPLAY_NONE = true;
+        window.SKIP_LOGIN_REDIRECT = true;
+        window.__userData = {
+          isLoggedIn: true,
+          id: 'ENT_20240001',
+          loginType: 'enterprise',
+          username: 'preview_enterprise',
+          name: '民匠有约企业服务有限公司',
+          contact: '张工',
+          mobile: '13888888888',
+          email: 'service@minjiangyouyue.com',
+          type: 'enterprise',
+          verified: true,
+          isAdmin: true,
+          roleText: '超级管理员',
+          company: '民匠有约企业服务有限公司',
+          createdAt: '2024-05-01 00:00:00'
+        };
+        var __ls = window.localStorage;
+        if (__ls) {
+          if (!/^(true|1)$/i.test(String(__ls.getItem('mjyy_logged_in') || ''))) {
+            try { __ls.setItem('mjyy_logged_in', 'true'); } catch (_) {}
+          }
+          if (!__ls.getItem('mjyy_user_data')) {
+            try { __ls.setItem('mjyy_user_data', JSON.stringify(window.__userData)); } catch (_) {}
+          }
+          // 预置 1 张「正常」状态银行卡 → hasSuccessfulBankCard 直接通过
+          var ok = false;
+          try {
+            var raw = __ls.getItem('mjyy_bank_cards');
+            if (raw) {
+              try {
+                var arr = JSON.parse(raw);
+                if (Array.isArray(arr) && arr.length && arr.some(function(c){
+                  return c && /^(正常|成功|生效|已绑定|已激活|绑定成功|verifySuccess)$/i.test(
+                    String(c.status || '').replace(/\s+/g, '')
+                  );
+                })) ok = true;
+              } catch (_) {}
+            }
+          } catch (_) {}
+          if (!ok) {
+            var seed = [{
+              id: 1, name: '民匠有约企业服务有限公司',
+              accountNo: '81101010191000001234', bank: '中信银行',
+              branch: '杭州分行营业部', status: '正常',
+              addedAt: '2024-05-15 10:22:18',
+              statusText: '绑定成功'
+            }];
+            try { __ls.setItem('mjyy_bank_cards', JSON.stringify(seed)); } catch (_) {}
+          }
+          if (!__ls.getItem('mjyy_identity_verified')) {
+            try { __ls.setItem('mjyy_identity_verified', 'true'); } catch (_) {}
+          }
+        }
+      } catch (_) {}
+    })();
+  </script>
+
+<link rel="stylesheet" href="css/annotation.css">
+</head>
+<body>
+
+<!-- 顶部导航（对齐 wallet/center） -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div style="display:flex;align-items:center;gap:20px;">
+      <a href="account-center.html" class="topbar-brand">
+        <img src="https://oss.minjiangyouyue.com/mjlogo/logo02.png" alt="logo" style="height:34px;border-radius:8px;">
+        <span class="topbar-title">控制台</span>
+      </a>
+      <div class="topbar-breadcrumb">
+        <a href="index.html">首页</a>
+        <span class="topbar-bc-sep">/</span>
+        <a href="account-center.html">控制台</a>
+        <span class="topbar-bc-sep">/</span>
+        <span class="topbar-bc-current">子公司管理</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <a href="#" class="topbar-back" onclick="
+        if(window.SKIP_LOGIN_CHECK || (window.__userData && window.__userData.isLoggedIn)) {
+          window.location.href = 'account-center.html';
+        } else {
+          history.back();
+        }
+        return false;
+      ">
+        <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M19 12H5" stroke="currentColor" stroke-width="2"/><path d="M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2"/></svg>
+        返回
+      </a>
+      <div class="topbar-message" id="topbarMessage">
+        <div class="topbar-message-icon">
+          <svg viewBox="0 0 24 24" fill="none" width="15" height="15"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="topbar-message-dot show" id="topbarMessageDot"></span>
+            <span class="topbar-message-badge" id="topbarMessageBadge">3</span>
+          </div>
+          <div class="message-dropdown" id="messageDropdown">
+          <div class="message-dropdown-header">
+            <span>消息通知</span>
+            <a href="javascript:;" class="message-dropdown-clear" id="msgClearAll">全部已读</a>
+          </div>
+          <div class="message-dropdown-list" id="messageList">
+            <div class="message-item unread">
+              <div class="message-item-icon system">
+                <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="2"/></svg>
+              </div>
+              <div class="message-item-body">
+                <div class="message-item-title">资金账户余额变动提醒</div>
+                <div class="message-item-desc">子公司杭州地铁保洁收到 ¥10,000.00 划拨资金</div>
+              </div>
+              <div class="message-item-time">刚刚</div>
+            </div>
+            <div class="message-item unread">
+              <div class="message-item-icon order">
+                <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="currentColor" stroke-width="2"/></svg>
+              </div>
+              <div class="message-item-body">
+                <div class="message-item-title">子公司创建成功</div>
+                <div class="message-item-desc">万达广场安保子公司 PRJ-2026-003 已创建</div>
+              </div>
+              <div class="message-item-time">10分钟前</div>
+            </div>
+            <div class="message-item">
+              <div class="message-item-icon warn">
+                <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="currentColor" stroke-width="2"/></svg>
+              </div>
+              <div class="message-item-body">
+                <div class="message-item-title">请及时完成认证</div>
+                <div class="message-item-desc">部分资金账户功能受限，请完成企业认证</div>
+              </div>
+              <div class="message-item-time">2小时前</div>
+            </div>
+          </div>
+          <a href="javascript:;" class="message-dropdown-footer" id="msgViewAll">查看全部消息 →</a>
+        </div>
+      </div>
+      <div class="topbar-user" id="topbarUser"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 页面主体 -->
+<div class="page-layout">
+                    <aside class="sidebar">
+      <div class="sidebar-section-title">产品</div>
+      <ul class="sidebar-menu">
+        <li><a href="account-center.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/></svg>
+          产品中心
+        </a></li>
+      </ul>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-title">企业</div>
+      <ul class="sidebar-menu">
+        <li><a href="account-realname.html?type=enterprise" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4" stroke="currentColor" stroke-width="2"/></svg>
+          企业信息
+        </a></li>
+        <li><a href="account-billing.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"/></svg>
+          合同管理
+        </a></li>
+        <li><a href="account-bank.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"/><line x1="2" y1="10" x2="22" y2="10" stroke="currentColor" stroke-width="2"/></svg>
+          账户管理
+        </a></li>
+      </ul>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-title">企业管理</div>
+      <ul class="sidebar-menu">
+        <li id="sidebarSubEntMgmt"><a href="account-project.html" class="sidebar-link active">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M9 9h6M9 13h4M9 17h5" stroke="currentColor" stroke-width="2"/></svg>
+          子公司管理
+        </a></li>
+      </ul>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-title">财务</div>
+      <ul class="sidebar-menu">
+        <li><a href="account-wallet.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="2"/></svg>
+          资金账户
+        </a></li>
+      </ul>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-title">设置</div>
+      <ul class="sidebar-menu">
+        <li><a href="account-permission.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="currentColor" stroke-width="2"/></svg>
+          权限概览
+        </a></li>
+        <li><a href="account-user.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2"/></svg>
+          用户管理
+        </a></li>
+        <li><a href="account-role.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+          角色管理
+        </a></li>
+        <li><a href="account-security.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/></svg>
+          账号安全
+        </a></li>
+      </ul>
+    </aside>
+
+  <!-- 主内容 -->
+  <main class="main-content">
+    <div class="page-title-wrap">
+      <div>
+        <div class="page-title">子公司管理</div>
+        <div class="page-subtitle">子公司基础信息、初始预算、用户权限与资金划拨流水集中配置。</div>
+      </div>
+    </div>
+
+    <!-- 统计卡片 -->
+    <div class="stats-row">
+      <div class="stat-card primary">
+        <div class="stat-card-label">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="2"/></svg>
+          企业资金账户余额
+        </div>
+        <div class="stat-card-value">¥128,580.00</div>
+        <div class="stat-card-sub">主账号信息</div>
+      </div>
+      <div class="stat-card success">
+        <div class="stat-card-label">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2"/><polyline points="22 4 12 14.01 9 11.01" stroke="currentColor" stroke-width="2"/></svg>
+          子公司资金池总额
+        </div>
+        <div class="stat-card-value">¥56,200.00</div>
+        <div class="stat-card-sub">全部子公司账户余额合计</div>
+      </div>
+      <div class="stat-card warning">
+        <div class="stat-card-label">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M9 9h6M9 13h4M9 17h5" stroke="currentColor" stroke-width="2"/></svg>
+          子公司数量
+        </div>
+        <div class="stat-card-value">3</div>
+        <div class="stat-card-sub">进行中 3 · 已完成 0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18" stroke="currentColor" stroke-width="2"/><polyline points="17 6 23 6 23 12" stroke="currentColor" stroke-width="2"/></svg>
+          本月划拨笔数
+        </div>
+        <div class="stat-card-value">8</div>
+        <div class="stat-card-sub">本月累计 ¥32,000.00</div>
+      </div>
+    </div>
+
+    <!-- 子公司列表 -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">子公司列表</div>
+        <button class="btn-primary" id="btnNewProject" data-action="new-project" type="button" onclick="try{ if(window.safeOpenProjectModal){ window.safeOpenProjectModal(); } else if(window.openProjectModal){ window.openProjectModal(); } else { try{ showPageDebugToast('脚本未就绪','页面脚本尚未加载，请稍候 1~2 秒再点击，或按 Ctrl+F5 强制刷新','error',5000); }catch(_){ alert('页面初始化未完成，请按 Ctrl+F5 强制刷新重试'); } } }catch(e){ try{ console.error(e); }catch(x){} try{ if(window.showPageDebugToast){ showPageDebugToast('打开失败', (e.message||e), 'error', 5000); } else { alert('打开失败：'+(e.message||e)); } }catch(x){} }">
+          <svg viewBox="0 0 24 24" fill="none"><line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/><line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/></svg>
+          新建子公司
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="search-bar">
+          <input class="search-input" type="text" id="searchInput" placeholder="搜索子公司名称/编号/主管理员/手机号/用户姓名" oninput="filterProjects()">
+          <select class="search-select" id="statusFilter" onchange="filterProjects()">
+            <option value="">全部状态</option>
+            <option value="active">进行中</option>
+            <option value="paused">已暂停</option>
+            <option value="inactive">已停用</option>
+            <option value="done">已完成</option>
+          </select>
+          <button class="btn-secondary" onclick="resetSearch()">清空</button>
+        </div>
+
+        <div class="project-grid" id="projectGrid">
+          <div class="project-scroll-wrap" id="projectTableWrap">
+            <table class="data-table-project" id="projectTable">
+              <colgroup>
+                <col class="col-product">
+                <col class="col-id">
+                <col class="col-name">
+                <col class="col-owner">
+                <col class="col-phone">
+                <col class="col-subs">
+                <col class="col-balance">
+                <col class="col-amounts">
+                <col class="col-status">
+                <col class="col-created">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>产品</th>
+                  <th>子公司编号</th>
+                  <th>子公司名称</th>
+                  <th>主管理员</th>
+                  <th>用户名</th>
+                  <th>用户姓名</th>
+                  <th>子公司余额</th>
+                  <th>累计划拨</th>
+                  <th>状态</th>
+                  <th>创建时间</th>
+                </tr>
+              </thead>
+              <tbody id="projectTableBody"></tbody>
+            </table>
+          </div>
+          <div class="project-actions-fixed">
+            <table class="project-actions-table" id="projectActionsTable">
+              <colgroup>
+                <col style="width:280px;">
+              </colgroup>
+              <thead>
+                <tr><th>操作</th></tr>
+              </thead>
+              <tbody id="projectActionsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="pagination">
+          <div class="pagination-info" id="paginationInfo">共 3 条记录</div>
+          <div class="pagination-controls">
+            <select class="pagination-size"><option>10条/页</option></select>
+            <button class="pagination-btn" disabled>上一页</button>
+            <button class="pagination-btn active">1</button>
+            <button class="pagination-btn" disabled>下一页</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 划拨流水 -->
+    <div class="card" id="recordCard">
+      <div class="card-header">
+        <div class="card-title">资金划拨流水</div>
+        <button class="btn-secondary" id="btnExportRecords" data-action="export-records" type="button" onclick="try{ if(window.exportRecords){ window.exportRecords(); } else { alert('页面初始化未完成，请刷新重试'); } }catch(e){ try{ console.error(e); }catch(x){} try{ alert('导出失败：'+(e.message||e)); }catch(x){} }">
+          <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" stroke="currentColor" stroke-width="2"/></svg>
+          导出
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="record-tabs">
+          <div class="record-tab active" onclick="switchTab(this,'all')">全部流水</div>
+          <div class="record-tab" onclick="switchTab(this,'in')">企业→子公司（入账）</div>
+          <div class="record-tab" onclick="switchTab(this,'out')">子公司→企业（调出）</div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data-table" id="recordTable">
+            <thead>
+              <tr>
+                <th>流水号</th>
+                <th>划拨方向</th>
+                <th>对方账户</th>
+                <th>金额</th>
+                <th>备注</th>
+                <th>操作人</th>
+                <th>状态</th>
+                <th>划拨时间</th>
+              </tr>
+            </thead>
+            <tbody id="recordTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ===== 新建子公司弹窗（参考 account-user.html 添加成员弹窗的紧凑左对齐样式）===== -->
+<div class="modal-overlay" id="projectModal">
+  <div class="modal project-create-modal">
+    <div class="modal-header" style="text-align:left !important;" data-title-left="1">
+      <div class="modal-title" id="projectModalTitle">新建子公司</div>
+      <button class="modal-close" onclick="closeProjectModal()">
+        <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <!-- 第 1 行：产品归属 + 子公司编号（双列）-->
+      <div class="form-row-2col">
+        <div class="form-group">
+          <label class="form-label">产品归属 <span class="req">*</span></label>
+          <select class="form-select" id="f_product" disabled style="background:var(--gray-50);cursor:not-allowed;">
+            <option value="mjyy" selected>民匠有约</option>
+          </select>
+          <div class="form-hint">当前仅支持「民匠有约」产品</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">子公司编号 <span class="req" title="系统自动生成，无需手动填写">*</span></label>
+          <input class="form-input" id="f_projCode" type="text" disabled readonly placeholder="自动生成中…"
+                 style="background:var(--gray-50);color:var(--text-regular);cursor:not-allowed;">
+          <div class="form-hint">系统自动生成，保存后生效</div>
+        </div>
+      </div>
+
+      <div id="projectModalMsg" class="form-global-msg error"></div>
+
+      <!-- 第 2 行：子公司名称（独占）-->
+      <div class="form-group">
+        <label class="form-label">子公司名称 <span class="req">*</span></label>
+        <input class="form-input" id="f_projName" type="text" placeholder="请输入子公司名称" maxlength="50"
+               oninput="clearFieldError('f_projName'); checkFieldRequired('f_projName','子公司名称不能为空');"
+               onblur="checkFieldRequired('f_projName','子公司名称不能为空');">
+      </div>
+
+      <!-- 第 3 行：主管理员 + 用户手机号（双列）-->
+      <div class="form-row-2col">
+        <div class="form-group">
+          <label class="form-label">主管理员 <span class="req">*</span></label>
+          <input class="form-input" id="f_projOwner" type="text" placeholder="请输入主管理员姓名"
+                 oninput="clearFieldError('f_projOwner'); checkFieldRequired('f_projOwner','主管理员姓名不能为空');"
+                 onblur="checkFieldRequired('f_projOwner','主管理员姓名不能为空');">
+        </div>
+        <div class="form-group">
+          <label class="form-label">用户手机号 <span class="req">*</span></label>
+          <input class="form-input" id="f_projPhone" type="text" placeholder="请输入用户手机号"
+                 oninput="clearFieldError('f_projPhone'); checkFieldPhone('f_projPhone');"
+                 onblur="checkFieldPhone('f_projPhone');">
+        </div>
+      </div>
+
+      <!-- 第 4 行：初始划拨金额（独占）-->
+      <div class="form-group">
+        <label class="form-label">初始划拨金额</label>
+        <input class="form-input" id="f_projAmount" type="text" placeholder="0.00"
+               onfocus="if(this.value) this.value = stripAmount(this.value); this.select && this.select();"
+               onblur="var v = formatAmountInput(this.value); if(v!==false) this.value = v; clearFieldError('f_projAmount');"
+               oninput="this.value = (this.value||'').replace(/[^\d.]/g,'');">
+        <!-- 提示改为与「添加成员」info 提示一致的 .form-tip 风格 -->
+        <div class="form-tip">
+          <svg viewBox="0 0 24 24" fill="none" width="14" height="14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <span>企业资金账户可用 ¥<span id="f_enterpriseAvail">128,580.00</span>；创建子公司时从企业账户预拨（可选，填 0 即跳过初始划拨）</span>
+        </div>
+      </div>
+
+      <!-- 第 5 行：子公司描述（选填，独占）-->
+      <div class="form-group">
+        <label class="form-label">子公司描述</label>
+        <textarea class="form-textarea" id="f_projDesc" rows="3" placeholder="请输入子公司描述（选填）"></textarea>
+      </div>
+
+      <!-- 第 6 行：初始用户分配（选填，独占）-->
+      <div class="form-group">
+        <label class="form-label">初始用户分配（选填）</label>
+        <div id="f_projSubs" class="chips"></div>
+        <div style="display:flex;gap:8px;align-items:center;margin-top:8px;">
+          <select class="form-select" id="projSubPick" style="flex:1;max-width:320px;">
+            <option value="">— 从用户池选择成员 —</option>
+          </select>
+          <button class="btn-secondary" type="button" style="padding:8px 14px;" onclick="addProjModalSubDirect()">添加</button>
+          <span class="form-hint" style="margin:0;">最多 10 个；可 x 移除</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-default" onclick="closeProjectModal()">取消</button>
+      <button class="btn-primary" onclick="saveProject()">保存创建</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 资金划拨弹窗 ===== -->
+<div class="modal-overlay" id="transferModal">
+  <div class="modal">
+    <div class="modal-header" style="text-align:left !important;" data-title-left="1">
+      <div class="modal-title" id="transferModalTitle">资金划拨</div>
+      <button class="modal-close" onclick="closeTransferModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="alert-info" id="transferAlert">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><line x1="12" y1="16" x2="12" y2="12" stroke="currentColor" stroke-width="2"/><line x1="12" y1="8" x2="12.01" y2="8" stroke="currentColor" stroke-width="2"/></svg>
+        企业账户与子公司账户之间的资金划转，实时到账
+      </div>
+      <div class="form-group">
+        <label class="form-label">转出账户 <span class="req">*</span></label>
+        <select class="form-select" id="f_fromAccount" onchange="updateTransferInfo()"></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">转入账户 <span class="req">*</span></label>
+        <select class="form-select" id="f_toAccount" onchange="updateTransferInfo()"></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">划拨金额 <span class="req">*</span></label>
+        <div class="form-input" style="padding:9px 12px;">
+          <span class="form-amount"><span class="currency">¥</span><input id="f_amount" type="number" placeholder="0.00" min="0.01" step="0.01" style="border:none;outline:none;width:100%;font-size:24px;font-weight:700;color:var(--brand-primary);background:transparent;"></span>
+        </div>
+        <div class="form-hint">可转出最大金额：<span id="maxTransferAmount">¥0.00</span></div>
+        <div class="quick-amounts">
+          <button class="quick-amount-btn" onclick="setQuickAmount(1000)">¥1,000</button>
+          <button class="quick-amount-btn" onclick="setQuickAmount(5000)">¥5,000</button>
+          <button class="quick-amount-btn" onclick="setQuickAmount(10000)">¥10,000</button>
+          <button class="quick-amount-btn" onclick="setQuickAmount(50000)">¥50,000</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">备注</label>
+        <input class="form-input" id="f_transferRemark" type="text" placeholder="请输入划拨备注（选填）" maxlength="100">
+      </div>
+      <div class="form-group">
+        <label class="form-label">安全验证 <span class="req">*</span></label>
+        <div style="display:flex;gap:8px;">
+          <input class="form-input" id="f_transferCode" type="text" placeholder="短信验证码" maxlength="6" style="flex:1;">
+          <button class="btn-secondary" onclick="sendTransferCode()" id="sendCodeBtn">获取验证码</button>
+        </div>
+        <div class="form-hint">验证码将发送至主账号手机号 178****69096</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeTransferModal()">取消</button>
+      <button class="btn-primary" onclick="confirmTransfer()">确认划拨</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 用户分配弹窗 ===== -->
+<div class="modal-overlay" id="assignSubModal">
+  <div class="modal" style="width:640px;">
+    <div class="modal-header" style="text-align:left !important;" data-title-left="1">
+      <div class="modal-title" id="assignSubTitle">用户分配</div>
+      <button class="modal-close" onclick="closeAssignSubModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div style="margin-bottom:12px;padding:10px 12px;background:var(--brand-primary-50);border-radius:8px;color:var(--brand-primary);font-size:13px;">
+        <b id="assignSubProject">—</b>：最多分配 10 个用户；已分配成员可去除，去除后不可再操作该子公司。
+      </div>
+      <div class="form-group">
+        <label class="form-label">已分配成员</label>
+        <div id="assignSubAssigned" class="chips" style="min-height:44px;padding:8px 10px;border:1px dashed var(--gray-300);border-radius:8px;background:#fff;"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">可分配用户</label>
+        <div id="assignSubPool" style="max-height:260px;overflow-y:auto;border:1px solid var(--gray-200);border-radius:8px;"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeAssignSubModal()">取消</button>
+      <button class="btn-primary" onclick="confirmAssignSub()">
+        <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2"/></svg>
+        保存
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 划拨流水详情弹窗 ===== -->
+<div class="modal-overlay" id="recordDetailModal">
+  <div class="modal" style="width:640px;">
+    <div class="modal-header" style="text-align:left !important;" data-title-left="1">
+      <div class="modal-title">划拨流水详情</div>
+      <button class="modal-close" onclick="closeRecordDetail()">×</button>
+    </div>
+    <div class="modal-body" id="recordDetailBody"></div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeRecordDetail()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 子公司详情弹窗 ===== -->
+<div class="modal-overlay" id="projectDetailModal">
+  <div class="modal" style="width:720px;">
+    <div class="modal-header" style="text-align:left !important;" data-title-left="1">
+      <div class="modal-title" id="projectDetailTitle">子公司详情</div>
+      <button class="modal-close" onclick="closeProjectDetail()">×</button>
+    </div>
+    <div class="modal-body" id="projectDetailBody" style="max-height:65vh;overflow-y:auto;"></div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeProjectDetail()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  // ============ 通用兼容：NodeList.forEach ============
+  if (window.NodeList && !NodeList.prototype.forEach) {
+    NodeList.prototype.forEach = Array.prototype.forEach;
+  }
+
+  // ============ 产品字典（当前仅民匠有约） ============
+  var PRODUCTS = {
+    mjyy: { label: '民匠有约', cls: 'tag-product-mjyy' }
+  };
+  var PRODUCT_DEFAULT = 'mjyy';
+
+  // ============ Mock 企业可用用户池（可分配给子公司） ============
+  var SUBACCOUNTS = [
+    { id:'U002', name:'小李',   phone:'13912345678', role:'子公司主管' },
+    { id:'U003', name:'小王',   phone:'13700123456', role:'现场督导' },
+    { id:'U004', name:'小陈',   phone:'13800000011', role:'财务助理' },
+    { id:'U005', name:'小周',   phone:'13800000012', role:'调度' },
+    { id:'U006', name:'小徐',   phone:'13800000013', role:'物料管理' },
+    { id:'U007', name:'小林',   phone:'13800000014', role:'质检' }
+  ];
+
+  // ============ 子公司列表数据（从企业列表获取当前母公司的子公司）============
+  var projects = [];
+
+  // 先确保企业数据已同步（调用 enterprise-switch.js 的 ensureEnterprises）
+  try {
+    if (typeof window.ensureEnterprises === 'function') {
+      window.ensureEnterprises();
+    }
+  } catch(e) {}
+
+  // 清理旧数据：移除 PROJ: 前缀的子公司（由旧同步逻辑创建），避免与 SUB_ 前缀的子公司重复
+  try {
+    var _listRaw = localStorage.getItem('mjyy_enterprise_list');
+    var _cleanupVersion = localStorage.getItem('mjyy_cleanup_version');
+    var _currentCleanupVersion = 'v2';
+    if (_listRaw) {
+      var _list = JSON.parse(_listRaw);
+      if (Array.isArray(_list)) {
+        var _hasProj = _list.some(function(e) { return e && /^PROJ:/.test(e.id); });
+        if (_hasProj || _cleanupVersion !== _currentCleanupVersion) {
+          var _cleanedList = _list.filter(function(e) {
+            if (!e) return false;
+            if (!e.parentId) return true; // 保留母公司
+            if (/^SUB_/.test(e.id)) return true; // 保留 SUB_ 前缀子公司
+            return false; // 移除 PROJ: 前缀子公司
+          });
+          localStorage.setItem('mjyy_enterprise_list', JSON.stringify(_cleanedList));
+          localStorage.setItem('mjyy_cleanup_version', _currentCleanupVersion);
+          console.log('[account-project] 已移除 PROJ: 前缀的旧子公司数据');
+        }
+      }
+    }
+  } catch(e) {}
+
+  // 从 mjyy_enterprise_list 获取当前登录母公司的子公司数据
+  // 优先使用 enterprise-switch.js 的 getSubEnterprises 函数，确保数据源完全一致
+  function reloadProjects() {
+    try {
+      var curId = localStorage.getItem('mjyy_current_enterprise_id');
+      if (!curId) return;
+
+      var listRaw = localStorage.getItem('mjyy_enterprise_list');
+      if (!listRaw) return;
+
+      var list = JSON.parse(listRaw);
+      if (!Array.isArray(list)) return;
+
+      // 获取当前企业（如果是子公司，回退到母公司）
+      var curEnt = list.find(function(e) { return e && e.id === curId; });
+      var parentEntId = curId;
+      if (curEnt && curEnt.parentId) parentEntId = curEnt.parentId;
+      
+      console.log('[reloadProjects] 当前企业:', curId, '母公司ID:', parentEntId);
+      console.log('[reloadProjects] 企业列表总数:', list.length);
+
+      // 优先使用 enterprise-switch.js 的 getSubEnterprises（确保完全一致）
+      var subProjects = [];
+      if (typeof window.getSubEnterprises === 'function') {
+        subProjects = window.getSubEnterprises(parentEntId);
+      } else {
+        // 本地回退：与 getSubEnterprises 完全相同的筛选逻辑
+        subProjects = list.filter(function(e) {
+          if (!e || !e.parentId) return false;
+          if (e.parentId !== parentEntId) return false;
+          return true;
+        });
+      }
+      
+      console.log('[reloadProjects] 匹配子公司数量:', subProjects.length);
+      if (subProjects.length > 0) {
+        console.log('[reloadProjects] 子公司列表:', subProjects.map(function(e) { 
+          return (e.name || e.id) + ' (parentId:' + e.parentId + ')'; 
+        }));
+      }
+
+      // 转换为 projects 数组格式（不再添加补全逻辑，数据完全由 main.js 管理）
+      projects = subProjects.map(function(ent) {
+        // 处理两种 ID 格式：PROJ:PRJ-2026-001 和 SUB_ENT123_1_456
+        var projectId;
+        if (/^PROJ:/.test(ent.id)) {
+          projectId = ent.id.replace(/^PROJ:/, '');
+        } else if (/^SUB_/.test(ent.id)) {
+          // 从 SUB_ENT123_1_456 格式提取短 ID
+          var parts = ent.id.split('_');
+          projectId = 'SUB-' + (parts[2] || '0') + '-' + (parts[1] || 'unknown').substring(0, 4);
+        } else {
+          projectId = ent.id;
+        }
+        
+        return {
+          id: projectId,
+          name: ent.name || '',
+          owner: ent.legalMobile || '',
+          phone: ent.legalMobile || '',
+          balance: ent.balance || 0,
+          totalIn: ent.totalIn || 0,
+          totalOut: ent.totalOut || 0,
+          status: ent.status === 'inactive' ? 'inactive' : 'active',
+          createdAt: ent.createdAt || new Date().toISOString().split('T')[0],
+          desc: ent.remark || '',
+          subs: ent.subs || [],
+          product: ent.product || 'mjyy',
+          creditCode: ent.creditCode || ''
+        };
+      });
+
+      // 同步到 mjyy_projects（确保其他页面也能读取）
+      try {
+        var projForStorage = projects.map(function(p) {
+          return {
+            id: p.id,
+            product: p.product || 'mjyy',
+            name: p.name,
+            owner: p.owner,
+            phone: p.phone,
+            balance: p.balance,
+            totalIn: p.totalIn,
+            totalOut: p.totalOut,
+            status: p.status,
+            createdAt: p.createdAt,
+            desc: p.desc,
+            subs: p.subs || []
+          };
+        });
+        localStorage.setItem('mjyy_projects', JSON.stringify(projForStorage));
+      } catch(e) {}
+    } catch(e) {
+      console.error('[reloadProjects] error:', e);
+    }
+  }
+
+  // 初始加载
+  reloadProjects();
+
+  // 暴露到 window，供企业切换时调用
+  window.reloadProjects = reloadProjects;
+
+  // 清空资金划拨流水的模拟数据
+  var records = [];
+
+  var ENTERPRISE_BALANCE = 128580.00;
+
+  // ============ 工具函数 ============
+  function $(id){ return document.getElementById(id); }
+  // ===== 子公司编号：生成器 + 冲突检测（PRJ-YYYY-NNN）=====
+  function generateProjectNo(preferPool, preferSeqStart) {
+    try {
+      var now = new Date();
+      var yyyy = now.getFullYear();
+      var baseExisting = 0;
+      try {
+        var list = (Array.isArray(preferPool) ? preferPool : (typeof projects !== 'undefined' ? projects : []));
+        for (var _z = 0; _z < list.length; _z++) {
+          var zid = list[_z] && (list[_z].id || list[_z].code || '');
+          var m = /^PRJ-(\d{4})-(\d{1,6})$/i.exec(String(zid));
+          if (m && Number(m[1]) === yyyy) {
+            var n = parseInt(m[2], 10);
+            if (n > baseExisting) baseExisting = n;
+          }
+        }
+      } catch (_) {}
+      var start = (typeof preferSeqStart === 'number' && preferSeqStart > 0) ? preferSeqStart : (baseExisting + 1);
+      // 最多 9999 次兜底，避免任何极端情况下死循环
+      for (var attempt = 0; attempt < 9999; attempt++) {
+        var cand = 'PRJ-' + yyyy + '-' + String(start).padStart(3, '0');
+        var dup = false;
+        try {
+          for (var _y = 0; _y < projects.length; _y++) {
+            if (projects[_y] && projects[_y].id === cand) { dup = true; break; }
+          }
+        } catch (_) {}
+        if (!dup) return cand;
+        start++;
+      }
+      // 终极兜底（万年历 + 随机串，理论上不唯一）
+      var _pad = function(n){ return n < 10 ? '0'+n : ''+n; };
+      return 'PRJ-' + yyyy + '-' + _pad(now.getMonth()+1) + _pad(now.getDate()) + _pad(now.getHours()) + _pad(now.getMinutes()) + _pad(now.getSeconds());
+    } catch (_err) {
+      try { var d = new Date(); return 'PRJ-'+d.getFullYear()+'-'+String(projects.length+1).padStart(3,'0'); } catch(e){ return 'PRJ-'+(new Date().getFullYear())+'-001'; }
+    }
+  }
+  // 把生成器挂到 window，供其他地方（main.js / saveProject）兜底调用
+  window.generateProjectNo = generateProjectNo;
+  function findProject(id){
+    for(var i=0;i<projects.length;i++){ if(projects[i].id===id) return projects[i]; }
+    return null;
+  }
+  function findSub(id){
+    for(var i=0;i<SUBACCOUNTS.length;i++){ if(SUBACCOUNTS[i].id===id) return SUBACCOUNTS[i]; }
+    return null;
+  }
+  function productTag(code){
+    var p = PRODUCTS[code] || {label:'未分类', cls:'tag-default'};
+    return '<span class="tag '+p.cls+'">'+p.label+'</span>';
+  }
+  function fmtAmount(n){
+    return '¥' + Number(n||0).toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2});
+  }
+  // ===== 表单校验/格式化辅助（新建/编辑子公司弹窗）=====
+  // 确保所有弹窗 DOM 都是 body 直接子节点（避免被祖先 overflow:hidden / transform / contain / perspective 裁剪或层级失效）
+  function _ensureModalsOnBody(){
+    try{
+      if(!document || !document.body) return;
+      var overlays = document.querySelectorAll && document.querySelectorAll('.modal-overlay');
+      if(!overlays) return;
+      for(var i=0;i<overlays.length;i++){
+        try{
+          var o = overlays[i];
+          if(o && o.parentNode && o.parentNode !== document.body) document.body.appendChild(o);
+        }catch(e){}
+      }
+    }catch(e){}
+  }
+  try{ _ensureModalsOnBody(); }catch(e){}
+  try{ document.addEventListener && document.addEventListener('DOMContentLoaded', _ensureModalsOnBody); }catch(e){}
+  try{ setTimeout(_ensureModalsOnBody, 30); setTimeout(_ensureModalsOnBody, 300); setTimeout(_ensureModalsOnBody, 1200); }catch(e){}
+
+  function _errSiblingBox(id){
+    var el = $(id); if(!el) return null;
+    var fg;
+    try{ fg = el.closest && el.closest('.form-group'); }catch(e){ fg = null; }
+    if(!fg){
+      // 兜底：向上找 3 层内的 form-group
+      var p = el;
+      for(var k=0;k<4 && p && p.parentNode;k++){ p = p.parentNode; if(p && p.classList && p.classList.contains('form-group')){ fg = p; break; } }
+    }
+    if(!fg) return null;
+    try{
+      var ex = fg.querySelector && fg.querySelector('.form-error-text[data-for="'+id+'"]');
+      if(ex) return ex;
+    }catch(e){}
+    var d;
+    try{ d = document.createElement('div'); }catch(e){ return null; }
+    if(!d) return null;
+    d.className = 'form-error-text';
+    try{ d.setAttribute('data-for', id); }catch(e){}
+    try{
+      // 放在紧挨着输入框之后（即输入框的下一个兄弟节点）
+      if(el.nextSibling){ fg.insertBefore(d, el.nextSibling); }
+      else { fg.appendChild(d); }
+    }catch(e){
+      try{ fg.appendChild(d); }catch(e2){}
+    }
+    try{ return fg.querySelector && fg.querySelector('.form-error-text[data-for="'+id+'"]'); }catch(e){ return d; }
+  }
+  window.clearFieldError = function(id){
+    try{ var el = $(id); if(el) el.classList.remove('is-error'); }catch(e){}
+    try{ var b = _errSiblingBox(id); if(b) b.textContent = ''; }catch(e){}
+    try{
+      var mg = $('projectModalMsg'); if(mg){ mg.classList.remove('show'); }
+    }catch(e){}
+  };
+  function showFieldError(id, msg){
+    try{ var el = $(id); if(el) el.classList.add('is-error'); }catch(e){}
+    try{ var b = _errSiblingBox(id); if(b) b.textContent = msg || ''; }catch(e){}
+  }
+  function showModalMsg(msg, kind){
+    try{
+      var mg = $('projectModalMsg'); if(!mg) return;
+      mg.className = 'form-global-msg show ' + (kind==='ok' ? 'ok' : 'error');
+      mg.textContent = msg || '';
+    }catch(e){}
+  }
+  window.checkFieldRequired = function(id, msg){
+    var el = $(id); if(!el) return false;
+    var v = (el.value||'').trim();
+    if(!v){ showFieldError(id, msg || '该项为必填'); return false; }
+    clearFieldError(id); return true;
+  };
+  window.checkFieldPhone = function(id){
+    var el = $(id); if(!el) return false;
+    var v = (el.value||'').replace(/\D/g,'');
+    if(!v){ showFieldError(id, '用户手机号不能为空'); return false; }
+    if(v.length<7 || v.length>15){ showFieldError(id, '请输入正确的手机号/座机号（7~15 位数字）'); return false; }
+    clearFieldError(id); return true;
+  };
+  // 去除金额字符串的千分位逗号
+  function stripAmount(s){
+    if(s===undefined || s===null || s==='') return '';
+    return (s+'').replace(/[,\s]/g,'');
+  }
+  window.stripAmount = stripAmount;
+  // 输入框 value 格式化（输入 type=text，显示千分位；空/非法返回 0.00）
+  window.formatAmountInput = function(s){
+    try{
+      var raw = stripAmount(s);
+      if(raw==='' || raw==='-') return '0.00';
+      var n = parseFloat(raw);
+      if(isNaN(n)) return false;
+      if(n<0) n = 0;
+      return (n).toLocaleString('zh-CN',{minimumFractionDigits:2, maximumFractionDigits:2});
+    }catch(e){ return false; }
+  };
+  // 读取金额框的纯数字值（去掉千分位）
+  function parseAmountInput(id){
+    var el = $(id); if(!el) return 0;
+    var n = parseFloat(stripAmount(el.value));
+    return isNaN(n) ? 0 : n;
+  }
+  function statusTag(s){
+    if(s==='active')   return '<span class="tag tag-success">进行中</span>';
+    if(s==='paused')   return '<span class="tag tag-warning">已暂停</span>';
+    if(s==='inactive') return '<span class="tag tag-error">已停用</span>';
+    if(s==='done')     return '<span class="tag tag-info">已完成</span>';
+    return '<span class="tag tag-default">未知</span>';
+  }
+  function chipsOf(project, opts){
+    opts = opts || {};
+    var subs = project.subs || [];
+    var html = '<div class="chips">';
+    if(subs.length===0){ html += '<span style="color:var(--text-muted);font-size:12px;">未分配</span>'; }
+    else {
+      var max = opts.maxShow || 5;
+      for(var i=0;i<Math.min(subs.length,max);i++){
+        var u = findSub(subs[i]); if(!u) continue;
+        html += '<span class="chip" title="'+(u.role||'成员')+' · '+u.phone+'">'
+              + '<span class="chip-avatar">'+(u.name||'').charAt(0)+'</span>'
+              + '<span class="chip-name">'+u.name+'</span></span>';
+      }
+      if(subs.length>max){ html += '<span class="chip" style="background:var(--gray-100);border-color:var(--gray-200);">+'+(subs.length-max)+'</span>'; }
+    }
+    html += '</div>';
+    return html;
+  }
+
+  // ============ 渲染子公司列表（双表：左 10 列 + 独立操作列，滚动条不含操作）============
+  function renderProjects(){
+    var tbody = $('projectTableBody');
+    var actionBody = $('projectActionsBody');
+    if(!tbody || !actionBody) return;
+    var kw = (($('searchInput').value || '')+'').toLowerCase();
+    var st = $('statusFilter').value || '';
+
+    var list = [];
+    for(var i=0;i<projects.length;i++){
+      var p = projects[i];
+      if(st && p.status!==st) continue;
+      if(kw){
+        var hay = (p.name+' '+p.id+' '+p.owner+' '+p.phone+' '+p.desc).toLowerCase();
+        var subMatch = false;
+        for(var j=0;j<(p.subs||[]).length;j++){
+          var u = findSub(p.subs[j]);
+          if(u && ((u.name+' '+u.phone).toLowerCase().indexOf(kw)>=0)){ subMatch = true; break; }
+        }
+        if(hay.indexOf(kw)<0 && !subMatch) continue;
+      }
+      list.push(p);
+    }
+
+    var totalCols = 10;
+    if(!list.length){
+      tbody.innerHTML = '<tr><td colspan="'+totalCols+'"><div class="empty-state"><div class="empty-state-icon">📋</div>暂无符合条件的子公司（可清空筛选条件再试）</div></td></tr>';
+      actionBody.innerHTML = '';
+      $('paginationInfo').textContent = '共 0 条记录';
+      return;
+    }
+
+    // 按钮直接 onclick 调用（不依赖委托），避免脚本初始化异常导致按钮无效
+    function _oc(fn, id){
+      var safe = id.replace(/'/g,"\\'");
+      return 'onclick="try{ event &amp;&amp; event.preventDefault &amp;&amp; event.preventDefault(); }catch(e){} try{ if(window.'+fn+'){ window.'+fn+'(\''+safe+'\'); } else { alert(\'功能未加载完成，请刷新\'); } }catch(e){ try{ alert(\'操作失败:\'+(e.message||e)); }catch(x){} } return false;"';
+    }
+
+    var rows = '';
+    var actRows = '';
+    for(var i=0;i<list.length;i++){
+      var p = list[i];
+      var canStopOrDel = Number(p.balance||0) === 0;
+
+      // 8 个按钮 → action-cell 3 个 1 行（3/3/2）
+      var ab = '';
+      ab += '<button class="btn-link" type="button" '+_oc('viewProjectDetail', p.id)+' data-action="view-project"   data-id="'+p.id+'">查看详情</button>';
+      ab += '<button class="btn-link" type="button" '+_oc('editProject',      p.id)+' data-action="edit-project"   data-id="'+p.id+'">编辑</button>';
+      ab += '<button class="btn-link" type="button" '+_oc('openAssignSubModal',p.id)+' data-action="assign-sub"     data-id="'+p.id+'">用户分配</button>';
+      ab += '<button class="btn-link" type="button" '+_oc('openTransferModal',p.id)+' data-action="transfer"       data-id="'+p.id+'">资金划拨</button>';
+      ab += '<button class="btn-link" type="button" '+_oc('viewProjectRecords',p.id)+' data-action="view-records"  data-id="'+p.id+'">划拨流水</button>';
+      if(p.status==='inactive'){
+        ab += canStopOrDel
+          ? '<button class="btn-link" type="button" style="color:#00B42A;" '+_oc('enableProject',  p.id)+' data-action="enable-project" data-id="'+p.id+'">启用</button>'
+          : '<button class="btn-link" type="button" disabled title="子公司余额为 0 才能启用">启用</button>';
+      } else {
+        ab += canStopOrDel
+          ? '<button class="btn-link warning" type="button" '+_oc('disableProject', p.id)+' data-action="disable-project" data-id="'+p.id+'">停用</button>'
+          : '<button class="btn-link" type="button" disabled title="子公司余额为 0 才能停用">停用</button>';
+      }
+      ab += canStopOrDel
+        ? '<button class="btn-link danger" type="button" '+_oc('deleteProject', p.id)+' data-action="delete-project" data-id="'+p.id+'">删除</button>'
+        : '<button class="btn-link" type="button" disabled title="子公司余额为 0 才能删除">删除</button>';
+
+      // 左表：10 列（不含操作）
+      rows += '<tr data-project-id="'+p.id+'">'+
+        '<td class="col-product">'+productTag(p.product)+'</td>'+
+        '<td class="col-id"><strong>'+p.id+'</strong></td>'+
+        '<td class="col-name">'+p.name+'</td>'+
+        '<td class="col-owner">'+p.owner+'</td>'+
+        '<td class="col-phone">'+p.phone+'</td>'+
+        '<td class="col-sub">'+chipsOf(p)+'</td>'+
+        '<td class="col-balance"><span style="color:var(--brand-primary);font-weight:600;">'+fmtAmount(p.balance)+'</span></td>'+
+        '<td class="col-amounts" style="font-size:12px;color:var(--text-regular);">入 '+fmtAmount(p.totalIn)+'<br>出 '+fmtAmount(p.totalOut)+'</td>'+
+        '<td class="col-status">'+statusTag(p.status)+'</td>'+
+        '<td class="col-created" style="white-space:nowrap;">'+p.createdAt+'</td>'+
+      '</tr>';
+
+      // 右表：仅操作列
+      actRows += '<tr data-project-id="'+p.id+'">'+
+        '<td><div class="action-cell">'+ab+'</div></td>'+
+      '</tr>';
+    }
+    tbody.innerHTML = rows;
+    actionBody.innerHTML = actRows;
+    $('paginationInfo').textContent = '共 ' + list.length + ' 条记录';
+
+    // 两表行高对齐
+    syncProjectRowHeights();
+
+    // 渲染后再走一轮对齐（防按钮/标签异步加载后撑高）
+    requestAnimationFrame(function(){ syncProjectRowHeights(); });
+  }
+
+  // 暴露到 window，供企业切换时调用
+  window.renderProjects = renderProjects;
+
+  // 同步左右两表行高
+  function syncProjectRowHeights(){
+    var mainTbody = $('projectTableBody');
+    var actTbody = $('projectActionsBody');
+    if(!mainTbody || !actTbody) return;
+    var mainRows = mainTbody.querySelectorAll('tr');
+    var actRows = actTbody.querySelectorAll('tr');
+    var len = Math.min(mainRows.length, actRows.length);
+
+    // 先断开 observer，避免 style 写入触发无限回调
+    if(typeof projAlignObserver !== 'undefined'){
+      projAlignObserver.disconnect();
+    }
+
+    // 先清除所有行和单元格的内联高度
+    for(var i=0;i<len;i++){
+      mainRows[i].style.height = '';
+      actRows[i].style.height = '';
+      var mTds = mainRows[i].querySelectorAll('td');
+      var aTds = actRows[i].querySelectorAll('td');
+      for(var k=0;k<mTds.length;k++){ mTds[k].style.height = ''; }
+      for(var k=0;k<aTds.length;k++){ aTds[k].style.height = ''; }
+    }
+
+    // 再测量并统一
+    for(var i=0;i<len;i++){
+      var m = mainRows[i], a = actRows[i];
+      var mh = Math.max(m.offsetHeight || 0, 40);
+      var ah = Math.max(a.offsetHeight || 0, 40);
+      var target = Math.max(mh, ah);
+      target = Math.max(target, 56);
+      m.style.height = target + 'px';
+      a.style.height = target + 'px';
+      var mTds = m.querySelectorAll('td');
+      var aTds = a.querySelectorAll('td');
+      for(var k=0;k<mTds.length;k++){ mTds[k].style.height = target + 'px'; mTds[k].style.verticalAlign='middle'; }
+      for(var k=0;k<aTds.length;k++){ aTds[k].style.height = target + 'px'; aTds[k].style.verticalAlign='middle'; }
+    }
+
+    // 同步表头高度为 48px
+    var mainThead = $('projectTable').querySelector('thead tr');
+    var actThead = $('projectActionsTable').querySelector('thead tr');
+    if(mainThead && actThead){
+      mainThead.style.height = '48px';
+      actThead.style.height = '48px';
+      var mThs = mainThead.querySelectorAll('th');
+      var aThs = actThead.querySelectorAll('th');
+      for(var k=0;k<mThs.length;k++){ mThs[k].style.height = '48px'; mThs[k].style.minHeight='48px'; mThs[k].style.maxHeight='48px'; }
+      for(var k=0;k<aThs.length;k++){ aThs[k].style.height = '48px'; aThs[k].style.minHeight='48px'; aThs[k].style.maxHeight='48px'; }
+    }
+
+    // 重新连接 observer
+    if(typeof projAlignObserver !== 'undefined'){
+      var pt = $('projectTableBody'), pa = $('projectActionsBody');
+      if(pt) projAlignObserver.observe(pt, {childList:true, subtree:true, characterData:true});
+      if(pa) projAlignObserver.observe(pa, {childList:true, subtree:true, characterData:true});
+    }
+
+    // 绑定 hover 同步
+    bindProjectHoverSync();
+  }
+
+  // hover 同步：进入任意一行 → 给一对加 is-hover；离开则去掉
+  function bindProjectHoverSync(){
+    var mainTbody = $('projectTableBody');
+    var actTbody = $('projectActionsBody');
+    if(!mainTbody || !actTbody) return;
+    function hoverOn(e){
+      var tr = e.target.closest && e.target.closest('tr');
+      if(!tr) return;
+      var idx = tr.getAttribute('data-project-id');
+      if(!idx) return;
+      var pair1 = mainTbody.querySelector('tr[data-project-id="'+idx+'"]');
+      var pair2 = actTbody.querySelector('tr[data-project-id="'+idx+'"]');
+      if(pair1) pair1.classList.add('is-hover');
+      if(pair2) pair2.classList.add('is-hover');
+    }
+    function hoverOff(e){
+      var tr = e.target.closest && e.target.closest('tr');
+      if(!tr) return;
+      var idx = tr.getAttribute('data-project-id');
+      if(!idx) return;
+      var pair1 = mainTbody.querySelector('tr[data-project-id="'+idx+'"]');
+      var pair2 = actTbody.querySelector('tr[data-project-id="'+idx+'"]');
+      if(pair1) pair1.classList.remove('is-hover');
+      if(pair2) pair2.classList.remove('is-hover');
+    }
+    [mainTbody, actTbody].forEach(function(tb){
+      tb.removeEventListener('mouseenter', hoverOn, true);
+      tb.removeEventListener('mouseleave', hoverOff, true);
+      tb.addEventListener('mouseenter', hoverOn, true);
+      tb.addEventListener('mouseleave', hoverOff, true);
+    });
+  }
+
+  // 添加 hover 样式
+  function addHoverStyle(){
+    if(document.getElementById('projectHoverStyle')) return;
+    var s = document.createElement('style');
+    s.id = 'projectHoverStyle';
+    s.textContent = '.project-grid tr.is-hover td{background:#fafafa;}';
+    document.head.appendChild(s);
+  }
+  addHoverStyle();
+
+  // 窗口尺寸变化时重新对齐
+  window.addEventListener('resize', function(){
+    clearTimeout(window.__projAlignTimer);
+    window.__projAlignTimer = setTimeout(function(){ syncProjectRowHeights(); }, 100);
+  });
+
+  // DOM 变化时重新对齐
+  var projAlignObserver = new MutationObserver(function(){
+    clearTimeout(window.__projAlignTimer2);
+    window.__projAlignTimer2 = setTimeout(function(){ syncProjectRowHeights(); }, 80);
+  });
+  document.addEventListener('DOMContentLoaded', function(){
+    var pt = $('projectTableBody'), pa = $('projectActionsBody');
+    if(pt) projAlignObserver.observe(pt, {childList:true, subtree:true, characterData:true});
+    if(pa) projAlignObserver.observe(pa, {childList:true, subtree:true, characterData:true});
+  });
+
+  window.filterProjects = function(){ renderProjects(); };
+  window.resetSearch = function(){
+    try{ $('searchInput').value=''; }catch(e){}
+    try{ $('statusFilter').value=''; }catch(e){}
+    renderProjects();
+  };
+
+  // ============ 流水 tabs（事件委托 + 兼容forEach） ============
+  var currentTab = 'all';
+
+  function _applyTabActive(){
+    try{
+      var tabs = document.querySelectorAll('.record-tab');
+      for(var i=0;i<tabs.length;i++){ tabs[i].classList.remove('active'); }
+      for(var j=0;j<tabs.length;j++){
+        if(tabs[j].getAttribute('data-tab')===currentTab){ tabs[j].classList.add('active'); break; }
+      }
+    }catch(e){ /* ignore */ }
+  }
+  // 首次：把老的 onclick tabs 增加 data-tab 属性，避免影响已有 HTML
+  function _retrofitTabs(){
+    var tabs = document.querySelectorAll('.record-tab');
+    for(var i=0;i<tabs.length;i++){
+      var t = tabs[i];
+      if(!t.hasAttribute('data-tab')){
+        var txt = (t.textContent||'').trim();
+        if(txt.indexOf('全部')>=0) t.setAttribute('data-tab','all');
+        else if(txt.indexOf('入账')>=0 || txt.indexOf('→子公司')>=0) t.setAttribute('data-tab','in');
+        else if(txt.indexOf('调出')>=0 || txt.indexOf('→企业')>=0) t.setAttribute('data-tab','out');
+      }
+      if(!t.getAttribute('data-bound')){
+        t.setAttribute('data-bound','1');
+        t.addEventListener('click', (function(tabEl){
+          return function(){
+            var tab = tabEl.getAttribute('data-tab') || 'all';
+            currentTab = tab;
+            _applyTabActive();
+            renderRecords();
+          };
+        })(t));
+      }
+    }
+  }
+  window.switchTab = function(el, tab){
+    // 兼容老的 onclick，即使没有也不抛错
+    if(!el){ currentTab = tab || 'all'; _applyTabActive(); renderRecords(); return; }
+    try{
+      var tabs = document.querySelectorAll('.record-tab');
+      for(var i=0;i<tabs.length;i++) tabs[i].classList.remove('active');
+      el.classList.add('active');
+    }catch(e){/* ignore */}
+    currentTab = tab || 'all';
+    renderRecords();
+  };
+
+  function renderRecords(){
+    var tbody = $('recordTableBody');
+    if(!tbody) return;
+    var filtered = [];
+    for(var i=0;i<records.length;i++){
+      var r = records[i];
+      if(currentTab==='all' || r.direction===currentTab) filtered.push(r);
+    }
+    var rows = '';
+    if(filtered.length===0){
+      rows = '<tr><td colspan="8"><div class="empty-state"><div class="empty-state-icon">💸</div>暂无划拨记录</div></td></tr>';
+    } else {
+      for(var i=0;i<filtered.length;i++){
+        var r = filtered[i];
+        var dirTag = r.direction==='in'
+          ? '<span class="tag tag-success">企业→子公司 入账</span>'
+          : '<span class="tag tag-warning">子公司→企业 调出</span>';
+        var amtCls = r.direction==='in' ? 'flow-in' : 'flow-out';
+        var sign  = r.direction==='in' ? '+' : '-';
+        var prd = productTag(r.product || 'mjyy');
+        rows += '<tr>'+
+          '<td>'+r.no+'</td>'+
+          '<td>'+dirTag+'<div style="margin-top:2px;">'+prd+'</div></td>'+
+          '<td>'+r.from+' → '+r.to+'</td>'+
+          '<td class="'+amtCls+'">'+sign+fmtAmount(r.amount)+'</td>'+
+          '<td>'+(r.remark||'—')+'</td>'+
+          '<td>'+(r.operator||'—')+'</td>'+
+          '<td><span class="tag tag-success">'+r.status+'</span></td>'+
+          '<td style="white-space:nowrap;">'+r.time+'</td>'+
+        '</tr>';
+      }
+    }
+    tbody.innerHTML = rows;
+  }
+
+  // ============ 全局事件委托：data-action（捕获+冒泡双保险 + 多次兜底绑定） ============
+  function handleAction(evt){
+    try{
+      if(!evt || !evt.target) return;
+      var el = evt.target && evt.target.closest ? evt.target.closest('[data-action]') : null;
+      if(!el) return;
+      var act = el.getAttribute('data-action');
+      if(!act) return;
+      // 仅 preventDefault，不过度 stopPropagation：避免阻断其他 UI 行为（如下拉、表单、内联 onclick）
+      try{ if(el.tagName==='A' || (evt.cancelable && evt.type==='click')) evt.preventDefault(); }catch(e){}
+      var pid = el.getAttribute('data-id') || null;
+      switch(act){
+        case 'new-project':
+          if(window.openProjectModal) window.openProjectModal();
+          break;
+        case 'export-records':
+          if(window.exportRecords) window.exportRecords();
+          break;
+        case 'view-project':
+          if(pid && window.viewProjectDetail) window.viewProjectDetail(pid);
+          break;
+        case 'edit-project':
+          if(pid && window.editProject) window.editProject(pid);
+          break;
+        case 'assign-sub':
+          if(pid && window.openAssignSubModal) window.openAssignSubModal(pid);
+          break;
+        case 'transfer':
+          if(pid && window.openTransferModal) window.openTransferModal(pid);
+          break;
+        case 'view-records':
+          if(pid && window.viewProjectRecords) window.viewProjectRecords(pid);
+          break;
+        case 'enable-project':
+          if(pid && window.enableProject) window.enableProject(pid);
+          break;
+        case 'disable-project':
+          if(pid && window.disableProject) window.disableProject(pid);
+          break;
+        case 'delete-project':
+          if(pid && window.deleteProject) window.deleteProject(pid);
+          break;
+      }
+    }catch(e){ try{ console.error('actionErr', act||'', e); }catch(x){} alert('操作失败：'+(e.message||e)); }
+  }
+  window._tryAction = function(name, id){
+    try{
+      if(name==='new-project' && window.openProjectModal) window.openProjectModal();
+      else if(name==='export-records' && window.exportRecords) window.exportRecords();
+      else if(name==='view-project' && id && window.viewProjectDetail) window.viewProjectDetail(id);
+      else if(name==='edit-project' && id && window.editProject) window.editProject(id);
+      else if(name==='assign-sub' && id && window.openAssignSubModal) window.openAssignSubModal(id);
+      else if(name==='transfer' && id && window.openTransferModal) window.openTransferModal(id);
+      else if(name==='view-records' && id && window.viewProjectRecords) window.viewProjectRecords(id);
+      else if(name==='enable-project' && id && window.enableProject) window.enableProject(id);
+      else if(name==='disable-project' && id && window.disableProject) window.disableProject(id);
+      else if(name==='delete-project' && id && window.deleteProject) window.deleteProject(id);
+    }catch(e){ alert('操作失败：'+(e.message||e)); }
+  };
+  function bindDelegates(){
+    try{ document.addEventListener('click', handleAction, true);  }catch(e){}
+    try{ document.addEventListener('click', handleAction, false); }catch(e){}
+  }
+  try{ bindDelegates(); }catch(e){}
+  try{ document.addEventListener('DOMContentLoaded', bindDelegates); }catch(e){}
+  try{ setTimeout(bindDelegates, 150); setTimeout(bindDelegates, 500); setTimeout(bindDelegates, 1200); }catch(e){}
+
+  // ============ 新建 / 编辑子公司 ============
+  var projModalSubs = []; // 新建弹窗临时分配的用户 ID
+  var editingProjectId = null; // 非 null 表示当前为编辑模式
+
+  // 页面右下角可见调试提示条：任何错误/成功都能让用户看到反馈（不再依赖 alert）
+  var _dbtTimer = null;
+  window.showPageDebugToast = function(title, body, kind, durationMs){
+    try{
+      var t = document.getElementById('_pageDebugToast');
+      if(!t){
+        t = document.createElement('div');
+        t.id = '_pageDebugToast';
+        t.innerHTML = '<div class="_dbt_t" id="_pageDebugToastTitle"></div><div class="_dbt_b" id="_pageDebugToastBody"></div>';
+        if(document.body) document.body.appendChild(t);
+      }
+      t.className = '';
+      if(!kind) kind = 'info';
+      t.classList.add(kind==='ok' ? '_ok' : (kind==='err'||kind==='error' ? '_err' : '_info'));
+      t.classList.add('_show');
+      try{
+        var tt = document.getElementById('_pageDebugToastTitle'); if(tt) tt.textContent = title || '';
+        var bb = document.getElementById('_pageDebugToastBody');  if(bb) bb.textContent = body  || '';
+      }catch(e){}
+      if(_dbtTimer){ try{ clearTimeout(_dbtTimer); }catch(e){} _dbtTimer = null; }
+      var dur = (typeof durationMs === 'number' && durationMs>0) ? durationMs : (kind==='err' ? 3800 : 3000);
+      _dbtTimer = setTimeout(function(){
+        try{ t.classList.remove('_show'); }catch(e){}
+      }, dur);
+      if(window.console && console.log){ try{ console.log('[debugToast]', kind, title, body); }catch(e){} }
+    }catch(e){
+      try{ window.alert((title||'') + '  ' + (body||'')); }catch(x){}
+    }
+  };
+
+  // 最硬核、最不会被任何东西覆盖的「强制显示弹窗」：
+  // ① 先 appendChild 到 body；② 每个 style 属性单独赋值；③ 用 setProperty(..., 'important') 兜底；④ 连续 5 个时间点再次强制执行
+  // ⑤ ★★ 同时对 overlay 内部的 div.modal（真实白卡片）也做强制显示（之前只 force overlay，导致用户反馈「只有蒙版变暗没有白卡片内容」就是因为 .modal 卡被外部 CSS display:none/visibility:hidden 了）
+  function _forceShowOverlay(m){
+    if(!m) return false;
+    try{
+      if(document && document.body && m.parentNode !== document.body){ try{ document.body.appendChild(m); }catch(e){} }
+    }catch(e){}
+    // --- 关键修复：找出里面真正的白卡片元素（第一个 div.modal 或第一个直接子 div，两者都要 force）
+    var card = null;
+    try{
+      card = m.querySelector && m.querySelector(':scope > .modal, :scope > div.modal, .modal, div[class*="modal"]');
+      if(!card && m.children && m.children.length){ card = m.children[0]; }
+    }catch(e){ card = null; }
+
+    try{
+      // 清空所有内嵌 CSS（避免冲突）
+      try{ m.removeAttribute('style'); }catch(e){}
+      try{ m.classList.remove('active'); m.classList.remove('hidden'); m.classList.remove('hide'); }catch(e){}
+      if(card){
+        try{ card.removeAttribute('style'); card.classList.remove('hidden'); card.classList.remove('hide'); }catch(e){}
+      }
+      // ===== overlay（蒙版 + 定位）=====
+      m.style.display = 'flex';
+      m.style.position = 'fixed';
+      m.style.top = '0';
+      m.style.left = '0';
+      m.style.right = '0';
+      m.style.bottom = '0';
+      m.style.background = 'rgba(15, 23, 42, 0.5)';
+      m.style.alignItems = 'center';
+      m.style.justifyContent = 'center';
+      m.style.padding = '24px 16px';
+      m.style.boxSizing = 'border-box';
+      m.style.overflowY = 'auto';
+      m.style.overflowX = 'hidden';
+      try{
+        m.style.setProperty('display','flex','important');
+        m.style.setProperty('position','fixed','important');
+        m.style.setProperty('top','0','important');
+        m.style.setProperty('left','0','important');
+        m.style.setProperty('right','0','important');
+        m.style.setProperty('bottom','0','important');
+        m.style.setProperty('z-index','2147483647','important');
+        m.style.setProperty('background','rgba(15, 23, 42, 0.5)','important');
+        m.style.setProperty('align-items','center','important');
+        m.style.setProperty('justify-content','center','important');
+        m.style.setProperty('padding','24px 16px','important');
+        m.style.setProperty('pointer-events','auto','important');
+        m.style.setProperty('visibility','visible','important');
+        m.style.setProperty('opacity','1','important');
+      }catch(e){}
+      try{ m.style.zIndex = '2147483647'; }catch(e){}
+
+      // ===== ★ 白卡片（modal-card / div.modal）本身也强制 display + 定位 + 尺寸 + z-index（之前缺失导致只有蒙版没白卡片）=====
+      if(card){
+        // 保留原有 width：若是 modal-overlay 内联过 width（640/720px 等）不要覆盖
+        var oldWidth = '';
+        try{ oldWidth = getComputedStyle(card).width || card.style.width || ''; }catch(e){}
+        card.style.display  = 'block';
+        card.style.position = 'static';     // relative/static 都可以，fixed 的父已经 flex center
+        card.style.visibility = 'visible';
+        card.style.opacity  = '1';
+        card.style.transform = 'none';
+        card.style.scale    = '1';
+        card.style.pointerEvents = 'auto';
+        card.style.background = '#fff';
+        card.style.marginLeft = 'auto';
+        card.style.marginRight = 'auto';
+        card.style.boxSizing  = 'border-box';
+        card.style.maxHeight  = '90vh';
+        card.style.maxWidth   = '90vw';
+        card.style.overflow   = 'auto';
+        card.style.borderRadius = '12px';
+        card.style.boxShadow  = '0 8px 40px rgba(0,0,0,0.18)';
+        // 保留原宽度（若原来有设置 width 样式），退化到 560px
+        if(oldWidth && /^[0-9]+(px|em|rem|%)$/.test(String(oldWidth))){
+          card.style.width = oldWidth;
+        } else if(card.getAttribute && card.getAttribute('style') && card.getAttribute('style').indexOf('width')>=0){
+          // 保留原 inline width
+        } else {
+          card.style.width = '560px';
+        }
+        try{
+          card.style.setProperty('display','block','important');
+          card.style.setProperty('position','static','important');
+          card.style.setProperty('visibility','visible','important');
+          card.style.setProperty('opacity','1','important');
+          card.style.setProperty('transform','none','important');
+          card.style.setProperty('pointer-events','auto','important');
+          card.style.setProperty('background','#fff','important');
+          card.style.setProperty('z-index','2147483647','important');
+          card.style.setProperty('max-height','90vh','important');
+          card.style.setProperty('overflow','auto','important');
+          card.style.setProperty('box-shadow','0 8px 40px rgba(0,0,0,0.18)','important');
+        }catch(e){}
+        try{ card.style.zIndex = '2147483647'; }catch(e){}
+        // 子结构：header / body / footer 也强制 display
+        try{
+          var sub = card.querySelectorAll('.modal-header, .modal-body, .modal-footer');
+          for(var j=0;j<sub.length;j++){
+            try{ sub[j].style.setProperty('display','block','important'); sub[j].style.display='block'; }catch(e){}
+          }
+        }catch(e){}
+      }
+      // 最后再补 overlay class
+      try{ m.classList.add('active'); }catch(e){}
+    }catch(e){ try{ console.error('_forceShowOverlay style err',e); }catch(x){} }
+
+    var recheck = function(){ try{
+      if(!m) return;
+      if(document && document.body && m.parentNode !== document.body){ try{ document.body.appendChild(m); }catch(e){} }
+      var ds = m.style && m.style.display ? String(m.style.display).toLowerCase() : '';
+      if(ds !== 'flex'){
+        try{ m.style.display = 'flex'; m.style.setProperty('display','flex','important'); }catch(e){}
+      }
+      try{ if(!m.style.zIndex || String(m.style.zIndex)!=='2147483647'){ m.style.setProperty('z-index','2147483647','important'); m.style.zIndex='2147483647'; } }catch(e){}
+      try{ m.classList.add('active'); }catch(e){}
+      try{ m.scrollIntoView && m.scrollIntoView({block:'center', inline:'center'}); }catch(e){}
+
+      // recheck 中对 modal card 再次兜底（防止异步脚本在 100ms 后把 card display 改掉）
+      try{
+        var card2 = m.querySelector && m.querySelector(':scope > .modal, :scope > div.modal, .modal, div[class*="modal"]');
+        if(!card2 && m.children && m.children.length){ card2 = m.children[0]; }
+        if(card2){
+          var d = String(card2.style.display||'').toLowerCase();
+          if(d !== 'block'){
+            try{ card2.style.display = 'block'; card2.style.setProperty('display','block','important'); }catch(e){}
+          }
+          try{ if(String(card2.style.visibility||'')!=='visible'){ card2.style.setProperty('visibility','visible','important'); } }catch(e){}
+          try{ if(String(card2.style.opacity||'')!=='1'){ card2.style.setProperty('opacity','1','important'); } }catch(e){}
+          try{ if(!card2.style.zIndex || String(card2.style.zIndex)!=='2147483647'){ card2.style.setProperty('z-index','2147483647','important'); card2.style.zIndex='2147483647'; } }catch(e){}
+        }
+      }catch(e){}
+    }catch(e){} };
+    setTimeout(recheck, 20);
+    setTimeout(recheck, 80);
+    setTimeout(recheck, 200);
+    setTimeout(recheck, 500);
+    setTimeout(recheck, 1200);
+    return true;
+  }
+  window._forceShowOverlay = _forceShowOverlay;
+
+  // 全局兜底「捕获阶段」点击拦截：任何事件委托 stopPropagation 都挡不住
+  try{
+    document.addEventListener('click', function(e){
+      try{
+        var t = e && e.target;
+        if(!t || !t.closest) return;
+        var btn = t.closest('#btnNewProject, [data-action="new-project"]');
+        if(btn){
+          // 只在还没进入 openProjectModal 时做最后兜底（避免重复打开）
+          if(window.safeOpenProjectModal && !btn._safeFired){
+            btn._safeFired = true;
+            setTimeout(function(){ try{ btn._safeFired = false; }catch(_){} }, 500);
+            try{ if(e && e.preventDefault) e.preventDefault(); }catch(_){}
+            try{ if(e && e.stopImmediatePropagation) e.stopImmediatePropagation(); }catch(_){}
+            window.safeOpenProjectModal();
+          }
+        }
+      }catch(_){}
+    }, true /* capture=true：最先触发，比任何冒泡/委托都早 */);
+  }catch(_){}
+
+  // ====== 安全打开新建子公司弹窗（按钮点击的唯一入口）======
+  window.safeOpenProjectModal = function(){
+    try{ showPageDebugToast('按钮已响应', '正在打开新建子公司弹窗…', 'info', 1200); }catch(e){}
+    // 1) 先强制把所有弹窗 DOM 挂到 body（防父容器裁剪）
+    try{ _ensureModalsOnBody(); }catch(e){}
+    // 2) 取 projectModal
+    var m = null;
+    try{ m = typeof $ === 'function' ? $('projectModal') : document.getElementById('projectModal'); }catch(e){ m = document.getElementById('projectModal'); }
+    if(!m){
+      try{ showPageDebugToast('弹窗找不到', '页面初始化异常（未找到 #projectModal），请 Ctrl+F5 强制刷新后重试', 'error', 5000); }catch(x){}
+      try{ alert('页面初始化异常：未找到新建子公司弹窗，请 Ctrl+F5 强制刷新'); }catch(x){}
+      return;
+    }
+    // 3) 重置状态
+    try{
+      if(window.editingProjectId !== undefined){ window.editingProjectId = null; }
+      else { editingProjectId = null; }
+    }catch(e){}
+    try{
+      var t1 = document.getElementById('projectModalTitle');
+      if(t1) t1.textContent = '新建子公司';
+    }catch(e){}
+    // 4) 清空所有表单值 + 红框错误（f_projCode 保留 disabled，新建模式下自动生成）
+    var ids = ['f_projName','f_projOwner','f_projPhone','f_projAmount','f_projDesc'];
+    for(var _i=0;_i<ids.length;_i++){
+      try{ var el = document.getElementById(ids[_i]); if(el) el.value=''; }catch(e){}
+    }
+    // 4.5) ✨ 新建模式：子公司编号 = 自动生成，写入 disabled 输入框（打开弹窗时就确定，用户可直接看到）
+    try {
+      var _codeEl = document.getElementById('f_projCode');
+      if (_codeEl) {
+        try { _codeEl.disabled  = true; }catch(_){}
+        try { _codeEl.readOnly = true; }catch(_){}
+        try { _codeEl.setAttribute('disabled','disabled'); }catch(_){}
+        try { _codeEl.style.background = 'var(--gray-50)'; }catch(_){}
+        try { _codeEl.style.cursor     = 'not-allowed'; }catch(_){}
+        try { _codeEl.style.color = 'var(--text-regular)'; }catch(_){}
+        var _gen = (typeof generateProjectNo === 'function') ? generateProjectNo(projects)
+                 : ('PRJ-' + new Date().getFullYear() + '-' + String(projects.length + 1).padStart(3, '0'));
+        _codeEl.value = _gen || '';
+      }
+    } catch (_errGen) {
+      try { if(console && console.warn){ console.warn('[proj] auto gen code fail:', _errGen); } }catch(_){}
+    }
+    if(window.clearFieldError){
+      try{ clearFieldError('f_projName'); }catch(e){}
+      try{ clearFieldError('f_projOwner'); }catch(e){}
+      try{ clearFieldError('f_projPhone'); }catch(e){}
+      try{ clearFieldError('f_projAmount'); }catch(e){}
+    }
+    try{
+      var mg = document.getElementById('projectModalMsg');
+      if(mg) mg.className = 'form-global-msg error';
+    }catch(e){}
+    try{
+      var prd = document.getElementById('f_product');
+      if(prd) prd.value = 'mjyy';
+    }catch(e){}
+    try{
+      var ea = document.getElementById('f_enterpriseAvail');
+      if(ea){
+        var bal = (typeof ENTERPRISE_BALANCE !== 'undefined') ? Number(ENTERPRISE_BALANCE) : 0;
+        ea.textContent = bal.toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2});
+      }
+    }catch(e){}
+    // 5) 用户：新建模式初始空数组
+    try{
+      if(typeof projModalSubs !== 'undefined') projModalSubs = [];
+      else if(window.projModalSubs !== undefined) window.projModalSubs = [];
+      if(window.renderProjModalSubs) window.renderProjModalSubs();
+      if(window.renderProjModalOptions) window.renderProjModalOptions();
+    }catch(e){}
+    // 6) 新建模式：显示初始划拨金额 + 初始用户分配
+    try{
+      var ag = document.getElementById('f_projAmount');
+      if(ag && ag.closest){
+        var gg = ag.closest('.form-group'); if(gg) gg.style.display = '';
+      }
+    }catch(e){}
+    try{
+      var sg = document.getElementById('f_projSubs');
+      if(sg && sg.closest){
+        var gg2 = sg.closest('.form-group'); if(gg2) gg2.style.display = '';
+      }
+    }catch(e){}
+    // 7) 保存按钮文案
+    try{
+      var saveBtn = m.querySelector && m.querySelector('.modal-footer .btn-primary');
+      if(saveBtn){
+        saveBtn.disabled = false;
+        saveBtn.style.opacity = '';
+        saveBtn.style.cursor = '';
+        saveBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" width="14" height="14"><polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2"/></svg> 保存创建';
+      }
+    }catch(e){}
+    // 8) ✅ 最重要：强制显示弹窗（per-property style + capture phase 多次 recheck）
+    try{ _forceShowOverlay(m); }catch(e){}
+    // 9) 再次显示 toast，给用户明确成功反馈
+    try{ showPageDebugToast('弹窗已打开', '如果仍看不到，请关掉广告拦截插件或按 Ctrl+F5 刷新', 'ok', 2200); }catch(e){}
+    // 10) 60ms 后：焦点 + 再次确保 body 子节点 + 用户下拉刷新
+    setTimeout(function(){
+      try{ _ensureModalsOnBody(); }catch(e){}
+      try{ _forceShowOverlay(m); }catch(e){}
+      try{
+        var nm = document.getElementById('f_projName');
+        if(nm){ try{ nm.focus(); }catch(e){} try{ nm.select && nm.select(); }catch(e){} }
+      }catch(e){}
+      if(window.renderProjModalSubs) try{ window.renderProjModalSubs(); }catch(e){}
+      if(window.renderProjModalOptions) try{ window.renderProjModalOptions(); }catch(e){}
+      try{
+        var ea2 = document.getElementById('f_enterpriseAvail');
+        if(ea2){
+          var bal2 = (typeof ENTERPRISE_BALANCE !== 'undefined') ? Number(ENTERPRISE_BALANCE) : 0;
+          ea2.textContent = bal2.toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2});
+        }
+      }catch(e){}
+    }, 60);
+    setTimeout(function(){
+      try{ _forceShowOverlay(m); }catch(e){}
+    }, 300);
+  };
+
+  window.openProjectModal = function(){
+    // 旧函数保留做兼容，路由到 safeOpenProjectModal
+    try{ return window.safeOpenProjectModal && window.safeOpenProjectModal(); }
+    catch(err){
+      try{ showPageDebugToast('打开失败', (err.message||err), 'error', 4500); }catch(e){}
+      try{ alert('新建子公司打开失败：'+(err.message||err)); }catch(e){}
+    }
+  };
+
+  function _showModal(m){
+    if(!m) return;
+    try{ _forceShowOverlay(m); }catch(e){}
+  }
+  window._showModal = _showModal;
+
+  function _hideModal(m){
+    if(!m) return;
+    try{ m.classList.remove('active'); }catch(e){}
+    try{
+      m.style.cssText = '';
+      m.style.display = 'none';
+    }catch(e){}
+  }
+
+  // ====== 统一安全打开弹窗：任何子公司详情/编辑/用户分配/划拨/流水 等弹窗都走这里 ======
+  // 始终：显示黄色 info toast → 调 prep() 填充 DOM → _ensureModalsOnBody() → _forceShowOverlay() → 绿色成功 toast（或红色失败）
+  window._openSafeModal = function(opt){
+    // opt: {modalId, toastTitle (info), toastOk (success), toastBody (info), prep (function), requireProject (bool)}
+    try{
+      if(!opt) opt = {};
+      var modalId = opt.modalId;
+      if(!modalId){
+        try{ showPageDebugToast('打开失败','参数缺失：未指定弹窗 ID','error', 5000); }catch(e){}
+        return;
+      }
+      try{ showPageDebugToast(
+        (opt.toastTitle || ('正在打开 '+modalId+'…')),
+        (opt.toastBody || '若仍看不到，请按 Ctrl+F5 强制刷新或关闭广告拦截插件'),
+        'info',
+        1400
+      ); }catch(e){}
+      try{ _ensureModalsOnBody(); }catch(e){}
+      var m = null;
+      try{ m = (typeof $ === 'function') ? $(modalId) : document.getElementById(modalId); }catch(e){ m = document.getElementById(modalId); }
+      if(!m){
+        try{ showPageDebugToast('页面初始化异常', '未找到弹窗节点：#'+modalId+'；请 Ctrl+F5 强制刷新页面后重试', 'error', 6000); }catch(e){}
+        try{ alert('页面初始化异常：未找到 '+modalId+'，请 Ctrl+F5 强制刷新'); }catch(e){}
+        return;
+      }
+      // 1) 执行用户的 DOM 填充（允许抛异常 → 红条提示）
+      if(typeof opt.prep === 'function'){
+        try{
+          var ret = opt.prep(m);
+          if(ret === false){
+            // prep 返回 false 表示业务校验未通过（例如子公司未找到、子公司已停用），不必再 show
+            return;
+          }
+        }catch(prepErr){
+          try{ showPageDebugToast('弹窗准备失败', (prepErr.message||prepErr), 'error', 5000); }catch(x){}
+          try{ alert('弹窗打开失败：'+(prepErr.message||prepErr)); }catch(x){}
+          return;
+        }
+      }
+      // 2) 再次确保所有 modal 在 body（prep 里可能无意中移动了 DOM）
+      try{ _ensureModalsOnBody(); }catch(e){}
+      // 3) 强制显示
+      try{ var ok = _forceShowOverlay(m); if(!ok) throw new Error('_forceShowOverlay 返回 false'); }catch(forceErr){
+        try{ showPageDebugToast('显示失败', (forceErr.message||forceErr), 'error', 6000); }catch(x){}
+        try{ alert('弹窗强制显示失败：'+(forceErr.message||forceErr)); }catch(x){}
+        return;
+      }
+      // 4) 绿色成功反馈
+      try{ showPageDebugToast(
+        (opt.toastOkTitle || ('✓ 弹窗已打开')),
+        (opt.toastOkBody  || ('#'+modalId+' 已成功弹出；若看不到请关闭广告拦截插件')),
+        'ok',
+        2200
+      ); }catch(e){}
+      // 5) 30ms / 120ms / 400ms 再强制三次（防后续 main.js / 其他脚本覆盖 display:none / z-index）
+      setTimeout(function(){ try{ _ensureModalsOnBody(); _forceShowOverlay(m); }catch(e){} }, 30);
+      setTimeout(function(){ try{ _ensureModalsOnBody(); _forceShowOverlay(m); }catch(e){} }, 120);
+      setTimeout(function(){ try{ _ensureModalsOnBody(); _forceShowOverlay(m); }catch(e){} }, 400);
+    }catch(topErr){
+      try{ showPageDebugToast('打开失败（顶层异常）', (topErr.message||topErr), 'error', 7000); }catch(x){}
+      try{ alert('弹窗打开失败：'+(topErr.message||topErr)); }catch(x){}
+    }
+  };
+
+  window.editProject = function(id){
+    try{
+      try{ _ensureModalsOnBody(); }catch(e){}
+      var p = findProject(id); if(!p){ alert('未找到待编辑子公司'); return; }
+      editingProjectId = id;
+      var m = $('projectModal'); if(!m){ alert('页面初始化异常'); return; }
+      $('projectModalTitle').textContent = '编辑子公司 · ' + p.name;
+      // 先清除错误
+      try{ clearFieldError('f_projName'); }catch(e){}
+      try{ clearFieldError('f_projOwner'); }catch(e){}
+      try{ clearFieldError('f_projPhone'); }catch(e){}
+      try{ $('projectModalMsg').className='form-global-msg error'; }catch(e){}
+      try{ $('f_product').value = p.product || 'mjyy'; }catch(e){}
+      try{ $('f_projName').value  = p.name  || ''; }catch(e){}
+      // 编辑模式：子公司编号 = 原子公司 id，同时保持 disabled（仍不让用户手动改，避免误操作）
+      try{
+        var _cc = $('f_projCode');
+        if(_cc){
+          _cc.value = p.id || '';
+          try{ _cc.disabled = true; }catch(_){}
+          try{ _cc.readOnly = true; }catch(_){}
+          try{ _cc.setAttribute('disabled','disabled'); }catch(_){}
+          try{ _cc.style.background = 'var(--gray-50)'; }catch(_){}
+          try{ _cc.style.cursor = 'not-allowed'; }catch(_){}
+        }
+      }catch(e){}
+      try{ $('f_projOwner').value = p.owner || ''; }catch(e){}
+      try{ $('f_projPhone').value = p.phone || ''; }catch(e){}
+      try{ $('f_projAmount').value = ''; }catch(e){}
+      try{ $('f_projDesc').value  = p.desc  || ''; }catch(e){}
+      try{ $('f_enterpriseAvail').textContent = Number(ENTERPRISE_BALANCE).toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2}); }catch(e){}
+      projModalSubs = (p.subs || []).slice();
+      renderProjModalSubs();
+      renderProjModalOptions();
+      // 编辑模式：隐藏初始划拨金额、隐藏用户分配（用户分配走独立入口）
+      try{ var ag = $('f_projAmount').closest && $('f_projAmount').closest('.form-group'); if(ag) ag.style.display='none'; }catch(e){}
+      try{ var sg = $('f_projSubs').closest && $('f_projSubs').closest('.form-group'); if(sg) sg.style.display='none'; }catch(e){}
+      try{ var saveBtn = m.querySelector('.modal-footer .btn-primary'); if(saveBtn){ saveBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" width="14" height="14"><polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2"/></svg> 保存修改'; } }catch(e){}
+      _showModal(m);
+      setTimeout(function(){
+        try{ _ensureModalsOnBody(); }catch(e){}
+        try{ var nm = $('f_projName'); if(nm) nm.focus(); }catch(e){}
+        try{ renderProjModalOptions(); }catch(e){}
+      }, 60);
+    }catch(err){
+      try{ console.error(err); }catch(e){}
+      alert('编辑子公司打开失败：'+(err.message||err));
+    }
+  };
+
+  window.closeProjectModal = function(){
+    try{
+      var m = $('projectModal'); if(!m) return;
+      editingProjectId = null;
+      _hideModal(m);
+    }catch(e){}
+  };
+
+  function renderProjModalSubs(){
+    var box = $('f_projSubs'); if(!box) return;
+    var html = '';
+    if(projModalSubs.length===0){
+      html = '<span style="color:var(--text-muted);font-size:13px;">尚未分配用户（下方选择成员后点添加）</span>';
+    } else {
+      for(var i=0;i<projModalSubs.length;i++){
+        var u = findSub(projModalSubs[i]); if(!u) continue;
+        html += '<span class="chip">'
+              + '<span class="chip-avatar">'+(u.name||'').charAt(0)+'</span>'
+              + '<span class="chip-name" title="'+(u.role||'')+' · '+u.phone+'">'+u.name+'</span>'
+              + '<span class="chip-close" onclick="removeProjModalSub(\''+u.id+'\')" title="移除">×</span>'
+              + '</span>';
+      }
+    }
+    box.innerHTML = html;
+    // 同步刷新下拉候选项（仅剩余可选成员）
+    try{ renderProjModalOptions(); }catch(e){}
+  }
+
+  // 刷新「用户选择下拉」候选项：只显示未加入的成员
+  window.renderProjModalOptions = function(){
+    try{
+      var sel = $('projSubPick'); if(!sel) return;
+      var cur = sel.value || '';
+      var html = '';
+      var pool = (typeof SUBACCOUNTS !== 'undefined' && Array.isArray(SUBACCOUNTS)) ? SUBACCOUNTS : [];
+      var used = Array.isArray(projModalSubs) ? projModalSubs : [];
+      var remain = pool.filter(function(u){ return used.indexOf(u && u.id)<0 && u && u.id; });
+      html = '<option value="">— 从用户池选择成员 —</option>';
+      if(pool.length===0){
+        html += '<option value="" disabled>（暂无用户成员，请到「用户管理」创建用户后再分配）</option>';
+      } else if(remain.length===0 && used.length>0){
+        html += '<option value="" disabled>（用户池成员均已分配）</option>';
+      } else {
+        for(var i=0;i<remain.length;i++){
+          var u = remain[i];
+          if(!u || !u.id) continue;
+          try{
+            html += '<option value="'+String(u.id).replace(/"/g,'&quot;')+'">'
+              + String(u.name || '未命名').replace(/[<>]/g,'')
+              + ' · '
+              + String(u.role || '成员').replace(/[<>]/g,'')
+              + ' · '
+              + String(u.phone || '').replace(/[<>]/g,'')
+              + '</option>';
+          }catch(e){}
+        }
+      }
+      try{ sel.innerHTML = html; }catch(e){}
+      if(used.length>=10){ sel.disabled = true; sel.style.opacity = '.6'; }
+      else { sel.disabled = false; sel.style.opacity = ''; }
+      // 回选值
+      try{
+        if(cur){
+          var opts = sel.options;
+          for(var j=0;j<opts.length;j++){ if(opts[j].value===cur){ sel.selectedIndex = j; break; } }
+        }
+      }catch(e){}
+    }catch(e){
+      try{ console.error('renderProjModalOptions err',e); }catch(x){}
+    }
+  };
+
+  window.removeProjModalSub = function(id){
+    projModalSubs = (Array.isArray(projModalSubs) ? projModalSubs : []).filter(function(x){ return x!==id; });
+    renderProjModalSubs();
+  };
+
+  // 从下拉直接选择并添加（替代之前 prompt 流程）
+  window.addProjModalSubDirect = function(){
+    try{
+      var list = Array.isArray(projModalSubs) ? projModalSubs : [];
+      if(list.length >= 10){ alert('单个子公司最多分配 10 个成员'); return; }
+      var sel = $('projSubPick'); if(!sel){ alert('页面初始化异常：用户选择器未加载'); return; }
+      var v = (sel.value || '').trim();
+      if(!v){ alert('请先从下拉中选择一个用户'); return; }
+      if(list.indexOf(v)<0){ list.push(v); projModalSubs = list; }
+      renderProjModalSubs();
+    }catch(e){
+      try{ console.error(e); }catch(x){}
+      alert('添加失败：'+(e.message||e));
+    }
+  };
+
+  // 保留兼容性：若旧 prompt 函数被调用仍不报错，但直接引导用户使用下拉
+  window.addProjModalSub = function(){ window.addProjModalSubDirect(); };
+
+  window.saveProject = function(){
+    var isEdit = !!editingProjectId;
+    var amountOk = 0;
+    try{
+      var product = $('f_product').value;
+      var name    = ($('f_projName').value||'').trim();
+      var code    = ($('f_projCode').value||'').trim();
+      var owner   = ($('f_projOwner').value||'').trim();
+      var phone   = ($('f_projPhone').value||'').trim();
+      var amount  = isEdit ? 0 : parseAmountInput('f_projAmount');
+      var desc    = ($('f_projDesc').value||'').trim();
+
+      // 校验：优先 DOM 红框提示，不再简单 alert 遮挡
+      var ok = true;
+      if(!product){ showModalMsg('请选择产品归属','error'); ok=false; }
+      if(!name){ showFieldError('f_projName','请输入子公司名称'); showModalMsg('请完善必填项（标红字段）','error'); ok=false; }
+      if(!owner){ showFieldError('f_projOwner','请输入主管理员姓名'); showModalMsg('请完善必填项（标红字段）','error'); ok=false; }
+      if(!checkFieldPhone('f_projPhone')){ showModalMsg('请完善必填项（标红字段）','error'); ok=false; }
+      if(!isEdit){
+        if(amount<0){ showFieldError('f_projAmount','初始划拨金额不能为负数'); ok=false; }
+        if(amount>ENTERPRISE_BALANCE){ showFieldError('f_projAmount','企业账户余额不足：可用 '+fmtAmount(ENTERPRISE_BALANCE)); ok=false; }
+      }
+      if(!ok){ return; }
+
+      if(isEdit){
+        var ep = findProject(editingProjectId); if(!ep){ showModalMsg('待编辑子公司不存在','error'); return; }
+        if(code && code!==ep.id){
+          for(var i=0;i<projects.length;i++){ if(projects[i].id===code){ showFieldError('f_projCode','子公司编号已存在：'+code); return; } }
+          ep.id = code;
+        }
+        ep.product = product;
+        ep.name    = name;
+        ep.owner   = owner;
+        ep.phone   = phone;
+        ep.desc    = desc;
+      } else {
+        var newCode = code || ('PRJ-' + new Date().getFullYear() + '-' + String(projects.length+1).padStart(3,'0'));
+        for(var j=0;j<projects.length;j++){ if(projects[j].id===newCode){ showFieldError('f_projCode','子公司编号已存在：'+newCode); return; } }
+
+        var now = new Date();
+        function pad(n){return n<10?'0'+n:''+n;}
+        var ts = now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+' '+
+                 pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
+
+        var np = { id:newCode, product:product, name:name, owner:owner, phone:phone,
+                  balance:amount||0, totalIn:amount||0, totalOut:0, status:'active',
+                  createdAt:ts, desc:desc, subs:projModalSubs.slice() };
+        projects.push(np);
+
+        if(amount>0){
+          records.unshift({
+            no:'TR'+now.getFullYear()+pad(now.getMonth()+1)+pad(now.getDate())+String(1000+projects.length),
+            direction:'in', from:'企业资金账户', to:name+'('+newCode+')', amount:amount,
+            remark:'子公司启动资金', operator:'当前用户', status:'成功', time:ts, product:product, projectId:newCode
+          });
+          ENTERPRISE_BALANCE -= amount;
+        }
+        amountOk = amount;
+      }
+    }catch(err){
+      try{ console.error(err); }catch(e){}
+      try{ showModalMsg('保存失败：'+(err.message||err),'error'); }catch(x){}
+      return;
+    }
+    var isEdit2 = !!editingProjectId;
+    var lastAmount = isEdit2 ? 0 : amountOk;
+    // 同步到企业列表（保证切换企业弹窗可见新子公司）
+    try {
+      var curId = localStorage.getItem('mjyy_current_enterprise_id');
+      var list = JSON.parse(localStorage.getItem('mjyy_enterprise_list') || '[]');
+      if (Array.isArray(list) && curId) {
+        var curEnt = list.find(function(e) { return e && e.id === curId; });
+        var parentEntId = curId;
+        if (curEnt && curEnt.parentId) parentEntId = curEnt.parentId;
+
+        // 找到当前项目（新建或编辑）
+        var proj = isEdit2 ? findProject(editingProjectId) : (projects[projects.length - 1]);
+        if (proj) {
+          var subEntId = 'PROJ:' + proj.id;
+          var existed = false;
+          for (var k = 0; k < list.length; k++) {
+            if (list[k] && list[k].id === subEntId) {
+              // 保留原 createdAt
+              list[k] = {
+                id: subEntId,
+                name: proj.name,
+                creditCode: proj.creditCode || '',
+                legalMobile: proj.phone || '',
+                role: '子管理员',
+                parentId: parentEntId,
+                verified: true,
+                status: proj.status === 'inactive' ? 'inactive' : 'active',
+                product: proj.product || 'mjyy',
+                balance: proj.balance || 0,
+                projectId: proj.id,
+                createdAt: list[k].createdAt || proj.createdAt || Date.now(),
+                isDefault: false
+              };
+              existed = true;
+              break;
+            }
+          }
+          if (!existed) {
+            list.push({
+              id: subEntId,
+              name: proj.name,
+              creditCode: proj.creditCode || '',
+              legalMobile: proj.phone || '',
+              role: '子管理员',
+              parentId: parentEntId,
+              verified: true,
+              status: proj.status === 'inactive' ? 'inactive' : 'active',
+              product: proj.product || 'mjyy',
+              balance: proj.balance || 0,
+              projectId: proj.id,
+              createdAt: proj.createdAt || Date.now(),
+              isDefault: false
+            });
+          }
+          localStorage.setItem('mjyy_enterprise_list', JSON.stringify(list));
+        }
+      }
+      // 同步项目列表到 localStorage
+      localStorage.setItem('mjyy_projects', JSON.stringify(projects));
+    } catch(_syncErr) {}
+    try{
+      var okText = isEdit2 ? '子公司更新成功' : ('子公司创建成功' + (lastAmount>0 ? '，已从企业账户划拨 '+fmtAmount(lastAmount)+' 到子公司账户' : ''));
+      // 显示成功绿色提示条 700ms 后再关闭（给用户视觉反馈）
+      showModalMsg(okText, 'ok');
+      updateStats();
+      renderProjects();
+      renderRecords();
+      updateEnterpriseAvail();
+      try{
+        // 如果按钮存在：禁用保存按钮防重复提交
+        var sv = $('projectModal') && $('projectModal').querySelector && $('projectModal').querySelector('.modal-footer .btn-primary');
+        if(sv){ try{ sv.disabled = true; sv.style.opacity='.7'; sv.style.cursor='not-allowed'; }catch(e){} }
+      }catch(e){}
+      setTimeout(function(){
+        try{ closeProjectModal(); }catch(e){}
+        try{
+          var sv2 = $('projectModal') && $('projectModal').querySelector && $('projectModal').querySelector('.modal-footer .btn-primary');
+          if(sv2){ try{ sv2.disabled = false; sv2.style.opacity=''; sv2.style.cursor=''; }catch(e){} }
+        }catch(e){}
+        try{ alert(okText); }catch(e){}
+      }, 700);
+    }catch(e){
+      try{ closeProjectModal(); }catch(e){}
+      updateStats(); renderProjects(); renderRecords(); updateEnterpriseAvail();
+    }
+  };
+
+  function updateEnterpriseAvail(){
+    try{ $('f_enterpriseAvail').textContent = Number(ENTERPRISE_BALANCE).toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2}); }catch(e){}
+  }
+
+  // ============ 删除/启用/停用 ============
+  window.deleteProject = function(id){
+    var p = findProject(id); if(!p) return;
+    if(Number(p.balance||0)!==0){ alert('删除失败：子公司余额必须为 0，当前 '+fmtAmount(p.balance)); return; }
+    if(!window.confirm('确定删除子公司 '+p.id+'（'+p.name+'）？删除后记录将不可恢复。')) return;
+    projects = projects.filter(function(x){ return x.id!==id; });
+    // 同步删除企业列表中的对应子公司
+    try {
+      var list = JSON.parse(localStorage.getItem('mjyy_enterprise_list') || '[]');
+      if (Array.isArray(list)) {
+        list = list.filter(function(e) { return e && e.id !== ('PROJ:' + id); });
+        localStorage.setItem('mjyy_enterprise_list', JSON.stringify(list));
+      }
+    } catch(e) {}
+    // 同步项目列表
+    try { localStorage.setItem('mjyy_projects', JSON.stringify(projects)); } catch(e) {}
+    renderProjects();
+    updateStats();
+  };
+
+  window.disableProject = function(id){
+    var p = findProject(id); if(!p) return;
+    if(p.status==='inactive'){ alert('子公司已处于停用状态'); return; }
+    if(Number(p.balance||0)!==0){ alert('停用失败：子公司余额必须为 0，当前 '+fmtAmount(p.balance)); return; }
+    if(!window.confirm('确认停用子公司 '+p.id+'（'+p.name+'）？停用后用户无法继续该子公司划拨。')) return;
+    p.status = 'inactive';
+    // 同步企业列表
+    try {
+      var list = JSON.parse(localStorage.getItem('mjyy_enterprise_list') || '[]');
+      if (Array.isArray(list)) {
+        for (var i = 0; i < list.length; i++) {
+          if (list[i] && list[i].id === ('PROJ:' + id)) {
+            list[i].status = 'inactive';
+            break;
+          }
+        }
+        localStorage.setItem('mjyy_enterprise_list', JSON.stringify(list));
+      }
+      localStorage.setItem('mjyy_projects', JSON.stringify(projects));
+    } catch(e) {}
+    renderProjects();
+  };
+
+  window.enableProject = function(id){
+    var p = findProject(id); if(!p) return;
+    if(p.status!=='inactive'){ alert('该子公司未处于停用状态'); return; }
+    if(Number(p.balance||0)!==0){ alert('启用失败：子公司余额必须为 0，当前 '+fmtAmount(p.balance)); return; }
+    if(!window.confirm('确认启用子公司 '+p.id+'（'+p.name+'）？启用后用户可继续该子公司划拨。')) return;
+    p.status = 'active';
+    // 同步企业列表
+    try {
+      var list = JSON.parse(localStorage.getItem('mjyy_enterprise_list') || '[]');
+      if (Array.isArray(list)) {
+        for (var i = 0; i < list.length; i++) {
+          if (list[i] && list[i].id === ('PROJ:' + id)) {
+            list[i].status = 'active';
+            break;
+          }
+        }
+        localStorage.setItem('mjyy_enterprise_list', JSON.stringify(list));
+      }
+      localStorage.setItem('mjyy_projects', JSON.stringify(projects));
+    } catch(e) {}
+    renderProjects();
+  };
+
+  // ============ 子公司详情 ============
+  window.viewProjectDetail = function(id){
+    window._openSafeModal({
+      modalId: 'projectDetailModal',
+      toastTitle: '正在打开子公司详情…',
+      toastBody: '正在加载子公司基础信息与最近流水…',
+      toastOkTitle: '✓ 子公司详情已打开',
+      toastOkBody:  '子公司详情弹窗已显示；若看不到请按 Ctrl+F5 刷新',
+      prep: function(){
+        var p = findProject(id);
+        if(!p){ showPageDebugToast('子公司不存在','未找到子公司 ID='+id,'error',4500); return false; }
+        var pd = (PRODUCTS[p.product]||{label:'未分类',tagCls:''}).label;
+        var stCls = p.status==='active' ? 'tag-success' : 'tag-warning';
+        var stTxt = p.status==='active' ? '运行中' : '已停用';
+        var list = [];
+        for(var i=0;i<records.length;i++){
+          var r = records[i];
+          if((r.to && r.to.indexOf(p.name)>=0) || (r.from && r.from.indexOf(p.name)>=0) || r.projectId===p.id) list.push(r);
+        }
+        var subsHtml = '';
+        if(!p.subs || p.subs.length===0){ subsHtml = '<span style="color:var(--text-muted);font-size:13px;">未分配用户</span>'; }
+        else {
+          for(var k=0;k<p.subs.length;k++){
+            var u = findSub(p.subs[k]); if(!u) continue;
+            subsHtml += '<span class="chip" style="margin:2px 4px 2px 0;"><span class="chip-avatar">'+(u.name||'').charAt(0)+'</span><span class="chip-name" title="'+(u.role||'')+' · '+u.phone+'">'+u.name+'</span></span>';
+          }
+        }
+        var body = '';
+        body += '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:14px 16px;background:linear-gradient(135deg,#E6F4FF 0%,#F0F7FF 100%);border-radius:10px;margin-bottom:18px;">';
+        body += '<div><div style="font-size:12px;color:var(--text-secondary);margin-bottom:6px;">子公司编号 · '+(p.id||'—')+'</div>';
+        body += '<div style="font-size:20px;font-weight:700;color:var(--text);margin-bottom:8px;">'+(p.name||'—')+'</div>';
+        body += '<div style="display:flex;gap:8px;align-items:center;"><span class="tag-product tag-product-mjyy">'+pd+'</span><span class="tag '+stCls+'">'+stTxt+'</span></div></div>';
+        body += '<div style="text-align:right;"><div style="font-size:12px;color:var(--text-secondary);margin-bottom:6px;">子公司账户余额</div>';
+        body += '<div style="font-size:26px;font-weight:800;color:var(--brand-primary);">¥'+fmtAmount(p.balance||0)+'</div></div></div>';
+        body += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 24px;margin-bottom:18px;">';
+        body += _kv('主管理员', (p.owner||'—') + ' · ' + (p.phone||'—'));
+        body += _kv('创建时间', p.createdAt||'—');
+        body += _kv('累计入账', '<span style="color:#00B42A;font-weight:600;">¥'+fmtAmount(p.totalIn||0)+'</span>');
+        body += _kv('累计调出', '<span style="color:#F53F3F;font-weight:600;">¥'+fmtAmount(p.totalOut||0)+'</span>');
+        body += '</div>';
+        body += '<div style="margin-bottom:18px;">'+_kv('子公司描述', (p.desc&&p.desc.trim()) ? p.desc.replace(/\n/g,'<br>') : '<span style="color:var(--text-muted);">—</span>')+'</div>';
+        body += '<div style="margin-bottom:18px;">';
+        body += '<div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px;">分配用户（'+(p.subs?p.subs.length:0)+' 人）</div>';
+        body += '<div style="padding:10px 12px;border:1px solid var(--gray-200);border-radius:8px;background:#fff;min-height:44px;">'+subsHtml+'</div>';
+        body += '</div>';
+        body += '<div>';
+        body += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">';
+        body += '<div style="font-size:13px;font-weight:600;color:var(--text);">最近划拨流水 · 共 '+list.length+' 条</div>';
+        body += '<button class="btn-link" style="padding:0;" onclick="closeProjectDetail();try{window.viewProjectRecords(\''+p.id+'\');}catch(e){}">查看全部流水 →</button>';
+        body += '</div>';
+        if(list.length===0){
+          body += '<div class="empty-state" style="padding:24px 0;"><div class="empty-state-icon">💸</div>暂无划拨记录</div>';
+        } else {
+          body += '<div style="max-height:260px;overflow-y:auto;border:1px solid var(--gray-200);border-radius:8px;"><table class="data-table" style="min-width:0;"><thead><tr>';
+          body += '<th>流水号</th><th>方向</th><th>金额</th><th>对方</th><th>时间</th>';
+          body += '</tr></thead><tbody>';
+          var showN = Math.min(list.length, 20);
+          for(var mi=0;mi<showN;mi++){
+            var rr = list[mi];
+            var sg = rr.direction==='in'?'+':'-';
+            var fc = rr.direction==='in'?'flow-in':'flow-out';
+            var peer = rr.direction==='in' ? rr.from : rr.to;
+            body += '<tr><td style="font-size:12px;">'+rr.no+'</td>'
+                  + '<td>'+(rr.direction==='in'?'<span class="tag tag-success">入账</span>':'<span class="tag tag-warning">调出</span>')+'</td>'
+                  + '<td class="'+fc+'" style="font-weight:600;">'+sg+fmtAmount(rr.amount)+'</td>'
+                  + '<td style="font-size:12px;">'+peer+'</td>'
+                  + '<td style="white-space:nowrap;font-size:12px;">'+rr.time+'</td></tr>';
+          }
+          body += '</tbody></table></div>';
+          if(list.length>showN){ body += '<div style="text-align:center;padding:8px 0 0;font-size:12px;color:var(--text-secondary);">仅展示最近 20 条，点击「查看全部流水」浏览完整记录</div>'; }
+        }
+        body += '</div>';
+        $('projectDetailTitle').textContent = '子公司详情 · ' + (p.name||'—');
+        $('projectDetailBody').innerHTML = body;
+      }
+    });
+  };
+  function _kv(k,v){
+    return '<div style="padding:8px 0;border-bottom:1px dashed var(--gray-200);"><div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;">'+k+'</div><div style="font-size:14px;color:var(--text);">'+v+'</div></div>';
+  }
+  window.closeProjectDetail = function(){
+    try{ var dm = $('projectDetailModal'); if(dm) _hideModal(dm); }catch(e){}
+  };
+
+  // ============ 用户分配弹窗 ============
+  var assignProjectId = null;
+  var assignWorkingIds = [];
+
+  window.openAssignSubModal = function(projectId){
+    window._openSafeModal({
+      modalId: 'assignSubModal',
+      toastTitle: '正在打开用户分配…',
+      toastBody: '正在读取子公司成员与用户池…',
+      toastOkTitle: '✓ 用户分配已打开',
+      toastOkBody:  '勾选或取消勾选即可调整成员；最后点「确认分配」保存',
+      prep: function(){
+        var p = findProject(projectId);
+        if(!p){ showPageDebugToast('子公司不存在','未找到子公司 ID='+projectId,'error',4500); return false; }
+        assignProjectId = projectId;
+        assignWorkingIds = (p.subs || []).slice();
+        $('assignSubProject').textContent = p.id + ' · ' + p.name;
+        renderAssignModal();
+      }
+    });
+  };
+  window.closeAssignSubModal = function(){
+    try{ var m = $('assignSubModal'); if(m) _hideModal(m); }catch(e){}
+    assignProjectId = null;
+    assignWorkingIds = [];
+  };
+  function renderAssignModal(){
+    var assignedBox = $('assignSubAssigned');
+    var poolBox = $('assignSubPool');
+    var assignedHTML = '';
+    if(assignWorkingIds.length===0){
+      assignedHTML = '<span style="color:var(--text-muted);font-size:12px;">暂无分配用户，可从下方勾选添加</span>';
+    } else {
+      for(var i=0;i<assignWorkingIds.length;i++){
+        var u = findSub(assignWorkingIds[i]); if(!u) continue;
+        assignedHTML += '<span class="chip">'
+          + '<span class="chip-avatar">'+(u.name||'').charAt(0)+'</span>'
+          + '<span class="chip-name" title="'+u.role+' · '+u.phone+'">'+u.name+' · '+u.role+'</span>'
+          + '<span class="chip-close" onclick="toggleAssignSub(\''+u.id+'\')" title="去除">×</span>'
+          + '</span>';
+      }
+    }
+    assignedBox.innerHTML = assignedHTML;
+
+    var pool = '';
+    for(var k=0;k<SUBACCOUNTS.length;k++){
+      var s = SUBACCOUNTS[k];
+      var checked = assignWorkingIds.indexOf(s.id)>=0;
+      // 使用原生 label 包裹整行（避免 onclick 字符串拼 escape），4 列 grid 布局
+      pool += '<label class="sub-assign-row" style="'
+            + 'display:grid;'
+            + 'grid-template-columns:28px 1fr 130px 64px;'
+            + 'align-items:center;'
+            + 'column-gap:10px;'
+            + 'padding:10px 14px;'
+            + 'border-bottom:1px solid var(--gray-100);'
+            + 'cursor:pointer;'
+            + 'margin:0;'
+            + 'font-weight:inherit;">'
+            // 列 1：复选框（固定 28px 列）
+            + '<div style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:20px;">'
+            +   '<input type="checkbox" '+(checked?'checked':'')+' onchange="toggleAssignSub(this.dataset.id)" data-id="'+s.id+'" style="width:16px;height:16px;" onclick="event.stopPropagation();">'
+            + '</div>'
+            // 列 2：姓名（粗体 13px）+ 角色 tag（11px 圆角灰）
+            + '<div style="min-width:0;display:flex;flex-direction:column;gap:2px;align-items:flex-start;justify-content:center;">'
+            +   '<div style="font-size:13px;font-weight:600;color:#1D2129;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+s.name+'</div>'
+            +   '<span class="tag tag-default" style="font-size:11px;align-self:flex-start;">'+s.role+'</span>'
+            + '</div>'
+            // 列 3：手机号（130px 固定列 → 所有行从同一 X 坐标开始）
+            + '<div style="font-size:12px;color:var(--text-muted);letter-spacing:0.2px;text-align:left;">'
+            +   (s.phone || '—')
+            + '</div>'
+            // 列 4：状态（64px 固定列 → 不影响左列位置）
+            + '<div style="display:inline-flex;align-items:center;justify-content:flex-end;">'
+            +   (checked ? '<span class="tag tag-success" style="font-size:11px;pointer-events:none;">已分配</span>' : '')
+            + '</div>'
+            + '</label>';
+    }
+    poolBox.innerHTML = pool;
+  }
+  window.toggleAssignSub = function(id){
+    var idx = assignWorkingIds.indexOf(id);
+    if(idx>=0) assignWorkingIds.splice(idx,1);
+    else {
+      if(assignWorkingIds.length>=10){ alert('单个子公司最多 10 个用户'); return; }
+      assignWorkingIds.push(id);
+    }
+    renderAssignModal();
+  };
+  window.confirmAssignSub = function(){
+    var p = findProject(assignProjectId); if(!p) return;
+    p.subs = assignWorkingIds.slice();
+    closeAssignSubModal();
+    renderProjects();
+    alert('用户分配已更新：子公司共 '+p.subs.length+' 个成员');
+  };
+
+  // ============ 资金划拨（保留原逻辑，补充：子公司停用不可划拨 + 导出CSV） ============
+  var transferTargetProjectId = null;
+
+  window.openTransferModal = function(projectId){
+    window._openSafeModal({
+      modalId: 'transferModal',
+      toastTitle: '正在打开资金划拨…',
+      toastBody: '正在构建企业/子公司账户下拉…',
+      toastOkTitle: '✓ 资金划拨已打开',
+      toastOkBody:  '选择转出/转入账户 + 金额 + 验证码 123456 → 确认划拨',
+      prep: function(){
+        transferTargetProjectId = projectId || null;
+        var modalTitle = '资金划拨';
+        if(projectId){
+          var tp = findProject(projectId);
+          if(tp && tp.status==='inactive'){
+            try{ showPageDebugToast('子公司已停用','子公司已停用，不能进行资金划拨；请先启用子公司','error',5000); }catch(e){}
+            alert('子公司已停用，不能划拨；请先启用');
+            return false;
+          }
+          if(tp) modalTitle = '资金划拨 → ' + tp.name;
+        }
+        try{ $('transferModalTitle').textContent = modalTitle; }catch(e){}
+        var fromSel = $('f_fromAccount'), toSel = $('f_toAccount');
+        try{ fromSel.innerHTML = ''; toSel.innerHTML = ''; }catch(e){}
+        try{ fromSel.innerHTML += '<option value="enterprise">企业资金账户 · MJYY-MAIN · '+fmtAmount(ENTERPRISE_BALANCE)+'</option>'; }catch(e){}
+        for(var i=0;i<projects.length;i++){
+          var p = projects[i];
+          if(p.status==='inactive') continue;
+          var sel = (projectId===p.id)?' selected':'';
+          try{ fromSel.innerHTML += '<option value="prj:'+p.id+'"'+sel+'>子公司账户 · '+p.name+' · '+fmtAmount(p.balance)+'</option>'; }catch(e){}
+        }
+        try{ toSel.innerHTML = '<option value="">请选择转入账户</option>'; }catch(e){}
+        for(var i=0;i<projects.length;i++){
+          var p2 = projects[i];
+          if(p2.id!==projectId && p2.status!=='inactive'){
+            try{ toSel.innerHTML += '<option value="prj:'+p2.id+'">子公司账户 · '+p2.name+' · '+fmtAmount(p2.balance)+'</option>'; }catch(e){}
+          }
+        }
+        try{ toSel.innerHTML += '<option value="enterprise">企业资金账户 · MJYY-MAIN</option>'; }catch(e){}
+        if(projectId){
+          try{ fromSel.value='enterprise'; toSel.value='prj:'+projectId; }catch(e){}
+        }
+        updateTransferInfo();
+        try{ $('f_amount').value=''; }catch(e){}
+        try{ $('f_transferRemark').value=''; }catch(e){}
+        try{ $('f_transferCode').value=''; }catch(e){}
+      }
+    });
+  };
+
+  window.closeTransferModal = function(){
+    try{
+      var m = $('transferModal'); if(m) _hideModal(m);
+    }catch(e){}
+  };
+
+  function getAccountBalance(val){
+    if(!val) return 0;
+    if(val==='enterprise') return ENTERPRISE_BALANCE;
+    var p = findProject(String(val).replace('prj:',''));
+    return p ? Number(p.balance||0) : 0;
+  }
+
+  function updateTransferInfo(){
+    var from = $('f_fromAccount').value;
+    var to   = $('f_toAccount').value;
+    var max  = getAccountBalance(from);
+    $('maxTransferAmount').textContent = fmtAmount(max);
+    var alertBox = $('transferAlert');
+    if(from==='enterprise' && to && to.indexOf('prj:')===0){
+      var pn = findProject(String(to).replace('prj:',''));
+      alertBox.textContent = '企业 → 子公司：资金从企业主账户划拨至「'+(pn?pn.name:'子公司')+'」账户，子公司可独立支配使用';
+    } else if(from && from.indexOf('prj:')===0 && to==='enterprise'){
+      var pn2 = findProject(String(from).replace('prj:',''));
+      alertBox.textContent = '子公司 → 企业：「'+(pn2?pn2.name:'子公司')+'」结余资金退回企业主账户';
+    } else if(from && from.indexOf('prj:')===0 && to && to.indexOf('prj:')===0){
+      alertBox.textContent = '子公司 → 子公司：资金在两个子公司账户间划转';
+    } else {
+      alertBox.textContent = '请选择转出和转入账户';
+    }
+  }
+  window.updateTransferInfo = updateTransferInfo;
+
+  window.setQuickAmount = function(v){ try{ $('f_amount').value = v; }catch(e){} };
+
+  window.sendTransferCode = function(){
+    var btn = $('sendCodeBtn');
+    btn.disabled = true;
+    btn.textContent = '已发送 (60s)';
+    var s = 60;
+    var timer = setInterval(function(){
+      s--;
+      btn.textContent = '已发送 (' + s + 's)';
+      if(s<=0){ clearInterval(timer); btn.disabled=false; btn.textContent='获取验证码'; }
+    },1000);
+    alert('验证码已发送到 178****69096（演示环境：验证码为 123456）');
+  };
+
+  window.confirmTransfer = function(){
+    var from = $('f_fromAccount').value;
+    var to   = $('f_toAccount').value;
+    var amount = parseFloat($('f_amount').value);
+    var code   = ($('f_transferCode').value||'').trim();
+    var remark = ($('f_transferRemark').value||'').trim();
+
+    if(!from){ alert('请选择转出账户'); return; }
+    if(!to){ alert('请选择转入账户'); return; }
+    if(from===to){ alert('转出和转入账户不能相同'); return; }
+    if(!amount || amount<=0){ alert('请输入有效的划拨金额'); return; }
+    var max = getAccountBalance(from); if(amount>max){ alert('划拨金额超出可用余额：'+fmtAmount(max)); return; }
+    if(!code){ alert('请输入验证码'); return; }
+    if(code!=='123456'){ alert('验证码错误（演示环境请输入 123456）'); return; }
+
+    var fromP = (from!=='enterprise') ? findProject(String(from).replace('prj:','')) : null;
+    var toP   = (to!=='enterprise')   ? findProject(String(to).replace('prj:','')) : null;
+    if(fromP && fromP.status==='inactive'){ alert('转出子公司已停用，无法划拨'); return; }
+    if(toP   && toP.status==='inactive'){ alert('转入子公司已停用，无法划拨'); return; }
+
+    var fromName = from==='enterprise' ? '企业资金账户' : (fromP?fromP.name:from);
+    var toName   = to==='enterprise'   ? '企业资金账户' : (toP?toP.name:to);
+
+    // 方向：从企业到子公司→in（子公司入账）；其他（子公司→企业、子公司→子公司）一律展示为 out（从子公司视角为调出），这里以全局表格展示为基准：统一用 from/to 计算 direction 一致
+    var direction = (from==='enterprise' && String(to).indexOf('prj:')===0) ? 'in' : 'out';
+    var product = toP?toP.product : (fromP?fromP.product:'');
+    var projectId = toP?toP.id : (fromP?fromP.id:'');
+
+    if(from==='enterprise') ENTERPRISE_BALANCE -= amount;
+    else                    fromP.balance       = Number(fromP.balance||0) - amount;
+    if(to==='enterprise')   ENTERPRISE_BALANCE += amount;
+    else {
+      toP.balance = Number(toP.balance||0) + amount;
+      if(direction==='in') toP.totalIn = Number(toP.totalIn||0) + amount;
+      else                 toP.totalOut= Number(toP.totalOut||0) + amount;
+    }
+    if(fromP && fromP.status && from==='enterprise'===false){
+      // 子公司调出累计：fromP.totalOut 累加
+      if(String(from).indexOf('prj:')===0) fromP.totalOut = Number(fromP.totalOut||0) + amount;
+    }
+    // 子公司间划转：收款子公司 totalIn 已在 direction 分支加；若 direction=out（子公司→子公司），手工补 totalIn
+    if(String(from).indexOf('prj:')===0 && String(to).indexOf('prj:')===0 && toP){
+      toP.totalIn = Number(toP.totalIn||0) + amount;
+    }
+
+    var now = new Date();
+    function pad(n){return n<10?'0'+n:''+n;}
+    var ts = now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+' '+
+             pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
+    records.unshift({
+      no:'TR'+now.getFullYear()+pad(now.getMonth()+1)+pad(now.getDate())+String(Math.floor(Math.random()*900)+100),
+      direction:direction, from:fromName, to:toName, amount:amount,
+      remark:remark||'资金划拨', operator:'当前用户', status:'成功', time:ts,
+      product:product, projectId:projectId
+    });
+
+    closeTransferModal();
+    updateStats();
+    updateEnterpriseAvail();
+    renderProjects();
+    renderRecords();
+    alert('划拨成功！'+fmtAmount(amount)+' 已从 '+fromName+' 划转至 '+toName);
+  };
+
+  // ============ 流水详情 ============
+  window.viewProjectRecords = function(projectId){
+    window._openSafeModal({
+      modalId: 'recordDetailModal',
+      toastTitle: '正在打开划拨流水…',
+      toastBody: '正在加载子公司完整流水表格…',
+      toastOkTitle: '✓ 划拨流水已打开',
+      toastOkBody:  '最多 400px 高滚动浏览；关闭按钮在右上角或空白遮罩',
+      prep: function(){
+        var p = findProject(projectId);
+        if(!p){ showPageDebugToast('子公司不存在','未找到子公司 ID='+projectId,'error',4500); return false; }
+        var list = [];
+        for(var i=0;i<records.length;i++){
+          var r = records[i];
+          if((r.to && r.to.indexOf(p.name)>=0) || (r.from && r.from.indexOf(p.name)>=0) || r.projectId===p.id) list.push(r);
+        }
+        var body = '<h3 style="margin:0 0 16px;font-size:16px;font-weight:600;">' + p.id + ' · ' + p.name + ' · 划拨流水</h3>';
+        body += '<div style="margin-bottom:14px;padding:10px 12px;background:var(--gray-50);border-radius:8px;font-size:13px;color:var(--text-regular);">'+
+                '余额 '+fmtAmount(p.balance)+' · 累计入 '+fmtAmount(p.totalIn)+' · 累计出 '+fmtAmount(p.totalOut)+'</div>';
+        if(list.length===0){
+          body += '<div class="empty-state"><div class="empty-state-icon">💸</div>暂无划拨记录</div>';
+        } else {
+          // 分页：每页 10 条
+          var pageSize = 10;
+          var totalPages = Math.ceil(list.length / pageSize);
+          var bodyParts = [];
+          for(var pg=0; pg<totalPages; pg++){
+            var start = pg * pageSize;
+            var end = Math.min(start + pageSize, list.length);
+            bodyParts.push('<div class="record-page" data-page="'+pg+'" style="display:'+(pg===0?'block':'none')+';">');
+            bodyParts.push('<table class="data-table"><thead><tr>'+
+              '<th>流水号</th><th>方向</th><th>金额</th><th>对方账户</th><th>操作人</th><th>时间</th>'+
+              '</tr></thead><tbody>');
+            for(var i=start; i<end; i++){
+              var r = list[i];
+              var sign = r.direction==='in'?'+':'-';
+              var cls  = r.direction==='in'?'flow-in':'flow-out';
+              var peer = (r.direction==='in' ? r.from : r.to);
+              bodyParts.push('<tr>'
+                + '<td>'+r.no+'</td>'
+                + '<td>'+(r.direction==='in'?'<span class="tag tag-success">入账</span>':'<span class="tag tag-warning">调出</span>')+'</td>'
+                + '<td class="'+cls+'">'+sign+fmtAmount(r.amount)+'</td>'
+                + '<td>'+peer+'</td>'
+                + '<td>'+(r.operator||'—')+'</td>'
+                + '<td style="white-space:nowrap;">'+r.time+'</td>'
+                + '</tr>');
+            }
+            bodyParts.push('</tbody></table></div>');
+          }
+          body += bodyParts.join('');
+          // 分页控件
+          body += '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:10px;border-top:1px solid var(--gray-100);font-size:13px;">';
+          body += '<span style="color:var(--text-muted);">共 '+list.length+' 条</span>';
+          body += '<div class="record-pagination" data-total-pages="'+totalPages+'" data-list-length="'+list.length+'" style="display:flex;gap:4px;align-items:center;"></div>';
+          body += '</div>';
+          // 导出按钮
+          body += '<div style="margin-top:10px;text-align:right;">'
+                + '<button class="btn-primary" style="padding:6px 14px;font-size:13px;" onclick="exportProjectRecords(\''+p.id+'\')">'
+                + '<svg viewBox="0 0 24 24" fill="none" width="12" height="12" style="vertical-align:-1px;margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2"/><polyline points="7 10 12 15 17 10" stroke="currentColor" stroke-width="2"/><line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2"/></svg>'
+                + '导出流水</button></div>';
+        }
+        $('recordDetailBody').innerHTML = body;
+        // 初始化分页
+        if(totalPages > 0){
+          initRecordPagination(totalPages);
+        }
+      }
+    });
+  };
+  window.closeRecordDetail = function(){
+    try{
+      var m = $('recordDetailModal'); if(m) _hideModal(m);
+    }catch(e){}
+  };
+
+  // ===== 划拨流水分页 =====
+  var _recordPagination = { currentPage: 0, totalPages: 1 };
+  function initRecordPagination(totalPages) {
+    _recordPagination.totalPages = totalPages;
+    _recordPagination.currentPage = 0;
+    renderRecordPagination();
+  }
+  function renderRecordPagination() {
+    var container = document.querySelector('.record-pagination');
+    if(!container) return;
+    var tp = _recordPagination.totalPages;
+    var cp = _recordPagination.currentPage;
+    var html = '';
+    html += '<button class="pg-btn" data-act="prev" '+(cp===0?'disabled style="opacity:.4;cursor:not-allowed;"':'style="cursor:pointer;"')+'>‹</button>';
+    // 显示最多 5 个页码
+    var startP = Math.max(0, cp - 2);
+    var endP = Math.min(tp, startP + 5);
+    startP = Math.max(0, endP - 5);
+    for(var p = startP; p < endP; p++){
+      html += '<button class="pg-num" data-page="'+p+'" '+(p===cp?'style="background:#1677FF;color:#fff;border-color:#1677FF;cursor:pointer;"':'style="cursor:pointer;"')+'>'+(p+1)+'</button>';
+    }
+    html += '<button class="pg-btn" data-act="next" '+(cp>=tp-1?'disabled style="opacity:.4;cursor:not-allowed;"':'style="cursor:pointer;"')+'>›</button>';
+    container.innerHTML = html;
+    // 绑定事件
+    container.querySelectorAll('.pg-num').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var pg = parseInt(this.getAttribute('data-page'));
+        switchRecordPage(pg);
+      });
+    });
+    container.querySelectorAll('.pg-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var act = this.getAttribute('data-act');
+        if(act==='prev' && _recordPagination.currentPage > 0) switchRecordPage(_recordPagination.currentPage - 1);
+        if(act==='next' && _recordPagination.currentPage < _recordPagination.totalPages - 1) switchRecordPage(_recordPagination.currentPage + 1);
+      });
+    });
+    // 添加页码按钮样式
+    container.querySelectorAll('button').forEach(function(b){
+      if(!b.style.border) { b.style.border = '1px solid #d9d9d9'; b.style.background = '#fff'; b.style.borderRadius = '4px'; b.style.padding = '2px 8px'; b.style.fontSize = '12px'; }
+    });
+  }
+  function switchRecordPage(pg) {
+    _recordPagination.currentPage = pg;
+    var pages = document.querySelectorAll('.record-page');
+    for(var i = 0; i < pages.length; i++){
+      pages[i].style.display = (i === pg) ? 'block' : 'none';
+    }
+    renderRecordPagination();
+  }
+  window.exportProjectRecords = function(projectId) {
+    try{
+      var p = findProject(projectId);
+      if(!p){ alert('未找到子公司'); return; }
+      var list = [];
+      for(var i=0;i<records.length;i++){
+        var r = records[i];
+        if((r.to && r.to.indexOf(p.name)>=0) || (r.from && r.from.indexOf(p.name)>=0) || r.projectId===p.id) list.push(r);
+      }
+      if(!list.length){ alert('该子公司暂无流水可导出'); return; }
+      function csvEsc(s){ if(s===undefined||s===null) s=''; s=String(s); return /[",\n\r]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; }
+      var headers = ['流水号','方向','金额','对方账户','操作人','备注','时间'];
+      var rows = [headers.join(',')];
+      for(var j=0;j<list.length;j++){
+        var r = list[j];
+        var dir = r.direction==='in'?'入账':'调出';
+        var sign = r.direction==='in'?'+':'-';
+        var peer = r.direction==='in'?r.from:r.to;
+        rows.push([r.no, dir, sign+Number(r.amount).toFixed(2), peer, (r.operator||''), (r.remark||''), r.time].map(csvEsc).join(','));
+      }
+      var d = new Date();
+      function pad2(n){return n<10?'0'+n:''+n;}
+      var fname = projectId+'_划拨流水_'+d.getFullYear()+pad2(d.getMonth()+1)+pad2(d.getDate())+'.csv';
+      var csv = '\uFEFF' + rows.join('\r\n');
+      // 用 Blob + a[download] 触发下载（不替换页面）
+      try{
+        var blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url; a.download = fname;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function(){ URL.revokeObjectURL(url); }, 2000);
+      }catch(e){
+        // fallback：弹窗显示 CSV 内容供复制
+        alert('导出 '+list.length+' 条记录，请复制下方内容另存为 CSV：\n\n' + csv.substring(0, 2000));
+      }
+    }catch(err){
+      try{ console.error('exportProjectRecords err:', err); }catch(e){}
+      alert('导出失败，请重试');
+    }
+  };
+
+  // ============ 导出：CSV（使用 Blob + a[download]，避免卡死） ============
+  window.exportRecords = function(){
+    try{
+      var headers = ['流水号','产品','划拨方向','转出账户','转入账户','金额','备注','操作人','状态','划拨时间'];
+      var list = records.filter(function(r){
+        if(currentTab==='all') return true;
+        return r.direction===currentTab;
+      });
+      if(!list.length){ alert('暂无数据可导出'); return; }
+      function csvEsc(s){ if(s===undefined||s===null) s=''; s=String(s); return /[",\n\r]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; }
+      var rows = [headers.join(',')];
+      for(var i=0;i<list.length;i++){
+        var r = list[i];
+        var pd = (PRODUCTS[r.product]||{label:'未分类'}).label;
+        var dir = r.direction==='in' ? '企业→子公司（入账）' : '子公司→企业/子公司（调出）';
+        var sign = r.direction==='in' ? '+' : '-';
+        rows.push([r.no, pd, dir, r.from, r.to, sign+'¥'+Number(r.amount).toFixed(2), (r.remark||''), (r.operator||''), r.status, r.time].map(csvEsc).join(','));
+      }
+      var ymd = new Date();
+      function pad(n){return n<10?'0'+n:''+n;}
+      var fname = '子公司划拨流水_'+ymd.getFullYear()+pad(ymd.getMonth()+1)+pad(ymd.getDate())+'.csv';
+      var csv = '\uFEFF' + rows.join('\r\n');
+      // 安全下载：Blob + createObjectURL，不弹窗不卡页
+      var blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = fname;
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 3000);
+      showPageDebugToast('导出成功', '已导出 '+list.length+' 条流水到 '+fname, 'success', 2500);
+    }catch(err){
+      try{ console.error('exportRecords err:', err); }catch(e){}
+      alert('导出失败，请重试');
+    }
+  };
+
+  // ============ 更新统计卡片 ============
+  function updateStats(){
+    var totalPool = 0, activeCount = 0;
+    for(var i=0;i<projects.length;i++){ totalPool += Number(projects[i].balance||0); if(projects[i].status==='active') activeCount++; }
+    var els = document.querySelectorAll('.stat-card-value');
+    for(var i=0;i<els.length;i++){
+      if(i===0) els[i].textContent = fmtAmount(ENTERPRISE_BALANCE);
+      if(i===1) els[i].textContent = fmtAmount(totalPool);
+      if(i===2) els[i].textContent = String(activeCount);
+      if(i===3) els[i].textContent = String(records.length);
+    }
+    var subsEl = document.querySelectorAll('.stat-card-sub');
+    if(subsEl && subsEl[2]){
+      var paused = 0, done = 0, inactive = 0;
+      for(var i=0;i<projects.length;i++){
+        if(projects[i].status==='paused') paused++;
+        else if(projects[i].status==='done') done++;
+        else if(projects[i].status==='inactive') inactive++;
+      }
+      subsEl[2].textContent = '进行中 '+activeCount+' · 已暂停 '+paused+' · 已停用 '+inactive+' · 已完成 '+done;
+    }
+    if(subsEl && subsEl[3]){
+      var monthAmt = 0;
+      var ym = new Date(); ym = ym.getFullYear()+'-'+(ym.getMonth()<9?'0':'')+(ym.getMonth()+1);
+      for(var i=0;i<records.length;i++){ if((records[i].time||'').indexOf(ym)===0) monthAmt += Number(records[i].amount||0); }
+      subsEl[3].textContent = '本月累计 '+fmtAmount(monthAmt);
+    }
+  }
+
+  // 暴露到 window，供企业切换时调用
+  window.updateStats = updateStats;
+
+  // ============ 初始化（安全 try/catch 防卡死：任意一步失败不影响后续）============
+  try{ _retrofitTabs(); }catch(e){ try{ console.error('init:retrofitTabs', e); }catch(x){} }
+  try{ _applyTabActive(); }catch(e){ try{ console.error('init:applyTabActive', e); }catch(x){} }
+  try{ renderProjects(); }catch(e){ try{ console.error('init:renderProjects', e); }catch(e2){} }
+  try{ renderRecords();  }catch(e){ try{ console.error('init:renderRecords',  e); }catch(e2){} }
+  try{ updateStats();    }catch(e){ try{ console.error('init:updateStats',    e); }catch(e2){} }
+  try{ updateEnterpriseAvail(); }catch(e){ try{ console.error('init:enterpriseAvail', e); }catch(x){} }
+  // 兜底：再 setTimeout 渲染一次（防范后续脚本还在初始化 data）
+  try{ setTimeout(function(){
+    try{ renderProjects(); }catch(e){}
+    try{ renderRecords();  }catch(e){}
+    try{ updateStats();    }catch(e){}
+    try{ bindDelegates();  }catch(e){}
+  }, 0); }catch(e){}
+  try{ setTimeout(function(){
+    try{ renderProjects(); }catch(e){}
+    try{ bindDelegates();  }catch(e){}
+    // 强制挂载一次（以防 onclick 里还未暴露）：按钮加第二次兜底
+    try{
+      var nb = document.getElementById('btnNewProject');
+      if(nb && !nb._bound){
+        nb.addEventListener('click', function(ev){
+          try{ if(ev && ev.preventDefault) ev.preventDefault(); }catch(e){}
+          if(window.safeOpenProjectModal)      window.safeOpenProjectModal();
+          else if(window.openProjectModal)    window.openProjectModal();
+        }, false);
+        nb._bound = true;
+      }
+      var eb = document.getElementById('btnExportRecords');
+      if(eb && !eb._bound){
+        eb.addEventListener('click', function(ev){
+          try{ if(ev && ev.preventDefault) ev.preventDefault(); }catch(e){}
+          if(window.exportRecords) window.exportRecords();
+        }, false);
+        eb._bound = true;
+      }
+    }catch(e){}
+  }, 50); }catch(e){}
+
+  // ========= 兜底：新建子公司 / 编辑子公司 / 所有子公司管理弹窗的标题绝对保证 left-aligned =========
+// （用户反复反馈"新建子公司的标题都左对齐" → 即使外部 main.js 或缓存 CSS 重写了样式，这里的 10 次 × 50ms 轮询 + DOM 打开事件都会把
+//    .modal-header / .modal-header * / .modal-title 的 inline style 设成 text-align:left !important，彻底覆盖任何居中规则）
+(function() {
+  function _forceTitlesLeftOnce() {
+    var i, j, nodes;
+    nodes = document.querySelectorAll(
+      // 全部 5 个 modal：新建/编辑/划拨/用户分配/流水详情/子公司详情（通过 .modal-header 与 .modal-title 这两个公共类抓全）
+      '.modal-header, .modal-header *, .modal-title'
+    );
+    for (i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      try {
+        // inline style 层级最高：!important 声明可以覆盖除了 <style> 之外的规则，但 !important 只在 style attribute 内写也能（老浏览器兼容：直接写 textAlign 即可）
+        el.style.setProperty('text-align', 'left', 'important');
+      } catch (err) { /* ignore */ }
+    }
+    // 兼容：部分浏览器不认 setProperty important in inline → 额外冗余写法兜底
+    var titles = document.querySelectorAll('.modal-title');
+    for (j = 0; j < titles.length; j++) {
+      titles[j].setAttribute('align', 'left');  // HTML4 级兼容兜底（虽然 HTML5 已废弃，但某些用户代理缓存规则下仍可生效）
+    }
+  }
+  function _pollLeftAlign(retryLeft) {
+    if (retryLeft <= 0) return;
+    _forceTitlesLeftOnce();
+    setTimeout(function () { _pollLeftAlign(retryLeft - 1); }, 50);
+  }
+  // 每次任何按钮打开 / safeOpenProjectModal / closeProjectModal / 点击子公司列表时，都会走一次 10×50ms 兜底：
+  // 1) 页面初始化一次
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () { _pollLeftAlign(10); });
+  } else {
+    _pollLeftAlign(10);
+  }
+  // 2) MutationObserver：只要有任何 active modal 或 display:flex 变化，再走一轮兜底（防 main.js 异步 init 写回居中）
+  try {
+    var mo = new MutationObserver(function () { _pollLeftAlign(6); });
+    mo.observe(document.documentElement, { attributes: true, attributeFilter: ['style', 'class'], subtree: true, childList: true });
+  } catch (e) { /* ignore old browsers without MutationObserver */ }
+  // 3) overlay 点击委托也会触发一轮兜底，因为原来就已有 close 委托
+  document.addEventListener('click', function () { _pollLeftAlign(5); }, true);
+  document.addEventListener('click', function () { setTimeout(function(){ _pollLeftAlign(5); }, 200); }, false);
+})();
+
+
+// ============ 事件委托：点击 modal-overlay 空白处关闭 ============
+  try{
+    document.addEventListener('click', function(e){
+      var t = e.target;
+      if(!t || !t.classList) return;
+      if(t.classList.contains('modal-overlay')){
+        // 按 id 路由到对应 close 函数（清理状态），兜底用 _hideModal
+        var id = t.getAttribute('id') || '';
+        try{
+          if(id==='projectModal')      { window.closeProjectModal && window.closeProjectModal(); return; }
+          if(id==='projectDetailModal'){ window.closeProjectDetail && window.closeProjectDetail(); return; }
+          if(id==='assignSubModal')    { window.closeAssignSubModal && window.closeAssignSubModal(); return; }
+          if(id==='transferModal')     { window.closeTransferModal  && window.closeTransferModal();  return; }
+          if(id==='recordDetailModal') { window.closeRecordDetail   && window.closeRecordDetail();   return; }
+        }catch(x){}
+        _hideModal(t);
+      }
+    });
+  }catch(e){ /* ignore */ }
+
+  // —— FIX (暴露到全局 + 持久化，供 js/main.js 的"用户子公司名"显示读取) ——
+  // 此 script 是 IIFE（见文件开头 (function(){...})()），内部 `var projects` / `var SUBACCOUNTS`
+  // 仅属于函数作用域，不会挂到 window 全局。而 js/main.js 的 getCurrentUserAssignedProjects
+  // 通过 window.projects 读取子公司数据来匹配"民匠有约·子公司名"，因此必须在此处显式挂出。
+  // 同时写入 localStorage，保证用户从"产品中心 / 账号安全 / 用户管理..."等非子公司页直接刷新时，
+  // 右上角账号下拉卡片也依然能正确显示子公司名（无需先进入过子公司管理页）。
+  try {
+    window.PRODUCTS         = PRODUCTS;
+    window.PRODUCT_DEFAULT  = PRODUCT_DEFAULT;
+    window.SUBACCOUNTS      = SUBACCOUNTS;
+    window.projects         = projects;
+
+    // 写入全局子公司列表（企业下所有可用子公司）
+    localStorage.setItem('mjyy_projects',        JSON.stringify(window.projects));
+    localStorage.setItem('mjyy_sub_accounts',    JSON.stringify(window.SUBACCOUNTS));
+    localStorage.setItem('mjyy_products_dict',   JSON.stringify(window.PRODUCTS));
+    localStorage.setItem('mjyy_product_default', String(window.PRODUCT_DEFAULT || ''));
+    // 有默认产品时，若企业列表里的模拟企业还没 products 字段，也补一份默认配置
+    try {
+      var listRaw = localStorage.getItem('mjyy_enterprise_list');
+      if (listRaw) {
+        var list = JSON.parse(listRaw);
+        var changed = false;
+        for (var i = 0; i < list.length; i++) {
+          if (!list[i].products || !Array.isArray(list[i].products) || list[i].products.length === 0) {
+            list[i].products = [{ code: String(window.PRODUCT_DEFAULT || 'mjyy') }];
+            changed = true;
+          }
+        }
+        if (changed) localStorage.setItem('mjyy_enterprise_list', JSON.stringify(list));
+      }
+    } catch (e2) { /* ignore */ }
+
+    // —— 关键同步：将子公司（projects）同步到企业列表（mjyy_enterprise_list）
+    // 使 account-project.html 创建的子公司能在「切换企业-子公司登录」弹窗中可见
+    (function syncProjectsToEnterprises() {
+      try {
+        var curId = localStorage.getItem('mjyy_current_enterprise_id');
+        var listRaw2 = localStorage.getItem('mjyy_enterprise_list');
+        if (!listRaw2 || !curId) return;
+        var list2 = JSON.parse(listRaw2);
+        if (!Array.isArray(list2)) return;
+        // 若当前企业是子公司（有 parentId），回退到其母公司作为挂载点
+        var curEnt = list2.find(function(e) { return e && e.id === curId; });
+        var parentEntId = curId;
+        if (curEnt && curEnt.parentId) parentEntId = curEnt.parentId;
+
+        var projList = Array.isArray(window.projects) ? window.projects : [];
+        var changed2 = false;
+
+        for (var i = 0; i < projList.length; i++) {
+          var p = projList[i];
+          if (!p || !p.id) continue;
+          // 子公司的企业 ID 使用 'PROJ:' 前缀，避免与母公司的 ENT* 冲突
+          var subEntId = 'PROJ:' + p.id;
+          var existingIdx = -1;
+          for (var j = 0; j < list2.length; j++) {
+            if (list2[j] && list2[j].id === subEntId) { existingIdx = j; break; }
+          }
+          var subEnt = {
+            id: subEntId,
+            name: p.name,
+            creditCode: p.creditCode || '',
+            legalMobile: p.phone || '',
+            role: '子管理员',
+            parentId: parentEntId,
+            verified: true,
+            status: p.status === 'inactive' ? 'inactive' : 'active',
+            product: p.product || 'mjyy',
+            balance: p.balance || 0,
+            projectId: p.id,
+            createdAt: p.createdAt || Date.now(),
+            isDefault: false
+          };
+          if (existingIdx >= 0) {
+            // 更新
+            subEnt.createdAt = list2[existingIdx].createdAt || subEnt.createdAt;
+            list2[existingIdx] = subEnt;
+          } else {
+            list2.push(subEnt);
+          }
+          changed2 = true;
+        }
+
+        // 删除已不存在的项目对应的子公司企业记录
+        var validIds = {};
+        for (var k = 0; k < projList.length; k++) {
+          if (projList[k] && projList[k].id) validIds['PROJ:' + projList[k].id] = true;
+        }
+        var filtered = [];
+        for (var m = 0; m < list2.length; m++) {
+          var ent = list2[m];
+          if (ent && /^PROJ:/.test(ent.id)) {
+            if (validIds[ent.id]) filtered.push(ent);
+            else changed2 = true; // 移除
+          } else {
+            filtered.push(ent);
+          }
+        }
+        if (changed2) {
+          localStorage.setItem('mjyy_enterprise_list', JSON.stringify(filtered));
+        }
+      } catch (e) { /* ignore */ }
+    })();
+  } catch (e3) { /* ignore */ }
+
+})();
+</script>
+
+<script>
+  // 控制台/认证页专用：禁止 !isLoggedIn → display:none #topbarUser / #topbarMessage
+  window.SKIP_LOGIN_CHECK = true;
+  window.SKIP_TOPBAR_DISPLAY_NONE = true;
+  (function() {
+    var isLoggedIn = localStorage.getItem('mjyy_logged_in') === 'true';
+    if (!isLoggedIn && !window.SKIP_LOGIN_CHECK) { window.location.href = 'login.html'; return; }
+    var userData = JSON.parse(localStorage.getItem('mjyy_user_data') || '{}');
+    var personalData = JSON.parse(localStorage.getItem('mjyy_personal_data') || '{}');
+    var enterpriseData = JSON.parse(localStorage.getItem('mjyy_enterprise_data') || '{}');
+    var identityVerified = localStorage.getItem('mjyy_identity_verified') === 'true';
+
+    function maskMobile(m) { if (!m || m.length < 11) return m || '--'; return m.substring(0, 3) + '****' + m.substring(7); }
+    function maskId(id) { if (!id) return '--'; return id.substring(0, 4) + '****' + id.substring(id.length - 4); }
+
+    var displayName = '';
+    if (enterpriseData.companyName) displayName = enterpriseData.companyName;
+    else if (personalData.realName) displayName = personalData.realName;
+    else if (userData.mobile) displayName = maskMobile(userData.mobile);
+    else displayName = '合肥天野保洁有限公司';
+
+    var avatarChar = displayName ? displayName.charAt(0) : '企';
+    var accountId = userData.mobile || userData.accountId || 'MJ' + Date.now().toString().slice(-8);
+
+    var topbarAvatar = document.getElementById('topbarAvatar');
+    if (topbarAvatar) topbarAvatar.textContent = avatarChar;
+    var dropdownAvatar = document.getElementById('dropdownAvatar');
+    if (dropdownAvatar) dropdownAvatar.textContent = avatarChar;
+    var dropdownName = document.getElementById('dropdownName');
+    if (dropdownName) dropdownName.textContent = displayName;
+    var dropdownId = document.getElementById('dropdownId');
+    if (dropdownId) dropdownId.textContent = '账号ID：' + maskId(accountId);
+
+    var accountType = localStorage.getItem('mjyy_account_type') || 'main';
+    var dropdownBadge = document.getElementById('dropdownBadge');
+    if (dropdownBadge) {
+      dropdownBadge.textContent = accountType === 'sub' ? '用户' : '主账号';
+      dropdownBadge.style.background = accountType === 'sub' ? '#FFF7E6' : 'var(--brand-primary-50)';
+      dropdownBadge.style.color = accountType === 'sub' ? '#FF7D00' : 'var(--brand-primary)';
+    }
+
+    if (accountType === 'sub') {
+      var subEntMgmt = document.getElementById('sidebarSubEntMgmt');
+      if (subEntMgmt) subEntMgmt.style.display = 'none';
+    }
+  })();
+</script>
+
+<script>
+  window.SKIP_LOGIN_CHECK = true;
+  window.SKIP_TOPBAR_DISPLAY_NONE = true;
+  (function ensureTopbarVisible(){
+    function run(){
+      var tu = document.getElementById("topbarUser"), tm = document.getElementById("topbarMessage");
+      if (tu){ tu.style.display = "flex"; tu.style.visibility="visible"; if (!tu.children.length) tu.innerHTML = '<a href="login.html" style="display:inline-flex;align-items:center;padding:6px 16px;border-radius:6px;background:var(--brand-primary);color:#fff;font-size:13px;font-weight:500;text-decoration:none;white-space:nowrap;">登录平台</a>'; }
+      if (tm){ tm.style.display = "flex"; tm.style.visibility="visible"; }
+    }
+    try{run()}catch(e){}
+    document.addEventListener("DOMContentLoaded", run);
+    setTimeout(run, 50); setTimeout(run, 300);
+  })();
+</script>
+<script src="js/main.js?v=1787772022"></script>
+<!-- 实时诊断面板：直接显示子公司名匹配链路的每一步状态 -->
+<script>
+(function(){
+  function __diag(){
+    var lines = [];
+    try {
+      var ud = JSON.parse(localStorage.getItem('mjyy_user_data') || '{}');
+      var accType = localStorage.getItem('mjyy_account_type') || '';
+      var list = JSON.parse(localStorage.getItem('mjyy_enterprise_list') || '[]');
+      var curId = localStorage.getItem('mjyy_current_enterprise_id') || '';
+      var cur = list.find(function(e){ return e && e.id === curId; }) || null;
+      var roleText = '';
+      if (cur && cur.role) {
+        roleText = (function(){
+          var r = String(cur.role);
+          if (/用户|子管理|员工|普通成员|操作员|财务助理|子公司主管|现场督导|调度|物料管理|质检/.test(r)) return '用户';
+          if (/主账号|管理员|法人|法定代表人|创始人/.test(r)) return '主账号';
+          return '未知(' + r + ')';
+        })();
+      } else {
+        roleText = '无企业/无role';
+      }
+      var winProjCount = Array.isArray(window.projects) ? window.projects.length : 0;
+      var winSubsCount = Array.isArray(window.SUBACCOUNTS) ? window.SUBACCOUNTS.length : 0;
+      var lsProj = [];
+      try { lsProj = JSON.parse(localStorage.getItem('mjyy_projects') || '[]'); } catch(e){}
+      var projCount = Array.isArray(lsProj) ? lsProj.length : 0;
+      var proj0name = projCount > 0 ? (lsProj[0] && lsProj[0].name || '') : '';
+      var proj0phone = projCount > 0 ? (lsProj[0] && lsProj[0].phone || '') : '';
+      var proj0subs = projCount > 0 && lsProj[0] && Array.isArray(lsProj[0].subs) ? lsProj[0].subs.join(',') : '';
+      var subs0phone = Array.isArray(window.SUBACCOUNTS) && window.SUBACCOUNTS.length > 0 ? window.SUBACCOUNTS[0].phone : '';
+
+      // 直接调 main.js 里的函数
+      var assigned = [];
+      try {
+        if (typeof window.getCurrentUserAssignedProjects === 'function') {
+          assigned = window.getCurrentUserAssignedProjects(ud, cur);
+        } else {
+          assigned = ['FUNCTION_NOT_EXPORTED'];
+        }
+      } catch(e) { assigned = ['ERR:' + e.message]; }
+
+      // DOM 检查
+      var projectEls = document.querySelectorAll('#dropdownProject, .user-dropdown-project');
+      var elTexts = [];
+      for (var i = 0; i < projectEls.length; i++) {
+        elTexts.push(projectEls[i].textContent + '|display=' + projectEls[i].style.display);
+      }
+
+      lines.push('【用户】mobile=' + (ud.mobile || '""') + ' phone=' + (ud.phone || '""') + ' accountId=' + (ud.accountId || '""') + ' name=' + (ud.name || '""'));
+      lines.push('【account_type】' + accType);
+      lines.push('【当前企业】' + (cur ? cur.name : 'null') + ' / role=' + (cur ? cur.role : 'null') + ' → ' + roleText);
+      lines.push('【子公司数据源】window.projects=' + winProjCount + '条  localStorage=' + projCount + '条');
+      lines.push('  [0] name=' + proj0name + ' phone=' + proj0phone + ' subs=' + proj0subs);
+      lines.push('【SUBACCOUNTS】window.SUBACCOUNTS=' + winSubsCount + '条  首条phone=' + subs0phone);
+      lines.push('【getCurrentUserAssignedProjects 返回】' + JSON.stringify(assigned));
+      lines.push('【DOM #dropdownProject】共' + projectEls.length + '个  内容=[' + elTexts.join(' || ') + ']');
+      lines.push('【#dropdownMetaRow】display=' + (function(){ var r = document.getElementById('dropdownMetaRow'); return r ? r.style.display : 'NOT_FOUND'; })());
+      lines.push('【#dropdownBadge】text=' + (function(){ var b = document.getElementById('dropdownBadge'); return b ? b.textContent : 'NOT_FOUND'; })() + ' display=' + (function(){ var b = document.getElementById('dropdownBadge'); return b ? b.style.display : ''; })());
+      lines.push('【#dropdownId】text=' + (function(){ var b = document.getElementById('dropdownId'); return b ? b.textContent : 'NOT_FOUND'; })() + ' display=' + (function(){ var b = document.getElementById('dropdownId'); return b ? b.style.display : ''; })());
+    } catch(e) {
+      lines.push('诊断异常:' + e.message);
+    }
+    return lines.join('\n');
+  }
+
+  // 等 DOM 就绪后每秒刷新诊断面板
+  var panel = document.createElement('div');
+  panel.id = '__diag_panel';
+  panel.style.cssText = 'position:fixed;bottom:10px;left:10px;z-index:99999;max-width:480px;max-height:50vh;overflow:auto;background:rgba(0,0,0,.85);color:#0f0;font:11px/1.5 monospace;padding:10px 12px;border-radius:8px;white-space:pre-wrap;box-shadow:0 4px 16px rgba(0,0,0,.3);';
+  panel.textContent = '诊断中...';
+  document.body.appendChild(panel);
+
+  function refresh(){
+    var text = __diag();
+    panel.textContent = text;
+  }
+  refresh();
+  setInterval(refresh, 1500);
+  // 也挂到 window 方便 console 调用
+  window.__diag = __diag;
+})();
+</script>
+<!-- 页面级调试提示条：点击新建子公司无响应时，用户可以直接从右下角看到实际触发反馈 -->
+<div id="_pageDebugToast" role="status" aria-live="polite"><div class="_dbt_t" id="_pageDebugToastTitle"></div><div class="_dbt_b" id="_pageDebugToastBody"></div></div>
+<script src="js/enterprise-switch.js?v=19"></script>
+
+<script src="js/annotation.js" defer></script>
+</body>
+</html>

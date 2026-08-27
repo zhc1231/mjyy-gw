@@ -1,0 +1,2043 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>角色编辑 - 民匠有约</title>
+  <link rel="stylesheet" href="css/style.css?v=2025fix10">
+  <style>
+    :root {
+      --brand-primary: #1677FF;
+      --brand-primary-dark: #0958D9;
+      --brand-primary-50: #E6F4FF;
+      --brand-primary-100: #BAE0FF;
+      --sidebar-width: 240px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #f5f6f7;
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+      /* 强制预留纵向滚动条槽：不管内容长短/是否有8px 纵向滚动条，
+         顶部 max-width:1440 居中的 topbar-inner / logo / 面包屑 / 右上角账户芯片
+         的水平坐标在 12 个左侧菜单页面之间完全一致，不会出现 7~8 像素的左右飘移
+         （用户说"顶部 logo/面包屑/右上角不要有位置偏移"的根因） */
+      overflow-y: scroll;
+    }
+
+    /* ===== 顶部导航 ===== */
+    .topbar {
+      background: #fff;
+      border-bottom: none;
+      height: 60px;
+      width: 100%;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 0;
+    }
+
+    .topbar-inner {
+      max-width: 1440px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 40px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .topbar-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--gray-200);
+      margin: 0 12px;
+    }
+
+    .topbar-crumb {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .topbar-crumb b { color: var(--text); font-weight: 600; }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .topbar-title {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+    .topbar-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 13px;
+      color: var(--text-regular);
+      line-height: 1;
+    }
+    .topbar-breadcrumb a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .topbar-breadcrumb a:hover { color: var(--brand-primary); }
+    .topbar-bc-sep { color: var(--text-placeholder); font-size: 12px; margin: 0 2px; }
+    .topbar-bc-current { color: var(--text); font-weight: 500; }
+
+
+    .topbar-back {
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .topbar-back:hover { color: var(--brand-primary); }
+
+
+    .topbar-user {
+      min-width: 280px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 12px 6px 8px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+      background: #fff;
+      border: 1px solid var(--gray-200);
+    }
+
+    .topbar-user:hover { background: var(--gray-50); border-color: var(--gray-300); }
+
+    .topbar-user.active { background: var(--gray-50); border-color: var(--gray-300); }
+
+    .topbar-user .user-dropdown.open,
+    .topbar-user.active .user-dropdown {
+      display: block;
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .topbar-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand-primary) 0%, #1E88FF 100%);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 2px 6px rgba(22, 119, 255, 0.25);
+      flex-shrink: 0;
+    }
+    /* ====== 顶部栏 用户名 + 角色/默认企业 多标签 ====== */
+    .topbar-user-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      max-width: 360px;
+      min-width: 0;
+    }
+
+    .topbar-user-name-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      max-width: 220px;
+    }
+
+    .topbar-account-badge {
+      font-size: 10px;
+      padding: 0 5px;
+      border-radius: 4px;
+      background: var(--brand-primary-50);
+      color: var(--brand-primary);
+      font-weight: 500;
+      line-height: 16px;
+      flex-shrink: 0;
+    }
+    .topbar-account-badge.sub {
+      background: #FFF7E6;
+      color: #FF7D00;
+    }
+    .topbar-user-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      line-height: 1.4;
+    }
+    .topbar-user-chips {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: nowrap;
+      flex-shrink: 0;
+    }
+    .topbar-user-chip {
+      font-size: 10px;
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
+      padding: 1px 6px;
+      border-radius: 4px;
+      line-height: 16px;
+      font-weight: 600;
+      border: 1px solid transparent;
+    }
+    .topbar-user-chip.admin   { background: #EDF4FF; color: #1677FF; border-color: #C7DBFF; }
+    .topbar-user-chip.sub     { background: #FFF7E6; color: #FF7D00; border-color: #FFD591; }
+    .topbar-user-chip.verified   { background: #F0F9EB; color: #52C41A; border-color: #B7EB8F; }
+    .topbar-user-chip.unverified { background: #FFF2E8; color: #FA8C16; border-color: #FFD591; }
+    .topbar-user-chip.phone   { background: var(--gray-100); color: var(--text-secondary); border-color: var(--gray-200); }
+    /* ===== 消息通知 ===== */
+    /* ===== 消息通知 ===== */
+    .topbar-message {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none; flex-shrink: 0;
+    }
+    .topbar-message:hover {
+      background: var(--gray-100);
+      color: var(--brand-primary);
+    }
+    .topbar-message:hover .topbar-message-icon {
+      color: var(--brand-primary);
+    }
+    .topbar-message-icon {
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .topbar-message-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+    .topbar-message-dot {
+      position: absolute;
+      top: -2px;
+      right: -2px;width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #F53F3F;
+      display: none;
+      z-index: 5;
+          box-shadow: 0 0 0 2px #fff;
+    }
+    .topbar-message-dot.show { display: block; }
+    .topbar-message.has-badge .topbar-message-dot {
+      display: none !important;
+    }
+    .topbar-message .topbar-message-badge {
+      position: absolute;
+      top: -3px;
+      right: -6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 16px;
+      height: 14px;
+      padding: 0 4px;
+      border-radius: 7px;
+      background: #F53F3F;
+      color: #fff;
+      font-size: 9px;
+      font-weight: 600;
+      text-align: center;
+      line-height: 1;
+      border: 2px solid #fff;
+      box-sizing: border-box;
+      z-index: 10;
+      box-shadow: 0 1px 3px rgba(245, 63, 63, 0.4);
+    }
+    .message-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 340px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      border: 1px solid var(--gray-200);
+      z-index: 1000;
+      display: none;
+      overflow: hidden;
+    }
+    .topbar-message.open .message-dropdown {
+      display: block;
+    }
+    .message-dropdown-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 14px 16px 10px;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text);
+    }
+    .message-dropdown-clear {
+      font-size: 12px;
+      color: var(--brand-primary);
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .message-dropdown-clear:hover { text-decoration: underline; }
+    .message-dropdown-list {
+      max-height: 320px;
+      overflow-y: auto;
+    }
+    .message-item {
+      display: flex;
+      gap: 10px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--gray-100);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .message-item:last-child { border-bottom: none; }
+    .message-item:hover { background: var(--gray-50); }
+    .message-item.unread { background: #F7FAFF; }
+    .message-item.unread .message-item-title { font-weight: 600; }
+    .message-item-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 14px;
+    }
+    .message-item-icon.system { background: #E8F3FF; color: #1677FF; }
+    .message-item-icon.order { background: #E8F8EB; color: #00B42A; }
+    .message-item-icon.warn { background: #FFF2E8; color: #FA8C16; }
+    .message-item-icon.promo { background: #F3E8FF; color: #722ED1; }
+    .message-item-body {
+      flex: 1;
+      min-width: 0;
+    }
+    .message-item-title {
+      font-size: 13px;
+      color: var(--text);
+      margin-bottom: 2px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .message-item-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+    }
+    .message-item-time {
+      font-size: 11px;
+      color: var(--text-muted);
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .message-dropdown-footer {
+      display: block;
+      text-align: center;
+      padding: 12px;
+      font-size: 13px;
+      color: var(--brand-primary);
+      text-decoration: none;
+      border-top: 1px solid var(--gray-100);
+      font-weight: 500;
+    }
+    .message-dropdown-footer:hover { background: var(--gray-50); }
+    .message-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    /* ===== 站内信 ===== */
+    .topbar-message {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-right: 0;
+    }
+    .topbar-message:hover {
+      background: var(--gray-100);
+      color: var(--brand-primary);
+    }
+    .topbar-message-badge {
+      display: inline-flex;
+      align-items: flex-start;
+      justify-content: center;
+      min-width: 16px;
+      height: 16px;
+      padding: 0 4px;
+      border-radius: 8px;
+      background: #F53F3F;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 600;
+      line-height: 1;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    /* ===== 下拉菜单 当前登录标签 ===== */
+    .user-dropdown-current-tag {
+      display: inline-flex;
+      align-items: flex-start;
+      gap: 3px;
+      font-size: 11px;
+      padding: 1px 7px;
+      border-radius: 4px;
+      background: #F3E8FF;
+      color: #722ED1;
+      font-weight: 500;
+      line-height: 16px;
+    }
+    .user-dropdown-current-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #722ED1;
+      display: inline-block;
+    }
+
+    /* ===== 企业列表 当前登录徽章 ===== */
+    .enterprise-switch-name-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    .enterprise-current-badge {
+      font-size: 10px;
+      padding: 0 5px;
+      border-radius: 3px;
+      background: #F3E8FF;
+      color: #722ED1;
+      font-weight: 500;
+      line-height: 14px;
+      flex-shrink: 0;
+    }
+
+
+
+    .topbar-chevron {
+      width: 14px;
+      height: 14px;
+      color: var(--text-muted);
+      transition: transform 0.2s;
+    }
+
+    .topbar-user.open .topbar-chevron,
+    .topbar-user.active .topbar-chevron { transform: rotate(180deg); }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .topbar-title {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+    .topbar-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 13px;
+      color: var(--text-regular);
+      line-height: 1;
+    }
+    .topbar-breadcrumb a {
+      color: var(--text-regular);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .topbar-breadcrumb a:hover { color: var(--brand-primary); }
+    .topbar-bc-sep { color: var(--text-placeholder); font-size: 12px; margin: 0 2px; }
+    .topbar-bc-current { color: var(--text); font-weight: 500; }
+
+
+    .topbar-back {
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .topbar-back:hover { color: var(--brand-primary); }
+
+
+    .nav-enter-system {
+      display: inline-flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 6px 16px;
+      border-radius: 6px;
+      background: var(--brand-primary);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      flex-shrink: 0;
+      white-space: nowrap;
+      line-height: 1.4;
+    }
+
+    .nav-enter-system:hover { background: var(--brand-primary-dark); }
+
+    /* ===== 用户下拉 ===== */
+    .user-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 280px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      border: 1px solid var(--gray-200);
+      z-index: 1001;
+      display: none;
+      overflow: hidden;
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .user-dropdown-header {
+      padding: 36px 90px 16px 16px;
+      border-bottom: none;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      position: relative;
+      position: relative;
+    }
+
+    .user-dropdown-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--brand-primary-50);
+      color: var(--brand-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .user-dropdown-info { flex: 1; min-width: 0; }
+    .user-dropdown-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 2px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .user-dropdown-id {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    .user-dropdown-tags { display: flex; gap: 6px; margin-top: 6px; }
+    .user-dropdown-tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--brand-primary-50);
+      color: var(--brand-primary);
+      font-weight: 500;
+    }
+    .user-dropdown-tag.verified { background: #E8F8EB; color: #00B42A; }
+    .user-dropdown-tag.pending { background: #FFF7E6; color: #FF7D00; }
+
+    .user-dropdown-body { padding: 8px 0; }
+    .user-dropdown-group { padding: 4px 0; }
+    .user-dropdown-group-title {
+      font-size: 12px;
+      color: var(--text-muted);
+      padding: 4px 16px;
+      font-weight: 500;
+    }
+    .user-dropdown-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 16px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      border: none;
+      background: none;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+      transition: background 0.2s;
+    }
+    .user-dropdown-item:hover { background: var(--gray-100); color: var(--text); }
+    .user-dropdown-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .user-dropdown-item-primary { color: var(--brand-primary); font-weight: 500; }
+    .user-dropdown-divider { height: 1px; background: var(--gray-200); margin: 8px 0; }
+    .user-dropdown-footer { padding: 12px 16px; border-top: 1px solid var(--gray-200); }
+    .user-dropdown-logout {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding: 8px;
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      background: #fff;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .user-dropdown-logout:hover {
+      border-color: var(--brand-primary);
+      color: var(--brand-primary);
+      background: var(--brand-primary-50);
+    }
+
+    /* ===== 页面布局 ===== */
+    .page-layout {
+      display: flex;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding-top: 60px;
+      min-height: 100vh;
+    }
+
+    /* ===== 侧边栏 ===== */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: #fff;
+      border-right: 1px solid var(--gray-200);
+      position: fixed;
+      top: 60px; bottom: 0;
+      left: calc((100vw - 1440px) / 2);
+      overflow-y: auto;
+      padding: 14px 0 24px;
+    }
+
+    .sidebar-section-title {
+      padding: 10px 20px 6px;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .sidebar-menu { list-style: none; }
+
+    .sidebar-link {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 20px;
+      margin: 1px 8px;
+      border-radius: 8px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all 0.15s;
+      cursor: pointer;
+    }
+
+    .sidebar-link:hover { color: var(--brand-primary); background: var(--gray-100); }
+
+    .sidebar-link.active {
+      color: var(--brand-primary);
+      background: var(--brand-primary-50);
+      font-weight: 600;
+    }
+
+    .sidebar-link svg { width: 17px; height: 17px; flex-shrink: 0; display: block; overflow: visible; align-self: center; }
+
+    .sidebar-divider { height: 1px; background: var(--gray-200); margin: 10px 16px; }
+
+    /* ===== 响应式 ===== */
+    @media (max-width: 1440px) {
+      .sidebar { left: 0; }
+    }
+
+    @media (max-width: 768px) {
+      .topbar { padding: 0 16px; }
+      .topbar-inner { padding: 0 16px; }
+      .topbar-crumb { display: none; }
+      .page-layout { flex-direction: column; }
+      .sidebar {
+        position: relative; top: 0; width: 100%;
+        border-right: none; border-bottom: none;
+      }
+      .main-content { margin-left: 0; padding: 16px; }
+    }
+
+    /* ===== 主内容区 ===== */
+    .main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      padding: 24px 32px 40px;
+      min-width: 0;
+    }
+    .page-breadcrumb {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 13px; color: var(--text-muted);
+      margin-bottom: 18px;   /* 与产品中心（account-center 官方基线）完全一致 18px，三页之前 20px 的版本这里也同步覆盖 */
+    }
+    .page-breadcrumb a:hover { color: var(--brand-primary); }
+
+    .page-title-wrap {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 22px; flex-wrap: wrap; gap: 12px;
+    }
+    .page-title { font-size: 24px; font-weight: 700; line-height: 1.2; }
+    .page-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+    .page-actions { display: flex; align-items: center; gap: 10px; }
+
+
+
+    /* ===== 卡片 ===== */
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid var(--gray-200);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 16px 20px;
+      border-bottom: none;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .card-body {
+      padding: 20px;
+    }
+
+    /* ===== 表单 ===== */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .form-label .required { color: #FF4D4F; margin-right: 2px; }
+
+    .form-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+      font-size: 14px;
+      color: var(--text);
+      transition: all 0.2s;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .form-input:focus {
+      border-color: var(--brand-primary);
+      box-shadow: 0 0 0 3px var(--brand-primary-50);
+    }
+
+    .form-textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+      font-size: 14px;
+      color: var(--text);
+      transition: all 0.2s;
+      outline: none;
+      resize: vertical;
+      min-height: 80px;
+      font-family: inherit;
+    }
+
+    .form-textarea:focus {
+      border-color: var(--brand-primary);
+      box-shadow: 0 0 0 3px var(--brand-primary-50);
+    }
+
+    .form-tip {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    /* ===== 权限复选框组 ===== */
+    .permission-section {
+      margin-bottom: 20px;
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .permission-section-header {
+      padding: 12px 16px;
+      background: var(--gray-100);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      border-bottom: none;
+      user-select: none;
+    }
+
+    .permission-section-header strong {
+      font-size: 14px;
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .permission-section-body {
+      padding: 12px 16px;
+    }
+
+    .permission-checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .permission-checkbox {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .permission-checkbox input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+      accent-color: var(--brand-primary);
+    }
+
+    /* ===== 三端平台 Tab ===== */
+    .platform-tabs {
+      display: flex;
+      gap: 6px;
+      border-bottom: none;
+      margin-bottom: 20px;
+      padding: 0 4px;
+    }
+
+    .platform-tab {
+      display: inline-flex;
+      align-items: flex-start;
+      gap: 6px;
+      padding: 10px 20px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border: none;
+      background: none;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      font-family: inherit;
+      font-weight: 500;
+      margin-bottom: -1px;
+    }
+
+    .platform-tab:hover {
+      color: var(--brand-primary);
+    }
+
+    .platform-tab.active {
+      color: var(--brand-primary);
+      border-bottom-color: var(--brand-primary);
+      font-weight: 600;
+    }
+
+    .platform-tab .tab-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gray-300);
+    }
+
+    .platform-tab.active .tab-dot {
+      background: var(--brand-primary);
+    }
+
+    /* ===== 三端平台端类：启用 / 停用（开关） 样式 ===== */
+    .platform-tab .tab-label {
+      line-height: 1;
+    }
+
+    /* 每个端的 Tab 上放的「开关按钮」：点击切换该端启用/停用 */
+    .platform-enable-toggle {
+      position: relative;
+      display: inline-flex;
+      align-items: flex-start;
+      width: 34px;
+      height: 18px;
+      border-radius: 999px;
+      background: var(--brand-primary);
+      cursor: pointer;
+      margin-left: 8px;
+      padding: 2px;
+      box-sizing: border-box;
+      transition: background 0.2s;
+      user-select: none;
+      flex-shrink: 0;
+    }
+    .platform-enable-toggle::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+      transition: all 0.2s;
+    }
+    /* 停用状态（.platform-tab.disabled 内的开关） */
+    .platform-tab.disabled {
+      color: var(--text-muted);
+      opacity: 0.85;
+    }
+    .platform-tab.disabled .tab-dot {
+      background: var(--gray-300);
+    }
+    .platform-tab.disabled .platform-enable-toggle {
+      background: var(--gray-300);
+    }
+    .platform-tab.disabled .platform-enable-toggle::after {
+      right: calc(100% - 16px); /* 拨到左边 */
+    }
+    .platform-tab .tab-status {
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 6px;
+      font-weight: 600;
+      line-height: 1.4;
+      flex-shrink: 0;
+    }
+    .platform-tab .tab-status.status-on {
+      background: #dcfce7;
+      color: #166534;
+    }
+    .platform-tab .tab-status.status-off {
+      background: #f3f4f6;
+      color: var(--text-muted);
+    }
+
+    /* 面板停用态：不禁用整个面板交互，仅通过 checkbox/button 的 disabled 属性置灰 */
+    .platform-panel .platform-disabled-banner {
+      display: none;
+      padding: 10px 16px;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #b91c1c;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .platform-panel.disabled-perm .platform-disabled-banner {
+      display: flex !important;
+    }
+
+    .platform-panel {
+      display: none;
+      position: relative;
+    }
+
+    .platform-panel.active {
+      display: block;
+    }
+
+    .platform-tip {
+      font-size: 12px;
+      color: var(--text-muted);
+      padding: 10px 14px;
+      background: var(--brand-primary-50);
+      border-radius: 6px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .platform-tip svg {
+      width: 14px;
+      height: 14px;
+      color: var(--brand-primary);
+      flex-shrink: 0;
+    }
+
+    .platform-perm-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--gray-100);
+      border-radius: 6px;
+      margin-bottom: 16px;
+    }
+
+    .platform-perm-actions button {
+      font-size: 12px;
+      color: var(--brand-primary);
+      background: #fff;
+      border: 1px solid var(--brand-primary-100);
+      border-radius: 4px;
+      padding: 4px 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .platform-perm-actions button:hover {
+      background: var(--brand-primary-50);
+      border-color: var(--brand-primary);
+    }
+
+    /* ===== 按钮 ===== */
+    .btn-primary {
+      display: inline-flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 20px;
+      background: var(--brand-primary);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .btn-primary:hover { background: var(--brand-primary-dark); }
+
+    .btn-default {
+      display: inline-flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 20px;
+      background: #fff;
+      color: var(--text-secondary);
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .btn-default:hover {
+      border-color: var(--brand-primary);
+      color: var(--brand-primary);
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      padding-top: 20px;
+      border-top: 1px solid var(--gray-200);
+      margin-top: 20px;
+    }
+  </style>
+
+<link rel="stylesheet" href="css/annotation.css">
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div style="display:flex;align-items:center;gap:20px;">
+        <a href="account-center.html" class="topbar-brand">
+          <img src="https://oss.minjiangyouyue.com/mjlogo/logo02.png" alt="logo" style="height:34px;border-radius:8px;">
+          <span class="topbar-title">控制台</span>
+        </a>
+        <div class="topbar-breadcrumb">
+          <a href="index.html">首页</a>
+          <span class="topbar-bc-sep">/</span>
+          <a href="account-center.html">控制台</a>
+          <span class="topbar-bc-sep">/</span>
+          <a href="account-permission.html">身份与权限</a>
+          <span class="topbar-bc-sep">/</span>
+          <span class="topbar-bc-current">新增角色</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <a href="#" class="topbar-back" onclick="
+      if(window.SKIP_LOGIN_CHECK || (window.__userData && window.__userData.isLoggedIn)) {
+        window.location.href = 'account-center.html';
+      } else {
+        history.back();
+      }
+      return false;
+    ">
+          <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M19 12H5" stroke="currentColor" stroke-width="2"/><path d="M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2"/></svg>
+          返回
+        </a>
+        <div class="topbar-message" id="topbarMessage">
+          <div class="topbar-message-icon">
+            <svg viewBox="0 0 24 24" fill="none" width="15" height="15"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="topbar-message-dot show" id="topbarMessageDot"></span>
+            <span class="topbar-message-badge" id="topbarMessageBadge">3</span>
+          </div>
+          <div class="message-dropdown" id="messageDropdown">
+            <div class="message-dropdown-header">
+              <span>消息通知</span>
+              <a href="javascript:;" class="message-dropdown-clear" id="msgClearAll">全部已读</a>
+            </div>
+            <div class="message-dropdown-list" id="messageList">
+              <!-- 动态消息列表 -->
+            </div>
+            <a href="javascript:;" class="message-dropdown-footer" id="msgViewAll">查看全部消息 →</a>
+          </div>
+        </div>
+        <div class="topbar-user" id="topbarUser"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-layout">
+    <!-- 侧边栏 -->
+                    <aside class="sidebar">
+      <div class="sidebar-section-title">产品</div>
+      <ul class="sidebar-menu">
+        <li><a href="account-center.html" class="sidebar-link ">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/></svg>
+          产品中心
+        </a></li>
+      </ul>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-title">企业</div>
+      <ul class="sidebar-menu">
+        <li><a href="account-realname.html?type=enterprise" class="sidebar-link ">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4" stroke="currentColor" stroke-width="2"/></svg>
+          企业信息
+        </a></li>
+        <li><a href="account-billing.html" class="sidebar-link ">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"/></svg>
+          合同管理
+        </a></li>
+      </ul>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-title">财务</div>
+      <ul class="sidebar-menu">
+        <li><a href="account-wallet.html" class="sidebar-link ">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="2"/></svg>
+          资金账户
+        </a></li>
+        <li><a href="account-project.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M9 9h6M9 13h4M9 17h5" stroke="currentColor" stroke-width="2"/></svg>
+          子公司管理
+        </a></li>
+      </ul>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-title">设置</div>
+      <ul class="sidebar-menu">
+        <li><a href="account-permission.html" class="sidebar-link ">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="currentColor" stroke-width="2"/></svg>
+          权限概览
+        </a></li>
+        <li><a href="account-user.html" class="sidebar-link ">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2"/></svg>
+          用户管理
+        </a></li>
+        <li><a href="account-role.html" class="sidebar-link active">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+          角色管理
+        </a></li>
+        <li><a href="account-security.html" class="sidebar-link ">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/></svg>
+          账号安全
+        </a></li>
+      </ul>
+    </aside>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+      <div class="page-title-wrap">
+        <div>
+          <div class="page-title">新增角色</div>
+          <div class="page-subtitle">为角色配置菜单权限、数据范围、可操作按钮与审批流可见性。</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">基本信息</div>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label class="form-label">
+              <span class="required">*</span>角色名称
+            </label>
+            <input type="text" class="form-input" id="roleName" placeholder="请输入角色名称，最多20个字符" maxlength="20">
+            <div class="form-tip">角色名称在企业内唯一，建议使用与岗位相关的名称</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">角色描述</label>
+            <textarea class="form-textarea" id="roleDesc" placeholder="请输入角色描述，最多100个字符" maxlength="100"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">权限配置</div>
+        </div>
+        <div class="card-body">
+          <div class="platform-tip">
+            <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 16v-4M12 8h.01" stroke="currentColor" stroke-width="2"/></svg>
+            <span>为该角色分别配置「企业管理」「民匠有约」「安心云」「代理商」四个产品端的功能权限，勾选后该角色可在对应端使用相关功能。</span>
+          </div>
+
+          <!-- 四端平台 Tab：企业管理、民匠有约、安心云、代理商 -->
+          <div class="platform-tabs" id="platformTabs">
+            <button type="button" class="platform-tab active" data-platform="enterprise"><span class="tab-dot"></span><span class="tab-label">企业管理</span><span class="tab-status status-on">已启用</span><span class="platform-enable-toggle" title="点击停用/启用企业管理端权限" onclick="event.stopPropagation();togglePlatformEnabled('enterprise')"></span></button>
+            <button type="button" class="platform-tab" data-platform="minjiang"><span class="tab-dot"></span><span class="tab-label">民匠有约</span><span class="tab-status status-on">已启用</span><span class="platform-enable-toggle" title="点击停用/启用民匠有约端权限" onclick="event.stopPropagation();togglePlatformEnabled('minjiang')"></span></button>
+            <button type="button" class="platform-tab" data-platform="anxinyun"><span class="tab-dot"></span><span class="tab-label">安心云</span><span class="tab-status status-on">已启用</span><span class="platform-enable-toggle" title="点击停用/启用安心云端权限" onclick="event.stopPropagation();togglePlatformEnabled('anxinyun')"></span></button>
+            <button type="button" class="platform-tab" data-platform="agent"><span class="tab-dot"></span><span class="tab-label">代理商</span><span class="tab-status status-on">已启用</span><span class="platform-enable-toggle" title="点击停用/启用代理商端权限" onclick="event.stopPropagation();togglePlatformEnabled('agent')"></span></button>
+          </div>
+
+          <!-- ===== 企业管理权限面板 ===== -->
+          <div class="platform-panel active" data-platform="enterprise">
+            <div class="platform-disabled-banner">当前端已对该角色关闭，保存时不授予此端任何权限。点击 Tab 右侧开关可重新开启。</div>
+            <div class="platform-perm-actions">
+              <button type="button" onclick="selectAllPlatform('enterprise')">全选本端</button>
+              <button type="button" onclick="clearPlatform('enterprise')">清空本端</button>
+            </div>
+            <div class="permission-section">
+              <div class="permission-section-header">
+                <input type="checkbox" class="perm-section-all" data-platform="enterprise" data-section="company" onchange="togglePlatformSection('enterprise','company',this.checked)">
+                <strong>企业信息</strong>
+              </div>
+              <div class="permission-section-body">
+                <div class="permission-checkbox-group">
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-enterprise-company" data-platform="enterprise" data-section="company" value="view"> 查看企业信息</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-enterprise-company" data-platform="enterprise" data-section="company" value="edit"> 编辑企业信息</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-enterprise-company" data-platform="enterprise" data-section="company" value="cert"> 企业认证</label>
+                </div>
+              </div>
+            </div>
+            <div class="permission-section">
+              <div class="permission-section-header">
+                <input type="checkbox" class="perm-section-all" data-platform="enterprise" data-section="product" onchange="togglePlatformSection('enterprise','product',this.checked)">
+                <strong>产品中心</strong>
+              </div>
+              <div class="permission-section-body">
+                <div class="permission-checkbox-group">
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-enterprise-product" data-platform="enterprise" data-section="product" value="view"> 查看产品</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-enterprise-product" data-platform="enterprise" data-section="product" value="publish"> 发布产品</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-enterprise-product" data-platform="enterprise" data-section="product" value="category"> 产品分类</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-enterprise-product" data-platform="enterprise" data-section="product" value="shelve"> 产品上下架</label>
+                </div>
+              </div>
+            </div>
+            <div class="permission-section">
+              <div class="permission-section-header">
+                <input type="checkbox" class="perm-section-all" data-platform="enterprise" data-section="order" onchange="togglePlatformSection('enterprise','order',this.checked)">
+                <strong>订单管理</strong>
+              </div>
+              <div class="permission-section-body">
+                <div class="permission-checkbox-group">
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-enterprise-order" data-platform="enterprise" data-section="order" value="view"> 查看订单</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-enterprise-order" data-platform="enterprise" data-section="order" value="process"> 订单处理</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-enterprise-order" data-platform="enterprise" data-section="order" value="refund"> 退款管理</label>
+                </div>
+              </div>
+            </div>
+            <div class="permission-section">
+              <div class="permission-section-header">
+                <input type="checkbox" class="perm-section-all" data-platform="enterprise" data-section="finance" onchange="togglePlatformSection('enterprise','finance',this.checked)">
+                <strong>财务管理</strong>
+              </div>
+              <div class="permission-section-body">
+                <div class="permission-checkbox-group">
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-enterprise-finance" data-platform="enterprise" data-section="finance" value="account"> 账户管理</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-enterprise-finance" data-platform="enterprise" data-section="finance" value="flow"> 流水查询</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-enterprise-finance" data-platform="enterprise" data-section="finance" value="reconcile"> 对账管理</label>
+                </div>
+              </div>
+            </div>
+            <div class="permission-section">
+              <div class="permission-section-header">
+                <input type="checkbox" class="perm-section-all" data-platform="enterprise" data-section="member" onchange="togglePlatformSection('enterprise','member',this.checked)">
+                <strong>成员管理</strong>
+              </div>
+              <div class="permission-section-body">
+                <div class="permission-checkbox-group">
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-enterprise-member" data-platform="enterprise" data-section="member" value="view"> 查看成员</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-enterprise-member" data-platform="enterprise" data-section="member" value="add"> 添加成员</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-enterprise-member" data-platform="enterprise" data-section="member" value="edit"> 编辑成员</label>
+                </div>
+              </div>
+            </div>
+            <div class="permission-section">
+              <div class="permission-section-header">
+                <input type="checkbox" class="perm-section-all" data-platform="enterprise" data-section="security" onchange="togglePlatformSection('enterprise','security',this.checked)">
+                <strong>安全设置</strong>
+              </div>
+              <div class="permission-section-body">
+                <div class="permission-checkbox-group">
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-enterprise-security" data-platform="enterprise" data-section="security" value="password"> 密码管理</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-enterprise-security" data-platform="enterprise" data-section="security" value="phone"> 手机绑定</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-enterprise-security" data-platform="enterprise" data-section="security" value="email"> 邮箱绑定</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== 安心云权限面板 ===== -->
+          <div class="platform-panel" data-platform="anxinyun">
+            <div class="platform-disabled-banner">当前端已对该角色关闭，保存时不授予此端任何权限。点击 Tab 右侧开关可重新开启。</div>
+            <div class="platform-perm-actions">
+              <button type="button" onclick="selectAllPlatform('anxinyun')">全选本端</button>
+              <button type="button" onclick="clearPlatform('anxinyun')">清空本端</button>
+            </div>
+            <div class="permission-section">
+              <div class="permission-section-header">
+                <input type="checkbox" class="perm-section-all" data-platform="anxinyun" data-section="account" onchange="togglePlatformSection('anxinyun','account',this.checked)">
+                <strong>账号管理</strong>
+              </div>
+              <div class="permission-section-body">
+                <div class="permission-checkbox-group">
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-anxinyun-account" data-platform="anxinyun" data-section="account" value="view"> 查看账号信息</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-anxinyun-account" data-platform="anxinyun" data-section="account" value="edit"> 编辑账号信息</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-anxinyun-account" data-platform="anxinyun" data-section="account" value="realname"> 实名管理</label>
+                </div>
+              </div>
+            </div>
+            <div class="permission-section">
+              <div class="permission-section-header">
+                <input type="checkbox" class="perm-section-all" data-platform="anxinyun" data-section="tax" onchange="togglePlatformSection('anxinyun','tax',this.checked)">
+                <strong>税务管理</strong>
+              </div>
+              <div class="permission-section-body">
+                <div class="permission-checkbox-group">
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-anxinyun-tax" data-platform="anxinyun" data-section="tax" value="invoice"> 发票管理</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-anxinyun-tax" data-platform="anxinyun" data-section="tax" value="declare"> 税务申报</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-anxinyun-tax" data-platform="anxinyun" data-section="tax" value="query"> 税务查询</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-anxinyun-tax" data-platform="anxinyun" data-section="tax" value="voucher"> 完税凭证</label>
+                </div>
+              </div>
+            </div>
+            <div class="permission-section">
+              <div class="permission-section-header">
+                <input type="checkbox" class="perm-section-all" data-platform="anxinyun" data-section="order" onchange="togglePlatformSection('anxinyun','order',this.checked)">
+                <strong>订单管理</strong>
+              </div>
+              <div class="permission-section-body">
+                <div class="permission-checkbox-group">
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-anxinyun-order" data-platform="anxinyun" data-section="order" value="view"> 查看订单</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-anxinyun-order" data-platform="anxinyun" data-section="order" value="renew"> 续费管理</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-anxinyun-order" data-platform="anxinyun" data-section="order" value="refund"> 退款管理</label>
+                </div>
+              </div>
+            </div>
+            <div class="permission-section">
+              <div class="permission-section-header">
+                <input type="checkbox" class="perm-section-all" data-platform="anxinyun" data-section="contract" onchange="togglePlatformSection('anxinyun','contract',this.checked)">
+                <strong>合同管理</strong>
+              </div>
+              <div class="permission-section-body">
+                <div class="permission-checkbox-group">
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-anxinyun-contract" data-platform="anxinyun" data-section="contract" value="view"> 查看合同</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-anxinyun-contract" data-platform="anxinyun" data-section="contract" value="sign"> 合同签署</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-anxinyun-contract" data-platform="anxinyun" data-section="contract" value="download"> 下载合同</label>
+                </div>
+              </div>
+            </div>
+            <div class="permission-section">
+              <div class="permission-section-header">
+                <input type="checkbox" class="perm-section-all" data-platform="anxinyun" data-section="member" onchange="togglePlatformSection('anxinyun','member',this.checked)">
+                <strong>成员管理</strong>
+              </div>
+              <div class="permission-section-body">
+                <div class="permission-checkbox-group">
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-anxinyun-member" data-platform="anxinyun" data-section="member" value="view"> 查看成员</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-anxinyun-member" data-platform="anxinyun" data-section="member" value="add"> 添加成员</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-anxinyun-member" data-platform="anxinyun" data-section="member" value="edit"> 编辑成员</label>
+                </div>
+              </div>
+            </div>
+            <div class="permission-section">
+              <div class="permission-section-header">
+                <input type="checkbox" class="perm-section-all" data-platform="anxinyun" data-section="security" onchange="togglePlatformSection('anxinyun','security',this.checked)">
+                <strong>安全设置</strong>
+              </div>
+              <div class="permission-section-body">
+                <div class="permission-checkbox-group">
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-anxinyun-security" data-platform="anxinyun" data-section="security" value="password"> 密码管理</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-anxinyun-security" data-platform="anxinyun" data-section="security" value="phone"> 手机绑定</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== 民匠有约权限面板 ===== -->
+          <div class="platform-panel" data-platform="minjiang">
+            <div class="platform-disabled-banner">当前端已对该角色关闭，保存时不授予此端任何权限。点击 Tab 右侧开关可重新开启。</div>
+            <div class="platform-perm-actions">
+              <button type="button" onclick="selectAllPlatform('minjiang')">全选本端</button>
+              <button type="button" onclick="clearPlatform('minjiang')">清空本端</button>
+            </div>
+            <div class="permission-section">
+              <div class="permission-section-header">
+                <input type="checkbox" class="perm-section-all" data-platform="minjiang" data-section="account" onchange="togglePlatformSection('minjiang','account',this.checked)">
+                <strong>账号管理</strong>
+              </div>
+              <div class="permission-section-body">
+                <div class="permission-checkbox-group">
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-minjiang-account" data-platform="minjiang" data-section="account" value="view"> 查看账号信息</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-minjiang-account" data-platform="minjiang" data-section="account" value="edit"> 编辑账号信息</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-minjiang-account" data-platform="minjiang" data-section="account" value="realname"> 实名管理</label>
+                </div>
+              </div>
+            </div>
+            <div class="permission-section">
+              <div class="permission-section-header">
+                <input type="checkbox" class="perm-section-all" data-platform="minjiang" data-section="project" onchange="togglePlatformSection('minjiang','project',this.checked)">
+                <strong>工程管理</strong>
+              </div>
+              <div class="permission-section-body">
+                <div class="permission-checkbox-group">
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-minjiang-project" data-platform="minjiang" data-section="project" value="view"> 查看工程</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-minjiang-project" data-platform="minjiang" data-section="project" value="publish"> 发布工程</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-minjiang-project" data-platform="minjiang" data-section="project" value="accept"> 接单管理</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-minjiang-project" data-platform="minjiang" data-section="project" value="settle"> 工程结算</label>
+                </div>
+              </div>
+            </div>
+            <div class="permission-section">
+              <div class="permission-section-header">
+                <input type="checkbox" class="perm-section-all" data-platform="minjiang" data-section="contract" onchange="togglePlatformSection('minjiang','contract',this.checked)">
+                <strong>合同管理</strong>
+              </div>
+              <div class="permission-section-body">
+                <div class="permission-checkbox-group">
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-minjiang-contract" data-platform="minjiang" data-section="contract" value="view"> 查看合同</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-minjiang-contract" data-platform="minjiang" data-section="contract" value="sign"> 合同签署</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-minjiang-contract" data-platform="minjiang" data-section="contract" value="download"> 下载合同</label>
+                </div>
+              </div>
+            </div>
+            <div class="permission-section">
+              <div class="permission-section-header">
+                <input type="checkbox" class="perm-section-all" data-platform="minjiang" data-section="finance" onchange="togglePlatformSection('minjiang','finance',this.checked)">
+                <strong>费用管理</strong>
+              </div>
+              <div class="permission-section-body">
+                <div class="permission-checkbox-group">
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-minjiang-finance" data-platform="minjiang" data-section="finance" value="wallet"> 资金账户</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-minjiang-finance" data-platform="minjiang" data-section="finance" value="recharge"> 充值管理</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-minjiang-finance" data-platform="minjiang" data-section="finance" value="withdraw"> 提现管理</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-minjiang-finance" data-platform="minjiang" data-section="finance" value="record"> 交易记录</label>
+                </div>
+              </div>
+            </div>
+            <div class="permission-section">
+              <div class="permission-section-header">
+                <input type="checkbox" class="perm-section-all" data-platform="minjiang" data-section="member" onchange="togglePlatformSection('minjiang','member',this.checked)">
+                <strong>成员管理</strong>
+              </div>
+              <div class="permission-section-body">
+                <div class="permission-checkbox-group">
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-minjiang-member" data-platform="minjiang" data-section="member" value="view"> 查看成员</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-minjiang-member" data-platform="minjiang" data-section="member" value="add"> 添加成员</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-minjiang-member" data-platform="minjiang" data-section="member" value="edit"> 编辑成员</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-minjiang-member" data-platform="minjiang" data-section="member" value="remove"> 移除成员</label>
+                </div>
+              </div>
+            </div>
+            <div class="permission-section">
+              <div class="permission-section-header">
+                <input type="checkbox" class="perm-section-all" data-platform="minjiang" data-section="security" onchange="togglePlatformSection('minjiang','security',this.checked)">
+                <strong>安全设置</strong>
+              </div>
+              <div class="permission-section-body">
+                <div class="permission-checkbox-group">
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-minjiang-security" data-platform="minjiang" data-section="security" value="password"> 密码管理</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-minjiang-security" data-platform="minjiang" data-section="security" value="phone"> 手机绑定</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-minjiang-security" data-platform="minjiang" data-section="security" value="email"> 邮箱绑定</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== 代理商权限面板 ===== -->
+          <div class="platform-panel" data-platform="agent">
+            <div class="platform-disabled-banner">当前端已对该角色关闭，保存时不授予此端任何权限。点击 Tab 右侧开关可重新开启。</div>
+            <div class="platform-perm-actions">
+              <button type="button" onclick="selectAllPlatform('agent')">全选本端</button>
+              <button type="button" onclick="clearPlatform('agent')">清空本端</button>
+            </div>
+            <div class="permission-section">
+              <div class="permission-section-header">
+                <input type="checkbox" class="perm-section-all" data-platform="agent" data-section="account" onchange="togglePlatformSection('agent','account',this.checked)">
+                <strong>账号管理</strong>
+              </div>
+              <div class="permission-section-body">
+                <div class="permission-checkbox-group">
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-agent-account" data-platform="agent" data-section="account" value="view"> 查看账号信息</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-agent-account" data-platform="agent" data-section="account" value="edit"> 编辑账号信息</label>
+                </div>
+              </div>
+            </div>
+            <div class="permission-section">
+              <div class="permission-section-header">
+                <input type="checkbox" class="perm-section-all" data-platform="agent" data-section="customer" onchange="togglePlatformSection('agent','customer',this.checked)">
+                <strong>客户管理</strong>
+              </div>
+              <div class="permission-section-body">
+                <div class="permission-checkbox-group">
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-agent-customer" data-platform="agent" data-section="customer" value="view"> 查看客户</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-agent-customer" data-platform="agent" data-section="customer" value="add"> 添加客户</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-agent-customer" data-platform="agent" data-section="customer" value="edit"> 编辑客户</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-agent-customer" data-platform="agent" data-section="customer" value="follow"> 客户跟进</label>
+                </div>
+              </div>
+            </div>
+            <div class="permission-section">
+              <div class="permission-section-header">
+                <input type="checkbox" class="perm-section-all" data-platform="agent" data-section="commission" onchange="togglePlatformSection('agent','commission',this.checked)">
+                <strong>佣金管理</strong>
+              </div>
+              <div class="permission-section-body">
+                <div class="permission-checkbox-group">
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-agent-commission" data-platform="agent" data-section="commission" value="view"> 查看佣金</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-agent-commission" data-platform="agent" data-section="commission" value="withdraw"> 提现管理</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-agent-commission" data-platform="agent" data-section="commission" value="stat"> 佣金统计</label>
+                </div>
+              </div>
+            </div>
+            <div class="permission-section">
+              <div class="permission-section-header">
+                <input type="checkbox" class="perm-section-all" data-platform="agent" data-section="order" onchange="togglePlatformSection('agent','order',this.checked)">
+                <strong>订单管理</strong>
+              </div>
+              <div class="permission-section-body">
+                <div class="permission-checkbox-group">
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-agent-order" data-platform="agent" data-section="order" value="view"> 查看订单</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-agent-order" data-platform="agent" data-section="order" value="renew"> 续费管理</label>
+                </div>
+              </div>
+            </div>
+            <div class="permission-section">
+              <div class="permission-section-header">
+                <input type="checkbox" class="perm-section-all" data-platform="agent" data-section="contract" onchange="togglePlatformSection('agent','contract',this.checked)">
+                <strong>合同管理</strong>
+              </div>
+              <div class="permission-section-body">
+                <div class="permission-checkbox-group">
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-agent-contract" data-platform="agent" data-section="contract" value="view"> 查看合同</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-agent-contract" data-platform="agent" data-section="contract" value="sign"> 合同签署</label>
+                </div>
+              </div>
+            </div>
+            <div class="permission-section">
+              <div class="permission-section-header">
+                <input type="checkbox" class="perm-section-all" data-platform="agent" data-section="member" onchange="togglePlatformSection('agent','member',this.checked)">
+                <strong>成员管理</strong>
+              </div>
+              <div class="permission-section-body">
+                <div class="permission-checkbox-group">
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-agent-member" data-platform="agent" data-section="member" value="view"> 查看成员</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-agent-member" data-platform="agent" data-section="member" value="add"> 添加成员</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-agent-member" data-platform="agent" data-section="member" value="edit"> 编辑成员</label>
+                </div>
+              </div>
+            </div>
+            <div class="permission-section">
+              <div class="permission-section-header">
+                <input type="checkbox" class="perm-section-all" data-platform="agent" data-section="security" onchange="togglePlatformSection('agent','security',this.checked)">
+                <strong>安全设置</strong>
+              </div>
+              <div class="permission-section-body">
+                <div class="permission-checkbox-group">
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-agent-security" data-platform="agent" data-section="security" value="password"> 密码管理</label>
+                  <label class="permission-checkbox"><input type="checkbox" class="perm-agent-security" data-platform="agent" data-section="security" value="phone"> 手机绑定</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <a href="account-permission.html" class="btn-default">取消</a>
+            <button class="btn-primary" id="saveBtn" type="button" style="cursor:pointer;pointer-events:auto;" onclick="return false;">保存</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // 切换某端某模块的全部复选框
+    function togglePlatformSection(platform, section, checked) {
+      var checkboxes = document.querySelectorAll('.perm-' + platform + '-' + section);
+      checkboxes.forEach(function(cb) { cb.checked = checked; });
+    }
+
+    // 全选某端所有权限
+    function selectAllPlatform(platform) {
+      var panel = document.querySelector('.platform-panel[data-platform="' + platform + '"]');
+      if (!panel) return;
+      panel.querySelectorAll('input[type="checkbox"]').forEach(function(cb) { cb.checked = true; });
+    }
+
+    // 清空某端所有权限
+    function clearPlatform(platform) {
+      var panel = document.querySelector('.platform-panel[data-platform="' + platform + '"]');
+      if (!panel) return;
+      panel.querySelectorAll('input[type="checkbox"]').forEach(function(cb) { cb.checked = false; });
+    }
+
+    // ===== 三端平台端类 开 / 关（启用 / 停用） =====
+    // 切换指定端的启用/停用状态：关掉 = 该端不对当前角色生效，保存时忽略全部权限
+    function togglePlatformEnabled(platform) {
+      var tab = document.querySelector('.platform-tab[data-platform="' + platform + '"]');
+      var panel = document.querySelector('.platform-panel[data-platform="' + platform + '"]');
+      if (!tab || !panel) return;
+      var willDisable = !tab.classList.contains('disabled'); // 接下来要变成"停用"？
+      var label = tab.querySelector('.tab-label') ? tab.querySelector('.tab-label').textContent : platform;
+      if (willDisable) {
+        var ok = confirm('确定要对该角色关闭「' + label + '」端权限吗？关闭后：\n• 保存时不会授予此端的任何权限（已勾选的也不生效）；\n• 可随时点同一个开关重新开启。');
+        if (!ok) return;
+      }
+      // 1. 切换 Tab 上的 开关状态 + 禁用样式 + 状态标签
+      tab.classList.toggle('disabled', willDisable);
+      var status = tab.querySelector('.tab-status');
+      if (status) {
+        status.className = 'tab-status ' + (willDisable ? 'status-off' : 'status-on');
+        status.textContent = willDisable ? '已关闭' : '已启用';
+      }
+      var toggle = tab.querySelector('.platform-enable-toggle');
+      if (toggle) toggle.title = willDisable ? '当前已关闭，点击重新开启' : ('点击停用/启用' + label + '端权限');
+      // 2. 面板：加上 disabled-perm 样式（显示红色提示横幅）；禁用/启用所有 input 和 button
+      panel.classList.toggle('disabled-perm', willDisable);
+      panel.querySelectorAll('input[type="checkbox"]').forEach(function (cb) { cb.disabled = willDisable; });
+      panel.querySelectorAll('button').forEach(function (btn) { btn.disabled = willDisable; });
+      // 3. 如果关闭的是当前激活端，自动切换到下一个仍启用的端（避免用户看到灰面板）
+      if (willDisable && tab.classList.contains('active')) {
+        var allTabs = document.querySelectorAll('.platform-tab');
+        var nextTab = null;
+        for (var i = 0; i < allTabs.length; i++) {
+          if (!allTabs[i].classList.contains('disabled')) { nextTab = allTabs[i]; break; }
+        }
+        if (nextTab) {
+          var nextPlatform = nextTab.dataset.platform;
+          allTabs.forEach(function (t) { t.classList.toggle('active', t === nextTab); });
+          document.querySelectorAll('.platform-panel').forEach(function (p) {
+            p.classList.toggle('active', p.dataset.platform === nextPlatform);
+          });
+        }
+      }
+    }
+
+    // 初始化：四个平台默认均为"启用"（因为 HTML 默认没有 disabled），仅做一次状态回显（确保 checkbox 无 disabled 属性残留）
+    function initPlatformEnables() {
+      ['enterprise', 'anxinyun', 'minjiang', 'agent'].forEach(function (platform) {
+        var tab = document.querySelector('.platform-tab[data-platform="' + platform + '"]');
+        var panel = document.querySelector('.platform-panel[data-platform="' + platform + '"]');
+        if (!tab || !panel) return;
+        var disabled = tab.classList.contains('disabled');
+        panel.classList.toggle('disabled-perm', disabled);
+        panel.querySelectorAll('input[type="checkbox"]').forEach(function (cb) { cb.disabled = disabled; });
+        panel.querySelectorAll('button').forEach(function (btn) { btn.disabled = disabled; });
+      });
+    }
+
+    // 同步某端某模块的全选复选框状态
+    function syncSectionAll(platform, section) {
+      var checkboxes = document.querySelectorAll('.perm-' + platform + '-' + section);
+      var allCb = document.querySelector('.perm-section-all[data-platform="' + platform + '"][data-section="' + section + '"]');
+      if (!allCb || checkboxes.length === 0) return;
+      var allChecked = true;
+      checkboxes.forEach(function(cb) { if (!cb.checked) allChecked = false; });
+      allCb.checked = allChecked;
+    }
+
+    (function() {
+      var isLoggedIn = localStorage.getItem('mjyy_logged_in') === 'true';
+      if (!isLoggedIn) { window.location.href = 'login.html'; return; }
+
+      var userData = JSON.parse(localStorage.getItem('mjyy_user_data') || '{}');
+      var personalData = JSON.parse(localStorage.getItem('mjyy_personal_data') || '{}');
+      var enterpriseData = JSON.parse(localStorage.getItem('mjyy_enterprise_data') || '{}');
+
+      function maskMobile(m) {
+        if (!m || m.length < 11) return m || '--';
+        return m.substring(0, 3) + '****' + m.substring(7);
+      }
+
+      function maskId(id) {
+        if (!id) return '--';
+        if (id.length <= 8) return id;
+        return id.substring(0, 4) + '****' + id.substring(id.length - 4);
+      }
+
+      var displayName = '';
+      if (enterpriseData.companyName) displayName = enterpriseData.companyName;
+      else if (personalData.realName) displayName = personalData.realName;
+      else if (userData.mobile) displayName = maskMobile(userData.mobile);
+      else if (userData.name) displayName = userData.name;
+      else displayName = '用户';
+
+      var avatarChar = displayName ? displayName.charAt(0) : '用';
+      var accountId = userData.mobile || userData.accountId || 'MJ' + Date.now().toString().slice(-8);
+
+      // 安全访问 dropdown 元素（main.js 动态填充前可能不存在）
+      var dn = document.getElementById('dropdownName');
+      if (dn) dn.textContent = displayName;
+      var di = document.getElementById('dropdownId');
+      if (di) di.textContent = '账号ID：' + maskId(accountId);
+
+      var identityVerified = localStorage.getItem('mjyy_identity_verified') === 'true';
+      var authTag = document.getElementById('authTag');
+      if (authTag) {
+        if (identityVerified) {
+          authTag.textContent = '已认证';
+          authTag.className = 'user-dropdown-tag verified';
+        } else {
+          authTag.textContent = '未认证';
+          authTag.className = 'user-dropdown-tag pending';
+        }
+      }
+
+      var params = new URLSearchParams(window.location.search);
+      var roleName = params.get('name') || '';
+      var isEdit = !!roleName;
+      var pageTitle = document.getElementById('pageTitle');
+      var breadcrumbText = document.getElementById('breadcrumbText');
+      var roleNameInput = document.getElementById('roleName');
+
+      if (isEdit) {
+        pageTitle.textContent = '编辑角色';
+        breadcrumbText.textContent = '编辑角色';
+        roleNameInput.value = roleName;
+
+        // 四端权限数据结构：{ 角色名: { desc, enterprise: {模块:[权限]}, anxinyun: {...}, minjiang: {...}, agent: {...} } }
+        var roles = {
+          '财务专员': {
+            desc: '负责四端费用、发票、订单相关财务管理',
+            enterprise: {
+              finance: ['account', 'flow', 'reconcile'],
+              order: ['view', 'refund']
+            },
+            anxinyun: {
+              tax: ['invoice', 'query'],
+              order: ['view', 'renew', 'refund'],
+              contract: ['view']
+            },
+            minjiang: {
+              finance: ['wallet', 'recharge', 'withdraw', 'record'],
+              contract: ['view', 'download']
+            },
+            agent: {
+              order: ['view'],
+              commission: ['view', 'stat']
+            }
+          },
+          '业务专员': {
+            desc: '负责四端合同签署、工程与客户管理',
+            enterprise: {
+              company: ['view', 'edit'],
+              product: ['view', 'publish', 'category'],
+              order: ['view', 'process']
+            },
+            anxinyun: {
+              contract: ['view', 'sign', 'download'],
+              member: ['view', 'add', 'edit']
+            },
+            minjiang: {
+              project: ['view', 'accept'],
+              contract: ['view', 'sign'],
+              member: ['view', 'add', 'edit']
+            },
+            agent: {
+              customer: ['view', 'follow'],
+              contract: ['view', 'sign']
+            }
+          },
+          '系统管理员': {
+            desc: '拥有企业管理、民匠有约、安心云、代理商四端全部权限',
+            enterprise: {
+              company: ['view', 'edit', 'cert'],
+              product: ['view', 'publish', 'category', 'shelve'],
+              order: ['view', 'process', 'refund'],
+              finance: ['account', 'flow', 'reconcile'],
+              member: ['view', 'add', 'edit'],
+              security: ['password', 'phone', 'email']
+            },
+            anxinyun: {
+              account: ['view', 'edit', 'realname'],
+              tax: ['invoice', 'declare', 'query', 'voucher'],
+              order: ['view', 'renew', 'refund'],
+              contract: ['view', 'sign', 'download'],
+              member: ['view', 'add', 'edit'],
+              security: ['password', 'phone']
+            },
+            minjiang: {
+              account: ['view', 'edit', 'realname'],
+              project: ['view', 'publish', 'accept', 'settle'],
+              contract: ['view', 'sign', 'download'],
+              finance: ['wallet', 'recharge', 'withdraw', 'record'],
+              member: ['view', 'add', 'edit', 'remove'],
+              security: ['password', 'phone', 'email']
+            },
+            agent: {
+              account: ['view', 'edit'],
+              customer: ['view', 'add', 'edit', 'follow'],
+              commission: ['view', 'withdraw', 'stat'],
+              order: ['view', 'renew'],
+              contract: ['view', 'sign'],
+              member: ['view', 'add', 'edit'],
+              security: ['password', 'phone']
+            }
+          },
+          '子公司管理': {
+            desc: '仅拥有民匠有约端的子公司管理、资金账户（划拨金额）、用户管理、账号安全权限，无企业信息/合同管理/账户管理，无安心云/代理商功能',
+            // 企业管理端：整体禁用（无企业信息/合同管理/账户管理）
+            _disabledPlatforms: ['enterprise', 'anxinyun', 'agent'],
+            minjiang: {
+              project: ['view', 'publish', 'accept', 'settle'],
+              finance: ['wallet', 'record'],
+              member: ['view', 'add', 'edit'],
+              security: ['password', 'phone']
+            }
+          }
+        };
+
+        var roleData = roles[roleName] || {};
+        if (roleData.desc) document.getElementById('roleDesc').value = roleData.desc;
+
+        // 自动禁用指定平台 Tab（如项目管理角色禁用 enterprise/anxinyun/agent）
+        if (roleData._disabledPlatforms && roleData._disabledPlatforms.length) {
+          roleData._disabledPlatforms.forEach(function(platform) {
+            var tab = document.querySelector('.platform-tab[data-platform="' + platform + '"]');
+            var panel = document.querySelector('.platform-panel[data-platform="' + platform + '"]');
+            if (!tab || !panel) return;
+            tab.classList.add('disabled');
+            var status = tab.querySelector('.tab-status');
+            if (status) { status.className = 'tab-status status-off'; status.textContent = '已关闭'; }
+            var toggle = tab.querySelector('.platform-enable-toggle');
+            if (toggle) toggle.title = '当前已关闭，点击重新开启';
+            panel.classList.add('disabled-perm');
+            panel.querySelectorAll('input[type="checkbox"]').forEach(function(cb) { cb.disabled = true; });
+            panel.querySelectorAll('button').forEach(function(btn) { btn.disabled = true; });
+          });
+          // 如果当前激活的 Tab 被禁用了，切到 minjiang
+          var activeTab = document.querySelector('.platform-tab.active');
+          if (activeTab && activeTab.classList.contains('disabled')) {
+            var minjiangTab = document.querySelector('.platform-tab[data-platform="minjiang"]');
+            if (minjiangTab) {
+              document.querySelectorAll('.platform-tab').forEach(function(t) { t.classList.toggle('active', t === minjiangTab); });
+              document.querySelectorAll('.platform-panel').forEach(function(p) { p.classList.toggle('active', p.dataset.platform === 'minjiang'); });
+            }
+          }
+        }
+
+        // 按平台回填权限
+        ['enterprise', 'anxinyun', 'minjiang', 'agent'].forEach(function(platform) {
+          var platformPerms = roleData[platform] || {};
+          Object.keys(platformPerms).forEach(function(section) {
+            var values = platformPerms[section];
+            values.forEach(function(val) {
+              var cb = document.querySelector('.perm-' + platform + '-' + section + '[value="' + val + '"]');
+              if (cb) cb.checked = true;
+            });
+            // 同步该模块的全选复选框
+            syncSectionAll(platform, section);
+          });
+        });
+      }
+
+      var saveBtn = document.getElementById('saveBtn');
+      if (saveBtn) {
+        try { saveBtn.disabled = false; saveBtn.style.opacity = '1'; saveBtn.style.cursor = 'pointer'; saveBtn.style.pointerEvents = 'auto'; } catch(e){}
+        saveBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          var nameEl = document.getElementById('roleName');
+          var name = nameEl ? nameEl.value.trim() : '';
+          if (!name) { alert('请输入角色名称'); if (nameEl) nameEl.focus(); return; }
+          if (name.length > 20) { alert('角色名称最多 20 个字符'); if (nameEl) nameEl.focus(); return; }
+          var descEl = document.getElementById('roleDesc');
+          if (descEl && descEl.value && descEl.value.length > 100) { alert('角色描述最多 100 个字符'); descEl.focus(); return; }
+          // 允许新增角色无权限（至少能保存）；如需检查可改为下方校验启用
+          // var hasAnyPerm = document.querySelectorAll('.platform-panel:not(.disabled-perm) input[type="checkbox"]:checked').length > 0;
+          // if (!hasAnyPerm) { alert('请至少勾选一项权限'); return; }
+          alert(isEdit ? '角色保存成功' : '角色创建成功');
+          window.location.href = 'account-permission.html';
+        });
+      }
+
+      // ===== 三端平台 Tab 切换（已移至独立 script 块，不依赖 IIFE 执行结果） =====
+
+      // ===== 单个权限复选框变化时同步模块全选状态 =====
+      document.querySelectorAll('.platform-panel input[type="checkbox"][value]').forEach(function(cb) {
+        cb.addEventListener('change', function() {
+          var platform = cb.dataset.platform;
+          var section = cb.dataset.section;
+          if (platform && section) syncSectionAll(platform, section);
+        });
+      });
+
+      // ===== 初始化三个产品端的启用/停用状态 =====
+      initPlatformEnables();
+
+      var submenuToggles = document.querySelectorAll('.sidebar-submenu-toggle');
+      submenuToggles.forEach(function(toggle) {
+        toggle.addEventListener('click', function(e) {
+          if (e.target.tagName === 'A' && e.target.getAttribute('href') && e.target.getAttribute('href') !== '#') return;
+          var item = toggle.closest('.sidebar-item');
+          item.classList.toggle('open');
+        });
+      });
+    })();
+  </script>
+  
+  <!-- 控制台/认证页专用：禁止 !isLoggedIn → display:none #topbarUser / #topbarMessage -->
+  <script>
+    window.SKIP_LOGIN_CHECK = true;
+    window.SKIP_TOPBAR_DISPLAY_NONE = true;
+    (function ensureTopbarVisible(){
+      function run(){
+        var tu = document.getElementById("topbarUser"), tm = document.getElementById("topbarMessage");
+        if (tu){ tu.style.display = "flex"; tu.style.visibility="visible"; if (!tu.children.length) tu.innerHTML = '<a href="login.html" style="display:inline-flex;align-items:center;padding:6px 16px;border-radius:6px;background:var(--brand-primary);color:#fff;font-size:13px;font-weight:500;text-decoration:none;white-space:nowrap;">登录平台</a>'; }
+        if (tm){ tm.style.display = "flex"; tm.style.visibility="visible"; }
+      }
+      try{run()}catch(e){}
+      document.addEventListener("DOMContentLoaded", run);
+      setTimeout(run, 50); setTimeout(run, 300);
+    })();
+  </script>
+  <!-- 独立 Tab 切换逻辑：不依赖 IIFE，确保即使 IIFE 崩溃也能切换 -->
+  <script>
+    (function initPlatformTabs() {
+      function setupTabs() {
+        var tabs = document.querySelectorAll('.platform-tab');
+        var panels = document.querySelectorAll('.platform-panel');
+        if (!tabs.length || !panels.length) return false;
+        // 避免重复绑定
+        if (tabs[0].dataset.tabBound) return true;
+        tabs.forEach(function(tab) {
+          tab.dataset.tabBound = '1';
+          tab.addEventListener('click', function(e) {
+            // 点击开关区域不切换 tab（由 toggle 的 stopPropagation 处理）
+            if (e.target.closest('.platform-enable-toggle')) return;
+            var platform = tab.dataset.platform;
+            tabs.forEach(function(t) { t.classList.toggle('active', t === tab); });
+            panels.forEach(function(p) {
+              p.classList.toggle('active', p.dataset.platform === platform);
+            });
+          });
+        });
+        return true;
+      }
+      if (!setupTabs()) {
+        // DOM 尚未就绪，延迟重试
+        document.addEventListener('DOMContentLoaded', setupTabs);
+        setTimeout(setupTabs, 100);
+        setTimeout(setupTabs, 500);
+      }
+    })();
+  </script>
+<script src="js/main.js?v=1787772022"></script>
+<script src="js/enterprise-switch.js?v=19"></script>
+
+<script src="js/annotation.js" defer></script>
+</body>
+</html>

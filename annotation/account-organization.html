@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>组织架构 - 民匠有约</title>
+  <link rel="stylesheet" href="css/style.css?v=2025fix10">
+  <style>
+    :root {
+      --brand-primary: #1677FF;
+      --brand-primary-dark: #0958D9;
+      --brand-primary-50: #E6F4FF;
+      --brand-primary-100: #BAE0FF;
+      --sidebar-width: 240px;
+      --gray-50: #F7F8FA;
+      --gray-100: #F2F3F5;
+      --gray-200: #E5E6EB;
+      --gray-300: #C9CDD4;
+      --text: #1D2129;
+      --text-regular: #4E5969;
+      --text-secondary: #86909C;
+      --text-placeholder: #C9CDD4;
+      --text-muted: #86909C;
+      --success: #00B42A;
+      --warning: #FF7D00;
+      --danger: #F53F3F;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #f5f6f7; color: var(--text); min-height: 100vh; line-height: 1.6;
+      overflow-y: scroll;
+    }
+    /* ===== 顶部导航 ===== */
+    .topbar { background:#fff; border-bottom:none; height:60px; width:100%; position:fixed; top:0; left:0; right:0; z-index:1000; padding:0; }
+    .topbar-inner { max-width:1440px; width:100%; margin:0 auto; padding:0 40px; height:100%; display:flex; align-items:center; justify-content:space-between; }
+    .topbar-divider { width:1px; height:20px; background:var(--gray-200); margin:0 12px; }
+    .topbar-brand { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text); }
+    .topbar-title { font-size:17px; font-weight:700; letter-spacing:0.3px; }
+    .topbar-breadcrumb { display:flex; align-items:center; gap:4px; font-size:13px; color:var(--text-regular); line-height:1; }
+    .topbar-breadcrumb a { color:var(--text-secondary); text-decoration:none; transition:color 0.15s; }
+    .topbar-breadcrumb a:hover { color:var(--brand-primary); }
+    .topbar-bc-sep { color:var(--text-placeholder); font-size:12px; margin:0 2px; }
+    .topbar-bc-current { color:var(--text); font-weight:500; }
+    .topbar-right { display:flex; align-items:center; gap:8px; }
+    .topbar-back { font-size:13px; color:var(--text-secondary); text-decoration:none; display:flex; align-items:center; gap:6px; }
+    .topbar-back:hover { color:var(--brand-primary); }
+    .topbar-user { position:relative; display:flex; align-items:center; gap:10px; padding:6px 12px 6px 8px; border-radius:10px; cursor:pointer; transition:background 0.2s; background:#fff; border:1px solid var(--gray-200); }
+    .topbar-user:hover { background:var(--gray-50); border-color:var(--gray-300); }
+    /* ===== 侧边栏 ===== */
+    .page-layout { display:flex; min-height:100vh; padding-top:60px; }
+    .sidebar { width:var(--sidebar-width); background:#fff; border-right:1px solid var(--gray-200); position:fixed; top:60px; bottom:0; left:0; overflow-y:auto; padding:16px 0; z-index:100; }
+    .sidebar-section-title { font-size:11px; color:var(--text-secondary); padding:8px 16px 6px; font-weight:500; letter-spacing:0.5px; text-transform:uppercase; }
+    .sidebar-menu { list-style:none; }
+    .sidebar-link { display:flex; align-items:center; gap:10px; padding:9px 16px; font-size:14px; color:var(--text-regular); text-decoration:none; transition:all 0.15s; border-left:3px solid transparent; }
+    .sidebar-link:hover { color:var(--brand-primary); background:var(--gray-100); }
+    .sidebar-link.active { color:var(--brand-primary); background:var(--brand-primary-50); border-left-color:var(--brand-primary); font-weight:500; }
+    .sidebar-link svg { width:17px; height:17px; flex-shrink:0; display: block; overflow: visible; align-self: center; }
+    .sidebar-divider { height:1px; background:var(--gray-200); margin:10px 16px; }
+    .main-content { margin-left:var(--sidebar-width); flex:1; padding:24px 40px; max-width:calc(1440px - var(--sidebar-width)); }
+    /* ===== 页面标题 ===== */
+    .page-title-wrap { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+    .page-title { font-size:24px; font-weight:700; line-height:1.2; }
+    .page-subtitle { font-size:13px; color:var(--text-muted); margin-top:4px; }
+    /* ===== 按钮 ===== */
+    .btn { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:8px; font-size:14px; font-weight:500; cursor:pointer; border:none; transition:all 0.15s; text-decoration:none; }
+    .btn-primary { background:var(--brand-primary); color:#fff; }
+    .btn-primary:hover { background:var(--brand-primary-dark); }
+    .btn-default { background:#fff; color:var(--text-regular); border:1px solid var(--gray-200); }
+    .btn-default:hover { background:var(--gray-50); border-color:var(--gray-300); }
+    .btn-danger { background:#fff; color:var(--danger); border:1px solid var(--gray-200); }
+    .btn-danger:hover { background:#FFF1F0; border-color:#FFCCC7; }
+    .btn-sm { padding:4px 10px; font-size:12px; }
+    /* ===== 组织架构双栏布局 ===== */
+    .org-layout { display:flex; gap:16px; align-items:flex-start; }
+    .org-tree-panel { width:340px; background:#fff; border-radius:12px; border:1px solid var(--gray-200); overflow:hidden; flex-shrink:0; }
+    .org-tree-header { display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid var(--gray-200); }
+    .org-tree-header-title { font-size:15px; font-weight:600; }
+    .org-tree-body { padding:8px; max-height:calc(100vh - 260px); overflow-y:auto; }
+    .org-detail-panel { flex:1; background:#fff; border-radius:12px; border:1px solid var(--gray-200); overflow:hidden; min-width:0; }
+    .org-detail-header { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid var(--gray-200); }
+    .org-detail-title { font-size:17px; font-weight:600; display:flex; align-items:center; gap:8px; }
+    .org-detail-body { padding:20px; }
+    .org-empty { padding:60px 20px; text-align:center; color:var(--text-secondary); font-size:14px; }
+    .org-empty svg { display:block; margin:0 auto 12px; opacity:0.4; }
+    /* ===== 部门树节点 ===== */
+    .dept-node { }
+    .dept-node-row { display:flex; align-items:center; padding:7px 8px; border-radius:6px; cursor:pointer; transition:background 0.12s; gap:4px; }
+    .dept-node-row:hover { background:var(--gray-50); }
+    .dept-node-row.active { background:var(--brand-primary-50); }
+    .dept-node-row.active .dept-node-name { color:var(--brand-primary); font-weight:500; }
+    .dept-toggle { width:18px; height:18px; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-secondary); flex-shrink:0; transition:transform 0.15s; }
+    .dept-toggle.expanded { transform:rotate(90deg); }
+    .dept-toggle.leaf { visibility:hidden; }
+    .dept-node-icon { width:18px; height:18px; flex-shrink:0; color:var(--brand-primary); display:inline-flex; align-items:center; justify-content:center; }
+    .dept-node-name { font-size:14px; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1; }
+    .dept-node-row.inactive .dept-node-name { color:var(--text-placeholder); }
+    .dept-node-count { font-size:11px; color:var(--text-secondary); background:var(--gray-100); padding:1px 6px; border-radius:8px; flex-shrink:0; }
+    .dept-children { margin-left:14px; border-left:1px dashed var(--gray-200); padding-left:4px; }
+    .dept-children.collapsed { display:none; }
+    /* ===== 详情面板 ===== */
+    .dept-info-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px 24px; margin-bottom:24px; }
+    .dept-info-item { display:flex; flex-direction:column; gap:2px; }
+    .dept-info-label { font-size:12px; color:var(--text-secondary); }
+    .dept-info-value { font-size:14px; color:var(--text); font-weight:500; }
+    .dept-status-badge { display:inline-flex; align-items:center; gap:4px; font-size:12px; padding:2px 8px; border-radius:10px; }
+    .dept-status-active { background:#E8FFEA; color:var(--success); }
+    .dept-status-inactive { background:var(--gray-100); color:var(--text-secondary); }
+    .dept-section { margin-top:24px; }
+    .dept-section-title { font-size:14px; font-weight:600; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; }
+    .dept-sub-table { width:100%; border-collapse:collapse; font-size:13px; }
+    .dept-sub-table th { text-align:left; padding:8px 12px; background:var(--gray-50); color:var(--text-secondary); font-weight:500; border-bottom:1px solid var(--gray-200); }
+    .dept-sub-table td { padding:10px 12px; border-bottom:1px solid var(--gray-100); }
+    .dept-sub-table tr:hover td { background:var(--gray-50); }
+    .dept-action-bar { display:flex; gap:8px; flex-wrap:wrap; }
+    /* ===== 弹窗 ===== */
+    .modal-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.45); z-index:2000; display:none; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.25s ease; }
+    .modal-overlay.show { display:flex; opacity:1; pointer-events:auto; }
+    .modal-content { background:#fff; border-radius:12px; width:420px; max-width:90vw; max-height:90vh; overflow:hidden; display:flex; flex-direction:column; }
+    .modal-header { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid var(--gray-200); }
+    .modal-title { font-size:16px; font-weight:600; }
+    .modal-close { width:28px; height:28px; display:flex; align-items:center; justify-content:center; cursor:pointer; border-radius:6px; color:var(--text-secondary); border:none; background:none; }
+    .modal-close:hover { background:var(--gray-100); color:var(--text); }
+    .modal-body { padding:20px; overflow-y:auto; flex:1; }
+    .modal-footer { display:flex; justify-content:flex-end; gap:8px; padding:12px 20px; border-top:1px solid var(--gray-200); }
+    .form-group { margin-bottom:16px; }
+    .form-label { display:block; font-size:13px; color:var(--text-regular); margin-bottom:6px; font-weight:500; }
+    .form-label .req { color:var(--danger); }
+    .form-input, .form-select { width:100%; padding:8px 12px; border:1px solid var(--gray-300); border-radius:8px; font-size:14px; color:var(--text); background:#fff; transition:border-color 0.15s; }
+    .form-input:focus, .form-select:focus { outline:none; border-color:var(--brand-primary); box-shadow:0 0 0 2px var(--brand-primary-50); }
+    .form-input.error { border-color:var(--danger); }
+    .field-error { color:var(--danger); font-size:12px; margin-top:4px; display:none; }
+    .field-error.show { display:block; }
+    .form-hint { font-size:12px; color:var(--text-secondary); margin-top:4px; }
+    .modal-msg { font-size:13px; padding:8px 12px; border-radius:6px; margin-bottom:12px; display:none; }
+    .modal-msg.show { display:block; }
+    .modal-msg.error { background:#FFF1F0; color:var(--danger); }
+    .modal-msg.success { background:#E8FFEA; color:var(--success); }
+    /* 下拉树选择 */
+    .dept-select-tree { max-height:200px; overflow-y:auto; border:1px solid var(--gray-300); border-radius:8px; padding:6px; }
+    .dept-select-node { padding:5px 8px; font-size:13px; cursor:pointer; border-radius:4px; }
+    .dept-select-node:hover { background:var(--gray-50); }
+    .dept-select-node.selected { background:var(--brand-primary-50); color:var(--brand-primary); }
+    .dept-select-node.disabled { color:var(--text-placeholder); cursor:not-allowed; }
+    /* 响应式 */
+    @media (max-width:900px) {
+      .org-layout { flex-direction:column; }
+      .org-tree-panel { width:100%; }
+      .sidebar { display:none; }
+      .main-content { margin-left:0; padding:16px; }
+      .dept-info-grid { grid-template-columns:1fr; }
+    }
+  </style>
+
+<script src="js/switch-ent-handler.js?v=10"></script>
+
+<link rel="stylesheet" href="css/annotation.css">
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div style="display:flex;align-items:center;gap:20px;">
+        <a href="account-center.html" class="topbar-brand">
+          <img src="https://oss.minjiangyouyue.com/mjlogo/logo02.png" alt="logo" style="height:34px;border-radius:8px;">
+          <span class="topbar-title">控制台</span>
+        </a>
+        <div class="topbar-breadcrumb">
+          <a href="index.html">首页</a>
+          <span class="topbar-bc-sep">/</span>
+          <a href="account-center.html">控制台</a>
+          <span class="topbar-bc-sep">/</span>
+          <span class="topbar-bc-current">组织架构</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <a href="account-center.html" class="topbar-back">
+          <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M19 12H5" stroke="currentColor" stroke-width="2"/><path d="M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2"/></svg>
+          返回
+        </a>
+        <div class="topbar-message" id="topbarMessage">
+          <div class="topbar-message-icon">
+            <svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="topbar-message-dot" id="topbarMessageDot"></span>
+            <span class="topbar-message-badge" id="topbarMessageBadge" style="display:none;">3</span>
+          </div>
+          <div class="message-dropdown" id="messageDropdown">
+            <div class="message-dropdown-header">
+              <span>消息通知</span>
+              <a href="javascript:;" class="message-dropdown-clear" id="msgClearAll">全部已读</a>
+            </div>
+            <div class="message-dropdown-list" id="messageList">
+              <!-- 动态消息列表 -->
+            </div>
+            <a href="javascript:;" class="message-dropdown-footer" id="msgViewAll">查看全部消息 →</a>
+          </div>
+        </div>
+        <div class="topbar-user" id="topbarUser"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 页面主体 -->
+  <div class="page-layout">
+    <!-- 左侧边栏 -->
+    <aside class="sidebar">
+      <div class="sidebar-section-title">产品</div>
+      <ul class="sidebar-menu">
+        <li><a href="account-center.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/></svg>
+          产品中心
+        </a></li>
+      </ul>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-title">企业</div>
+      <ul class="sidebar-menu">
+        <li><a href="account-realname.html?type=enterprise" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4" stroke="currentColor" stroke-width="2"/></svg>
+          企业信息
+        </a></li>
+        <li><a href="account-billing.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"/></svg>
+          合同管理
+        </a></li>
+        <li><a href="account-bank.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"/><line x1="2" y1="10" x2="22" y2="10" stroke="currentColor" stroke-width="2"/></svg>
+          账户管理
+        </a></li>
+      </ul>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-title">企业管理</div>
+      <ul class="sidebar-menu">
+        <li id="sidebarSubEntMgmt"><a href="account-project.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M9 9h6M9 13h4M9 17h5" stroke="currentColor" stroke-width="2"/></svg>
+          子公司管理
+        </a></li>
+
+      </ul>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-title">财务</div>
+      <ul class="sidebar-menu">
+        <li><a href="account-wallet.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="2"/></svg>
+          资金账户
+        </a></li>
+
+      </ul>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-title">设置</div>
+      <ul class="sidebar-menu">
+        <li><a href="account-permission.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="currentColor" stroke-width="2"/></svg>
+          权限概览
+        </a></li>
+        <li><a href="account-organization.html" class="sidebar-link active">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2 2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z" stroke="currentColor" stroke-width="2"/><path d="M5 9a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2 2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2z" stroke="currentColor" stroke-width="2"/><path d="M19 9a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2 2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2z" stroke="currentColor" stroke-width="2"/><path d="M12 14v4M9 20h6" stroke="currentColor" stroke-width="2"/></svg>
+          组织架构
+        </a></li>
+        <li><a href="account-user.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2"/></svg>
+          用户管理
+        </a></li>
+        <li><a href="account-role.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+          角色管理
+        </a></li>
+        <li><a href="account-security.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/></svg>
+          账号安全
+        </a></li>
+      </ul>
+    </aside>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+      <div class="page-title-wrap">
+        <div>
+          <div class="page-title">组织架构</div>
+          <div class="page-subtitle">管理部门层级结构，支持多级嵌套。各部门数据相互隔离，主账号统一可见。</div>
+        </div>
+        <button class="btn btn-primary" onclick="openAddDeptModal(null)">
+          <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          新增部门
+        </button>
+      </div>
+
+      <!-- 双栏布局：左部门树 + 右详情 -->
+      <div class="org-layout">
+        <!-- 左：部门树 -->
+        <div class="org-tree-panel">
+          <div class="org-tree-header">
+            <span class="org-tree-header-title">部门列表</span>
+            <button class="btn btn-default btn-sm" onclick="expandAllDepts()" title="全部展开">展开</button>
+          </div>
+          <div class="org-tree-body" id="deptTreeBody">
+            <!-- 部门树动态渲染 -->
+          </div>
+        </div>
+
+        <!-- 右：详情面板 -->
+        <div class="org-detail-panel">
+          <div class="org-detail-header">
+            <div class="org-detail-title" id="detailTitle">
+              <span style="color:var(--text-secondary);">请从左侧选择部门</span>
+            </div>
+            <div class="dept-action-bar" id="detailActions" style="display:none;">
+              <button class="btn btn-default btn-sm" onclick="openEditDeptModal()">编辑</button>
+              <button class="btn btn-default btn-sm" onclick="openAddDeptModal(currentDeptId)">新增子部门</button>
+              <button class="btn btn-danger btn-sm" id="toggleDeptBtn" onclick="toggleDeptStatus()">停用</button>
+            </div>
+          </div>
+          <div class="org-detail-body" id="detailBody">
+            <div class="org-empty">
+              <svg viewBox="0 0 24 24" fill="none" width="48" height="48"><path d="M12 2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2 2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z" stroke="currentColor" stroke-width="1.5"/><path d="M5 9a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2 2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2z" stroke="currentColor" stroke-width="1.5"/><path d="M19 9a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2 2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2z" stroke="currentColor" stroke-width="1.5"/><path d="M12 14v4M9 20h6" stroke="currentColor" stroke-width="1.5"/></svg>
+              选择左侧部门查看详情
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- 新增/编辑部门弹窗 -->
+  <div class="modal-overlay" id="deptModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title" id="modalTitle">新增部门</div>
+        <button class="modal-close" onclick="closeDeptModal()">
+          <svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-msg" id="modalMsg"></div>
+        <input type="hidden" id="f_editId" value="">
+        <div class="form-group">
+          <label class="form-label">部门名称 <span class="req">*</span></label>
+          <input type="text" class="form-input" id="f_name" placeholder="请输入部门名称（1-30字）" maxlength="30"
+                 oninput="clearFieldError('f_name')">
+          <div class="field-error" id="err_name">部门名称不能为空</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">上级部门</label>
+          <div class="form-hint" id="parentHint">不选则为根部门（与主账号同级）</div>
+          <div class="dept-select-tree" id="parentTree">
+            <!-- 父部门下拉树动态渲染 -->
+          </div>
+          <input type="hidden" id="f_parentId" value="">
+        </div>
+        <div class="form-group">
+          <label class="form-label">排序</label>
+          <input type="number" class="form-input" id="f_sort" placeholder="数字越小越靠前" value="0" style="width:120px;">
+          <div class="form-hint">同级部门按此数字升序排列</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-default" onclick="closeDeptModal()">取消</button>
+        <button class="btn btn-primary" onclick="saveDept()">确定</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/main.js?v=1787772022"></script>
+<script src="js/enterprise-switch.js?v=19"></script>
+  <script>
+    // ===== 组织架构管理：部门树渲染 + CRUD =====
+    var currentDeptId = null; // 当前选中的部门
+    var expandedSet = {}; // 展开状态 { deptId: true }
+
+    function D() { return window.MJYYDept || null; }
+
+    // 渲染部门树
+    function renderDeptTree() {
+      var M = D();
+      var body = document.getElementById('deptTreeBody');
+      if (!M) { body.innerHTML = '<div class="org-empty" style="padding:30px 10px;">部门数据加载中...</div>'; return; }
+      M.migrate(); // 确保迁移完成
+      var tree = M.buildDeptTree(null);
+      // 第四阶段：按数据权限过滤部门树（部门用户仅可见本部门及子孙部门）
+      var P = window.MJYYPermission;
+      if (P) {
+        var visibleIds = P.getVisibleDeptIds(); // null=全部
+        if (visibleIds !== null) {
+          var visibleSet = {};
+          for (var i = 0; i < visibleIds.length; i++) visibleSet[visibleIds[i]] = true;
+          // 从根开始递归过滤：仅保留可见部门作为根
+          tree = tree.filter(function (n) { return visibleSet[n.data.id]; });
+          // 同时过滤子节点
+          function filterNode(node) {
+            if (node.children && node.children.length) {
+              node.children = node.children.filter(function (c) { return visibleSet[c.data.id]; });
+              node.children.forEach(filterNode);
+            }
+            return node;
+          }
+          tree.forEach(filterNode);
+        }
+      }
+      if (!tree.length) {
+        body.innerHTML = '<div class="org-empty" style="padding:40px 10px;"><svg viewBox="0 0 24 24" fill="none" width="40" height="40"><path d="M12 2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2 2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z" stroke="currentColor" stroke-width="1.5"/></svg>当前视图下无可管理部门</div>';
+        return;
+      }
+      var html = '';
+      tree.forEach(function (node) { html += renderDeptNode(node, 0); });
+      body.innerHTML = html;
+    }
+
+    // 递归渲染单个部门节点
+    function renderDeptNode(node, depth) {
+      var d = node.data;
+      var hasChildren = node.children && node.children.length;
+      var expanded = !!expandedSet[d.id];
+      var inactive = d.status === 'inactive';
+      var active = d.id === currentDeptId;
+      // 子部门数
+      var descCount = 0;
+      if (hasChildren) { try { descCount = D().getDescendants(d.id).length; } catch(e){} }
+
+      var html = '<div class="dept-node">'
+        + '<div class="dept-node-row' + (active ? ' active' : '') + (inactive ? ' inactive' : '') + '" onclick="selectDept(\'' + d.id + '\')" data-dept-id="' + d.id + '">'
+        + '<span class="dept-toggle' + (hasChildren ? (expanded ? ' expanded' : '') : ' leaf') + '" onclick="event.stopPropagation(); toggleExpand(\'' + d.id + '\')">'
+        + '<svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'
+        + '</span>'
+        + '<span class="dept-node-icon">'
+        + '<svg viewBox="0 0 24 24" fill="none" width="15" height="15"><path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-7l-2-2H5a2 2 0 0 0-2 2z" stroke="currentColor" stroke-width="1.8"/></svg>'
+        + '</span>'
+        + '<span class="dept-node-name">' + escapeHtml(d.name) + '</span>'
+        + (descCount ? '<span class="dept-node-count">' + descCount + '</span>' : '')
+        + '</div>';
+      if (hasChildren) {
+        html += '<div class="dept-children' + (expanded ? '' : ' collapsed') + '">';
+        node.children.forEach(function (child) { html += renderDeptNode(child, depth + 1); });
+        html += '</div>';
+      }
+      html += '</div>';
+      return html;
+    }
+
+    function toggleExpand(id) { if (expandedSet[id]) delete expandedSet[id]; else expandedSet[id] = true; renderDeptTree(); }
+    function expandAllDepts() {
+      var M = D(); if (!M) return;
+      M.getDepartments().forEach(function (d) { if (d.parentId) expandedSet[d.id] = true; });
+      renderDeptTree();
+    }
+
+    function selectDept(id) {
+      currentDeptId = id;
+      renderDeptTree();
+      renderDetail(id);
+    }
+
+    // 渲染详情面板
+    function renderDetail(id) {
+      var M = D();
+      var titleEl = document.getElementById('detailTitle');
+      var actionsEl = document.getElementById('detailActions');
+      var bodyEl = document.getElementById('detailBody');
+      var toggleBtn = document.getElementById('toggleDeptBtn');
+      var dept = M.findDept(id);
+      if (!dept) {
+        titleEl.innerHTML = '<span style="color:var(--text-secondary);">部门不存在</span>';
+        actionsEl.style.display = 'none';
+        bodyEl.innerHTML = '';
+        return;
+      }
+      // 面包屑路径
+      var ancestors = M.getAncestors(id);
+      var pathStr = ancestors.map(function(a){ return escapeHtml(a.name); }).concat(escapeHtml(dept.name)).join(' / ');
+      titleEl.innerHTML = '<svg viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-7l-2-2H5a2 2 0 0 0-2 2z" stroke="currentColor" stroke-width="1.8"/></svg>'
+        + '<span>' + escapeHtml(dept.name) + '</span>';
+      // 第四阶段：操作按钮按权限显隐（部门用户仅可管理本部门及子孙部门）
+      var P = window.MJYYPermission;
+      var canManage = !P || P.canManageDept(id);
+      if (canManage) {
+        actionsEl.style.display = 'flex';
+        toggleBtn.textContent = dept.status === 'active' ? '停用' : '启用';
+      } else {
+        actionsEl.style.display = 'none';
+      }
+
+      // 部门信息
+      var descCount = M.getDescendants(id).length;
+      var statusBadge = dept.status === 'active'
+        ? '<span class="dept-status-badge dept-status-active">启用中</span>'
+        : '<span class="dept-status-badge dept-status-inactive">已停用</span>';
+      var infoHtml = '<div class="dept-info-grid">'
+        + '<div class="dept-info-item"><span class="dept-info-label">部门名称</span><span class="dept-info-value">' + escapeHtml(dept.name) + '</span></div>'
+        + '<div class="dept-info-item"><span class="dept-info-label">状态</span><span class="dept-info-value">' + statusBadge + '</span></div>'
+        + '<div class="dept-info-item"><span class="dept-info-label">层级</span><span class="dept-info-value">第 ' + (dept.level + 1) + ' 级</span></div>'
+        + '<div class="dept-info-item"><span class="dept-info-label">子部门数</span><span class="dept-info-value">' + descCount + ' 个</span></div>'
+        + '<div class="dept-info-item"><span class="dept-info-label">所属路径</span><span class="dept-info-value" style="font-size:12px;font-weight:400;">' + pathStr + '</span></div>'
+        + '<div class="dept-info-item"><span class="dept-info-label">创建时间</span><span class="dept-info-value" style="font-size:12px;font-weight:400;">' + formatTime(dept.createdAt) + '</span></div>'
+        + '</div>';
+
+      // 部门下项目
+      var projects = [];
+      try { projects = JSON.parse(localStorage.getItem('mjyy_projects') || '[]'); } catch(e){}
+      var deptProjects = projects.filter(function(p){ return p && p.deptId === id; });
+      var projHtml = '<div class="dept-section">'
+        + '<div class="dept-section-title">部门下项目（' + deptProjects.length + '）</div>';
+      if (deptProjects.length) {
+        projHtml += '<table class="dept-sub-table"><thead><tr><th>项目名称</th><th>负责人</th><th>余额</th><th>状态</th></tr></thead><tbody>';
+        deptProjects.forEach(function(p) {
+          projHtml += '<tr><td>' + escapeHtml(p.name||'-') + '</td><td>' + escapeHtml(p.owner||'-') + '</td>'
+            + '<td>¥' + (p.balance||0).toLocaleString() + '</td>'
+            + '<td>' + (p.status==='active' ? '<span style="color:var(--success);">进行中</span>' : '<span style="color:var(--text-secondary);">已停用</span>') + '</td></tr>';
+        });
+        projHtml += '</tbody></table>';
+      } else {
+        projHtml += '<div style="color:var(--text-secondary);font-size:13px;padding:12px 0;">暂无归属项目</div>';
+      }
+      projHtml += '</div>';
+
+      // 部门下用户
+      var subs = [];
+      try { subs = JSON.parse(localStorage.getItem('mjyy_sub_accounts') || '[]'); } catch(e){}
+      var deptSubs = subs.filter(function(s){ return s && s.deptId === id; });
+      var userHtml = '<div class="dept-section">'
+        + '<div class="dept-section-title">部门下用户（' + deptSubs.length + '）</div>';
+      if (deptSubs.length) {
+        userHtml += '<table class="dept-sub-table"><thead><tr><th>姓名</th><th>手机号</th><th>角色</th></tr></thead><tbody>';
+        deptSubs.forEach(function(s) {
+          userHtml += '<tr><td>' + escapeHtml(s.name||'-') + '</td><td>' + maskPhone(s.phone||'') + '</td><td>' + escapeHtml(s.role||'-') + '</td></tr>';
+        });
+        userHtml += '</tbody></table>';
+      } else {
+        userHtml += '<div style="color:var(--text-secondary);font-size:13px;padding:12px 0;">暂无归属用户</div>';
+      }
+      userHtml += '</div>';
+
+      bodyEl.innerHTML = infoHtml + projHtml + userHtml;
+    }
+
+    // ===== 新增/编辑弹窗 =====
+    function openAddDeptModal(parentId) {
+      document.getElementById('modalTitle').textContent = parentId ? '新增子部门' : '新增部门';
+      document.getElementById('f_editId').value = '';
+      document.getElementById('f_name').value = '';
+      document.getElementById('f_parentId').value = parentId || '';
+      document.getElementById('f_sort').value = '0';
+      document.getElementById('modalMsg').className = 'modal-msg';
+      clearFieldError('f_name');
+      renderParentTree(parentId || '', null);
+      showModal();
+    }
+
+    function openEditDeptModal() {
+      var M = D(); if (!currentDeptId) return;
+      var dept = M.findDept(currentDeptId);
+      if (!dept) return;
+      document.getElementById('modalTitle').textContent = '编辑部门';
+      document.getElementById('f_editId').value = dept.id;
+      document.getElementById('f_name').value = dept.name;
+      document.getElementById('f_parentId').value = dept.parentId || '';
+      document.getElementById('f_sort').value = dept.sort || 0;
+      document.getElementById('modalMsg').className = 'modal-msg';
+      clearFieldError('f_name');
+      renderParentTree(dept.parentId || '', dept.id);
+      showModal();
+    }
+
+    // 渲染父部门选择树（编辑时排除自己及子孙防环）
+    function renderParentTree(selectedId, excludeId) {
+      var M = D();
+      var container = document.getElementById('parentTree');
+      var tree = M.buildDeptTree(null);
+      var html = '<div class="dept-select-node' + (!selectedId ? ' selected' : '') + '" onclick="selectParent(\'\')" style="font-style:italic;color:var(--text-secondary);">— 根部门（无上级）—</div>';
+      // 收集要排除的 id（自己 + 子孙）
+      var excludeSet = {};
+      if (excludeId) { excludeSet[excludeId] = true; try { M.getDescendants(excludeId).forEach(function(d){ excludeSet[d.id] = true; }); } catch(e){} }
+      function walk(nodes, depth) {
+        nodes.forEach(function(node) {
+          if (excludeSet[node.data.id]) return;
+          var pad = new Array(depth * 2 + 1).join('&nbsp;');
+          var sel = node.data.id === selectedId ? ' selected' : '';
+          html += '<div class="dept-select-node' + sel + '" onclick="selectParent(\'' + node.data.id + '\')">' + pad + '📁 ' + escapeHtml(node.data.name) + '</div>';
+          if (node.children && node.children.length) walk(node.children, depth + 1);
+        });
+      }
+      walk(tree, 0);
+      container.innerHTML = html;
+    }
+
+    function selectParent(id) {
+      document.getElementById('f_parentId').value = id;
+      // 更新选中样式
+      var nodes = document.querySelectorAll('#parentTree .dept-select-node');
+      nodes.forEach(function(n) { n.classList.remove('selected'); });
+      // 简单刷新
+      var editId = document.getElementById('f_editId').value;
+      renderParentTree(id, editId || null);
+    }
+
+    function saveDept() {
+      var M = D(); if (!M) return;
+      var editId = document.getElementById('f_editId').value;
+      var name = document.getElementById('f_name').value.trim();
+      var parentId = document.getElementById('f_parentId').value || null;
+      var sort = parseInt(document.getElementById('f_sort').value) || 0;
+
+      if (!name) { showFieldError('f_name', '部门名称不能为空'); showModalMsg('请完善必填项', 'error'); return; }
+      if (name.length > 30) { showFieldError('f_name', '名称不超过30字'); showModalMsg('名称不超过30字', 'error'); return; }
+
+      var list = M.getDepartments();
+
+      function findInList(id) {
+        for (var i = 0; i < list.length; i++) {
+          if (list[i].id === id) return list[i];
+        }
+        return null;
+      }
+      function getDescendantsInList(deptId) {
+        var dept = findInList(deptId);
+        if (!dept) return [];
+        var prefix = dept.path + '/';
+        return list.filter(function (d) {
+          return d.id !== deptId && d.path && d.path.indexOf(prefix) === 0;
+        });
+      }
+
+      if (editId) {
+        var dept = findInList(editId);
+        if (!dept) { showModalMsg('部门不存在', 'error'); return; }
+        var oldParentId = dept.parentId || null;
+        var oldPath = dept.path;
+
+        for (var i = 0; i < list.length; i++) {
+          if (list[i].id !== editId && list[i].parentId === (parentId || oldParentId) && list[i].name === name) {
+            showFieldError('f_name', '同级已存在同名部门'); showModalMsg('同级已存在同名部门', 'error'); return;
+          }
+        }
+        if (parentId !== oldParentId) {
+          if (parentId && (parentId === editId || M.isDescendant(editId, parentId))) {
+            showModalMsg('不能移动到自身或子部门下', 'error'); return;
+          }
+          var newLevel = parentId ? (findInList(parentId).level + 1) : 0;
+          if (newLevel > 6) { showModalMsg('最多支持6级嵌套', 'error'); return; }
+          var newParent = parentId ? findInList(parentId) : null;
+          var newPath = newParent ? (newParent.path + '/' + editId) : ('/' + editId);
+          dept.parentId = parentId;
+          dept.path = newPath;
+          dept.level = newLevel;
+          var desc = getDescendantsInList(editId);
+          desc.forEach(function (c) {
+            c.path = c.path.replace(oldPath, newPath);
+            c.level = c.path.split('/').filter(Boolean).length - 1;
+          });
+        }
+        dept.name = name;
+        dept.sort = sort;
+        dept.updatedAt = Date.now();
+        M.setDepartments(list);
+      } else {
+        for (var j = 0; j < list.length; j++) {
+          var sibParent = list[j].parentId || null;
+          if ((sibParent === (parentId || null)) && list[j].name === name) {
+            showFieldError('f_name', '同级已存在同名部门'); showModalMsg('同级已存在同名部门', 'error'); return;
+          }
+        }
+        var newId = M.genDeptId();
+        var parent = parentId ? findInList(parentId) : null;
+        var level = parent ? (parent.level + 1) : 0;
+        if (level > 6) { showModalMsg('最多支持6级嵌套', 'error'); return; }
+        var path = parent ? (parent.path + '/' + newId) : ('/' + newId);
+        list.push({
+          id: newId, name: name, parentId: parentId || null, path: path,
+          level: level, status: 'active', sort: sort,
+          createdAt: Date.now(), updatedAt: Date.now()
+        });
+        M.setDepartments(list);
+        currentDeptId = newId;
+        if (parentId) expandedSet[parentId] = true;
+      }
+      closeDeptModal();
+      renderDeptTree();
+      if (currentDeptId) renderDetail(currentDeptId);
+    }
+
+    function toggleDeptStatus() {
+      var M = D(); if (!currentDeptId) return;
+      var list = M.getDepartments();
+      // 在同一个 list 上查找，避免引用断裂
+      var dept = null;
+      for (var i = 0; i < list.length; i++) {
+        if (list[i].id === currentDeptId) { dept = list[i]; break; }
+      }
+      if (!dept) return;
+      var prefix = dept.path + '/';
+      var desc = list.filter(function (d) {
+        return d.id !== currentDeptId && d.path && d.path.indexOf(prefix) === 0;
+      });
+      var newStatus = dept.status === 'active' ? 'inactive' : 'active';
+      if (newStatus === 'inactive') {
+        var subCount = desc.length;
+        var msg = '确定停用"' + dept.name + '"？' + (subCount ? '将一并停用 ' + subCount + ' 个子部门。' : '');
+        if (!confirm(msg)) return;
+      }
+      dept.status = newStatus;
+      dept.updatedAt = Date.now();
+      desc.forEach(function (c) { c.status = newStatus; c.updatedAt = Date.now(); });
+      M.setDepartments(list);
+      renderDeptTree();
+      renderDetail(currentDeptId);
+    }
+
+    // ===== 弹窗工具函数 =====
+    function showModal() { document.getElementById('deptModal').classList.add('show'); }
+    function closeDeptModal() {
+      document.getElementById('deptModal').classList.remove('show');
+      document.getElementById('modalMsg').className = 'modal-msg';
+    }
+    function showModalMsg(text, type) {
+      var el = document.getElementById('modalMsg');
+      el.textContent = text;
+      el.className = 'modal-msg show ' + (type || 'error');
+    }
+    function showFieldError(field, msg) {
+      var input = document.getElementById(field);
+      var err = document.getElementById('err_' + field.replace('f_', ''));
+      if (input) input.classList.add('error');
+      if (err) { err.textContent = msg; err.classList.add('show'); }
+    }
+    function clearFieldError(field) {
+      var input = document.getElementById(field);
+      var err = document.getElementById('err_' + field.replace('f_', ''));
+      if (input) input.classList.remove('error');
+      if (err) err.classList.remove('show');
+    }
+
+    // ===== 通用工具 =====
+    function escapeHtml(s) { if (s == null) return ''; return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+    function formatTime(t) {
+      if (!t) return '--';
+      var d = new Date(typeof t === 'number' ? t : Date.parse(t));
+      if (isNaN(d.getTime())) return '--';
+      return d.getFullYear() + '-' + pad2(d.getMonth()+1) + '-' + pad2(d.getDate()) + ' ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+    }
+    function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+    function maskPhone(p) { if (!p) return '--'; p = String(p); if (p.length <= 7) return p; return p.slice(0,3) + '****' + p.slice(-4); }
+
+    // 弹窗背景点击关闭
+    document.getElementById('deptModal').addEventListener('click', function(e) { if (e.target === this) closeDeptModal(); });
+
+    // 初始化
+    (function init() {
+      // 等待 main.js 的 MJYYDept 就绪
+      function tryRender() {
+        if (window.MJYYDept) {
+          window.MJYYDept.migrate();
+          renderDeptTree();
+        } else {
+          setTimeout(tryRender, 100);
+        }
+      }
+      tryRender();
+    })();
+
+    var accountType = localStorage.getItem('mjyy_account_type');
+    if (accountType === 'sub') {
+      var subEntMgmt = document.getElementById('sidebarSubEntMgmt');
+      if (subEntMgmt) subEntMgmt.style.display = 'none';
+    }
+  </script>
+
+<script src="js/annotation.js" defer></script>
+</body>
+</html>

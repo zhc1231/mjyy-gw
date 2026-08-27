@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>登录 - 民匠有约</title>
+  <style>
+    :root {
+      --primary: #1677FF;
+      --primary-dark: #0958D9;
+      --primary-light: #E6F4FF;
+      --text: #1F2329;
+      --text-secondary: #646A73;
+      --text-muted: #8F959E;
+      --gray-50: #F7F8FA;
+      --gray-100: #F2F3F5;
+      --gray-200: #E5E6EB;
+      --gray-300: #C9CDD4;
+      --gray-400: #8F959E;
+      --error: #F53F3F;
+      --error-bg: #FFF2F0;
+      --radius: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+      --transition: all 0.25s ease;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: linear-gradient(135deg, #F0F5FF 0%, #F7F8FA 50%, #FFF 100%);
+      min-height: 100vh;
+      color: var(--text);
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 1080px;
+      background: #fff;
+      border-radius: var(--radius-xl);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+      display: flex;
+      overflow: hidden;
+      min-height: 680px;
+    }
+
+    .login-left {
+      flex: 1;
+      background: linear-gradient(160deg, #1677FF 0%, #0958D9 60%, #0F52BA 100%);
+      padding: 60px 50px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-left::before {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 50%;
+      top: -200px;
+      right: -200px;
+    }
+
+    .login-left::after {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 50%;
+      bottom: -150px;
+      left: -150px;
+    }
+
+    .left-header {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .left-header img {
+      height: 40px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.15);
+      padding: 4px;
+    }
+
+    .left-header span {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .left-content {
+      position: relative;
+      z-index: 1;
+      max-width: 400px;
+    }
+
+    .left-tag {
+      display: inline-flex;
+      align-items: flex-start;
+      gap: 6px;
+      padding: 6px 14px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 500;
+      margin-bottom: 24px;
+      backdrop-filter: blur(10px);
+    }
+
+    .left-title {
+      font-size: 36px;
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: 16px;
+    }
+
+    .left-title .highlight {
+      background: linear-gradient(135deg, #FFE58F, #FFD666);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .left-desc {
+      font-size: 15px;
+      line-height: 1.8;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 40px;
+    }
+
+    .left-features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .left-feature {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 14px;
+      padding: 18px 16px;
+      transition: all 0.3s ease;
+    }
+
+    .left-feature:hover {
+      background: rgba(255,255,255,0.16);
+      transform: translateY(-2px);
+    }
+
+    .left-feature-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.15);
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      margin-bottom: 10px;
+      color: #FFD666;
+    }
+
+    .left-feature-icon svg { width: 18px; height: 18px; fill: currentColor; }
+
+    .left-feature-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .left-feature-desc {
+      font-size: 11px;
+      color: rgba(255,255,255,0.65);
+    }
+
+    .left-footer {
+      position: relative;
+      z-index: 1;
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .login-right {
+      width: 460px;
+      flex-shrink: 0;
+      padding: 60px 50px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    }
+
+    .back-link {
+      position: absolute;
+      top: 24px;
+      right: 32px;
+      display: flex;
+      align-items: flex-start;
+      gap: 4px;
+      font-size: 13px;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .back-link:hover { color: var(--primary); }
+
+    .back-link svg { width: 14px; height: 14px; }
+
+    .right-content {
+      width: 100%;
+      max-width: 340px;
+      margin: 0 auto;
+    }
+
+    .login-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 32px;
+      background: var(--gray-50);
+      padding: 4px;
+      border-radius: var(--radius);
+    }
+
+    .login-tab {
+      flex: 1;
+      padding: 10px 16px;
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-radius: 8px;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+
+    .login-tab.active {
+      background: #fff;
+      color: var(--primary);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .login-tab:hover:not(.active) {
+      color: var(--text);
+    }
+
+    .login-panel { display: none; }
+    .login-panel.active { display: block; }
+
+    /* 微信扫码 */
+    .wx-qr-section {
+      text-align: center;
+    }
+
+    .wx-qr-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .wx-qr-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .wx-qr-desc b { color: var(--brand-primary); font-weight: 600; }
+
+    .wx-qr-box {
+      width: 240px;
+      height: 240px;
+      margin: 0 auto 18px;
+      padding: 16px;
+      background: #fff;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .wx-qr-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      transition: opacity .2s ease;
+      background: #fff;
+    }
+    .wx-qr-box img.wx-qr-loading { opacity: 0.4; }
+    .wx-qr-box .wx-qr-fallback {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 12px;
+      text-align: center;
+      line-height: 1.6;
+      padding: 8px;
+    }
+
+    .wx-qr-refresh {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+    }
+
+    .wx-qr-refresh a {
+      color: var(--brand-primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .wx-tips {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: flex-start;
+      text-align: left;
+      font-size: 12px;
+      color: var(--text-muted);
+      padding: 12px 16px;
+      background: var(--gray-50);
+      border-radius: var(--radius);
+      line-height: 1.6;
+    }
+    .wx-tips .wx-tips-row {
+      display: flex; align-items: flex-start; gap: 8px; width: 100%;
+    }
+
+    .wx-tips svg { width: 16px; height: 16px; color: #52C41A; flex-shrink: 0; }
+
+    /* 账号密码 */
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .input-wrap { position: relative; }
+
+    .input-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray-400);
+      pointer-events: none;
+    }
+
+    .input-icon svg { width: 18px; height: 18px; fill: currentColor; }
+
+    .form-input {
+      width: 100%;
+      height: 48px;
+      padding: 0 14px 0 44px;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--radius);
+      font-size: 14px;
+      color: var(--text);
+      background: #fff;
+      transition: var(--transition);
+      outline: none;
+      font-family: inherit;
+    }
+
+    .form-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(22,119,255,0.08);
+    }
+
+    .form-input::placeholder { color: var(--gray-400); }
+
+    .sms-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .sms-row .input-wrap { flex: 1; }
+
+    .sms-btn {
+      padding: 0 16px;
+      height: 48px;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primary);
+      background: #fff;
+      white-space: nowrap;
+      transition: var(--transition);
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .sms-btn:hover {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .sms-btn:disabled {
+      color: var(--text-muted);
+      cursor: not-allowed;
+      background: var(--gray-50);
+    }
+
+    .form-options {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin: 8px 0 24px;
+    }
+
+    .checkbox {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .checkbox input {
+      accent-color: var(--primary);
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    .forgot-link {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+
+    .forgot-link:hover { color: var(--primary); }
+
+    /* 协议勾选 */
+    .login-agreement {
+      margin: 4px 0 18px;
+      padding: 10px 12px;
+      background: var(--gray-50);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .login-agreement .checkbox {
+      align-items: flex-start;
+      font-size: 12px;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      flex: 1;
+    }
+    .login-agreement .checkbox input {
+      margin-top: 3px;
+      flex-shrink: 0;
+    }
+    .login-agreement a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .login-agreement a:hover { text-decoration: underline; }
+
+    .wx-agreement {
+      margin-top: 18px;
+      padding: 10px 12px;
+      background: var(--gray-50);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+    }
+    .wx-agreement .checkbox {
+      align-items: flex-start;
+      font-size: 12px;
+      line-height: 1.7;
+      color: var(--text-secondary);
+    }
+    .wx-agreement .checkbox input {
+      margin-top: 3px;
+      flex-shrink: 0;
+    }
+    .wx-agreement a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .wx-agreement a:hover { text-decoration: underline; }
+
+    .submit-btn {
+      width: 100%;
+      height: 48px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      border-radius: var(--radius);
+      transition: all 0.3s ease;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 16px rgba(22,119,255,0.25);
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: inherit;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(22,119,255,0.32);
+    }
+
+    .submit-spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: none;
+    }
+
+    .submit-btn.loading .submit-spinner { display: inline-block; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .form-footer {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 24px;
+    }
+
+    .form-footer a {
+      color: var(--primary);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .wx-only-btn {
+      width: 100%;
+      height: 48px;
+      background: linear-gradient(135deg, #07C160, #05a350);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      border-radius: var(--radius);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 8px;
+      font-family: inherit;
+      margin-top: 20px;
+      text-decoration: none;
+    }
+
+    .wx-only-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(7,193,96,0.3);
+    }
+
+    .wx-only-btn svg { width: 22px; height: 22px; }
+
+    .toast {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: #fff;
+      border: 1px solid var(--gray-200);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      border-radius: var(--radius-lg);
+      padding: 14px 24px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .toast.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+    }
+
+    @media (max-width: 900px) {
+      .login-left { display: none; }
+      .login-right { width: 100%; padding: 40px 32px; }
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 0; }
+      .login-container { border-radius: 0; min-height: 100vh; }
+    }
+  </style>
+
+<link rel="stylesheet" href="css/annotation.css">
+</head>
+<body>
+  <div class="login-container">
+    <!-- 左侧介绍 -->
+    <div class="login-left">
+      <div class="left-header">
+        <img src="https://oss.minjiangyouyue.com/mjlogo/logo02.png" alt="民匠有约">
+        <span>民匠有约</span>
+      </div>
+
+      <div class="left-content">
+        <div class="left-tag">
+          <svg viewBox="0 0 24 24" fill="none" width="14" height="14">
+            <path d="M12 19l9 2-9-18-9 18 9-2z" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          企业灵活用工服务平台
+        </div>
+
+        <h1 class="left-title">
+          登录民匠有约<br>
+          <span class="highlight">开启智能用工</span>
+        </h1>
+        <p class="left-desc">
+          5万+ 注册服务者 · 95% 智能匹配率 · 15分钟极速响应<br>
+          为企业提供一站式灵活用工解决方案
+        </p>
+
+        <div class="left-features">
+          <div class="left-feature">
+            <div class="left-feature-icon">
+              <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+            <div class="left-feature-title">AI 智能匹配</div>
+            <div class="left-feature-desc">1 分钟快速发包</div>
+          </div>
+          <div class="left-feature">
+            <div class="left-feature-icon">
+              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"/></svg>
+            </div>
+            <div class="left-feature-title">电子合同</div>
+            <div class="left-feature-desc">在线签署存证</div>
+          </div>
+          <div class="left-feature">
+            <div class="left-feature-icon">
+              <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23" stroke="currentColor" stroke-width="2"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="2"/></svg>
+            </div>
+            <div class="left-feature-title">即时结算</div>
+            <div class="left-feature-desc">T+0 资金到账</div>
+          </div>
+          <div class="left-feature">
+            <div class="left-feature-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2"/></svg>
+            </div>
+            <div class="left-feature-title">全程保障</div>
+            <div class="left-feature-desc">安全合规无忧</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="left-footer">
+        © 2024 民匠有约 · 浙江良巧匠网络科技
+      </div>
+    </div>
+
+    <!-- 右侧登录 -->
+    <div class="login-right">
+      <a href="index.html" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5" stroke="currentColor" stroke-width="2"/><path d="M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2"/></svg>
+        返回首页
+      </a>
+
+      <div class="right-content">
+        <!-- 登录方式切换 -->
+        <div class="login-tabs">
+          <button class="login-tab active" data-panel="wxPanel">微信扫码</button>
+          <button class="login-tab" data-panel="accountPanel">账号密码</button>
+          <button class="login-tab" data-panel="registerPanel">注册账号</button>
+        </div>
+
+        <!-- 微信扫码 -->
+        <div class="login-panel active" id="wxPanel">
+          <div class="wx-qr-section">
+            <div class="wx-qr-title">微信扫码</div>
+            <div class="wx-qr-desc">请使用微信扫一扫 → <b>已注册用户扫码直接进入控制台</b>，新用户扫码进入注册流程</div>
+            <div class="wx-qr-box">
+              <img id="wxQrImg" alt="微信扫码：已注册用户扫码登录进入控制台，新用户扫码注册"
+                   style="display:none;">
+            </div>
+            <div class="wx-qr-refresh">
+              <span>二维码加载慢？</span>
+              <a href="javascript:void(0)" onclick="refreshQr()">点击刷新</a>
+            </div>
+            <div class="wx-tips">
+              <div class="wx-tips-row">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><circle cx="12" cy="8" r="1"/></svg>
+                <span>打开微信 → 发现 → 扫一扫</span>
+              </div>
+              <div class="wx-tips-row" style="color: var(--text-muted); padding-left: 24px;">
+                <span>已注册用户扫码后直接进入平台；新用户将在微信中打开注册页完成注册</span>
+              </div>
+            </div>
+            <div class="wx-agreement">
+              <label class="checkbox">
+                <input type="checkbox" id="wxAgreement"> 我已阅读并同意<a href="agreement.html" target="_blank">《用户协议》</a>和<a href="privacy.html" target="_blank">《隐私政策》</a>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- 账号密码 -->
+        <div class="login-panel" id="accountPanel">
+          <form id="loginForm" novalidate>
+            <div class="form-group">
+              <label class="form-label">用户名 / 手机号</label>
+              <div class="input-wrap">
+                <span class="input-icon">
+                  <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
+                </span>
+                <input type="text" class="form-input" id="accountInput" placeholder="请输入手机号或用户名" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">登录密码</label>
+              <div class="input-wrap">
+                <span class="input-icon">
+                  <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="currentColor" stroke-width="2"/></svg>
+                </span>
+                <input type="password" class="form-input" id="passwordInput" placeholder="请输入登录密码" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">短信验证码</label>
+              <div class="sms-row">
+                <div class="input-wrap">
+                  <span class="input-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2"/></svg>
+                  </span>
+                  <input type="text" class="form-input" id="smsInput" placeholder="请输入验证码" maxlength="6" />
+                </div>
+                <button type="button" class="sms-btn" id="smsBtn">获取验证码</button>
+              </div>
+            </div>
+
+            <div class="form-options">
+              <a href="#" class="forgot-link">忘记密码？</a>
+            </div>
+
+            <div class="login-agreement">
+              <label class="checkbox">
+                <input type="checkbox" id="loginAgreement"> 我已阅读并同意<a href="agreement.html" target="_blank">《用户协议》</a>和<a href="privacy.html" target="_blank">《隐私政策》</a>
+              </label>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">
+              <span class="submit-spinner"></span>
+              <span class="submit-text">登 录</span>
+            </button>
+          </form>
+
+          <div class="form-footer">
+            还没有账号？<a href="login.html#registerPanel">立即注册</a>
+          </div>
+          </div>
+
+          <!-- 注册面板 -->
+          <div class="login-panel" id="registerPanel">
+            <div class="form-group">
+              <label class="form-label">手机号</label>
+              <div class="input-wrap">
+                <span class="input-icon">
+                  <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
+                </span>
+                <input type="tel" class="form-input" id="regPhone" placeholder="请输入手机号" maxlength="11" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">短信验证码</label>
+              <div class="sms-row">
+                <div class="input-wrap">
+                  <span class="input-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/></svg>
+                  </span>
+                  <input type="text" class="form-input" id="regSms" placeholder="请输入验证码" maxlength="6" />
+                </div>
+                <button type="button" class="sms-btn" id="regSmsBtn">获取验证码</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">登录密码</label>
+              <div class="input-wrap">
+                <span class="input-icon">
+                  <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="currentColor" stroke-width="2"/></svg>
+                </span>
+                <input type="password" class="form-input" id="regPassword" placeholder="8-20位，包含字母和数字" maxlength="20" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">确认密码</label>
+              <div class="input-wrap">
+                <span class="input-icon">
+                  <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="currentColor" stroke-width="2"/></svg>
+                </span>
+                <input type="password" class="form-input" id="regConfirmPassword" placeholder="请再次输入密码" maxlength="20" />
+              </div>
+            </div>
+            <div class="form-options">
+              <label class="checkbox">
+                <input type="checkbox" id="regAgreement"> 我已阅读并同意<a href="agreement.html" target="_blank">《用户协议》</a>和<a href="privacy.html" target="_blank">《隐私政策》</a>
+              </label>
+            </div>
+            <button type="button" class="submit-btn" id="regSubmitBtn">
+              <span class="submit-spinner"></span>
+              <span class="submit-text">注 册</span>
+            </button>
+            <div class="form-footer">
+              已有账号？<a href="login.html">直接登录</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#52C41A" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+    <span id="toastText">登录成功</span>
+  </div>
+
+  <script>
+    // 记录来源平台（用于认证后签署对应合同）
+    (function() {
+      var ref = document.referrer || '';
+      var fromPlatform = 'minjiang';
+      if (ref.indexOf('anxinyun.html') !== -1) fromPlatform = 'anxinyun';
+      else if (ref.indexOf('agent.html') !== -1) fromPlatform = 'agent';
+      else if (ref.indexOf('minjiang.html') !== -1) fromPlatform = 'minjiang';
+      localStorage.setItem('mjyy_from_platform', fromPlatform);
+    })();
+
+    // Tab 切换
+    document.querySelectorAll('.login-tab').forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.login-tab').forEach(function(t) { t.classList.remove('active'); });
+        document.querySelectorAll('.login-panel').forEach(function(p) { p.classList.remove('active'); });
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.panel).classList.add('active');
+      });
+    });
+
+    // ============ 微信扫码 → 已注册用户直接进入平台 ============
+    // 核心思路（演示版，同域 localStorage 共享）：
+    // - 二维码落地仍为 login.html#registerPanel（对新用户友好）。
+    // - 打开时先判断：若当前环境已有"已成功注册并设置密码"的标记（手机号 + user_data 完整），
+    //   则视为已注册用户扫码，直接写入登录态并进入平台（不再停在注册页）。
+    // - 同时提供 PC 扫码轮询：写入 scanLoginState → PC 端自动跳转。
+    (function wxScanAutoBridge() {
+      // 简单的手机号 -> 短哈希（仅用于匹配「是否同一手机号已注册并设置密码」）
+      function shortHash(str) {
+        if (!str) return '';
+        var h = 0, len = str.length;
+        for (var i = 0; i < len; i++) {
+          h = ((h << 5) - h) + str.charCodeAt(i);
+          h |= 0;
+        }
+        return (h >>> 0).toString(36);
+      }
+
+      function jumpByVerifyState(delayMs) {
+        var isVerified = localStorage.getItem('mjyy_verify_complete') === 'true'
+          || localStorage.getItem('mjyy_identity_verified') === 'true';
+        setTimeout(function() {
+          if (isVerified) {
+            window.location.replace('account-center.html');
+          } else {
+            window.location.replace('verify.html');
+          }
+        }, delayMs || 0);
+      }
+
+      // 判断是否"已注册且设置密码"的老用户
+      function isRegisteredUser() {
+        try {
+          if (localStorage.getItem('mjyy_logged_in') !== 'true') return false;
+          var ud = localStorage.getItem('mjyy_user_data');
+          if (!ud) return false;
+          var o = JSON.parse(ud);
+          // 至少有手机号或用户名，且历史上完成过注册/登录
+          if (!o || (!o.mobile && !o.username)) return false;
+          var regMark = localStorage.getItem('mjyy_user_registered');
+          // 有注册标记当然是已注册；否则以 logged_in + user_data 为准（兼容历史数据）
+          if (regMark === 'true') return true;
+          return !!(o.mobile || o.username);
+        } catch (e) { return false; }
+      }
+
+      // 写注册完成标记（注册成功/登录成功都调用）
+      function markRegistered(userData) {
+        try {
+          localStorage.setItem('mjyy_user_registered', 'true');
+          if (userData && userData.mobile) {
+            localStorage.setItem('mjyy_user_registered_mobile_hash', shortHash(userData.mobile));
+          }
+        } catch (e) {}
+      }
+      // 对外暴露，供注册/登录成功调用
+      window.__markRegisteredUser = markRegistered;
+
+      // -----------------------------
+      // 扫码端（H5/微信内打开）：
+      //   若是已注册用户 → 直接进入平台；
+      //   新用户 → 停在当前注册面板（默认行为）。
+      // -----------------------------
+      function handleScanLandingAutoLogin() {
+        var hash = window.location.hash || '';
+        // 我们的二维码落地页固定是 #registerPanel；只有此场景才自动进入
+        if (hash !== '#registerPanel' && hash !== '#auto') return;
+        if (!isRegisteredUser()) return;
+
+        // 协议校验：扫码落地为已注册用户也必须先勾选协议
+        var wxAgreement = document.getElementById('wxAgreement');
+        if (wxAgreement && !wxAgreement.checked) {
+          try {
+            var t = document.getElementById('toast');
+            var tx = document.getElementById('toastText');
+            if (t && tx) {
+              tx.textContent = '请先阅读并同意用户协议和隐私政策';
+              t.classList.add('visible');
+              setTimeout(function() { t.classList.remove('visible'); }, 2500);
+            }
+          } catch (e) {}
+          // 切回扫码面板，便于用户看到协议
+          var wxTab = document.querySelector('.login-tab[data-panel="wxPanel"]');
+          if (wxTab) wxTab.click();
+          return;
+        }
+
+        // 已注册用户：立即 toast + 跳转（和账号密码登录的路径一致）
+        try {
+          var t = document.getElementById('toast');
+          var tx = document.getElementById('toastText');
+          if (t && tx) {
+            tx.textContent = '扫码登录成功，正在进入平台';
+            t.classList.add('visible');
+            setTimeout(function() { t.classList.remove('visible'); }, 1800);
+          }
+        } catch (e) {}
+        // 同时写入 scanLoginState，让同域 PC 端也能轮询到（便于同机演示）
+        try {
+          var ud = JSON.parse(localStorage.getItem('mjyy_user_data') || '{}');
+          var state = {
+            ts: Date.now(),
+            username: ud.username || '',
+            mobile: ud.mobile || '',
+            source: 'wx_scan'
+          };
+          localStorage.setItem('mjyy_scan_login_state', JSON.stringify(state));
+        } catch (e) {}
+
+        jumpByVerifyState(1200);
+      }
+
+      // -----------------------------
+      // PC 端轮询扫码登录状态（用户扫完码，PC 端自动进入平台）
+      // -----------------------------
+      var pollTimer = null;
+      function stopPoll() {
+        if (pollTimer) {
+          clearInterval(pollTimer);
+          pollTimer = null;
+        }
+      }
+      function consumeScanLoginState() {
+        try {
+          var raw = localStorage.getItem('mjyy_scan_login_state');
+          if (!raw) return null;
+          var state = JSON.parse(raw);
+          // 30 秒内有效，避免历史状态反复触发
+          if (!state || !state.ts || (Date.now() - Number(state.ts) > 30 * 1000)) {
+            localStorage.removeItem('mjyy_scan_login_state');
+            return null;
+          }
+          return state;
+        } catch (e) {
+          return null;
+        }
+      }
+      function startPollScanLogin() {
+        // 只在微信扫码 tab 或未切换过 hash 时才启动轮询；用户自己点了账号密码就不打扰
+        var wxPanelActive = document.getElementById('wxPanel');
+        if (!wxPanelActive || !wxPanelActive.classList.contains('active')) return;
+        stopPoll();
+        pollTimer = setInterval(function() {
+          var st = consumeScanLoginState();
+          if (!st) return;
+          // 协议校验：PC 端扫码命中时也必须先勾选协议
+          var wxAgreementPoll = document.getElementById('wxAgreement');
+          if (wxAgreementPoll && !wxAgreementPoll.checked) {
+            // 清理脏状态，避免循环提示
+            try { localStorage.removeItem('mjyy_scan_login_state'); } catch (e) {}
+            stopPoll();
+            try {
+              var t = document.getElementById('toast');
+              var tx = document.getElementById('toastText');
+              if (t && tx) {
+                tx.textContent = '请先阅读并同意用户协议和隐私政策';
+                t.classList.add('visible');
+                setTimeout(function() { t.classList.remove('visible'); }, 2500);
+              }
+            } catch (e2) {}
+            return;
+          }
+          // 命中：写入登录态、toast、跳转
+          try {
+            localStorage.setItem('mjyy_logged_in', 'true');
+            var ud = JSON.parse(localStorage.getItem('mjyy_user_data') || '{}');
+            ud.username = st.username || ud.username || '';
+            ud.mobile   = st.mobile   || ud.mobile   || '';
+            if (!ud.name) ud.name = ud.mobile
+              ? (ud.mobile.substring(0, 3) + '****' + ud.mobile.substring(7))
+              : ud.username;
+            localStorage.setItem('mjyy_user_data', JSON.stringify(ud));
+            localStorage.removeItem('mjyy_scan_login_state');
+            markRegistered(ud);
+          } catch (e) {}
+          stopPoll();
+          try {
+            var t = document.getElementById('toast');
+            var tx = document.getElementById('toastText');
+            if (t && tx) {
+              tx.textContent = '扫码登录成功，正在进入平台';
+              t.classList.add('visible');
+              setTimeout(function() { t.classList.remove('visible'); }, 1800);
+            }
+          } catch (e2) {}
+          jumpByVerifyState(1000);
+        }, 1000);
+      }
+
+      // 用户主动切换 tab：若切回 wxPanel 重新启动轮询；否则停止
+      document.querySelectorAll('.login-tab').forEach(function(tab) {
+        tab.addEventListener('click', function() {
+          if (tab.getAttribute('data-panel') === 'wxPanel') {
+            setTimeout(startPollScanLogin, 30);
+          } else {
+            stopPoll();
+          }
+        });
+      });
+
+      // Initial
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+          handleScanLandingAutoLogin();
+          startPollScanLogin();
+        });
+      } else {
+        handleScanLandingAutoLogin();
+        startPollScanLogin();
+      }
+      // 用户切 tab 后 hash 变化导致 wxPanel 显示时再尝试开启轮询
+      var obs = new MutationObserver(function() {
+        var wxPanel = document.getElementById('wxPanel');
+        if (wxPanel && wxPanel.classList.contains('active')) {
+          startPollScanLogin();
+        }
+      });
+      if (window.MutationObserver) {
+        var wxP = document.getElementById('wxPanel');
+        if (wxP) obs.observe(wxP, { attributes: true, attributeFilter: ['class'] });
+      }
+    })();
+
+
+    // 1) 扫码落地 URL = 当前登录页 + #registerPanel（新用户直接进入注册面板；
+    //    已注册用户通过 handleScanLandingAutoLogin 自动进入平台）
+    function getWxScanLandingUrl() {
+      var here = window.location.href.split('#')[0];
+      here = here.replace(/[?&]$/, '');
+      return here + '#registerPanel';
+    }
+
+    // 2) 二维码生成：使用公共 qrserver API（业界广泛使用，返回标准 QR PNG）
+    //    失败时降级为纯 SVG 二维码（不依赖第三方库，基于 QR 规范的兜底实现）
+    function getQrServerUrl(payload) {
+      var encoded = encodeURIComponent(payload);
+      var t = Date.now();
+      // size: 300x300(内图)，qrserver 会加上默认静区；外层盒子 padding 保证视觉上足够留白
+      // margin: 2 保证有足够的静区；ecc=M 提供中等容错，适合手机扫
+      return 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=2&ecc=M&t=' + t + '&data=' + encoded;
+    }
+
+    // 兜底：在 canvas 上绘制一个标准可扫码的 QR，用 dataURL 方式。
+    // 使用公开可靠的方案：通过临时 <img src=qrserver> 的 onerror 我们改为内嵌 SVG data URI
+    // （自实现 QR 矩阵容易有扫不出的风险，因此用 SVG 里内嵌同样链接的 text 方式不够，
+    // 这里采用：若 qrserver 失败 → 显示一段可复制链接 + 引导用户手动在微信打开注册页。）
+    function renderQrFallback(boxEl, payload) {
+      if (!boxEl) return;
+      boxEl.innerHTML = ''
+        + '<div class="wx-qr-fallback">'
+        + '  <div>'
+        + '    <div style="margin-bottom:8px;color:var(--text-secondary);font-weight:600;">二维码加载失败</div>'
+        + '    <div style="margin-bottom:8px;">请在微信中手动打开以下链接完成注册：</div>'
+        + '    <div style="word-break:break-all;color:var(--brand-primary);font-size:12px;line-height:1.6;background:#E8F3FF;padding:8px 10px;border-radius:8px;">' + payload.replace(/</g,'&lt;') + '</div>'
+        + '  </div>'
+        + '</div>';
+    }
+
+    function renderWxQr() {
+      var box = document.querySelector('.wx-qr-box');
+      if (!box) return;
+      var payload;
+      try {
+        payload = getWxScanLandingUrl();
+      } catch (e) {
+        payload = (window.location.href.split('#')[0] || '') + '#registerPanel';
+      }
+      var url;
+      try {
+        url = getQrServerUrl(payload);
+      } catch (e2) {
+        renderQrFallback(box, payload);
+        return;
+      }
+
+      // 关键修复：每次都清空盒子，然后重新 createElement 并挂载事件
+      box.innerHTML = '';
+      var img = document.createElement('img');
+      img.id = 'wxQrImg';
+      img.alt = '微信扫码：新用户扫码注册，已注册用户扫码登录';
+      img.classList.add('wx-qr-loading');
+      img.style.display = 'block';
+      img.style.width = '100%';
+      img.style.height = '100%';
+      img.style.objectFit = 'contain';
+      img.style.objectPosition = 'center';
+      // 事件先绑定，再设置 src，避免极端情况下 src 立即返回导致错过 onload
+      img.onerror = function() {
+        img.onerror = null;
+        try { img.style.display = 'none'; } catch (e) {}
+        renderQrFallback(box, payload);
+      };
+      img.onload = function() {
+        img.classList.remove('wx-qr-loading');
+      };
+      box.appendChild(img);
+      img.src = url;
+    }
+
+    // 对外：点击「刷新」时重新拉取
+    function refreshQr() {
+      var img = document.getElementById('wxQrImg');
+      if (img) {
+        img.classList.add('wx-qr-loading');
+      }
+      // 重新渲染（换 t= 时间戳，避免缓存）
+      setTimeout(renderWxQr, 120);
+      // 额外 toast 反馈
+      try {
+        var t = document.getElementById('toast');
+        var tx = document.getElementById('toastText');
+        if (t && tx) {
+          tx.textContent = '二维码已刷新';
+          t.classList.add('visible');
+          setTimeout(function() { t.classList.remove('visible'); }, 1500);
+        }
+      } catch (e) {}
+    }
+
+    // 页面加载 & DOM Ready → 先画一次二维码
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', renderWxQr);
+    } else {
+      renderWxQr();
+    }
+
+    // 表单登录
+    (function() {
+      var form = document.getElementById('loginForm');
+      var submitBtn = document.getElementById('submitBtn');
+      var submitText = submitBtn.querySelector('.submit-text');
+      var smsBtn = document.getElementById('smsBtn');
+      var toast = document.getElementById('toast');
+      var toastText = document.getElementById('toastText');
+
+      function showToast(msg) {
+        toastText.textContent = msg;
+        toast.classList.add('visible');
+        setTimeout(function() { toast.classList.remove('visible'); }, 2500);
+      }
+
+      // 校验账号：支持 11 位手机号 / 用户名（字母开头 4-16 位字母数字下划线）
+      var RE_PHONE = /^1[3-9]\d{9}$/;
+      var RE_USER  = /^[a-zA-Z][a-zA-Z0-9_]{3,15}$/;
+      function validateAccount(val) {
+        if (!val) return '请输入用户名或手机号';
+        if (RE_PHONE.test(val) || RE_USER.test(val)) return '';
+        return '请输入正确的11位手机号，或4-16位字母开头的用户名';
+      }
+      function isPhone(val) { return RE_PHONE.test(val); }
+
+      function setLoading(loading) {
+        if (loading) {
+          submitBtn.classList.add('loading');
+          submitBtn.disabled = true;
+          submitText.textContent = '登录中...';
+        } else {
+          submitBtn.classList.remove('loading');
+          submitBtn.disabled = false;
+          submitText.textContent = '登 录';
+        }
+      }
+
+      smsBtn.addEventListener('click', function() {
+        if (smsBtn.disabled) return;
+        var accountInput = document.getElementById('accountInput');
+        var account = accountInput ? accountInput.value.trim() : '';
+        var msg = validateAccount(account);
+        if (msg) { showToast(msg); return; }
+        if (!isPhone(account)) {
+          showToast('请使用账号绑定的手机号来获取验证码');
+          return;
+        }
+        var count = 60;
+        smsBtn.disabled = true;
+        smsBtn.textContent = count + 's';
+        showToast('验证码已发送');
+        var timer = setInterval(function() {
+          count--;
+          if (count <= 0) {
+            clearInterval(timer);
+            smsBtn.disabled = false;
+            smsBtn.textContent = '获取验证码';
+          } else {
+            smsBtn.textContent = count + 's';
+          }
+        }, 1000);
+      });
+
+      // 页面加载时自动回填所有字段，用户可直接点击登录
+      (function autoFillForm() {
+        setTimeout(function() {
+          var accountInput = document.getElementById('accountInput');
+          var passwordInput = document.getElementById('passwordInput');
+          var smsInput = document.getElementById('smsInput');
+          var loginAgreement = document.getElementById('loginAgreement');
+          if (accountInput) accountInput.value = '13800138000';
+          if (passwordInput) passwordInput.value = '123456';
+          if (smsInput) smsInput.value = '123456';
+          if (loginAgreement) loginAgreement.checked = true;
+          // 触发验证码按钮倒计时状态
+          if (smsBtn) {
+            smsBtn.disabled = false;
+            smsBtn.textContent = '重新获取';
+          }
+        }, 100);
+      })();
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var accountInput = document.getElementById('accountInput');
+        var account = accountInput ? accountInput.value.trim() : '';
+        var password = document.getElementById('passwordInput') ? document.getElementById('passwordInput').value : '';
+        var sms = document.getElementById('smsInput') ? document.getElementById('smsInput').value.trim() : '';
+        var loginAgreement = document.getElementById('loginAgreement');
+        var msg = validateAccount(account);
+        if (msg) { showToast(msg); return; }
+        if (!password || password.length < 6) { showToast('请输入登录密码（至少6位）'); return; }
+        if (!sms || sms.length !== 6) { showToast('请输入6位验证码'); return; }
+        if (!loginAgreement || !loginAgreement.checked) { showToast('请先阅读并同意用户协议和隐私政策'); return; }
+
+        setLoading(true);
+        setTimeout(function() {
+          setLoading(false);
+          showToast('登录成功');
+          var userData = {
+            mobile: isPhone(account) ? account : '',
+            username: account,
+            name: isPhone(account)
+              ? (account.substring(0, 3) + '****' + account.substring(7))
+              : account
+          };
+          localStorage.setItem('mjyy_logged_in', 'true');
+          localStorage.setItem('mjyy_user_data', JSON.stringify(userData));
+          // 登录成功：标记为已注册用户
+          try { if (typeof window.__markRegisteredUser === 'function') window.__markRegisteredUser(userData); } catch (e) {}
+          // 扫码登录态
+          try {
+            var scanState = { ts: Date.now(), username: account, mobile: userData.mobile, source: 'account_login' };
+            localStorage.setItem('mjyy_scan_login_state', JSON.stringify(scanState));
+          } catch (e) {}
+          // 登录成功后统一进入控制台
+          var isVerified = localStorage.getItem('mjyy_verify_complete') === 'true'
+            || localStorage.getItem('mjyy_identity_verified') === 'true';
+          setTimeout(function() {
+            if (isVerified) {
+              window.location.replace('account-center.html');
+            } else {
+              window.location.replace('verify.html');
+            }
+          }, 1000);
+        }, 800);
+      });
+    })();
+
+    // 注册功能
+    (function() {
+      var regPhone = document.getElementById('regPhone');
+      var regSms = document.getElementById('regSms');
+      var regPassword = document.getElementById('regPassword');
+      var regConfirmPassword = document.getElementById('regConfirmPassword');
+      var regAgreement = document.getElementById('regAgreement');
+      var regSmsBtn = document.getElementById('regSmsBtn');
+      var regSubmitBtn = document.getElementById('regSubmitBtn');
+      var toast = document.getElementById('toast');
+      var toastText = document.getElementById('toastText');
+
+      function showToast(msg) {
+        toastText.textContent = msg;
+        toast.classList.add('visible');
+        setTimeout(function() { toast.classList.remove('visible'); }, 2500);
+      }
+
+      regSmsBtn.addEventListener('click', function() {
+        if (regSmsBtn.disabled) return;
+        var phoneVal = regPhone.value.trim();
+        if (!phoneVal || !/^1[3-9]\d{9}$/.test(phoneVal)) {
+          showToast('请输入正确的手机号');
+          return;
+        }
+        var count = 60;
+        regSmsBtn.disabled = true;
+        regSmsBtn.textContent = count + 's';
+        var timer = setInterval(function() {
+          count--;
+          if (count <= 0) {
+            clearInterval(timer);
+            regSmsBtn.disabled = false;
+            regSmsBtn.textContent = '获取验证码';
+          } else {
+            regSmsBtn.textContent = count + 's';
+          }
+        }, 1000);
+        showToast('验证码已发送');
+      });
+
+      regSubmitBtn.addEventListener('click', function() {
+        var phone = regPhone.value.trim();
+        var sms = regSms.value.trim();
+        var password = regPassword.value;
+        var confirmPassword = regConfirmPassword.value;
+
+        if (!phone || !/^1[3-9]\d{9}$/.test(phone)) { showToast('请输入正确的手机号'); return; }
+        if (!sms || sms.length !== 6) { showToast('请输入6位验证码'); return; }
+        if (!password || password.length < 8) { showToast('密码至少8位'); return; }
+        if (!/[a-zA-Z]/.test(password) || !/\d/.test(password)) { showToast('密码需包含字母和数字'); return; }
+        if (password !== confirmPassword) { showToast('两次密码不一致'); return; }
+        if (!regAgreement.checked) { showToast('请同意用户协议和隐私政策'); return; }
+
+        regSubmitBtn.disabled = true;
+        regSubmitBtn.querySelector('.submit-text').textContent = '注册中...';
+
+        setTimeout(function() {
+          regSubmitBtn.disabled = false;
+          regSubmitBtn.querySelector('.submit-text').textContent = '注 册';
+          showToast('注册成功，请完成认证');
+          localStorage.setItem('mjyy_logged_in', 'true');
+          var userData = {
+            name: phone.replace(/^(\d{3})\d{4}(\d{4})$/, '$1****$2'),
+            position: '',
+            mobile: phone,
+            username: phone,
+            passwordSet: true
+          };
+          localStorage.setItem('mjyy_user_data', JSON.stringify(userData));
+          // 手机号已绑定 + 密码已设置 → 标记为“已成功注册用户”，之后扫码直接进入平台
+          try { if (typeof window.__markRegisteredUser === 'function') window.__markRegisteredUser(userData); } catch (e) {}
+          try {
+            var scanState = { ts: Date.now(), username: phone, mobile: phone, source: 'register' };
+            localStorage.setItem('mjyy_scan_login_state', JSON.stringify(scanState));
+          } catch (e) {}
+          localStorage.removeItem('mjyy_verify_step');
+          localStorage.removeItem('mjyy_personal_data');
+          localStorage.removeItem('mjyy_enterprise_data');
+          localStorage.removeItem('mjyy_contract_signed');
+          setTimeout(function() {
+            window.location.href = 'verify.html';
+          }, 1200);
+        }, 1500);
+      });
+
+      // URL hash 自动切换面板：微信扫码落地 #registerPanel 进入注册；
+      // 兼容旧 #accountPanel 的写法也能切到注册（老用户发出去的链接）
+      function switchPanelByHash() {
+        var hash = window.location.hash || '';
+        // 支持的面板映射
+        var target = null;
+        if (hash === '#registerPanel' || hash === '#accountPanel') {
+          target = 'registerPanel'; // 我们的扫码落地：注册
+        } else if (hash === '#loginPanel' || hash === '#login') {
+          target = 'accountPanel'; // 显式要登录
+        } else if (hash === '#wx') {
+          target = 'wxPanel';
+        }
+        if (!target) return;
+        document.querySelectorAll('.login-tab').forEach(function(t) { t.classList.remove('active'); });
+        document.querySelectorAll('.login-panel').forEach(function(p) { p.classList.remove('active'); });
+        var tab = document.querySelector('.login-tab[data-panel="' + target + '"]');
+        if (tab) tab.classList.add('active');
+        var panel = document.getElementById(target);
+        if (panel) panel.classList.add('active');
+      }
+      switchPanelByHash();
+      // 在微信/H5里如果用户点击浏览器返回，hash 变化也要同步切换
+      window.addEventListener('hashchange', switchPanelByHash);
+    })();
+  </script>
+
+<script src="js/annotation.js" defer></script>
+</body>
+</html>

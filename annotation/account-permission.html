@@ -1,0 +1,1643 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>权限概览 - 民匠有约</title>
+  <link rel="stylesheet" href="css/style.css?v=2025fix10">
+  <style>
+    :root {
+      --brand-primary: #1677FF;
+      --brand-primary-dark: #0958D9;
+      --brand-primary-50: #E6F4FF;
+      --brand-primary-100: #BAE0FF;
+      --sidebar-width: 240px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #f5f6f7;
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+      /* 强制预留纵向滚动条槽：不管内容长短/是否有8px 纵向滚动条，
+         顶部 max-width:1440 居中的 topbar-inner / logo / 面包屑 / 右上角账户芯片
+         的水平坐标在 12 个左侧菜单页面之间完全一致，不会出现 7~8 像素的左右飘移
+         （用户说"顶部 logo/面包屑/右上角不要有位置偏移"的根因） */
+      overflow-y: scroll;
+    }
+
+    /* ===== 顶部导航 ===== */
+    .topbar {
+      background: #fff;
+      border-bottom: none;
+      height: 60px;
+      width: 100%;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 0;
+    }
+
+    .topbar-inner {
+      max-width: 1440px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 40px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .topbar-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--gray-200);
+      margin: 0 12px;
+    }
+
+    .topbar-crumb {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .topbar-crumb b { color: var(--text); font-weight: 600; }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .topbar-title {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+    .topbar-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 13px;
+      color: var(--text-regular);
+      line-height: 1;
+    }
+    .topbar-breadcrumb a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .topbar-breadcrumb a:hover { color: var(--brand-primary); }
+    .topbar-bc-sep { color: var(--text-placeholder); font-size: 12px; margin: 0 2px; }
+    .topbar-bc-current { color: var(--text); font-weight: 500; }
+
+
+    .topbar-back {
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .topbar-back:hover { color: var(--brand-primary); }
+
+
+    .topbar-user {
+      min-width: 280px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 12px 6px 8px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+      background: #fff;
+      border: 1px solid var(--gray-200);
+    }
+
+    .topbar-user:hover { background: var(--gray-50); border-color: var(--gray-300); }
+
+    .topbar-user.active { background: var(--gray-50); border-color: var(--gray-300); }
+
+    .topbar-user .user-dropdown.open,
+    .topbar-user.active .user-dropdown {
+      display: block;
+      opacity: 1;
+      visibility: visible;
+    }
+    /* ====== 顶部栏 用户名 + 角色/默认企业 多标签 ====== */
+    .topbar-user-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      max-width: 360px;
+      min-width: 0;
+    }
+
+    .topbar-user-name-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      max-width: 220px;
+    }
+
+    .topbar-account-badge {
+      font-size: 10px;
+      padding: 0 5px;
+      border-radius: 4px;
+      background: var(--brand-primary-50);
+      color: var(--brand-primary);
+      font-weight: 500;
+      line-height: 16px;
+      flex-shrink: 0;
+    }
+    .topbar-account-badge.sub {
+      background: #FFF7E6;
+      color: #FF7D00;
+    }
+    .topbar-user-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      line-height: 1.4;
+    }
+    .topbar-user-chips {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: nowrap;
+      flex-shrink: 0;
+    }
+    .topbar-user-chip {
+      font-size: 10px;
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
+      padding: 1px 6px;
+      border-radius: 4px;
+      line-height: 16px;
+      font-weight: 600;
+      border: 1px solid transparent;
+    }
+    .topbar-user-chip.admin   { background: #EDF4FF; color: #1677FF; border-color: #C7DBFF; }
+    .topbar-user-chip.sub     { background: #FFF7E6; color: #FF7D00; border-color: #FFD591; }
+    .topbar-user-chip.verified   { background: #F0F9EB; color: #52C41A; border-color: #B7EB8F; }
+    .topbar-user-chip.unverified { background: #FFF2E8; color: #FA8C16; border-color: #FFD591; }
+    .topbar-user-chip.phone   { background: var(--gray-100); color: var(--text-secondary); border-color: var(--gray-200); }
+    /* ===== 消息通知 ===== */
+    /* ===== 消息通知 ===== */
+    .topbar-message {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none; flex-shrink: 0;
+    }
+    .topbar-message:hover {
+      background: var(--gray-100);
+      color: var(--brand-primary);
+    }
+    .topbar-message:hover .topbar-message-icon {
+      color: var(--brand-primary);
+    }
+    .topbar-message-icon {
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .topbar-message-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+    .topbar-message-dot {
+      position: absolute;
+      top: -2px;
+      right: -2px;width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #F53F3F;
+      display: none;
+      z-index: 5;
+          box-shadow: 0 0 0 2px #fff;
+    }
+    .topbar-message-dot.show { display: block; }
+    .topbar-message.has-badge .topbar-message-dot {
+      display: none !important;
+    }
+    .topbar-message .topbar-message-badge {
+      position: absolute;
+      top: -3px;
+      right: -6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 16px;
+      height: 14px;
+      padding: 0 4px;
+      border-radius: 7px;
+      background: #F53F3F;
+      color: #fff;
+      font-size: 9px;
+      font-weight: 600;
+      text-align: center;
+      line-height: 1;
+      border: 2px solid #fff;
+      box-sizing: border-box;
+      z-index: 10;
+      box-shadow: 0 1px 3px rgba(245, 63, 63, 0.4);
+    }
+    .message-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 340px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      border: 1px solid var(--gray-200);
+      z-index: 1000;
+      display: none;
+      overflow: hidden;
+    }
+    .topbar-message.open .message-dropdown {
+      display: block;
+    }
+    .message-dropdown-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 14px 16px 10px;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text);
+    }
+    .message-dropdown-clear {
+      font-size: 12px;
+      color: var(--brand-primary);
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .message-dropdown-clear:hover { text-decoration: underline; }
+    .message-dropdown-list {
+      max-height: 320px;
+      overflow-y: auto;
+    }
+    .message-item {
+      display: flex;
+      gap: 10px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--gray-100);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .message-item:last-child { border-bottom: none; }
+    .message-item:hover { background: var(--gray-50); }
+    .message-item.unread { background: #F7FAFF; }
+    .message-item.unread .message-item-title { font-weight: 600; }
+    .message-item-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 14px;
+    }
+    .message-item-icon.system { background: #E8F3FF; color: #1677FF; }
+    .message-item-icon.order { background: #E8F8EB; color: #00B42A; }
+    .message-item-icon.warn { background: #FFF2E8; color: #FA8C16; }
+    .message-item-icon.promo { background: #F3E8FF; color: #722ED1; }
+    .message-item-body {
+      flex: 1;
+      min-width: 0;
+    }
+    .message-item-title {
+      font-size: 13px;
+      color: var(--text);
+      margin-bottom: 2px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .message-item-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+    }
+    .message-item-time {
+      font-size: 11px;
+      color: var(--text-muted);
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .message-dropdown-footer {
+      display: block;
+      text-align: center;
+      padding: 12px;
+      font-size: 13px;
+      color: var(--brand-primary);
+      text-decoration: none;
+      border-top: 1px solid var(--gray-100);
+      font-weight: 500;
+    }
+    .message-dropdown-footer:hover { background: var(--gray-50); }
+    .message-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    /* ===== 站内信 ===== */
+    .topbar-message {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-right: 0;
+    }
+    .topbar-message:hover {
+      background: var(--gray-100);
+      color: var(--brand-primary);
+    }
+    .topbar-message-badge {
+      display: inline-flex;
+      align-items: flex-start;
+      justify-content: center;
+      min-width: 16px;
+      height: 16px;
+      padding: 0 4px;
+      border-radius: 8px;
+      background: #F53F3F;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 600;
+      line-height: 1;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    /* ===== 下拉菜单 当前登录标签 ===== */
+    .user-dropdown-current-tag {
+      display: inline-flex;
+      align-items: flex-start;
+      gap: 3px;
+      font-size: 11px;
+      padding: 1px 7px;
+      border-radius: 4px;
+      background: #F3E8FF;
+      color: #722ED1;
+      font-weight: 500;
+      line-height: 16px;
+    }
+    .user-dropdown-current-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #722ED1;
+      display: inline-block;
+    }
+
+    /* ===== 企业列表 当前登录徽章 ===== */
+    .enterprise-switch-name-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    .enterprise-current-badge {
+      font-size: 10px;
+      padding: 0 5px;
+      border-radius: 3px;
+      background: #F3E8FF;
+      color: #722ED1;
+      font-weight: 500;
+      line-height: 14px;
+      flex-shrink: 0;
+    }
+
+
+    .topbar-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand-primary) 0%, #1E88FF 100%);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 2px 6px rgba(22, 119, 255, 0.25);
+    }
+
+    .topbar-name {
+      font-size: 14px;
+      color: var(--text);
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .topbar-chevron {
+      width: 14px;
+      height: 14px;
+      color: var(--text-muted);
+      transition: transform 0.2s;
+    }
+
+    .topbar-user.open .topbar-chevron,
+    .topbar-user.active .topbar-chevron {
+      transform: rotate(180deg);
+    }
+
+    /* ===== 用户下拉菜单（阿里云风格） ===== */
+    .user-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 280px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      border: 1px solid var(--gray-200);
+      z-index: 1001;
+      display: none;
+      overflow: hidden;
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .user-dropdown-header {
+      padding: 36px 90px 16px 16px;
+      border-bottom: none;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      position: relative;
+      position: relative;
+    }
+
+    .user-dropdown-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--brand-primary-50);
+      color: var(--brand-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .user-dropdown-info { flex: 1; min-width: 0; }
+
+    .user-dropdown-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 2px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .user-dropdown-id {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .user-dropdown-tags {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .user-dropdown-tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--brand-primary-50);
+      color: var(--brand-primary);
+      font-weight: 500;
+    }
+
+    .user-dropdown-tag.verified {
+      background: #E8F8EB;
+      color: #00B42A;
+    }
+
+    .user-dropdown-body {
+      padding: 8px 0;
+    }
+
+    .user-dropdown-group {
+      padding: 4px 0;
+    }
+
+    .user-dropdown-group-title {
+      padding: 8px 16px 4px;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .user-dropdown-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 16px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      border: none;
+      background: none;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+      transition: background 0.2s;
+    }
+
+    .user-dropdown-item:hover {
+      background: var(--gray-100);
+      color: var(--text);
+    }
+
+    .user-dropdown-item svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .user-dropdown-item-primary {
+      color: var(--brand-primary);
+      font-weight: 500;
+    }
+
+    .user-dropdown-divider {
+      height: 1px;
+      background: var(--gray-200);
+      margin: 8px 0;
+    }
+
+    .user-dropdown-footer {
+      padding: 12px 16px;
+      border-top: 1px solid var(--gray-200);
+    }
+
+    .user-dropdown-logout {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding: 8px;
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      background: #fff;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .user-dropdown-logout:hover {
+      border-color: var(--brand-primary);
+      color: var(--brand-primary);
+      background: var(--brand-primary-50);
+    }
+
+    /* ===== 页面主体布局 ===== */
+    .page-layout {
+      display: flex;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding-top: 60px;
+      min-height: 100vh;
+    }
+
+    /* ===== 侧边栏 ===== */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: #fff;
+      border-right: 1px solid var(--gray-200);
+      position: fixed;
+      top: 60px; bottom: 0;
+      left: calc((100vw - 1440px) / 2);
+      overflow-y: auto;
+      padding: 14px 0 24px;
+    }
+
+    .sidebar-section-title {
+      padding: 10px 20px 6px;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .sidebar-menu { list-style: none; }
+
+    .sidebar-link {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 20px;
+      margin: 1px 8px;
+      border-radius: 8px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all 0.15s;
+      cursor: pointer;
+    }
+
+    .sidebar-link:hover { color: var(--brand-primary); background: var(--gray-100); }
+
+    .sidebar-link.active {
+      color: var(--brand-primary);
+      background: var(--brand-primary-50);
+      font-weight: 600;
+    }
+
+    .sidebar-link svg { width: 17px; height: 17px; flex-shrink: 0; display: block; overflow: visible; align-self: center; }
+
+    .sidebar-divider { height: 1px; background: var(--gray-200); margin: 10px 16px; }
+
+    /* ===== 主内容区 ===== */
+    .main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      padding: 24px 32px 40px;
+      min-width: 0;
+    }
+    .page-breadcrumb {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 13px; color: var(--text-muted);
+      margin-bottom: 18px;   /* 与产品中心（account-center 官方基线）完全一致 18px，三页之前 20px 的版本这里也同步覆盖 */
+    }
+    .page-breadcrumb a:hover { color: var(--brand-primary); }
+
+    .page-title-wrap {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 22px; flex-wrap: wrap; gap: 12px;
+    }
+    .page-title { font-size: 24px; font-weight: 700; line-height: 1.2; }
+    .page-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+    .page-actions { display: flex; align-items: center; gap: 10px; }
+
+
+
+    /* ===== 卡片组件 ===== */
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid var(--gray-200);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 16px 20px;
+      border-bottom: none;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .card-body { padding: 20px; }
+
+    /* ===== 信息列表 ===== */
+    .info-list { display: flex; flex-direction: column; gap: 16px; }
+
+    .info-item {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .info-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .info-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .info-label svg {
+      width: 18px;
+      height: 18px;
+      color: var(--text-muted);
+    }
+
+    .info-value {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .info-status {
+      display: inline-flex;
+      align-items: flex-start;
+      gap: 6px;
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: #E8F8EB;
+      color: #00B42A;
+    }
+
+    .info-status.pending {
+      background: #FFF3E8;
+      color: #FF7D00;
+    }
+
+    .info-action {
+      font-size: 13px;
+      color: var(--brand-primary);
+      text-decoration: none;
+    }
+
+    .info-action:hover { text-decoration: underline; }
+
+    /* ===== 权限概览网格 ===== */
+    .permission-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .permission-item {
+      padding: 20px;
+      border: 1px solid var(--gray-200);
+      border-radius: 10px;
+      transition: all 0.2s;
+    }
+
+    .permission-item:hover {
+      border-color: var(--brand-primary);
+      box-shadow: 0 4px 16px rgba(22,119,255,0.1);
+      cursor: pointer;
+    }
+
+    .permission-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--brand-primary-50);
+      color: var(--brand-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .permission-icon svg { width: 20px; height: 20px; display: block; }
+
+    .permission-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .permission-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* ===== 成员表格 ===== */
+    .member-table-wrap { overflow-x: auto; }
+
+    .member-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .member-table th,
+    .member-table td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .member-table th {
+      background: #fafafa;
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 13px;
+    }
+
+    .member-table tbody tr:hover { background: #fafafa; }
+
+    .member-empty {
+      padding: 40px 16px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .member-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .member-action {
+      color: var(--brand-primary);
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .member-action:hover { text-decoration: underline; }
+
+    .member-action.danger { color: #F53F3F; }
+
+    /* ===== 模态框 ===== */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.45);
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      z-index: 2000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.25s;
+    }
+
+    .modal-overlay.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background: #fff;
+      border-radius: 12px;
+      width: 480px;
+      max-width: 90vw;
+      max-height: 90vh;
+      overflow: hidden;
+      transform: translateY(20px) scale(0.96);
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-overlay.visible .modal {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: none;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .modal-close {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      border: none;
+      background: none;
+      cursor: pointer;
+      border-radius: 6px;
+      color: var(--text-muted);
+      transition: all 0.2s;
+    }
+
+    .modal-close:hover {
+      background: var(--gray-100);
+      color: var(--text);
+    }
+
+    .modal-body {
+      padding: 20px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .modal-footer {
+      padding: 12px 20px;
+      border-top: 1px solid var(--gray-200);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      background: var(--gray-50);
+    }
+
+    /* ===== 表单 ===== */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .form-label .required {
+      color: #F53F3F;
+      margin-left: 2px;
+    }
+
+    .form-input,
+    .form-select {
+      width: 100%;
+      height: 38px;
+      padding: 0 12px;
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+      font-size: 13px;
+      color: var(--text);
+      background: #fff;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    .form-input:focus,
+    .form-select:focus {
+      border-color: var(--brand-primary);
+    }
+
+    .form-error {
+      font-size: 12px;
+      color: #F53F3F;
+      margin-top: 4px;
+      min-height: 16px;
+    }
+
+    .btn-default {
+      display: inline-flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: #fff;
+      color: var(--text);
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-default:hover {
+      border-color: var(--brand-primary);
+      color: var(--brand-primary);
+    }
+
+    /* ===== 按钮 ===== */
+    .btn-primary {
+      display: inline-flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: var(--brand-primary);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .btn-primary:hover { background: var(--brand-primary-dark); }
+
+    /* ===== 空状态 ===== */
+    .empty-state {
+      padding: 48px 20px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .empty-state-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 16px;
+      background: var(--gray-100);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+    }
+
+    .empty-state-icon svg { width: 28px; height: 28px; }
+
+    .empty-state-text {
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    /* ===== 响应式 ===== */
+        @media (max-width: 1440px) {
+      .sidebar { left: 0; }
+    }
+
+    @media (max-width: 768px) {
+      .topbar { padding: 0 16px; }
+      .page-layout { flex-direction: column; }
+      .sidebar {
+        position: relative;
+        top: 0;
+        width: 100%;
+        border-right: none;
+        border-bottom: none;
+      }
+      .main-content { margin-left: 0; padding: 16px; }
+      .permission-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+  </style>
+
+<link rel="stylesheet" href="css/annotation.css">
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div style="display:flex;align-items:center;gap:20px;">
+        <a href="account-center.html" class="topbar-brand">
+          <img src="https://oss.minjiangyouyue.com/mjlogo/logo02.png" alt="logo" style="height:34px;border-radius:8px;">
+          <span class="topbar-title">控制台</span>
+        </a>
+        <div class="topbar-breadcrumb">
+          <a href="index.html">首页</a>
+          <span class="topbar-bc-sep">/</span>
+          <a href="account-center.html">控制台</a>
+          <span class="topbar-bc-sep">/</span>
+          <span class="topbar-bc-current">权限概览</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <a href="#" class="topbar-back" onclick="
+      if(window.SKIP_LOGIN_CHECK || (window.__userData && window.__userData.isLoggedIn)) {
+        window.location.href = 'account-center.html';
+      } else {
+        history.back();
+      }
+      return false;
+    ">
+          <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M19 12H5" stroke="currentColor" stroke-width="2"/><path d="M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2"/></svg>
+          返回
+        </a>
+        <div class="topbar-message" id="topbarMessage">
+          <div class="topbar-message-icon">
+            <svg viewBox="0 0 24 24" fill="none" width="15" height="15"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="topbar-message-dot show" id="topbarMessageDot"></span>
+            <span class="topbar-message-badge" id="topbarMessageBadge">3</span>
+          </div>
+          <div class="message-dropdown" id="messageDropdown">
+            <div class="message-dropdown-header">
+              <span>消息通知</span>
+              <a href="javascript:;" class="message-dropdown-clear" id="msgClearAll">全部已读</a>
+            </div>
+            <div class="message-dropdown-list" id="messageList">
+              <!-- 动态消息列表 -->
+            </div>
+            <a href="javascript:;" class="message-dropdown-footer" id="msgViewAll">查看全部消息 →</a>
+          </div>
+        </div>
+        <div class="topbar-user" id="topbarUser"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 页面主体 -->
+  <div class="page-layout">
+    <!-- 左侧边栏 -->
+                    <aside class="sidebar">
+      <div class="sidebar-section-title">产品</div>
+      <ul class="sidebar-menu">
+        <li><a href="account-center.html" class="sidebar-link ">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/></svg>
+          产品中心
+        </a></li>
+      </ul>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-title">企业</div>
+      <ul class="sidebar-menu">
+        <li><a href="account-realname.html?type=enterprise" class="sidebar-link ">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4" stroke="currentColor" stroke-width="2"/></svg>
+          企业信息
+        </a></li>
+        <li><a href="account-billing.html" class="sidebar-link ">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"/></svg>
+          合同管理
+        </a></li>
+        <li><a href="account-bank.html" class="sidebar-link ">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"/><line x1="2" y1="10" x2="22" y2="10" stroke="currentColor" stroke-width="2"/></svg>
+          账户管理
+        </a></li>
+      </ul>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-title">企业管理</div>
+      <ul class="sidebar-menu">
+        <li id="sidebarSubEntMgmt"><a href="account-project.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M9 9h6M9 13h4M9 17h5" stroke="currentColor" stroke-width="2"/></svg>
+          子公司管理
+        </a></li>
+      </ul>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-title">财务</div>
+      <ul class="sidebar-menu">
+        <li><a href="account-wallet.html" class="sidebar-link ">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="2"/></svg>
+          资金账户
+        </a></li>
+      </ul>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-title">设置</div>
+      <ul class="sidebar-menu">
+        <li><a href="account-permission.html" class="sidebar-link active">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="currentColor" stroke-width="2"/></svg>
+          权限概览
+        </a></li>
+        <li><a href="account-user.html" class="sidebar-link ">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2"/></svg>
+          用户管理
+        </a></li>
+        <li><a href="account-role.html" class="sidebar-link ">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+          角色管理
+        </a></li>
+        <li><a href="account-security.html" class="sidebar-link ">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/></svg>
+          账号安全
+        </a></li>
+      </ul>
+    </aside>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+      <div class="page-title-wrap">
+        <div>
+          <div class="page-title">权限概览</div>
+          <div class="page-subtitle">按角色/用户/岗位/菜单数据权限的分层授权配置与审计追踪。</div>
+        </div>
+      </div>
+      <!-- 当前身份 -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">当前身份</div>
+        </div>
+        <div class="card-body">
+          <div class="info-list">
+            <div class="info-item">
+              <div class="info-label">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2"/><path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2"/></svg>
+                用户角色
+              </div>
+              <div class="info-value">
+                <span>主管理员</span>
+              </div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
+                认证主体
+              </div>
+              <div class="info-value" id="identitySubject">--</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke="currentColor" stroke-width="2"/><polyline points="22 4 12 14.01 9 11.01" stroke="currentColor" stroke-width="2"/></svg>
+                认证状态
+              </div>
+              <div class="info-value">
+                <span class="info-status" id="identityStatus">未认证</span>
+              </div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/></svg>
+                主账号
+              </div>
+              <div class="info-value">
+                <span id="mainAccount">--</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      
+      <!-- 权限概览 -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">权限概览</div>
+        </div>
+        <div class="card-body">
+          <div class="permission-grid">
+            <a href="account-center.html" class="permission-item" style="text-decoration:none;color:inherit;">
+              <div class="permission-icon">
+                <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/></svg>
+              </div>
+              <div class="permission-title">产品中心</div>
+              <div class="permission-desc">产品管理与签约状态</div>
+            </a>
+            <a href="account-realname.html?type=enterprise" class="permission-item" style="text-decoration:none;color:inherit;">
+              <div class="permission-icon">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4" stroke="currentColor" stroke-width="2"/></svg>
+              </div>
+              <div class="permission-title">企业信息</div>
+              <div class="permission-desc">企业实名认证管理</div>
+            </a>
+            <a href="account-billing.html" class="permission-item" style="text-decoration:none;color:inherit;">
+              <div class="permission-icon">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"/></svg>
+              </div>
+              <div class="permission-title">合同管理</div>
+              <div class="permission-desc">合同签署与下载</div>
+            </a>
+            <a href="account-wallet.html" class="permission-item" style="text-decoration:none;color:inherit;">
+              <div class="permission-icon">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="2"/></svg>
+              </div>
+              <div class="permission-title">资金账户</div>
+              <div class="permission-desc">账户余额与资金流水</div>
+            </a>
+            <a href="account-user.html" class="permission-item" style="text-decoration:none;color:inherit;">
+              <div class="permission-icon">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2"/></svg>
+              </div>
+              <div class="permission-title">用户管理</div>
+              <div class="permission-desc">用户名与权限分配</div>
+            </a>
+            <a href="account-role.html" class="permission-item" style="text-decoration:none;color:inherit;">
+              <div class="permission-icon">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+              </div>
+              <div class="permission-title">角色管理</div>
+              <div class="permission-desc">角色创建与权限配置</div>
+            </a>
+            <a href="account-permission.html" class="permission-item" style="text-decoration:none;color:inherit;">
+              <div class="permission-icon">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="currentColor" stroke-width="2"/></svg>
+              </div>
+              <div class="permission-title">权限概览</div>
+              <div class="permission-desc">查看所有功能权限</div>
+            </a>
+            <a href="account-security.html" class="permission-item" style="text-decoration:none;color:inherit;">
+              <div class="permission-icon">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/></svg>
+              </div>
+              <div class="permission-title">账号安全</div>
+              <div class="permission-desc">密码、手机与登录保护</div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      
+    </main>
+</main>
+  </div>
+
+  <script>
+    (function() {
+      var isLoggedIn = localStorage.getItem('mjyy_logged_in') === 'true';
+      if (!isLoggedIn) { window.location.href = 'login.html'; return; }
+
+      var userData = JSON.parse(localStorage.getItem('mjyy_user_data') || '{}');
+      var personalData = JSON.parse(localStorage.getItem('mjyy_personal_data') || '{}');
+      var enterpriseData = JSON.parse(localStorage.getItem('mjyy_enterprise_data') || '{}');
+      var identityVerified = localStorage.getItem('mjyy_identity_verified') === 'true';
+      var selectedAuthType = localStorage.getItem('mjyy_auth_type') || 'enterprise';
+
+      function maskMobile(m) {
+        if (!m || m.length < 11) return m || '--';
+        return m.substring(0, 3) + '****' + m.substring(7);
+      }
+
+      function maskId(id) {
+        if (!id) return '--';
+        return id.substring(0, 4) + '****' + id.substring(id.length - 4);
+      }
+
+      var displayName = '';
+      if (enterpriseData.companyName) displayName = enterpriseData.companyName;
+      else if (personalData.realName) displayName = personalData.realName;
+      else if (userData.mobile) displayName = maskMobile(userData.mobile);
+      else if (userData.name) displayName = userData.name;
+      else displayName = '用户';
+
+      var avatarChar = displayName ? displayName.charAt(0) : '用';
+      var accountId = userData.mobile || userData.accountId || 'MJ' + Date.now().toString().slice(-8);
+
+                  document.getElementById('dropdownName').textContent = displayName;
+      document.getElementById('dropdownId').textContent = '账号ID：' + maskId(accountId);
+
+      // 账号类型标签
+      var accountType = localStorage.getItem('mjyy_account_type') || 'main';
+      var typeText = accountType === 'sub' ? '子账号' : '主账号';
+      var dropdownBadge = document.getElementById('dropdownBadge');
+      if (dropdownBadge) {
+        dropdownBadge.textContent = typeText;
+        dropdownBadge.style.background = accountType === 'sub' ? '#FFF7E6' : 'var(--brand-primary-50)';
+        dropdownBadge.style.color = accountType === 'sub' ? '#FF7D00' : 'var(--brand-primary)';
+      }
+
+      if (accountType === 'sub') {
+        var subEntMgmt = document.getElementById('sidebarSubEntMgmt');
+        if (subEntMgmt) subEntMgmt.style.display = 'none';
+      }
+
+      var authTag = document.getElementById('authTag');
+      var verifyLink = document.getElementById('verifyLink');
+      var verifyLinkText = document.getElementById('verifyLinkText');
+
+      if (identityVerified) {
+        authTag.textContent = '已认证';
+        authTag.classList.add('verified');
+        verifyLink.style.display = 'none';
+      } else {
+        authTag.textContent = selectedAuthType === 'personal' ? '个人未认证' : '企业未认证';
+        verifyLinkText.textContent = selectedAuthType === 'personal' ? '去个人认证' : '去企业认证';
+      }
+
+      var identitySubject = document.getElementById('identitySubject');
+      var identityStatus = document.getElementById('identityStatus');
+
+      if (selectedAuthType === 'personal') {
+        identitySubject.textContent = personalData.realName || '未填写';
+      } else {
+        identitySubject.textContent = enterpriseData.companyName || '未填写';
+      }
+
+      if (identityVerified) {
+        identityStatus.textContent = '已认证';
+        identityStatus.classList.remove('pending');
+      } else {
+        identityStatus.textContent = '未认证';
+        identityStatus.classList.add('pending');
+      }
+
+      // 主账号信息
+      var mainAccountEl = document.getElementById('mainAccount');
+      if (mainAccountEl) {
+        var accountType = localStorage.getItem('mjyy_account_type') || 'main';
+        if (accountType === 'sub') {
+          mainAccountEl.textContent = userData.mainAccountMobile ? maskMobile(userData.mainAccountMobile) : '由主账号管理';
+        } else {
+          mainAccountEl.textContent = '当前账号为主账号';
+        }
+      }
+
+      function maskMobile(phone) {
+        if (!phone || phone.length < 7) return phone || '';
+        return phone.slice(0, 3) + '****' + phone.slice(-4);
+      }
+
+      var modal = document.getElementById('addMemberModal');
+      function openAddMemberModal() {
+        modal.classList.add('visible');
+        document.getElementById('memberPhone').value = '';
+        document.getElementById('memberName').value = '';
+        document.getElementById('memberRole').value = '';
+        ['memberPhoneError', 'memberNameError', 'memberRoleError'].forEach(function(id) {
+          document.getElementById(id).textContent = '';
+        });
+      }
+      function closeAddMemberModal() {
+        modal.classList.remove('visible');
+      }
+      document.getElementById('addMemberBtn').addEventListener('click', openAddMemberModal);
+      document.getElementById('addMemberClose').addEventListener('click', closeAddMemberModal);
+      document.getElementById('addMemberCancel').addEventListener('click', closeAddMemberModal);
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) closeAddMemberModal();
+      });
+
+      function showFieldError(fieldId, errorId, msg) {
+        var el = document.getElementById(fieldId);
+        if (el) el.style.borderColor = '#F53F3F';
+        document.getElementById(errorId).textContent = msg;
+      }
+      function clearFieldError(fieldId, errorId) {
+        var el = document.getElementById(fieldId);
+        if (el) el.style.borderColor = '';
+        document.getElementById(errorId).textContent = '';
+      }
+
+      document.getElementById('memberPhone').addEventListener('input', function() {
+        clearFieldError('memberPhone', 'memberPhoneError');
+      });
+      document.getElementById('memberName').addEventListener('input', function() {
+        clearFieldError('memberName', 'memberNameError');
+      });
+      document.getElementById('memberRole').addEventListener('change', function() {
+        clearFieldError('memberRole', 'memberRoleError');
+      });
+
+      document.getElementById('addMemberConfirm').addEventListener('click', function() {
+        var phone = document.getElementById('memberPhone').value.trim();
+        var name = document.getElementById('memberName').value.trim();
+        var role = document.getElementById('memberRole').value;
+        var hasError = false;
+        if (!phone) {
+          showFieldError('memberPhone', 'memberPhoneError', '请输入成员手机号');
+          hasError = true;
+        } else if (!/^1[3-9]\d{9}$/.test(phone)) {
+          showFieldError('memberPhone', 'memberPhoneError', '请输入正确的手机号');
+          hasError = true;
+        } else {
+          clearFieldError('memberPhone', 'memberPhoneError');
+        }
+        if (!name) {
+          showFieldError('memberName', 'memberNameError', '请输入成员姓名');
+          hasError = true;
+        } else {
+          clearFieldError('memberName', 'memberNameError');
+        }
+        if (!role) {
+          showFieldError('memberRole', 'memberRoleError', '请选择角色');
+          hasError = true;
+        } else {
+          clearFieldError('memberRole', 'memberRoleError');
+        }
+        if (hasError) return;
+
+        var btn = document.getElementById('addMemberConfirm');
+        btn.disabled = true;
+        btn.textContent = '添加中...';
+        setTimeout(function() {
+          var tbody = document.querySelector('.member-table-wrap tbody');
+          var tr = document.createElement('tr');
+          var today = new Date();
+          var dateStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+          tr.innerHTML = '<td><strong>' + maskMobile(phone) + '</strong></td><td>' + role + '</td><td>' + dateStr + '</td><td class="member-actions"><a href="javascript:void(0)" class="member-action">编辑</a><a href="javascript:void(0)" class="member-action danger" onclick="if(confirm(\'确定移除该成员吗？\'))this.closest(\'tr\').remove();">移除</a></td>';
+          tbody.appendChild(tr);
+          btn.disabled = false;
+          btn.textContent = '确认添加';
+          closeAddMemberModal();
+        }, 800);
+      });
+
+      // Dynamic parent highlight based on active child
+      document.querySelectorAll('.sidebar-item').forEach(function(item) {
+        if (item.querySelector('.sidebar-submenu .sidebar-link.active')) {
+          item.classList.add('has-active');
+          var arrow = item.querySelector('.sidebar-arrow');
+          if (arrow) arrow.style.transform = 'rotate(90deg)';
+        }
+      });
+
+      // Sidebar parent menu expand/collapse
+      document.querySelectorAll('.sidebar-item > .sidebar-link').forEach(function(link) {
+        var parent = link.parentElement;
+        var submenu = parent.querySelector('.sidebar-submenu');
+        if (submenu) {
+          link.addEventListener('click', function(e) {
+            // Don't toggle if clicking a direct link (with href)
+            if (link.getAttribute('href') && link.getAttribute('href') !== '#') {
+              return; // Let it navigate
+            }
+            e.preventDefault();
+            parent.classList.toggle('open');
+            var arrow = link.querySelector('.sidebar-arrow');
+            if (arrow) {
+              arrow.style.transform = parent.classList.contains('open') ? 'rotate(90deg)' : 'rotate(0deg)';
+            }
+          });
+        }
+      });
+    })();
+  </script>
+  
+  <!-- 控制台/认证页专用：禁止 !isLoggedIn → display:none #topbarUser / #topbarMessage -->
+  <script>
+    window.SKIP_LOGIN_CHECK = true;
+    window.SKIP_TOPBAR_DISPLAY_NONE = true;
+    (function ensureTopbarVisible(){
+      function run(){
+        var tu = document.getElementById("topbarUser"), tm = document.getElementById("topbarMessage");
+        if (tu){ tu.style.display = "flex"; tu.style.visibility="visible"; if (!tu.children.length) tu.innerHTML = '<a href="login.html" style="display:inline-flex;align-items:center;padding:6px 16px;border-radius:6px;background:var(--brand-primary);color:#fff;font-size:13px;font-weight:500;text-decoration:none;white-space:nowrap;">登录平台</a>'; }
+        if (tm){ tm.style.display = "flex"; tm.style.visibility="visible"; }
+      }
+      try{run()}catch(e){}
+      document.addEventListener("DOMContentLoaded", run);
+      setTimeout(run, 50); setTimeout(run, 300);
+    })();
+  </script>
+<script src="js/main.js?v=1787772022"></script>
+
+  <!-- 添加成员模态框 -->
+  <div class="modal-overlay" id="addMemberModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">添加成员</div>
+        <button class="modal-close" id="addMemberClose">
+          <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">成员手机号<span class="required">*</span></label>
+          <input type="text" class="form-input" id="memberPhone" placeholder="请输入成员手机号" maxlength="11">
+          <div class="form-error" id="memberPhoneError"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">成员姓名<span class="required">*</span></label>
+          <input type="text" class="form-input" id="memberName" placeholder="请输入成员姓名">
+          <div class="form-error" id="memberNameError"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">角色<span class="required">*</span></label>
+          <select class="form-select" id="memberRole">
+            <option value="">请选择角色</option>
+            <option value="财务专员">财务专员</option>
+            <option value="业务专员">业务专员</option>
+            <option value="运营专员">运营专员</option>
+          </select>
+          <div class="form-error" id="memberRoleError"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-default" id="addMemberCancel">取消</button>
+        <button class="btn-primary" id="addMemberConfirm">确认添加</button>
+      </div>
+    </div>
+  </div>
+<script src="js/enterprise-switch.js?v=19"></script>
+
+<script src="js/annotation.js" defer></script>
+</body>
+</html>

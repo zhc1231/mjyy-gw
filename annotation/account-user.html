@@ -1,0 +1,2374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>用户管理 - 民匠有约</title>
+  <link rel="stylesheet" href="css/style.css?v=2025fix10">
+  <style>
+    :root {
+      --brand-primary: #1677FF;
+      --brand-primary-dark: #0958D9;
+      --brand-primary-50: #E6F4FF;
+      --brand-primary-100: #BAE0FF;
+      --sidebar-width: 240px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #f5f6f7;
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+      /* 强制预留纵向滚动条槽：不管内容长短/是否有8px 纵向滚动条，
+         顶部 max-width:1440 居中的 topbar-inner / logo / 面包屑 / 右上角账户芯片
+         的水平坐标在 12 个左侧菜单页面之间完全一致，不会出现 7~8 像素的左右飘移
+         （用户说"顶部 logo/面包屑/右上角不要有位置偏移"的根因） */
+      overflow-y: scroll;
+    }
+
+    /* ===== 顶部导航 ===== */
+    .topbar {
+      background: #fff;
+      border-bottom: none;
+      height: 60px;
+      width: 100%;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 0;
+    }
+
+    .topbar-inner {
+      max-width: 1440px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 40px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .topbar-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--gray-200);
+      margin: 0 12px;
+    }
+
+    .topbar-crumb {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .topbar-crumb b { color: var(--text); font-weight: 600; }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .topbar-title {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+    .topbar-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 13px;
+      color: var(--text-regular);
+      line-height: 1;
+    }
+    .topbar-breadcrumb a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .topbar-breadcrumb a:hover { color: var(--brand-primary); }
+    .topbar-bc-sep { color: var(--text-placeholder); font-size: 12px; margin: 0 2px; }
+    .topbar-bc-current { color: var(--text); font-weight: 500; }
+
+
+    .topbar-back {
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .topbar-back:hover { color: var(--brand-primary); }
+
+
+    .topbar-user {
+      min-width: 280px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 12px 6px 8px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+      background: #fff;
+      border: 1px solid var(--gray-200);
+    }
+
+    .topbar-user:hover { background: var(--gray-50); border-color: var(--gray-300); }
+
+    .topbar-user.active { background: var(--gray-50); border-color: var(--gray-300); }
+
+    .topbar-user .user-dropdown.open,
+    .topbar-user.active .user-dropdown {
+      display: block;
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .topbar-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand-primary) 0%, #1E88FF 100%);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 2px 6px rgba(22, 119, 255, 0.25);
+      flex-shrink: 0;
+    }
+    /* ====== 顶部栏 用户名 + 角色/默认企业 多标签 ====== */
+    .topbar-user-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      max-width: 360px;
+      min-width: 0;
+    }
+
+    .topbar-user-name-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      max-width: 220px;
+    }
+
+    .topbar-account-badge {
+      font-size: 10px;
+      padding: 0 5px;
+      border-radius: 4px;
+      background: var(--brand-primary-50);
+      color: var(--brand-primary);
+      font-weight: 500;
+      line-height: 16px;
+      flex-shrink: 0;
+    }
+    .topbar-account-badge.sub {
+      background: #FFF7E6;
+      color: #FF7D00;
+    }
+    .topbar-user-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      line-height: 1.4;
+    }
+    .topbar-user-chips {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: nowrap;
+      flex-shrink: 0;
+    }
+    .topbar-user-chip {
+      font-size: 10px;
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
+      padding: 1px 6px;
+      border-radius: 4px;
+      line-height: 16px;
+      font-weight: 600;
+      border: 1px solid transparent;
+    }
+    .topbar-user-chip.admin   { background: #EDF4FF; color: #1677FF; border-color: #C7DBFF; }
+    .topbar-user-chip.sub     { background: #FFF7E6; color: #FF7D00; border-color: #FFD591; }
+    .topbar-user-chip.verified   { background: #F0F9EB; color: #52C41A; border-color: #B7EB8F; }
+    .topbar-user-chip.unverified { background: #FFF2E8; color: #FA8C16; border-color: #FFD591; }
+    .topbar-user-chip.phone   { background: var(--gray-100); color: var(--text-secondary); border-color: var(--gray-200); }
+    /* ===== 消息通知 ===== */
+    /* ===== 消息通知 ===== */
+    .topbar-message {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none; flex-shrink: 0;
+    }
+    .topbar-message:hover {
+      background: var(--gray-100);
+      color: var(--brand-primary);
+    }
+    .topbar-message:hover .topbar-message-icon {
+      color: var(--brand-primary);
+    }
+    .topbar-message-icon {
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .topbar-message-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+    .topbar-message-dot {
+      position: absolute;
+      top: 4px; right: 4px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #F53F3F;
+      display: none;
+      z-index: 5;
+    }
+      box-shadow: 0 0 0 2px #fff;
+    .topbar-message-dot.show { display: block; }
+    .topbar-message.has-badge .topbar-message-dot {
+      display: none !important;
+    }
+    .topbar-message .topbar-message-badge {
+      position: absolute;
+      top: 4px; right: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 16px;
+      height: 14px;
+      padding: 0 4px;
+      border-radius: 7px;
+      background: #F53F3F;
+      color: #fff;
+      font-size: 9px;
+      font-weight: 600;
+      text-align: center;
+      line-height: 1;
+      border: 2px solid #fff;
+      box-sizing: border-box;
+      z-index: 10;
+      box-shadow: 0 1px 3px rgba(245, 63, 63, 0.4);
+    }
+    .message-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 340px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      border: 1px solid var(--gray-200);
+      z-index: 1000;
+      display: none;
+      overflow: hidden;
+    }
+    .topbar-message.open .message-dropdown {
+      display: block;
+    }
+    .message-dropdown-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 14px 16px 10px;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text);
+    }
+    .message-dropdown-clear {
+      font-size: 12px;
+      color: var(--brand-primary);
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .message-dropdown-clear:hover { text-decoration: underline; }
+    .message-dropdown-list {
+      max-height: 320px;
+      overflow-y: auto;
+    }
+    .message-item {
+      display: flex;
+      gap: 10px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--gray-100);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .message-item:last-child { border-bottom: none; }
+    .message-item:hover { background: var(--gray-50); }
+    .message-item.unread { background: #F7FAFF; }
+    .message-item.unread .message-item-title { font-weight: 600; }
+    .message-item-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 14px;
+    }
+    .message-item-icon.system { background: #E8F3FF; color: #1677FF; }
+    .message-item-icon.order { background: #E8F8EB; color: #00B42A; }
+    .message-item-icon.warn { background: #FFF2E8; color: #FA8C16; }
+    .message-item-icon.promo { background: #F3E8FF; color: #722ED1; }
+    .message-item-body {
+      flex: 1;
+      min-width: 0;
+    }
+    .message-item-title {
+      font-size: 13px;
+      color: var(--text);
+      margin-bottom: 2px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .message-item-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+    }
+    .message-item-time {
+      font-size: 11px;
+      color: var(--text-muted);
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .message-dropdown-footer {
+      display: block;
+      text-align: center;
+      padding: 12px;
+      font-size: 13px;
+      color: var(--brand-primary);
+      text-decoration: none;
+      border-top: 1px solid var(--gray-100);
+      font-weight: 500;
+    }
+    .message-dropdown-footer:hover { background: var(--gray-50); }
+    .message-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    /* ===== 站内信 ===== */
+    .topbar-message {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-right: 0;
+    }
+    .topbar-message:hover {
+      background: var(--gray-100);
+      color: var(--brand-primary);
+    }
+    .topbar-message-badge {
+      display: inline-flex;
+      align-items: flex-start;
+      justify-content: center;
+      min-width: 16px;
+      height: 16px;
+      padding: 0 4px;
+      border-radius: 8px;
+      background: #F53F3F;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 600;
+      line-height: 1;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    /* ===== 下拉菜单 当前登录标签 ===== */
+    .user-dropdown-current-tag {
+      display: inline-flex;
+      align-items: flex-start;
+      gap: 3px;
+      font-size: 11px;
+      padding: 1px 7px;
+      border-radius: 4px;
+      background: #F3E8FF;
+      color: #722ED1;
+      font-weight: 500;
+      line-height: 16px;
+    }
+    .user-dropdown-current-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #722ED1;
+      display: inline-block;
+    }
+
+    /* ===== 企业列表 当前登录徽章 ===== */
+    .enterprise-switch-name-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    .enterprise-current-badge {
+      font-size: 10px;
+      padding: 0 5px;
+      border-radius: 3px;
+      background: #F3E8FF;
+      color: #722ED1;
+      font-weight: 500;
+      line-height: 14px;
+      flex-shrink: 0;
+    }
+
+
+
+    .topbar-chevron {
+      width: 14px;
+      height: 14px;
+      color: var(--text-muted);
+      transition: transform 0.2s;
+    }
+
+    .topbar-user.open .topbar-chevron,
+    .topbar-user.active .topbar-chevron {
+      transform: rotate(180deg);
+    }
+
+    /* ===== 用户下拉菜单（阿里云风格） ===== */
+    .user-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 280px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      border: 1px solid var(--gray-200);
+      z-index: 1001;
+      display: none;
+      overflow: hidden;
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .user-dropdown-header {
+      padding: 36px 90px 16px 16px;
+      border-bottom: none;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      position: relative;
+      position: relative;
+    }
+
+    .user-dropdown-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--brand-primary-50);
+      color: var(--brand-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .user-dropdown-info { flex: 1; min-width: 0; }
+
+    .user-dropdown-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 2px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .user-dropdown-id {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .user-dropdown-tags {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .user-dropdown-tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--brand-primary-50);
+      color: var(--brand-primary);
+      font-weight: 500;
+    }
+
+    .user-dropdown-tag.verified {
+      background: #E8F8EB;
+      color: #00B42A;
+    }
+
+    .user-dropdown-body {
+      padding: 8px 0;
+    }
+
+    .user-dropdown-group {
+      padding: 4px 0;
+    }
+
+    .user-dropdown-group-title {
+      padding: 8px 16px 4px;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .user-dropdown-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 16px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      border: none;
+      background: none;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+      transition: background 0.2s;
+    }
+
+    .user-dropdown-item:hover {
+      background: var(--gray-100);
+      color: var(--text);
+    }
+
+    .user-dropdown-item svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .user-dropdown-item-primary {
+      color: var(--brand-primary);
+      font-weight: 500;
+    }
+
+    .user-dropdown-divider {
+      height: 1px;
+      background: var(--gray-200);
+      margin: 8px 0;
+    }
+
+    .user-dropdown-footer {
+      padding: 12px 16px;
+      border-top: 1px solid var(--gray-200);
+    }
+
+    .user-dropdown-logout {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding: 8px;
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      background: #fff;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .user-dropdown-logout:hover {
+      border-color: var(--brand-primary);
+      color: var(--brand-primary);
+      background: var(--brand-primary-50);
+    }
+
+    /* ===== 页面主体布局 ===== */
+    .page-layout {
+      display: flex;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding-top: 60px;
+      min-height: 100vh;
+    }
+
+    /* ===== 侧边栏 ===== */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: #fff;
+      border-right: 1px solid var(--gray-200);
+      position: fixed;
+      top: 60px; bottom: 0;
+      left: calc((100vw - 1440px) / 2);
+      overflow-y: auto;
+      padding: 14px 0 24px;
+    }
+
+    .sidebar-section-title {
+      padding: 10px 20px 6px;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .sidebar-menu { list-style: none; }
+
+    .sidebar-link {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 20px;
+      margin: 1px 8px;
+      border-radius: 8px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all 0.15s;
+      cursor: pointer;
+    }
+
+    .sidebar-link:hover { color: var(--brand-primary); background: var(--gray-100); }
+
+    .sidebar-link.active {
+      color: var(--brand-primary);
+      background: var(--brand-primary-50);
+      font-weight: 600;
+    }
+
+    .sidebar-link svg { width: 17px; height: 17px; flex-shrink: 0; display: block; overflow: visible; align-self: center; }
+
+    .sidebar-divider { height: 1px; background: var(--gray-200); margin: 10px 16px; }
+
+    /* ===== 主内容区 ===== */
+    .main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      padding: 24px 32px 40px;
+      min-width: 0;
+    }
+    .page-breadcrumb {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 13px; color: var(--text-muted);
+      margin-bottom: 18px;   /* 与产品中心（account-center 官方基线）完全一致 18px，三页之前 20px 的版本这里也同步覆盖 */
+    }
+    .page-breadcrumb a:hover { color: var(--brand-primary); }
+
+    .page-title-wrap {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 22px; flex-wrap: wrap; gap: 12px;
+    }
+    .page-title { font-size: 24px; font-weight: 700; line-height: 1.2; }
+    .page-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+    .page-actions { display: flex; align-items: center; gap: 10px; }
+
+
+
+    /* ===== 卡片组件 ===== */
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid var(--gray-200);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 16px 20px;
+      border-bottom: none;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .card-body { padding: 20px; }
+
+    /* ===== 信息列表 ===== */
+    .info-list { display: flex; flex-direction: column; gap: 16px; }
+
+    .info-item {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .info-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .info-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .info-label svg {
+      width: 18px;
+      height: 18px;
+      color: var(--text-muted);
+    }
+
+    .info-value {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .info-status {
+      display: inline-flex;
+      align-items: flex-start;
+      gap: 6px;
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: #E8F8EB;
+      color: #00B42A;
+    }
+
+    .info-status.pending {
+      background: #FFF3E8;
+      color: #FF7D00;
+    }
+
+    .info-action {
+      font-size: 13px;
+      color: var(--brand-primary);
+      text-decoration: none;
+    }
+
+    .info-action:hover { text-decoration: underline; }
+
+    /* ===== 权限概览网格 ===== */
+    .permission-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .permission-item {
+      padding: 20px;
+      border: 1px solid var(--gray-200);
+      border-radius: 10px;
+      transition: all 0.2s;
+    }
+
+    .permission-item:hover {
+      border-color: var(--brand-primary);
+      box-shadow: 0 4px 16px rgba(22,119,255,0.1);
+      cursor: pointer;
+    }
+
+    .permission-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--brand-primary-50);
+      color: var(--brand-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .permission-icon svg { width: 20px; height: 20px; display: block; }
+
+    .permission-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .permission-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* ===== 成员表格 ===== */
+    /* 彻底拆分：左侧滚动区（前6列）和右侧操作列（固定拿出来，完全不在横向滚动条里） */
+    .member-grid {
+      display: flex;
+      align-items: stretch;
+      border: 1px solid var(--gray-100);
+      border-radius: 8px;
+      background: #fff;
+      overflow: hidden; /* 外层不滚，只有内部 inner 滚 */
+    }
+
+    .member-table-scroll-wrap {
+      flex: 1 1 auto;
+      min-width: 0;            /* 允许内部滚动出现 */
+      overflow-x: auto;
+      overflow-y: hidden;
+      position: relative;
+    }
+
+    .member-table-actions-fixed {
+      flex: 0 0 240px;
+      width: 240px;
+      min-width: 240px;
+      max-width: 240px;
+      border-left: 1px solid var(--gray-100);
+      background: #fff;
+      box-shadow: -6px 0 16px -10px rgba(0,0,0,0.1);
+      position: relative;
+      z-index: 1;
+      overflow: hidden;   /* 对齐滚动区，避免子元素溢出 */
+    }
+
+    .member-table,
+    .member-table-actions-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 14px;
+      table-layout: fixed;
+      /* 关键：两表用统一的行高模型，从根源消除错位 */
+    }
+    .member-table { min-width: 910px; }
+
+    .member-table col.col-account { width: 220px; }
+    .member-table col.col-name    { width: 140px; }
+    .member-table col.col-phone   { width: 140px; }
+    .member-table col.col-role    { width: 160px; }
+    .member-table col.col-join    { width: 140px; }
+    .member-table col.col-status  { width: 110px; }
+
+    .member-table thead,
+    .member-table-actions-table thead { height: 48px; line-height: 48px; }
+    .member-table thead tr,
+    .member-table-actions-table thead tr { height: 48px; }
+
+    .member-table th, .member-table td,
+    .member-table-actions-table th, .member-table-actions-table td {
+      padding: 0 16px;
+      margin: 0;
+      text-align: left;
+      border-bottom: 1px solid var(--gray-100);
+      background: #fff;
+      vertical-align: middle;
+      box-sizing: border-box;
+      white-space: normal;
+      overflow: visible;
+      height: 56px;              /* tbody 默认 56，后面 alignHeights 会按内容精确设置 */
+      line-height: 1.4;
+    }
+
+    /* 左表 th 统一强制高度为 48 */
+    .member-table thead th,
+    .member-table-actions-table thead th {
+      height: 48px !important;
+      min-height: 48px;
+      max-height: 48px;
+      line-height: 48px;
+      background: #fafafa;
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 13px;
+      white-space: nowrap;
+      border-bottom: 1px solid var(--gray-100);
+      position: static;       /* 去掉 sticky，sticky 导致左右两表表头计算高度不一致 */
+      z-index: 1;
+      box-sizing: border-box;
+    }
+    .member-table-actions-table thead th {
+      text-align: center;
+    }
+    .member-table-actions-table tbody td {
+      text-align: center;
+    }
+
+    /* 账号列内部昵称说明一行，避免内容撑高导致两侧错位 */
+    .member-table td strong { white-space: nowrap; }
+    .member-table td .member-avatar-sm ~ div { min-width: 0; }
+    .member-table td .member-avatar-sm ~ div > div { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* tbody 统一高度规则：56 为基础，多内容用 alignHeights 精确 */
+    .member-table tbody tr,
+    .member-table-actions-table tbody tr { height: 56px; }
+
+    /* hover 态左右两表的同索引行同步变灰 */
+    .member-table tbody tr.is-hover td,
+    .member-table tbody tr:hover td,
+    .member-table-actions-table tbody tr.is-hover td,
+    .member-grid.is-row-hover .member-table-actions-table tbody tr:hover td { background: #fafafa; }
+    .member-table tbody tr.is-disabled td,
+    .member-table tbody tr[data-status="disabled"] td,
+    .member-table-actions-table tbody tr.is-disabled td { background: #FAFAFA; color: var(--text-muted); opacity: 0.65; }
+
+    .member-table-scroll-wrap::-webkit-scrollbar { height: 10px; }
+    .member-table-scroll-wrap::-webkit-scrollbar-track { background: #F2F3F5; border-radius: 999px; }
+    .member-table-scroll-wrap::-webkit-scrollbar-thumb { background: #CDD0D6; border-radius: 999px; border: 2px solid #F2F3F5; }
+    .member-table-scroll-wrap { scrollbar-width: thin; scrollbar-color: #CDD0D6 #F2F3F5; }
+
+    .member-empty {
+      padding: 40px 16px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .member-actions {
+      display: inline-flex;
+      align-items: flex-start;
+      gap: 8px;
+      white-space: nowrap;
+      flex-wrap: wrap;
+    }
+
+    .member-action {
+      color: var(--brand-primary);
+      text-decoration: none;
+      font-size: 13px;
+      line-height: 1.4;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: background 0.15s;
+    }
+
+    .member-action:hover {
+      text-decoration: none;
+      background: rgba(22, 119, 255, 0.08);
+    }
+
+    .member-action.danger { color: #F53F3F; }
+    .member-action.danger:hover { background: rgba(245, 63, 63, 0.08); }
+    .member-action.warn { color: #F7BA1E; }
+    .member-action.warn:hover { background: rgba(247, 186, 30, 0.08); }
+    .member-action.success { color: #00B42A; }
+    .member-action.success:hover { background: rgba(0, 180, 42, 0.08); }
+
+    .member-phone { font-variant-numeric: tabular-nums; }
+
+    .member-status-badge {
+      display: inline-flex;
+      align-items: flex-start;
+      gap: 6px;
+      padding: 3px 10px;
+      border-radius: 14px;
+      font-size: 12px;
+      line-height: 1.4;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .member-status-badge.enabled { background: #E8FFEA; color: #00B42A; border: 1px solid #B7EB8F; }
+    .member-status-badge.disabled { background: #FFECE8; color: #F53F3F; border: 1px solid #FFCCC7; }
+    .member-status-badge::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    tbody tr.status-disabled,
+    tbody tr[data-status="disabled"] {
+      background: #FAFAFA;
+      opacity: 0.65;
+    }
+    tbody tr[data-status="disabled"] td,
+    tbody tr.status-disabled td { color: var(--text-muted); }
+
+    /* ===== 风险操作确认弹窗 ===== */
+    .risk-modal-header {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding-bottom: 6px;
+    }
+    .risk-icon-wrap {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: #FFECE8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #F53F3F;
+    }
+    .risk-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-title);
+      margin: 0 0 4px;
+    }
+    .risk-sub {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.55;
+      margin: 0;
+    }
+    .risk-alert-box {
+      background: #FFF7E6;
+      border: 1px solid #FFE7BA;
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-top: 16px;
+    }
+    .risk-alert-title {
+      color: #AD6800;
+      font-size: 13px;
+      font-weight: 600;
+      margin: 0 0 6px;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    .risk-alert-list {
+      margin: 0;
+      padding-left: 18px;
+      color: #AD6800;
+      font-size: 12px;
+      line-height: 1.8;
+    }
+    .risk-member-meta {
+      background: #F2F3F5;
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px 18px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .risk-member-meta span b {
+      color: var(--text);
+      font-weight: 500;
+      margin-left: 4px;
+    }
+    .risk-confirm-actions {
+      margin-top: 18px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    .btn-danger-solid {
+      background: #F53F3F;
+      color: #fff;
+      border: 1px solid #F53F3F;
+      border-radius: 6px;
+      padding: 8px 18px;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all .2s;
+    }
+    .btn-danger-solid:hover { background: #CB2634; border-color: #CB2634; }
+    .btn-ghost-plain {
+      background: #fff;
+      color: var(--text-secondary);
+      border: 1px solid #D9D9D9;
+      border-radius: 6px;
+      padding: 8px 18px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .btn-ghost-plain:hover { border-color: var(--brand-primary); color: var(--brand-primary); }
+
+    /* ===== 模态框 ===== */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.45);
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      z-index: 2000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.25s;
+    }
+
+    .modal-overlay.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background: #fff;
+      border-radius: 12px;
+      width: 480px;
+      max-width: 90vw;
+      max-height: 90vh;
+      overflow: hidden;
+      transform: translateY(20px) scale(0.96);
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-overlay.visible .modal {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: none;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .modal-close {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      border: none;
+      background: none;
+      cursor: pointer;
+      border-radius: 6px;
+      color: var(--text-muted);
+      transition: all 0.2s;
+    }
+
+    .modal-close:hover {
+      background: var(--gray-100);
+      color: var(--text);
+    }
+
+    .modal-body {
+      padding: 20px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .modal-footer {
+      padding: 12px 20px;
+      border-top: 1px solid var(--gray-200);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      background: var(--gray-50);
+    }
+
+    /* ===== 表单 ===== */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .form-label .required {
+      color: #F53F3F;
+      margin-left: 2px;
+    }
+
+    .form-input,
+    .form-select {
+      width: 100%;
+      height: 38px;
+      padding: 0 12px;
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+      font-size: 13px;
+      color: var(--text);
+      background: #fff;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    .form-input:focus,
+    .form-select:focus {
+      border-color: var(--brand-primary);
+    }
+
+    .form-error {
+      font-size: 12px;
+      color: #F53F3F;
+      margin-top: 4px;
+      min-height: 16px;
+    }
+
+    .btn-default {
+      display: inline-flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: #fff;
+      color: var(--text);
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-default:hover {
+      border-color: var(--brand-primary);
+      color: var(--brand-primary);
+    }
+
+    /* ===== 按钮 ===== */
+    .btn-primary {
+      display: inline-flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: var(--brand-primary);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .btn-primary:hover { background: var(--brand-primary-dark); }
+
+    /* ===== 空状态 ===== */
+    .empty-state {
+      padding: 48px 20px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .empty-state-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 16px;
+      background: var(--gray-100);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+    }
+
+    .empty-state-icon svg { width: 28px; height: 28px; }
+
+    .empty-state-text {
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    /* ===== 响应式 ===== */
+        @media (max-width: 1440px) {
+      .sidebar { left: 0; }
+    }
+
+    @media (max-width: 768px) {
+      .topbar { padding: 0 16px; }
+      .page-layout { flex-direction: column; }
+      .sidebar {
+        position: relative;
+        top: 0;
+        width: 100%;
+        border-right: none;
+        border-bottom: none;
+      }
+      .main-content { margin-left: 0; padding: 16px; }
+      .permission-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* ===== 添加成员模态框 ===== */
+    .member-modal { width: 520px; max-width: 92vw; }
+    .member-modal .modal-body { padding: 24px; }
+    .member-modal .modal-footer { padding: 12px 24px; }
+    .member-modal .form-label { text-align: left; display: block; }
+    .member-modal .form-group { text-align: left; }
+    .form-row-2col {
+      display: flex;
+      gap: 16px;
+      text-align: left;
+    }
+    .form-row-2col .form-group {
+      flex: 1;
+      margin-bottom: 0;
+    }
+    .form-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+    .form-tip {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-top: 4px;
+      padding: 10px 12px;
+      background: #F7F8FA;
+      border-radius: 6px;
+    }
+    @media (max-width: 640px) {
+      .member-modal { width: 92vw; }
+      .form-row-2col { flex-direction: column; gap: 12px; }
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+
+<link rel="stylesheet" href="css/annotation.css">
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div style="display:flex;align-items:center;gap:20px;">
+        <a href="account-center.html" class="topbar-brand">
+          <img src="https://oss.minjiangyouyue.com/mjlogo/logo02.png" alt="logo" style="height:34px;border-radius:8px;">
+          <span class="topbar-title">控制台</span>
+        </a>
+        <div class="topbar-breadcrumb">
+          <a href="index.html">首页</a>
+          <span class="topbar-bc-sep">/</span>
+          <a href="account-center.html">控制台</a>
+          <span class="topbar-bc-sep">/</span>
+          <span class="topbar-bc-current">用户管理</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <a href="#" class="topbar-back" onclick="
+      if(window.SKIP_LOGIN_CHECK || (window.__userData && window.__userData.isLoggedIn)) {
+        window.location.href = 'account-center.html';
+      } else {
+        history.back();
+      }
+      return false;
+    ">
+          <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M19 12H5" stroke="currentColor" stroke-width="2"/><path d="M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2"/></svg>
+          返回
+        </a>
+        <div class="topbar-message" id="topbarMessage">
+          <div class="topbar-message-icon">
+            <svg viewBox="0 0 24 24" fill="none" width="15" height="15"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="topbar-message-dot show" id="topbarMessageDot"></span>
+          </div>
+          <span class="topbar-message-badge" id="topbarMessageBadge">3</span>
+          <div class="message-dropdown" id="messageDropdown">
+            <div class="message-dropdown-header">
+              <span>消息通知</span>
+              <a href="javascript:;" class="message-dropdown-clear" id="msgClearAll">全部已读</a>
+            </div>
+            <div class="message-dropdown-list" id="messageList">
+              <!-- 动态消息列表 -->
+            </div>
+            <a href="javascript:;" class="message-dropdown-footer" id="msgViewAll">查看全部消息 →</a>
+          </div>
+        </div>
+        <div class="topbar-user" id="topbarUser"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 页面主体 -->
+  <div class="page-layout">
+    <!-- 左侧边栏 -->
+                    <aside class="sidebar">
+      <div class="sidebar-section-title">产品</div>
+      <ul class="sidebar-menu">
+        <li><a href="account-center.html" class="sidebar-link ">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/></svg>
+          产品中心
+        </a></li>
+      </ul>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-title">企业</div>
+      <ul class="sidebar-menu">
+        <li><a href="account-realname.html?type=enterprise" class="sidebar-link ">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4" stroke="currentColor" stroke-width="2"/></svg>
+          企业信息
+        </a></li>
+        <li><a href="account-billing.html" class="sidebar-link ">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="2"/></svg>
+          合同管理
+        </a></li>
+        <li><a href="account-bank.html" class="sidebar-link ">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"/><line x1="2" y1="10" x2="22" y2="10" stroke="currentColor" stroke-width="2"/></svg>
+          账户管理
+        </a></li>
+      </ul>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-title">企业管理</div>
+      <ul class="sidebar-menu">
+        <li id="sidebarSubEntMgmt"><a href="account-project.html" class="sidebar-link">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M9 9h6M9 13h4M9 17h5" stroke="currentColor" stroke-width="2"/></svg>
+          子公司管理
+        </a></li>
+      </ul>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-title">财务</div>
+      <ul class="sidebar-menu">
+        <li><a href="account-wallet.html" class="sidebar-link ">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="2"/></svg>
+          资金账户
+        </a></li>
+      </ul>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-title">设置</div>
+      <ul class="sidebar-menu">
+        <li><a href="account-permission.html" class="sidebar-link ">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke="currentColor" stroke-width="2"/></svg>
+          权限概览
+        </a></li>
+        <li><a href="account-user.html" class="sidebar-link active">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="2"/></svg>
+          用户管理
+        </a></li>
+        <li><a href="account-role.html" class="sidebar-link ">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+          角色管理
+        </a></li>
+        <li><a href="account-security.html" class="sidebar-link ">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"/></svg>
+          账号安全
+        </a></li>
+      </ul>
+    </aside>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+      <div class="page-title-wrap">
+        <div>
+          <div class="page-title">用户管理</div>
+          <div class="page-subtitle">企业主账号、子账号成员列表，支持批量邀请、冻结、角色分配与停用。</div>
+        </div>
+      </div>
+      <!-- 用户管理 -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">用户管理</div>
+          <button class="btn-primary" id="addMemberBtn">
+            <svg viewBox="0 0 24 24" fill="none" width="14" height="14"><line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/><line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/></svg>
+            添加用户
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="member-grid" id="memberGrid">
+            <!-- 左侧前 6 列：内部横向滚动；操作列完全在外，不被滚动条包含 -->
+            <div class="member-table-scroll-wrap">
+              <table class="member-table" id="memberMainTable">
+                <colgroup>
+                  <col class="col-account">
+                  <col class="col-name">
+                  <col class="col-phone">
+                  <col class="col-role">
+                  <col class="col-join">
+                  <col class="col-status">
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>用户名</th>
+                    <th>成员姓名</th>
+                    <th>手机号</th>
+                    <th>角色</th>
+                    <th>加入时间</th>
+                    <th>状态</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr data-member-role="owner" data-status="enabled" data-default="1" data-row-idx="0">
+                    <td><div style="display:flex;align-items:center;gap:10px;"><div class="member-avatar-sm" style="background:linear-gradient(135deg,#1677FF,#0958D9);color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;">李</div><div><strong>138****8888</strong><div style="font-size:12px;color:var(--text-muted);">李主账号</div></div></div></td>
+                    <td>李主账号</td>
+                    <td class="member-phone">138****8888</td>
+                    <td>主管理员</td>
+                    <td>2024-01-01</td>
+                    <td><span class="member-status-badge enabled">启用</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- 右侧固定操作列：完全独立，不参与内部滚动 -->
+            <div class="member-table-actions-fixed">
+              <table class="member-table-actions-table" id="memberActionsTable">
+                <colgroup><col style="width:240px;"></col></colgroup>
+                <thead><tr><th>操作</th></tr></thead>
+                <tbody>
+                  <tr data-default="1" data-row-idx="0" data-status="enabled"><td style="text-align:center;"><div class="member-actions" style="justify-content:center;"><span style="color:var(--text-muted);font-size:13px;">系统默认，不可操作</span></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="pagination" data-pagination="user_members" data-total="1">
+          <div class="pagination-info">共 1 条记录</div>
+          <div class="pagination-controls">
+            <select class="pagination-size">
+              <option value="10">10条/页</option>
+              <option value="20">20条/页</option>
+            </select>
+            <button class="pagination-btn" disabled>上一页</button>
+            <button class="pagination-btn active">1</button>
+            <button class="pagination-btn" disabled>下一页</button>
+          </div>
+        </div>
+      </div>
+
+
+    </main>
+  </div>
+
+  <!-- 添加用户模态框 -->
+  <div class="modal-overlay" id="addMemberModal">
+    <div class="modal member-modal">
+      <div class="modal-header">
+        <div class="modal-title">添加用户</div>
+        <button class="modal-close" id="addMemberClose">
+          <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row-2col">
+          <div class="form-group">
+            <label class="form-label">用户名<span class="required">*</span></label>
+            <input type="text" class="form-input" id="memberAccount" placeholder="请输入用户名">
+            <div class="form-hint">4-16位字母/数字（字母开头），或11位手机号</div>
+            <div class="form-error" id="memberAccountError"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">用户姓名<span class="required">*</span></label>
+            <input type="text" class="form-input" id="memberName" placeholder="请输入姓名">
+            <div class="form-error" id="memberNameError"></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">用户手机号<span class="required">*</span></label>
+          <input type="text" class="form-input" id="memberPhone" placeholder="请输入11位手机号" maxlength="11">
+          <div class="form-error" id="memberPhoneError"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">角色<span class="required">*</span></label>
+          <select class="form-select" id="memberRole">
+            <option value="">请选择角色</option>
+            <option value="财务专员">财务专员</option>
+            <option value="业务专员">业务专员</option>
+            <option value="运营专员">运营专员</option>
+          </select>
+          <div class="form-error" id="memberRoleError"></div>
+        </div>
+
+        <div class="form-tip">
+          <svg viewBox="0 0 24 24" fill="none" width="14" height="14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <span>添加后将向用户手机号发送登录邀请</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-default" id="addMemberCancel">取消</button>
+        <button class="btn-primary" id="addMemberConfirm">确认添加</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 编辑用户模态框 -->
+  <div class="modal-overlay" id="editUserModal">
+    <div class="modal member-modal">
+      <div class="modal-header">
+        <div class="modal-title">编辑用户</div>
+        <button class="modal-close" id="editUserClose">
+          <svg viewBox="0 0 24 24" fill="none" width="16" height="16"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row-2col">
+          <div class="form-group">
+            <label class="form-label">用户名</label>
+            <input type="text" class="form-input" id="editMemberAccount" disabled style="background:#f5f5f5;color:#999;">
+            <div class="form-hint">用户名不可修改</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">用户姓名<span class="required">*</span></label>
+            <input type="text" class="form-input" id="editMemberName" placeholder="请输入姓名">
+            <div class="form-error" id="editMemberNameError"></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">用户手机号<span class="required">*</span></label>
+          <input type="text" class="form-input" id="editMemberPhone" placeholder="请输入11位手机号" maxlength="11">
+          <div class="form-error" id="editMemberPhoneError"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">角色<span class="required">*</span></label>
+          <select class="form-select" id="editMemberRole">
+            <option value="">请选择角色</option>
+            <option value="财务专员">财务专员</option>
+            <option value="业务专员">业务专员</option>
+            <option value="运营专员">运营专员</option>
+          </select>
+          <div class="form-error" id="editMemberRoleError"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-default" id="editMemberCancel">取消</button>
+        <button class="btn-primary" id="editMemberConfirm">保存修改</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      var isLoggedIn = localStorage.getItem('mjyy_logged_in') === 'true';
+      if (!isLoggedIn) { window.location.href = 'login.html'; return; }
+
+      var userData = JSON.parse(localStorage.getItem('mjyy_user_data') || '{}');
+      var personalData = JSON.parse(localStorage.getItem('mjyy_personal_data') || '{}');
+      var enterpriseData = JSON.parse(localStorage.getItem('mjyy_enterprise_data') || '{}');
+      var identityVerified = localStorage.getItem('mjyy_identity_verified') === 'true';
+      var selectedAuthType = localStorage.getItem('mjyy_auth_type') || 'enterprise';
+
+      function maskMobile(m) {
+        if (!m || m.length < 11) return m || '--';
+        return m.substring(0, 3) + '****' + m.substring(7);
+      }
+
+      function maskId(id) {
+        if (!id) return '--';
+        return id.substring(0, 4) + '****' + id.substring(id.length - 4);
+      }
+
+      // topbar-user（dropdownName/dropdownId/dropdownBadge/authTag/verifyLink 等）
+      // 已由 main.js 动态渲染并填充，此处不再重复操作，避免元素未就绪时抛错中断后续事件绑定
+
+      // ====== 两表拆分后的工具函数 ======
+      function getTables() {
+        return {
+          mainTbody: document.querySelector('#memberMainTable tbody'),
+          actionsTbody: document.querySelector('#memberActionsTable tbody')
+        };
+      }
+
+      // 通过 rowIdx 将「左表主信息行 / 右表操作行」配对，返回一对
+      function getPairedTrs(anyTr) {
+        if (!anyTr) return { mainTr: null, actionsTr: null, pairIdx: -1 };
+        var idx = anyTr.getAttribute('data-row-idx');
+        if (idx === null) return { mainTr: null, actionsTr: null, pairIdx: -1 };
+        var t = getTables();
+        var sel = 'tr[data-row-idx="' + idx + '"]';
+        return {
+          mainTr: t.mainTbody ? t.mainTbody.querySelector(sel) : null,
+          actionsTr: t.actionsTbody ? t.actionsTbody.querySelector(sel) : null,
+          pairIdx: Number(idx)
+        };
+      }
+
+      function updateMemberCount() {
+        var t = getTables();
+        if (!t.mainTbody) return;
+        var count = t.mainTbody.querySelectorAll('tr').length;
+        var infoEl = document.querySelector('.pagination-info');
+        if (infoEl) {
+          infoEl.textContent = '共 ' + count + ' 条记录';
+        }
+        var pg = document.querySelector('.pagination[data-pagination="user_members"]');
+        if (pg) pg.setAttribute('data-total', String(count));
+      }
+
+      // 对齐左右两表每一对行的实际高度（左行可能换行导致变高，右行必须一致）
+      // 新版：基于 tr.offsetHeight 精确同步；避免 td padding/box-sizing 导致的误差
+      function alignMemberRowHeights() {
+        var t = getTables();
+        if (!t.mainTbody || !t.actionsTbody) return;
+        var mainTableEl = document.getElementById('memberMainTable');
+        var actTableEl  = document.getElementById('memberActionsTable');
+
+        // ========= 1) thead 强制对齐 48px（两表一致） =========
+        if (mainTableEl && actTableEl) {
+          var mTr = mainTableEl.querySelector('thead tr');
+          var aTr = actTableEl.querySelector('thead tr');
+          if (mTr) { mTr.style.height = '48px'; mTr.style.lineHeight = '48px'; }
+          if (aTr) { aTr.style.height = '48px'; aTr.style.lineHeight = '48px'; }
+          var mTh = mainTableEl.querySelector('thead th');
+          var aTh = actTableEl.querySelector('thead th');
+          if (mTh) { mTh.style.height = '48px'; mTh.style.lineHeight = '48px'; mTh.style.boxSizing = 'border-box'; }
+          if (aTh) { aTh.style.height = '48px'; aTh.style.lineHeight = '48px'; aTh.style.boxSizing = 'border-box'; }
+        }
+
+        // ========= 2) tbody 每行按 tr.offsetHeight 精确统一 =========
+        var mainRows = t.mainTbody.querySelectorAll('tr');
+        var actRows = t.actionsTbody.querySelectorAll('tr');
+        var len = Math.min(mainRows.length, actRows.length);
+        for (var i = 0; i < len; i++) {
+          var m = mainRows[i], a = actRows[i];
+          // 先清除内联 height，允许浏览器按内容自然测量
+          m.style.height = '';
+          a.style.height = '';
+          var mCells = m.querySelectorAll('td');
+          var aCells = a.querySelectorAll('td');
+          var k;
+          for (k = 0; k < mCells.length; k++) mCells[k].style.height = '';
+          for (k = 0; k < aCells.length; k++) aCells[k].style.height = '';
+
+          var mh = Math.max(m.offsetHeight || 0, 56);
+          var ah = Math.max(a.offsetHeight || 0, 56);
+          var target = Math.max(mh, ah);
+
+          // 先把 tr 设为目标高
+          m.style.height = target + 'px';
+          a.style.height = target + 'px';
+
+          // 把每个 td 也设为相同（含 border-box），确保内容垂直居中时不产生错位
+          for (k = 0; k < mCells.length; k++) {
+            mCells[k].style.height = target + 'px';
+            mCells[k].style.boxSizing = 'border-box';
+            mCells[k].style.verticalAlign = 'middle';
+          }
+          for (k = 0; k < aCells.length; k++) {
+            aCells[k].style.height = target + 'px';
+            aCells[k].style.boxSizing = 'border-box';
+            aCells[k].style.verticalAlign = 'middle';
+          }
+        }
+      }
+
+      // 给所有已有 tr 补 data-row-idx，并绑定 hover 同步（两表同高亮）
+      function pairMemberRowsAndBindHover() {
+        var t = getTables();
+        if (!t.mainTbody || !t.actionsTbody) return;
+        var mainRows = t.mainTbody.querySelectorAll('tr');
+        var actRows = t.actionsTbody.querySelectorAll('tr');
+        var len = Math.min(mainRows.length, actRows.length);
+        var i;
+        for (i = 0; i < len; i++) {
+          mainRows[i].setAttribute('data-row-idx', String(i));
+          actRows[i].setAttribute('data-row-idx', String(i));
+        }
+        // hover 同步：进入任意一行 → 给一对加 is-hover；离开则去掉
+        function hoverOn(e) {
+          var tr = e.target.closest && e.target.closest('tr');
+          if (!tr) return;
+          var pair = getPairedTrs(tr);
+          if (pair.mainTr) pair.mainTr.classList.add('is-hover');
+          if (pair.actionsTr) pair.actionsTr.classList.add('is-hover');
+        }
+        function hoverOff(e) {
+          var tr = e.target.closest && e.target.closest('tr');
+          if (!tr) return;
+          var pair = getPairedTrs(tr);
+          if (pair.mainTr) pair.mainTr.classList.remove('is-hover');
+          if (pair.actionsTr) pair.actionsTr.classList.remove('is-hover');
+        }
+        [t.mainTbody, t.actionsTbody].forEach(function(tb) {
+          if (!tb) return;
+          tb.removeEventListener('mouseenter', hoverOn, true);
+          tb.removeEventListener('mouseleave', hoverOff, true);
+          tb.addEventListener('mouseenter', hoverOn, true);
+          tb.addEventListener('mouseleave', hoverOff, true);
+        });
+      }
+
+      // ============ 成员行状态与操作（跨两表：左状态 + 右操作） ============
+      function renderRowStatus(anyTr, nextStatus) {
+        var pair = getPairedTrs(anyTr);
+        var mainTr = pair.mainTr;
+        var actionsTr = pair.actionsTr;
+        if (!mainTr) return;
+        mainTr.setAttribute('data-status', nextStatus);
+        mainTr.classList.toggle('is-disabled', nextStatus === 'disabled');
+        if (actionsTr) {
+          actionsTr.setAttribute('data-status', nextStatus);
+          actionsTr.classList.toggle('is-disabled', nextStatus === 'disabled');
+        }
+        var badgeTd = mainTr.querySelectorAll('td')[5];
+        if (badgeTd) {
+          badgeTd.innerHTML = nextStatus === 'disabled'
+            ? '<span class="member-status-badge disabled">停用</span>'
+            : '<span class="member-status-badge enabled">启用</span>';
+        }
+        if (!actionsTr) return;
+        var toggleBtn = actionsTr.querySelector('[data-action="toggleStatus"]');
+        if (toggleBtn) {
+          if (nextStatus === 'disabled') {
+            toggleBtn.textContent = '启用';
+            toggleBtn.classList.remove('warn');
+            toggleBtn.classList.add('success');
+          } else {
+            toggleBtn.textContent = '停用';
+            toggleBtn.classList.remove('success');
+            toggleBtn.classList.add('warn');
+          }
+        }
+      }
+
+      // 从左表（主信息）行抽取成员元数据，用于风险弹窗显示
+      function extractRowMeta(anyTr) {
+        var pair = getPairedTrs(anyTr);
+        var mainTr = pair.mainTr || anyTr;
+        var tds = mainTr.querySelectorAll('td');
+        if (!tds || tds.length < 6) return { account: '-', name: '-', phone: '-', role: '-', join: '-', status: '-' };
+        var accountEl = tds[0].querySelector('strong');
+        var statusBadge = tds[5].querySelector('.member-status-badge');
+        return {
+          account: accountEl ? accountEl.textContent.trim() : '-',
+          name: tds[1] ? tds[1].textContent.trim() : '-',
+          phone: tds[2] ? tds[2].textContent.trim() : '-',
+          role: tds[3] ? tds[3].textContent.trim() : '-',
+          join: tds[4] ? tds[4].textContent.trim() : '-',
+          status: statusBadge ? statusBadge.textContent.trim() : '-'
+        };
+      }
+
+      function openRiskRemoveConfirm(tr, onOk) {
+        var meta = extractRowMeta(tr);
+        var html = ''
+          + '<div class="risk-modal-header">'
+          + '  <div class="risk-icon-wrap"><svg viewBox="0 0 24 24" width="22" height="22" fill="none"><path d="M12 9v5m0 3v.01M10.3 3.86l-7.75 13.4A2 2 0 0 0 4.27 20h15.46a2 2 0 0 0 1.73-2.74l-7.75-13.4a2 2 0 0 0-3.4 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'
+          + '  <div>'
+          + '    <p class="risk-title">确定移除该成员吗？</p>'
+          + '    <p class="risk-sub">移除成员后，账号将无法登录当前企业，且历史归属的业务数据将被解绑；这是一项<strong style="color:#F53F3F;">高危风险操作</strong>，请谨慎处理。</p>'
+          + '  </div>'
+          + '</div>'
+          + '<div class="risk-alert-box">'
+          + '  <p class="risk-alert-title"><svg viewBox="0 0 24 24" width="14" height="14" fill="none"><path d="M12 2L1 21h22L12 2z M12 9v5m0 3v.01" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>风险提示 · 移除后无法恢复</p>'
+          + '  <ul class="risk-alert-list">'
+          + '    <li>成员登录凭证将立即失效，无法再访问本企业控制台；</li>'
+          + '    <li>该成员已创建的任务、审批流、合同草稿、待办事项可能会受到影响；</li>'
+          + '    <li>资金相关的操作权限、审批节点、钱包代付/代发授权将被解除；</li>'
+          + '    <li>如需恢复该成员，只能重新邀请并重新配置角色权限。</li>'
+          + '  </ul>'
+          + '</div>'
+          + '<div class="risk-member-meta">'
+          + '  <span>用户名：<b>' + meta.account + '</b></span>'
+          + '  <span>姓名：<b>' + meta.name + '</b></span>'
+          + '  <span>手机号：<b>' + meta.phone + '</b></span>'
+          + '  <span>角色：<b>' + meta.role + '</b></span>'
+          + '  <span>加入时间：<b>' + meta.join + '</b></span>'
+          + '  <span>当前状态：<b>' + meta.status + '</b></span>'
+          + '</div>'
+          + '<div class="risk-confirm-actions">'
+          + '  <button class="btn-ghost-plain" onclick="window.__userMgmtCancelRisk(this)">再想想，取消</button>'
+          + '  <button class="btn-danger-solid" onclick="window.__userMgmtConfirmRisk(this)">已知风险，确认移除</button>'
+          + '</div>';
+        var overlay = document.getElementById('memberRiskConfirmModal');
+        var body = overlay ? overlay.querySelector('.modal-body') : null;
+        if (!overlay || !body) return;
+        // 把回调绑定到 overlay 元素，避免全局互相覆盖
+        overlay.__okCallback = onOk;
+        body.innerHTML = html;
+        overlay.classList.add('visible');
+      }
+
+      window.__userMgmtCancelRisk = function(btn) {
+        var overlay = btn.closest('#memberRiskConfirmModal');
+        if (overlay) overlay.classList.remove('visible');
+        overlay && (overlay.__okCallback = null);
+      };
+      window.__userMgmtConfirmRisk = function(btn) {
+        var overlay = btn.closest('#memberRiskConfirmModal');
+        var cb = overlay && overlay.__okCallback;
+        if (overlay) overlay.classList.remove('visible');
+        overlay && (overlay.__okCallback = null);
+        if (typeof cb === 'function') cb();
+      };
+
+      // 启用/停用二次确认：简单+风险，用轻量 confirm
+      function openToggleConfirm(tr, nextStatus, onOk) {
+        var meta = extractRowMeta(tr);
+        var titleText = nextStatus === 'disabled' ? '确定停用该成员？' : '确定启用该成员？';
+        var tipText  = nextStatus === 'disabled'
+          ? '停用后，该成员将无法登录当前企业，其已分配的角色权限将暂时失效；如需恢复请在本页重新启用。'
+          : '启用后，将恢复该成员的登录能力与角色权限；系统将记录本次操作到审计日志。';
+        var btnText = nextStatus === 'disabled' ? '已知风险，确认停用' : '确认启用';
+        var btnCls = nextStatus === 'disabled' ? 'btn-danger-solid' : 'btn-primary';
+        var html = ''
+          + '<div class="risk-modal-header">'
+          + '  <div class="risk-icon-wrap" style="background:' + (nextStatus === 'disabled' ? '#FFECE8;color:#F53F3F;' : '#E8F3FF;color:#1677FF;') + '">'
+          + '    <svg viewBox="0 0 24 24" width="20" height="20" fill="none">'
+          + (nextStatus === 'disabled'
+              ? '<path d="M12 9v5m0 3v.01M10.3 3.86L2.55 17.26A2 2 0 0 0 4.27 20h15.46a2 2 0 0 0 1.72-2.74L13.7 3.86a2 2 0 0 0-3.4 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'
+              : '<path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>'
+            )
+          + '    </svg>'
+          + '  </div>'
+          + '  <div><p class="risk-title">' + titleText + '</p><p class="risk-sub">' + tipText + '</p></div>'
+          + '</div>'
+          + '<div class="risk-member-meta">'
+          + '  <span>用户名：<b>' + meta.account + '</b></span>'
+          + '  <span>姓名：<b>' + meta.name + '</b></span>'
+          + '  <span>手机号：<b>' + meta.phone + '</b></span>'
+          + '  <span>角色：<b>' + meta.role + '</b></span>'
+          + '</div>'
+          + '<div class="risk-confirm-actions">'
+          + '  <button class="btn-ghost-plain" onclick="window.__userMgmtCancelRisk(this)">取消</button>'
+          + '  <button class="' + btnCls + '" onclick="window.__userMgmtConfirmRisk(this)">' + btnText + '</button>'
+          + '</div>';
+        var overlay = document.getElementById('memberRiskConfirmModal');
+        var body = overlay ? overlay.querySelector('.modal-body') : null;
+        if (!overlay || !body) return;
+        overlay.__okCallback = onOk;
+        body.innerHTML = html;
+        overlay.classList.add('visible');
+      }
+
+      var modal = document.getElementById('addMemberModal');
+
+      function openAddMemberModal() {
+        modal.classList.add('visible');
+        document.getElementById('memberAccount').value = '';
+        document.getElementById('memberName').value = '';
+        document.getElementById('memberPhone').value = '';
+        document.getElementById('memberRole').value = '';
+        ['memberAccountError', 'memberPhoneError', 'memberNameError', 'memberRoleError'].forEach(function(id) {
+          document.getElementById(id).textContent = '';
+        });
+      }
+      function closeAddMemberModal() {
+        modal.classList.remove('visible');
+      }
+      document.getElementById('addMemberBtn').addEventListener('click', openAddMemberModal);
+      document.getElementById('addMemberClose').addEventListener('click', closeAddMemberModal);
+      document.getElementById('addMemberCancel').addEventListener('click', closeAddMemberModal);
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) closeAddMemberModal();
+      });
+
+      function showFieldError(fieldId, errorId, msg) {
+        var el = document.getElementById(fieldId);
+        if (el) el.style.borderColor = '#F53F3F';
+        document.getElementById(errorId).textContent = msg;
+      }
+      function clearFieldError(fieldId, errorId) {
+        var el = document.getElementById(fieldId);
+        if (el) el.style.borderColor = '';
+        document.getElementById(errorId).textContent = '';
+      }
+
+      document.getElementById('memberAccount').addEventListener('input', function() {
+        clearFieldError('memberAccount', 'memberAccountError');
+      });
+      document.getElementById('memberPhone').addEventListener('input', function() {
+        clearFieldError('memberPhone', 'memberPhoneError');
+      });
+      document.getElementById('memberName').addEventListener('input', function() {
+        clearFieldError('memberName', 'memberNameError');
+      });
+      document.getElementById('memberRole').addEventListener('change', function() {
+        clearFieldError('memberRole', 'memberRoleError');
+      });
+
+      document.getElementById('addMemberConfirm').addEventListener('click', function() {
+        var account = document.getElementById('memberAccount').value.trim();
+        var phone = document.getElementById('memberPhone').value.trim();
+        var name = document.getElementById('memberName').value.trim();
+        var role = document.getElementById('memberRole').value;
+        var hasError = false;
+
+        if (!account) {
+          showFieldError('memberAccount', 'memberAccountError', '请输入用户名');
+          hasError = true;
+        } else if (!/^[a-zA-Z][a-zA-Z0-9_]{3,15}$|^1[3-9]\d{9}$/.test(account)) {
+          showFieldError('memberAccount', 'memberAccountError', '用户名为4-16位字母/数字（字母开头），或11位手机号');
+          hasError = true;
+        } else {
+          clearFieldError('memberAccount', 'memberAccountError');
+        }
+
+        if (!phone) {
+          showFieldError('memberPhone', 'memberPhoneError', '请输入成员手机号');
+          hasError = true;
+        } else if (!/^1[3-9]\d{9}$/.test(phone)) {
+          showFieldError('memberPhone', 'memberPhoneError', '请输入正确的手机号');
+          hasError = true;
+        } else {
+          clearFieldError('memberPhone', 'memberPhoneError');
+        }
+        if (!name) {
+          showFieldError('memberName', 'memberNameError', '请输入成员姓名');
+          hasError = true;
+        } else {
+          clearFieldError('memberName', 'memberNameError');
+        }
+        if (!role) {
+          showFieldError('memberRole', 'memberRoleError', '请选择角色');
+          hasError = true;
+        } else {
+          clearFieldError('memberRole', 'memberRoleError');
+        }
+        if (hasError) return;
+
+        var btn = document.getElementById('addMemberConfirm');
+        btn.disabled = true;
+        btn.textContent = '添加中...';
+        setTimeout(function() {
+          var tables = getTables();
+          if (tables.mainTbody && tables.actionsTbody) {
+            var today = new Date();
+            var dateStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+            // 下一个 row-idx = 当前已有行数
+            var nextIdx = tables.mainTbody.querySelectorAll('tr').length;
+            // 左表：成员信息 6 列
+            var mainTr = document.createElement('tr');
+            mainTr.setAttribute('data-status', 'enabled');
+            mainTr.setAttribute('data-row-idx', String(nextIdx));
+            mainTr.innerHTML = '<td data-col="account"><div style="display:flex;align-items:center;gap:10px;"><div class="member-avatar-sm" style="background:linear-gradient(135deg,#1677FF,#0958D9);color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;">' + name.charAt(0) + '</div><div><strong>' + account + '</strong><div style="font-size:12px;color:var(--text-muted);">' + name + '</div></div></div></td><td data-col="name">' + name + '</td><td data-col="phone" class="member-phone">' + maskMobile(phone) + '</td><td data-col="role">' + role + '</td><td data-col="join">' + dateStr + '</td><td data-col="status"><span class="member-status-badge enabled">启用</span></td>';
+            // 右表：独立操作列（完全脱离左侧滚动）
+            var actTr = document.createElement('tr');
+            actTr.setAttribute('data-status', 'enabled');
+            actTr.setAttribute('data-row-idx', String(nextIdx));
+            actTr.innerHTML = '<td style="text-align:center;"><div class="member-actions" style="justify-content:center;"><a href="javascript:void(0)" class="member-action" data-action="edit">编辑</a><a href="javascript:void(0)" class="member-action warn" data-action="toggleStatus">停用</a><a href="javascript:void(0)" class="member-action danger" data-action="remove">移除</a></div></td>';
+            tables.mainTbody.appendChild(mainTr);
+            tables.actionsTbody.appendChild(actTr);
+            // 重新编号 row-idx（保持连续）+ 同步 hover 绑定 + 高度对齐
+            pairMemberRowsAndBindHover();
+            alignMemberRowHeights();
+          }
+          btn.disabled = false;
+          btn.textContent = '确认添加';
+          closeAddMemberModal();
+          updateMemberCount();
+        }, 600);
+      });
+
+      // Dynamic parent highlight based on active child
+      document.querySelectorAll('.sidebar-item').forEach(function(item) {
+        if (item.querySelector('.sidebar-submenu .sidebar-link.active')) {
+          item.classList.add('has-active');
+          var arrow = item.querySelector('.sidebar-arrow');
+          if (arrow) arrow.style.transform = 'rotate(90deg)';
+        }
+      });
+
+      // Sidebar parent menu expand/collapse
+      document.querySelectorAll('.sidebar-item > .sidebar-link').forEach(function(link) {
+        var parent = link.parentElement;
+        var submenu = parent.querySelector('.sidebar-submenu');
+        if (submenu) {
+          link.addEventListener('click', function(e) {
+            // Don't toggle if clicking a direct link (with href)
+            if (link.getAttribute('href') && link.getAttribute('href') !== '#') {
+              return; // Let it navigate
+            }
+            e.preventDefault();
+            parent.classList.toggle('open');
+            var arrow = link.querySelector('.sidebar-arrow');
+            if (arrow) {
+              arrow.style.transform = parent.classList.contains('open') ? 'rotate(90deg)' : 'rotate(0deg)';
+            }
+          });
+        }
+      });
+
+      // ---- 表格 tbody 事件委托：编辑 / 启用停用 / 移除（左右两表任意一个点击都路由到同对行操作） ----
+      function bindMemberActionDelegation() {
+        var tables = getTables();
+        if (!tables.mainTbody || !tables.actionsTbody) return;
+        function handler(e) {
+          var actionBtn = e.target.closest && e.target.closest('[data-action]');
+          if (!actionBtn) return;
+          var anyTr = actionBtn.closest('tr');
+          if (!anyTr) return;
+          var pair = getPairedTrs(anyTr);
+          var tr = pair.mainTr || pair.actionsTr || anyTr;
+          var action = actionBtn.getAttribute('data-action');
+          // 系统默认主账号（左表行或右表行任一带 data-default=1）
+          var defMain = pair.mainTr && pair.mainTr.getAttribute('data-default') === '1';
+          var defAct  = pair.actionsTr && pair.actionsTr.getAttribute('data-default') === '1';
+          if (defMain || defAct) {
+            alert('系统默认主账号不可操作：编辑/启用停用/移除都不会生效');
+            return;
+          }
+          if (action === 'edit') {
+            // 打开编辑弹窗，预填充当前行数据
+            var meta = extractRowMeta(anyTr);
+            var editModal = document.getElementById('editUserModal');
+            document.getElementById('editMemberAccount').value = meta.account;
+            document.getElementById('editMemberName').value = meta.name;
+            // 从元数据获取原始手机号（脱敏的显示值需要用实际值）
+            var tds = pair.mainTr.querySelectorAll('td');
+            var rawPhone = tds[2] ? tds[2].textContent.trim() : meta.phone;
+            // 如果是脱敏手机号，尝试从存储恢复；否则保持显示值
+            document.getElementById('editMemberPhone').value = rawPhone;
+            document.getElementById('editMemberRole').value = meta.role;
+            // 清错误
+            ['editMemberNameError', 'editMemberPhoneError', 'editMemberRoleError'].forEach(function(id) {
+              var el = document.getElementById(id); if(el) el.textContent = '';
+            });
+            // 记录当前编辑的行
+            editModal.__editRow = pair.mainTr;
+            editModal.__editActionsRow = pair.actionsTr;
+            editModal.classList.add('visible');
+          } else if (action === 'toggleStatus') {
+            var curStatus = tr.getAttribute('data-status') === 'disabled' ? 'disabled' : 'enabled';
+            var next = curStatus === 'disabled' ? 'enabled' : 'disabled';
+            openToggleConfirm(anyTr, next, function() {
+              renderRowStatus(anyTr, next);
+              alignMemberRowHeights();
+              alert('成员已' + (next === 'disabled' ? '停用' : '启用') + '（演示，前端状态已切换）');
+            });
+          } else if (action === 'remove') {
+            openRiskRemoveConfirm(anyTr, function() {
+              if (pair.mainTr && pair.mainTr.parentNode) pair.mainTr.parentNode.removeChild(pair.mainTr);
+              if (pair.actionsTr && pair.actionsTr.parentNode) pair.actionsTr.parentNode.removeChild(pair.actionsTr);
+              // 删除后重新编号 row-idx，避免索引空洞
+              pairMemberRowsAndBindHover();
+              alignMemberRowHeights();
+              updateMemberCount();
+              alert('成员已移除（演示环境，已从列表删除并更新记录数）');
+            });
+          }
+        }
+        [tables.mainTbody, tables.actionsTbody].forEach(function(tb) {
+          tb.removeEventListener('click', handler);
+          tb.addEventListener('click', handler);
+        });
+      }
+      bindMemberActionDelegation();
+
+      // ============ 编辑用户弹窗逻辑 ============
+      var editModal = document.getElementById('editUserModal');
+
+      function closeEditUserModal() {
+        editModal.classList.remove('visible');
+        editModal.__editRow = null;
+        editModal.__editActionsRow = null;
+      }
+
+      function showEditFieldError(fieldId, errorId, msg) {
+        var el = document.getElementById(fieldId);
+        if (el) el.style.borderColor = '#F53F3F';
+        document.getElementById(errorId).textContent = msg;
+      }
+      function clearEditFieldError(fieldId, errorId) {
+        var el = document.getElementById(fieldId);
+        if (el) el.style.borderColor = '';
+        document.getElementById(errorId).textContent = '';
+      }
+
+      document.getElementById('editUserClose').addEventListener('click', closeEditUserModal);
+      document.getElementById('editMemberCancel').addEventListener('click', closeEditUserModal);
+      editModal.addEventListener('click', function(e) {
+        if (e.target === editModal) closeEditUserModal();
+      });
+
+      // 字段错误清除
+      ['editMemberName', 'editMemberPhone'].forEach(function(fid) {
+        document.getElementById(fid).addEventListener('input', function() {
+          var eid = fid + 'Error';
+          clearEditFieldError(fid, eid);
+        });
+      });
+      document.getElementById('editMemberRole').addEventListener('change', function() {
+        clearEditFieldError('editMemberRole', 'editMemberRoleError');
+      });
+
+      // 保存修改
+      document.getElementById('editMemberConfirm').addEventListener('click', function() {
+        var name = document.getElementById('editMemberName').value.trim();
+        var phone = document.getElementById('editMemberPhone').value.trim();
+        var role = document.getElementById('editMemberRole').value;
+        var hasError = false;
+
+        if (!name) {
+          showEditFieldError('editMemberName', 'editMemberNameError', '请输入用户姓名');
+          hasError = true;
+        } else {
+          clearEditFieldError('editMemberName', 'editMemberNameError');
+        }
+
+        if (!phone) {
+          showEditFieldError('editMemberPhone', 'editMemberPhoneError', '请输入用户手机号');
+          hasError = true;
+        } else if (!/^1[3-9]\d{9}$/.test(phone)) {
+          showEditFieldError('editMemberPhone', 'editMemberPhoneError', '请输入正确的手机号');
+          hasError = true;
+        } else {
+          clearEditFieldError('editMemberPhone', 'editMemberPhoneError');
+        }
+
+        if (!role) {
+          showEditFieldError('editMemberRole', 'editMemberRoleError', '请选择角色');
+          hasError = true;
+        } else {
+          clearEditFieldError('editMemberRole', 'editMemberRoleError');
+        }
+
+        if (hasError) return;
+
+        var btn = document.getElementById('editMemberConfirm');
+        btn.disabled = true;
+        btn.textContent = '保存中...';
+
+        setTimeout(function() {
+          var mainTr = editModal.__editRow;
+          var actionsTr = editModal.__editActionsRow;
+          if (mainTr) {
+            var tds = mainTr.querySelectorAll('td');
+            // 更新姓名 (td[1])
+            if (tds[1]) tds[1].textContent = name;
+            // 更新手机号 (td[2]) - 显示脱敏
+            if (tds[2]) {
+              var maskPhone = phone.length >= 11 ? phone.substring(0,3) + '****' + phone.substring(7) : phone;
+              tds[2].textContent = maskPhone;
+            }
+            // 更新角色 (td[3])
+            if (tds[3]) tds[3].textContent = role;
+          }
+          btn.disabled = false;
+          btn.textContent = '保存修改';
+          closeEditUserModal();
+          alignMemberRowHeights();
+          // 轻量提示
+          showPageToast('用户信息已更新', 'success');
+        }, 400);
+      });
+
+      // 简易 toast 提示
+      function showPageToast(msg, type) {
+        var toast = document.createElement('div');
+        toast.style.cssText = 'position:fixed;top:80px;left:50%;transform:translateX(-50%);padding:10px 20px;border-radius:6px;color:#fff;font-size:14px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.15);transition:opacity 0.2s;';
+        toast.style.background = type === 'success' ? '#52C41A' : '#FF4D4F';
+        toast.textContent = msg;
+        document.body.appendChild(toast);
+        setTimeout(function() { toast.style.opacity = '0'; }, 1500);
+        setTimeout(function() { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 1800);
+      };
+
+      // ---- 初始化：配对已有行 + 绑定 hover + 对齐高度 ----
+      pairMemberRowsAndBindHover();
+      alignMemberRowHeights();
+      updateMemberCount();
+      // 字体/图片加载后再对齐一次，避免字宽变化导致的偏差
+      if (window.requestAnimationFrame) {
+        window.requestAnimationFrame(function() { alignMemberRowHeights(); });
+      }
+      window.addEventListener('resize', (function() {
+        var timer;
+        return function() {
+          clearTimeout(timer);
+          timer = setTimeout(alignMemberRowHeights, 80);
+        };
+      })());
+    })();
+  </script>
+
+  <!-- 成员移除/启用停用 风险操作二次确认弹窗（单例，用于所有成员行） -->
+  <div class="modal-overlay" id="memberRiskConfirmModal">
+    <div class="modal member-modal" style="max-width:520px;width:520px;">
+      <div class="modal-body" style="padding:20px 20px 20px;"></div>
+    </div>
+  </div>
+  <style>
+    #memberRiskConfirmModal .modal-member,
+    #memberRiskConfirmModal .modal { overflow: visible; }
+  </style>
+  
+  <!-- 控制台/认证页专用：禁止 !isLoggedIn → display:none #topbarUser / #topbarMessage （否则"添加新企业"切换后，整区空白=用户感觉点不动） -->
+  <script>
+    window.SKIP_LOGIN_CHECK = true;
+    window.SKIP_TOPBAR_DISPLAY_NONE = true;
+    (function ensureTopbarVisible(){
+      function run(){
+        var tu = document.getElementById("topbarUser"), tm = document.getElementById("topbarMessage");
+        if (tu){ tu.style.display = "flex"; tu.style.visibility="visible"; if (!tu.children.length) tu.innerHTML = '<a href="login.html" style="display:inline-flex;align-items:center;padding:6px 16px;border-radius:6px;background:var(--brand-primary);color:#fff;font-size:13px;font-weight:500;text-decoration:none;white-space:nowrap;">登录平台</a>'; }
+        if (tm){ tm.style.display = "flex"; tm.style.visibility="visible"; }
+      }
+      try{run()}catch(e){}
+      document.addEventListener("DOMContentLoaded", run);
+      setTimeout(run, 50); setTimeout(run, 300);
+    })();
+  </script>
+<script src="js/main.js?v=1787772022"></script>
+<script src="js/enterprise-switch.js?v=19"></script>
+<script>
+(function(){
+  var accountType = localStorage.getItem('mjyy_account_type');
+  if (accountType === 'sub') {
+    var subEntMgmt = document.getElementById('sidebarSubEntMgmt');
+    if (subEntMgmt) subEntMgmt.style.display = 'none';
+  }
+})();
+</script>
+
+<script src="js/annotation.js" defer></script>
+</body>
+</html>
