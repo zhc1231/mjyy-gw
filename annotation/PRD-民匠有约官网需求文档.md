@@ -273,11 +273,11 @@
 
 #### 3.6.2 注册全流程时序图
 
-展示企业从注册到功能启用的完整 7 步业务流程。
+展示企业从注册到功能启用的完整 8 步业务流程。
 
 **流程图：**
 
-<svg viewBox="0 0 1100 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1100px;height:auto;">
+<svg viewBox="0 0 1320 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:1320px;height:auto;">
   <defs>
     <marker id="prd-arrow-h" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
       <path d="M 0 0 L 10 5 L 0 10 z" fill="#1677FF"/>
@@ -286,48 +286,56 @@
       <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0A1628" flood-opacity="0.08"/>
     </filter>
   </defs>
-  <line x1="30" y1="80" x2="1070" y2="80" stroke="#E5E8EF" stroke-width="1" stroke-dasharray="4 4"/>
+  <line x1="30" y1="80" x2="1290" y2="80" stroke="#E5E8EF" stroke-width="1" stroke-dasharray="4 4"/>
   <g filter="url(#prd-soft)">
-    <rect x="20" y="40" width="140" height="70" rx="12" fill="#fff" stroke="#BAE0FF"/>
-    <text x="90" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#0A1628" font-family="PingFang SC, sans-serif">① 提交资料</text>
-    <text x="90" y="90" text-anchor="middle" font-size="11" fill="#595959" font-family="PingFang SC, sans-serif">企业信息+法人</text>
+    <rect x="20" y="40" width="130" height="70" rx="12" fill="#fff" stroke="#BAE0FF"/>
+    <text x="85" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0A1628" font-family="PingFang SC, sans-serif">① 提交资料</text>
+    <text x="85" y="88" text-anchor="middle" font-size="10" fill="#595959" font-family="PingFang SC, sans-serif">企业信息+法人</text>
   </g>
-  <line x1="160" y1="75" x2="185" y2="75" stroke="#1677FF" stroke-width="2" marker-end="url(#prd-arrow-h)"/>
+  <line x1="150" y1="75" x2="175" y2="75" stroke="#1677FF" stroke-width="2" marker-end="url(#prd-arrow-h)"/>
   <g filter="url(#prd-soft)">
-    <rect x="185" y="40" width="140" height="70" rx="12" fill="#fff" stroke="#B7EB8F"/>
-    <text x="255" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#0A1628" font-family="PingFang SC, sans-serif">② 实名校验</text>
-    <text x="255" y="90" text-anchor="middle" font-size="11" fill="#595959" font-family="PingFang SC, sans-serif">工商+法人实名</text>
+    <rect x="175" y="40" width="130" height="70" rx="12" fill="#E6F4FF" stroke="#91CAFF"/>
+    <text x="240" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0A1628" font-family="PingFang SC, sans-serif">② 爱签认证</text>
+    <text x="240" y="88" text-anchor="middle" font-size="10" fill="#1677FF" font-family="PingFang SC, sans-serif">⚡ 即时生效</text>
   </g>
-  <line x1="325" y1="75" x2="350" y2="75" stroke="#1677FF" stroke-width="2" marker-end="url(#prd-arrow-h)"/>
+  <line x1="305" y1="75" x2="330" y2="75" stroke="#1677FF" stroke-width="2" marker-end="url(#prd-arrow-h)"/>
   <g filter="url(#prd-soft)">
-    <rect x="350" y="40" width="140" height="70" rx="12" fill="#fff" stroke="#D3ADF7"/>
-    <text x="420" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#0A1628" font-family="PingFang SC, sans-serif">③ 认证通过</text>
-    <text x="420" y="90" text-anchor="middle" font-size="11" fill="#595959" font-family="PingFang SC, sans-serif">生成企业档案</text>
+    <rect x="330" y="40" width="130" height="70" rx="12" fill="#fff" stroke="#D3ADF7"/>
+    <text x="395" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0A1628" font-family="PingFang SC, sans-serif">③ 认证通过</text>
+    <text x="395" y="88" text-anchor="middle" font-size="10" fill="#595959" font-family="PingFang SC, sans-serif">生成企业档案</text>
   </g>
-  <line x1="490" y1="75" x2="515" y2="75" stroke="#1677FF" stroke-width="2" marker-end="url(#prd-arrow-h)"/>
+  <line x1="460" y1="75" x2="485" y2="75" stroke="#FA8C16" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#prd-arrow-h)"/>
   <g filter="url(#prd-soft)">
-    <rect x="515" y="40" width="140" height="70" rx="12" fill="#F6FFED" stroke="#95DE64"/>
-    <text x="585" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#0A1628" font-family="PingFang SC, sans-serif">④ 设置主管理员</text>
-    <text x="585" y="90" text-anchor="middle" font-size="11" fill="#595959" font-family="PingFang SC, sans-serif">唯一超级管理员</text>
+    <rect x="485" y="40" width="130" height="70" rx="12" fill="#FFF7E6" stroke="#FFC069"/>
+    <text x="550" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0A1628" font-family="PingFang SC, sans-serif">④ 中信开户</text>
+    <text x="550" y="88" text-anchor="middle" font-size="10" fill="#FA8C16" font-family="PingFang SC, sans-serif">⏳ 异步进行</text>
   </g>
-  <line x1="655" y1="75" x2="680" y2="75" stroke="#1677FF" stroke-width="2" marker-end="url(#prd-arrow-h)"/>
+  <line x1="615" y1="75" x2="640" y2="75" stroke="#1677FF" stroke-width="2" marker-end="url(#prd-arrow-h)"/>
   <g filter="url(#prd-soft)">
-    <rect x="680" y="40" width="140" height="70" rx="12" fill="#FFF7E6" stroke="#FFC069"/>
-    <text x="750" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#0A1628" font-family="PingFang SC, sans-serif">⑤ 创建子公司</text>
-    <text x="750" y="90" text-anchor="middle" font-size="11" fill="#595959" font-family="PingFang SC, sans-serif">母公司直接创建</text>
+    <rect x="640" y="40" width="130" height="70" rx="12" fill="#F6FFED" stroke="#95DE64"/>
+    <text x="705" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0A1628" font-family="PingFang SC, sans-serif">⑤ 设置主管理员</text>
+    <text x="705" y="88" text-anchor="middle" font-size="10" fill="#595959" font-family="PingFang SC, sans-serif">唯一超级管理员</text>
   </g>
-  <line x1="820" y1="75" x2="845" y2="75" stroke="#1677FF" stroke-width="2" marker-end="url(#prd-arrow-h)"/>
+  <line x1="770" y1="75" x2="795" y2="75" stroke="#1677FF" stroke-width="2" marker-end="url(#prd-arrow-h)"/>
   <g filter="url(#prd-soft)">
-    <rect x="845" y="40" width="140" height="70" rx="12" fill="#fff" stroke="#91CAFF"/>
-    <text x="915" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#0A1628" font-family="PingFang SC, sans-serif">⑥ 分配权限</text>
-    <text x="915" y="90" text-anchor="middle" font-size="11" fill="#595959" font-family="PingFang SC, sans-serif">权限与角色配置</text>
+    <rect x="795" y="40" width="130" height="70" rx="12" fill="#FFF7E6" stroke="#FFC069"/>
+    <text x="860" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0A1628" font-family="PingFang SC, sans-serif">⑥ 创建子公司</text>
+    <text x="860" y="88" text-anchor="middle" font-size="10" fill="#595959" font-family="PingFang SC, sans-serif">母公司直接创建</text>
   </g>
-  <line x1="985" y1="75" x2="1010" y2="75" stroke="#1677FF" stroke-width="2" marker-end="url(#prd-arrow-h)"/>
+  <line x1="925" y1="75" x2="950" y2="75" stroke="#1677FF" stroke-width="2" marker-end="url(#prd-arrow-h)"/>
   <g filter="url(#prd-soft)">
-    <rect x="1010" y="40" width="80" height="70" rx="12" fill="#1677FF"/>
-    <text x="1050" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" font-family="PingFang SC, sans-serif">⑦ 启用</text>
-    <text x="1050" y="90" text-anchor="middle" font-size="11" fill="#E6F4FF" font-family="PingFang SC, sans-serif">入驻完成</text>
+    <rect x="950" y="40" width="130" height="70" rx="12" fill="#fff" stroke="#91CAFF"/>
+    <text x="1015" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0A1628" font-family="PingFang SC, sans-serif">⑦ 分配权限</text>
+    <text x="1015" y="88" text-anchor="middle" font-size="10" fill="#595959" font-family="PingFang SC, sans-serif">权限与角色配置</text>
   </g>
+  <line x1="1080" y1="75" x2="1105" y2="75" stroke="#1677FF" stroke-width="2" marker-end="url(#prd-arrow-h)"/>
+  <g filter="url(#prd-soft)">
+    <rect x="1105" y="40" width="100" height="70" rx="12" fill="#1677FF"/>
+    <text x="1155" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#fff" font-family="PingFang SC, sans-serif">⑧ 启用</text>
+    <text x="1155" y="88" text-anchor="middle" font-size="10" fill="#E6F4FF" font-family="PingFang SC, sans-serif">入驻完成</text>
+  </g>
+  <rect x="485" y="120" width="280" height="20" rx="10" fill="#FFF7E6" stroke="#FFC069" stroke-width="0.5"/>
+  <text x="625" y="134" text-anchor="middle" font-size="10" fill="#FA8C16" font-weight="600" font-family="PingFang SC, sans-serif">中信开户为异步流程，不阻塞后续步骤</text>
 </svg>
 
 **各步骤详细说明：**
@@ -335,16 +343,17 @@
 | 步骤 | 操作内容 | 业务规则 | 系统响应 |
 |------|----------|----------|----------|
 | 1. 提交资料 | 填写企业名称、统一社会信用代码（18 位）、法人姓名、法人身份证号 | 所有字段必填，信用代码 18 位 | 实时校验格式，不合格即时提示 |
-| 2. 实名校验 | 对接工商接口验证企业存在性，法人姓名 + 身份证实名核验 | 1-3 工作日，需人工复核 | 结果通过短信通知 |
+| 2. 爱签认证 | 调用爱签认证接口完成企业与法人实名认证 | 对接爱签 API，**即时生效** | 认证结果秒级返回 |
 | 3. 认证通过 | 生成企业电子档案，分配唯一企业 ID，状态标记为「已认证」 | 认证信息写入区块链存证 | 展示「认证成功」页面 |
-| 4. 设置主管理员 | 指定唯一 Super Admin 账户，绑定安全手机 | 主管理员权限 100%，不可分割 | 主管理员收到通知 |
-| 5. 创建子公司 | 母公司直接创建子公司，无需单独认证 | 可选步骤，子公司继承母公司主体资质 | 子公司即时创建成功 |
-| 6. 分配权限与角色 | 配置权限体系，创建子管理员角色，分配功能模块权限 | 支持自定义权限组合 | 权限即时生效 |
-| 7. 平台功能启用 | 全部功能模块正式启用 | 发送启用通知至主管理员 | 企业可正式使用 |
+| 4. 中信开户 | 认证通过后**异步**发起中信银行开户请求 | 异步进行，不阻塞后续流程 | 开户结果通过短信通知，1-3 工作日 |
+| 5. 设置主管理员 | 指定唯一 Super Admin 账户，绑定安全手机 | 主管理员权限 100%，不可分割 | 主管理员收到通知 |
+| 6. 创建子公司 | 母公司直接创建子公司，无需单独认证 | 可选步骤，子公司继承母公司主体资质 | 子公司即时创建成功 |
+| 7. 分配权限与角色 | 配置权限体系，创建子管理员角色，分配功能模块权限 | 支持自定义权限组合 | 权限即时生效 |
+| 8. 平台功能启用 | 全部功能模块正式启用 | 发送启用通知至主管理员 | 企业可正式使用 |
 
 **关键业务规则：**
-- 信息提交后即时校验格式，不合格即时提示修改
-- 实名校验为异步流程，需等待 1-3 个工作日
+- 爱签认证为即时生效，秒级完成实名认证
+- 中信开户为异步流程，认证通过后自动触发，不阻塞后续步骤
 - 主管理员必须绑定安全手机，作为唯一 Super Admin
 - 子公司由母公司直接创建，无需单独认证流程
 

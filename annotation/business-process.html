@@ -228,7 +228,7 @@
         <div class="bp-card">
           <div class="bp-card-title" id="bp-title-register">注册全流程 · 企业平台入驻时序图</div>
           <div class="bp-svg-wrap" id="bp-chart-register">
-            <svg viewBox="0 0 1100 200" preserveAspectRatio="xMidYMid meet">
+            <svg viewBox="0 0 1320 200" preserveAspectRatio="xMidYMid meet">
               <defs>
                 <marker id="bp-arrow-h" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
                   <path d="M 0 0 L 10 5 L 0 10 z" fill="#1677FF"/>
@@ -237,55 +237,65 @@
                   <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0A1628" flood-opacity="0.08"/>
                 </filter>
               </defs>
-              <line x1="30" y1="80" x2="1070" y2="80" stroke="#E5E8EF" stroke-width="1" stroke-dasharray="4 4"/>
+              <line x1="30" y1="80" x2="1290" y2="80" stroke="#E5E8EF" stroke-width="1" stroke-dasharray="4 4"/>
               <!-- ① 提交资料 -->
               <g filter="url(#bp-soft)">
-                <rect x="20"  y="40" width="140" height="70" rx="12" fill="#fff" stroke="#BAE0FF"/>
-                <text x="90" y="68"  text-anchor="middle" font-size="13" font-weight="700" fill="#0A1628">① 提交资料</text>
-                <text x="90" y="90"  text-anchor="middle" font-size="11" fill="#595959">企业信息+法人</text>
+                <rect x="20"  y="40" width="130" height="70" rx="12" fill="#fff" stroke="#BAE0FF"/>
+                <text x="85" y="68"  text-anchor="middle" font-size="12" font-weight="700" fill="#0A1628">① 提交资料</text>
+                <text x="85" y="88"  text-anchor="middle" font-size="10" fill="#595959">企业信息+法人</text>
               </g>
-              <line x1="160" y1="75" x2="185" y2="75" stroke="#1677FF" stroke-width="2" marker-end="url(#bp-arrow-h)"/>
-              <!-- ② 实名校验 -->
+              <line x1="150" y1="75" x2="175" y2="75" stroke="#1677FF" stroke-width="2" marker-end="url(#bp-arrow-h)"/>
+              <!-- ② 爱签认证（即时生效） -->
               <g filter="url(#bp-soft)">
-                <rect x="185" y="40" width="140" height="70" rx="12" fill="#fff" stroke="#B7EB8F"/>
-                <text x="255" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#0A1628">② 实名校验</text>
-                <text x="255" y="90" text-anchor="middle" font-size="11" fill="#595959">工商+法人实名</text>
+                <rect x="175" y="40" width="130" height="70" rx="12" fill="#E6F4FF" stroke="#91CAFF"/>
+                <text x="240" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0A1628">② 爱签认证</text>
+                <text x="240" y="88" text-anchor="middle" font-size="10" fill="#1677FF">⚡ 即时生效</text>
               </g>
-              <line x1="325" y1="75" x2="350" y2="75" stroke="#1677FF" stroke-width="2" marker-end="url(#bp-arrow-h)"/>
+              <line x1="305" y1="75" x2="330" y2="75" stroke="#1677FF" stroke-width="2" marker-end="url(#bp-arrow-h)"/>
               <!-- ③ 认证通过 -->
               <g filter="url(#bp-soft)">
-                <rect x="350" y="40" width="140" height="70" rx="12" fill="#fff" stroke="#D3ADF7"/>
-                <text x="420" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#0A1628">③ 认证通过</text>
-                <text x="420" y="90" text-anchor="middle" font-size="11" fill="#595959">生成企业档案</text>
+                <rect x="330" y="40" width="130" height="70" rx="12" fill="#fff" stroke="#D3ADF7"/>
+                <text x="395" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0A1628">③ 认证通过</text>
+                <text x="395" y="88" text-anchor="middle" font-size="10" fill="#595959">生成企业档案</text>
               </g>
-              <line x1="490" y1="75" x2="515" y2="75" stroke="#1677FF" stroke-width="2" marker-end="url(#bp-arrow-h)"/>
-              <!-- ④ 设置主管理员 -->
+              <line x1="460" y1="75" x2="485" y2="75" stroke="#FA8C16" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#bp-arrow-h)"/>
+              <!-- ④ 中信开户（异步） -->
               <g filter="url(#bp-soft)">
-                <rect x="515" y="40" width="140" height="70" rx="12" fill="#F6FFED" stroke="#95DE64"/>
-                <text x="585" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#0A1628">④ 设置主管理员</text>
-                <text x="585" y="90" text-anchor="middle" font-size="11" fill="#595959">唯一超级管理员</text>
+                <rect x="485" y="40" width="130" height="70" rx="12" fill="#FFF7E6" stroke="#FFC069"/>
+                <text x="550" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0A1628">④ 中信开户</text>
+                <text x="550" y="88" text-anchor="middle" font-size="10" fill="#FA8C16">⏳ 异步进行</text>
               </g>
-              <line x1="655" y1="75" x2="680" y2="75" stroke="#1677FF" stroke-width="2" marker-end="url(#bp-arrow-h)"/>
-              <!-- ⑤ 创建子公司（可选） -->
+              <line x1="615" y1="75" x2="640" y2="75" stroke="#1677FF" stroke-width="2" marker-end="url(#bp-arrow-h)"/>
+              <!-- ⑤ 设置主管理员 -->
               <g filter="url(#bp-soft)">
-                <rect x="680" y="40" width="140" height="70" rx="12" fill="#FFF7E6" stroke="#FFC069"/>
-                <text x="750" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#0A1628">⑤ 创建子公司</text>
-                <text x="750" y="90" text-anchor="middle" font-size="11" fill="#595959">母公司直接创建</text>
+                <rect x="640" y="40" width="130" height="70" rx="12" fill="#F6FFED" stroke="#95DE64"/>
+                <text x="705" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0A1628">⑤ 设置主管理员</text>
+                <text x="705" y="88" text-anchor="middle" font-size="10" fill="#595959">唯一超级管理员</text>
               </g>
-              <line x1="820" y1="75" x2="845" y2="75" stroke="#1677FF" stroke-width="2" marker-end="url(#bp-arrow-h)"/>
-              <!-- ⑥ 分配权限与角色 -->
+              <line x1="770" y1="75" x2="795" y2="75" stroke="#1677FF" stroke-width="2" marker-end="url(#bp-arrow-h)"/>
+              <!-- ⑥ 创建子公司（可选） -->
               <g filter="url(#bp-soft)">
-                <rect x="845" y="40" width="140" height="70" rx="12" fill="#fff" stroke="#91CAFF"/>
-                <text x="915" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#0A1628">⑥ 分配权限</text>
-                <text x="915" y="90" text-anchor="middle" font-size="11" fill="#595959">权限与角色配置</text>
+                <rect x="795" y="40" width="130" height="70" rx="12" fill="#FFF7E6" stroke="#FFC069"/>
+                <text x="860" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0A1628">⑥ 创建子公司</text>
+                <text x="860" y="88" text-anchor="middle" font-size="10" fill="#595959">母公司直接创建</text>
               </g>
-              <line x1="985" y1="75" x2="1010" y2="75" stroke="#1677FF" stroke-width="2" marker-end="url(#bp-arrow-h)"/>
-              <!-- ⑦ 功能启用 -->
+              <line x1="925" y1="75" x2="950" y2="75" stroke="#1677FF" stroke-width="2" marker-end="url(#bp-arrow-h)"/>
+              <!-- ⑦ 分配权限与角色 -->
               <g filter="url(#bp-soft)">
-                <rect x="1010" y="40" width="80" height="70" rx="12" fill="#1677FF"/>
-                <text x="1050" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">⑦ 启用</text>
-                <text x="1050" y="90" text-anchor="middle" font-size="11" fill="#E6F4FF">入驻完成</text>
+                <rect x="950" y="40" width="130" height="70" rx="12" fill="#fff" stroke="#91CAFF"/>
+                <text x="1015" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#0A1628">⑦ 分配权限</text>
+                <text x="1015" y="88" text-anchor="middle" font-size="10" fill="#595959">权限与角色配置</text>
               </g>
+              <line x1="1080" y1="75" x2="1105" y2="75" stroke="#1677FF" stroke-width="2" marker-end="url(#bp-arrow-h)"/>
+              <!-- ⑧ 功能启用 -->
+              <g filter="url(#bp-soft)">
+                <rect x="1105" y="40" width="100" height="70" rx="12" fill="#1677FF"/>
+                <text x="1155" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">⑧ 启用</text>
+                <text x="1155" y="88" text-anchor="middle" font-size="10" fill="#E6F4FF">入驻完成</text>
+              </g>
+              <!-- 异步说明 -->
+              <rect x="485" y="120" width="280" height="20" rx="10" fill="#FFF7E6" stroke="#FFC069" stroke-width="0.5"/>
+              <text x="625" y="134" text-anchor="middle" font-size="10" fill="#FA8C16" font-weight="600">中信开户为异步流程，不阻塞后续步骤</text>
             </svg>
           </div>
         </div>
