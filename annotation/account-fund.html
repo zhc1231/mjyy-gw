@@ -660,7 +660,7 @@
       refreshAll();
     }
     // 跳转审批中心
-    function gotoApprovalCenter() { window.location.href = 'account-approval.html'; }
+    function gotoApprovalCenter() { window.location.href = '#nolink'; }
 
     // ===== 主账号概览渲染（按权限显隐） =====
     function renderMainOverview() {
@@ -711,7 +711,7 @@
       if (!D) { alert('部门工具未加载'); return; }
       var depts = D.getDepartments();
       if (accountType === 'sub' && (!depts || depts.length === 0)) {
-        alert('暂无部门，请先在组织架构页面创建部门');
+        alert('暂无部门，请先在用户管理页面创建部门');
         return;
       }
       if (accountType === 'sub' && deptId === '__pick__') {
@@ -1150,6 +1150,11 @@
     }
   </script>
 
-<script src="js/annotation.js" defer></script>
+
+  
+
+<script src="js/annotation-data.js?v=40676"></script>
+<script src="js/annotation.js?v=40676"></script>
+<script src="js/annotation-init.js?v=40676"></script>
 </body>
 </html>
