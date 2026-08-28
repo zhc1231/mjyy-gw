@@ -603,46 +603,46 @@
 
 | 序号 | 模块 | 页面名称 | 页面链接 | 交互说明 | 功能说明 |
 |------|------|----------|----------|----------|----------|
-| 1 | 首页 | 官网首页 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/index.html) | Hero 轮播、卡片悬浮、滚动动画 | 品牌展示、产品引导、核心数据展示 |
-| 2 | 产品 | 民匠有约 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/minjiang.html) | Tab 切换、卡片交互、FAQ 折叠 | 灵活用工平台核心功能介绍 |
-| 3 | 产品 | 民匠安心云 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/anxinyun.html) | 子页面导航、卡片交互 | 企业内部管理工具介绍 |
-| 4 | 产品 | 城市代理 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/agent.html) | 阶梯表格、步骤交互 | 代理合作模式与收益展示 |
-| 5 | 产品 | 代理商选择 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/agent-select.html) | 卡片选择、表单提交 | 代理商选择与入驻入口 |
-| 6 | 产品 | 民匠功能 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/minjiang-features.html) | 功能卡片悬浮、分类筛选 | 民匠有约功能模块详细介绍 |
-| 7 | 产品 | 民匠方案 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/minjiang-solutions.html) | 行业方案切换、卡片交互 | 各行业解决方案展示 |
-| 8 | 产品 | 民匠案例 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/minjiang-cases.html) | 案例卡片、详情弹窗 | 成功客户案例展示 |
-| 9 | 产品 | 民匠应急 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/minjiang-emergency.html) | 流程步骤、表单提交 | 应急用工解决方案 |
-| 10 | 产品 | 民匠帮助 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/minjiang-help.html) | 搜索框、FAQ 折叠 | 使用帮助与常见问题解答 |
-| 11 | 产品 | 安心云功能 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/anxinyun-features.html) | 功能卡片、Tab 切换 | 安心云功能模块详解 |
-| 12 | 产品 | 安心云场景 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/anxinyun-scenarios.html) | 场景卡片、筛选 | 安心云适用场景展示 |
-| 13 | 产品 | 安心云帮助 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/anxinyun-help.html) | 搜索、FAQ 折叠 | 安心云使用帮助 |
-| 14 | 产品 | 安心云税务 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/anxinyun-tax.html) | 流程图示、表单交互 | 税务服务模块介绍 |
-| 15 | 控制台 | 登录 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/login.html) | 表单输入、验证校验 | 账号登录入口 |
-| 16 | 控制台 | 认证验证 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/verify.html) | 验证码输入、扫码认证 | 身份实名认证 |
-| 17 | 控制台 | 产品中心 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/account-center.html) | 快捷入口、卡片导航 | 产品与服务总览 |
-| 18 | 控制台 | 资金账户 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/account-wallet.html) | Tab 切换、表格操作、弹窗交互 | 余额查询、充值退款、资金流水 |
-| 19 | 控制台 | 银行账户 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/account-bank.html) | 列表管理、表单添加 | 绑卡管理、开户行设置 |
-| 20 | 控制台 | 合同管理 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/account-billing.html) | 表格操作、签署弹窗 | 合同列表、签署状态管理 |
-| 21 | 控制台 | 母子公司 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/account-fund.html) | 划拨表单、流水表格 | 母子公司资金划拨管理 |
-| 22 | 控制台 | 消息中心 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/account-message.html) | 消息列表、已读操作 | 系统消息与审批通知 |
-| 23 | 控制台 | 权限概况 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/account-permission.html) | 权限树展示、分组查看 | 权限分类与编码说明 |
-| 24 | 控制台 | 子公司管理 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/account-project.html) | 子公司卡片、创建表单 | 子公司创建与组织管理 |
-| 25 | 控制台 | 企业实名 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/account-realname.html) | 表单填写、文件上传 | 企业信息与资质认证 |
-| 26 | 控制台 | 角色管理 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/account-role.html) | 角色列表、权限分配 | 角色创建与权限配置 |
-| 27 | 控制台 | 角色编辑 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/account-role-edit.html) | 权限树勾选、表单提交 | 角色编辑与细粒度授权 |
-| 28 | 控制台 | 安全中心 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/account-security.html) | 密码修改、两步验证 | 账户安全设置 |
-| 29 | 控制台 | 用户管理 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/account-user.html) | 用户表格、批量操作 | 用户 CRUD 与角色分配 |
-| 30 | 业务流程 | 业务流程文档 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/business-process.html) | SVG 标注展示、卡片悬浮、锚点跳转 | 注册流程、多主体关系、权限层级、组织结构 |
-| 31 | 其他 | 关于我们 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/about.html) | 静态展示、滚动动画 | 公司介绍与发展历程 |
-| 32 | 其他 | 加入我们 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/career.html) | 岗位列表、投递表单 | 招聘岗位与投递入口 |
-| 33 | 其他 | 联系我们 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/contact.html) | 地图展示、留言表单 | 联系方式与留言 |
-| 34 | 其他 | 新闻动态 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/news.html) | 新闻列表、分类筛选 | 公司新闻与行业资讯 |
-| 35 | 其他 | 隐私政策 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/privacy.html) | 静态展示 | 隐私保护条款 |
-| 36 | 其他 | 服务中心 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/service-center.html) | 静态展示、协议查阅 | 服务协议与条款 |
-| 37 | 其他 | 合同签署 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/contract-sign.html) | 签署流程、电子签章 | 电子合同签署流程 |
-| 38 | 其他 | 开发者中心 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/developer-center.html) | 文档导航、代码示例 | API 文档与接入指南 |
-| 39 | 其他 | 消息详情 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/message-detail.html) | 消息详情、操作按钮 | 消息详情查看与操作 |
-| 40 | 导航 | 导航索引页 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/navigation.html) | 卡片导航、入口跳转 | 全部页面索引与导航入口 |
+| 1 | 首页 | 官网首页 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/index.html) | 1. 顶部导航滚动时背景模糊+阴影<br>2. Hero 区数据卡片进入视口触发数字滚动动画<br>3. 产品卡片 hover 上浮 8px + 阴影加深<br>4. 产品卡片「了解产品」按钮跳转对应产品页<br>5. 产品卡片「联系商务」按钮跳转联系页<br>6. 行业方案卡片点击跳转方案详情<br>7. CTA 区按钮白色描边，点击平滑滚动<br>8. 合作伙伴 Logo hover 灰度转彩色<br>9. 右下角悬浮客服按钮 | 品牌主张展示、核心数据指标展示（500+企业/5万+用户/95%匹配率）、三大产品线引导（民匠有约/安心云/代理商）、核心优势展示（合规安全/智能撮合/专业服务/灵活结算）、行业解决方案展示、合作伙伴背书、CTA 转化引导 |
+| 2 | 产品 | 民匠有约 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/minjiang.html) | 1. 顶部 Tab 导航（功能/方案/案例/帮助/立即体验）<br>2. Hero 区「立即体验」CTA 按钮<br>3. 全流程图解步骤圆点可点击<br>4. 核心功能卡片 hover 发光<br>5. 用户评价轮播自动切换<br>6. 行业场景标签点击筛选<br>7. FAQ 手风琴折叠展开<br>8. 资质展示图片放大查看<br>9. 底部「开启灵活用工」CTA | 产品 Hero 展示、全流程数字化图解、8 大核心功能介绍（智能撮合/电子合同/商业保险/即时结算/智能预警/应急响应/数据看板/合规保障）、用户评价展示、4 大行业场景、精选客户案例、FAQ 解答、合规资质展示、最终 CTA |
+| 3 | 产品 | 民匠安心云 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/anxinyun.html) | 1. 顶部子页面导航条<br>2. 功能模块卡片网格布局<br>3. 模块图标 hover 放大<br>4. 场景分类 Tab 切换<br>5. 「免费试用」按钮<br>6. 对接标记（钉钉/企微）高亮 | 8 大模块介绍（审批/考勤/组织/协作/文件/公告/钉钉对接/企微对接）、适用场景展示、子页面入口（功能/场景/帮助/税务）、CTA 转化 |
+| 4 | 产品 | 城市代理 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/agent.html) | 1. 收益阶梯表格 hover 高亮当前行<br>2. 4 步入驻流程步骤条<br>3. 「申请成为代理」表单提交<br>4. 代理案例卡片<br>5. 「立即咨询」按钮 | 合作优势展示（6 大支持）、三级返佣阶梯表、4 步入驻流程、成功案例展示、申请入口 |
+| 5 | 产品 | 代理商选择 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/agent-select.html) | 1. 代理商卡片网格<br>2. 卡片点击选中（边框变色+勾选）<br>3. 「确认选择」按钮<br>4. 地区筛选下拉<br>5. 搜索框输入 | 代理商列表展示、地区筛选、搜索、选择确认、入驻指引 |
+| 6 | 产品 | 民匠功能 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/minjiang-features.html) | 1. 功能分类侧边栏<br>2. 功能卡片 hover 展示详情<br>3. 「了解详情」按钮<br>4. 分类 Tab 切换 | 智能撮合引擎、电子合同系统、商业保险服务、即时结算系统、智能预警机制、应急响应体系、数据可视化看板、合规保障体系 |
+| 7 | 产品 | 民匠方案 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/minjiang-solutions.html) | 1. 行业方案 Tab 切换<br>2. 方案详情展开/收起<br>3. 「获取方案」按钮<br>4. 方案对比功能 | 物流仓储解决方案、餐饮连锁解决方案、零售商超解决方案、智能制造解决方案 |
+| 8 | 产品 | 民匠案例 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/minjiang-cases.html) | 1. 案例卡片网格<br>2. 案例分类筛选<br>3. 「查看详情」弹窗<br>4. 案例搜索 | 物流行业案例、餐饮行业案例、零售行业案例、制造行业案例 |
+| 9 | 产品 | 民匠应急 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/minjiang-emergency.html) | 1. 应急流程步骤条<br>2. 「立即调度」按钮<br>3. 应急表单提交<br>4. 调度地图交互 | 应急用工调度流程、24 小时响应机制、临时用工解决方案、应急预案管理 |
+| 10 | 产品 | 民匠帮助 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/minjiang-help.html) | 1. 搜索框输入实时筛选<br>2. FAQ 手风琴折叠<br>3. 分类导航侧边栏<br>4. 「联系客服」按钮<br>5. 「提交工单」按钮 | 搜索帮助、常见问题解答、分类帮助文档、工单系统 |
+| 11 | 产品 | 安心云功能 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/anxinyun-features.html) | 1. 功能模块卡片<br>2. 模块详情弹窗<br>3. 「立即体验」按钮<br>4. 功能分类筛选 | 审批流程、考勤打卡、组织架构、任务协作、文件管理、公告通知、钉钉集成、企微集成 |
+| 12 | 产品 | 安心云场景 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/anxinyun-scenarios.html) | 1. 场景卡片 hover<br>2. 场景详情展开<br>3. 「适用场景」标签筛选 | 中小企业管理场景、团队协作场景、远程办公场景、合规管理场景 |
+| 13 | 产品 | 安心云帮助 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/anxinyun-help.html) | 1. 搜索框实时筛选<br>2. FAQ 折叠展开<br>3. 文档分类导航 | 使用教程、常见问题、视频教程、API 文档 |
+| 14 | 产品 | 安心云税务 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/anxinyun-tax.html) | 1. 流程图步骤点击<br>2. 「立即咨询」按钮<br>3. 税务计算器 | 税务服务流程、个税计算、社保服务、税务筹划 |
+| 15 | 控制台 | 登录 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/login.html) | 1. 手机号输入框（实时格式校验）<br>2. 密码输入框（显示/隐藏密码切换）<br>3. 「获取验证码」按钮（60 秒倒计时）<br>4. 「登录」按钮（表单校验后提交）<br>5. 「注册账号」链接跳转<br>6. 「忘记密码」链接<br>7. 「短信验证码登录」Tab 切换<br>8. 微信/钉钉扫码登录 | 账号密码登录、短信验证码登录、扫码登录入口、登录状态保持、登录失败提示 |
+| 16 | 控制台 | 认证验证 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/verify.html) | 1. 身份证号输入（18 位校验）<br>2. 人脸识别验证（实时摄像头）<br>3. 「提交认证」按钮<br>4. 认证进度条<br>5. 认证结果弹窗 | 企业法人实名认证、人脸识别、身份证 OCR、认证状态查询 |
+| 17 | 控制台 | 产品中心 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/account-center.html) | 1. 产品卡片网格布局<br>2. 「立即使用」按钮<br>3. 快捷入口卡片<br>4. 最近使用列表<br>5. 产品分类 Tab | 产品总览、快捷入口导航、最近使用记录、产品状态展示 |
+| 18 | 控制台 | 资金账户 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/account-wallet.html) | 1. 4 个 Tab 切换（充值/退款/交易流水/母子公司）<br>2. 余额卡片展示<br>3. 「充值」按钮（跳转充值页）<br>4. 「退款」按钮（弹窗填写退款原因）<br>5. 筛选下拉（时间/类型/状态）<br>6. 表格行内操作（查看详情/导出）<br>7. 分页控件<br>8. 母子公司方向筛选（母公司→子公司/子公司→母公司）<br>9. 子公司下拉筛选 | 账户余额展示、充值记录查询、退款申请管理、交易流水导出、母子公司资金划拨管理、资金状态实时更新 |
+| 19 | 控制台 | 银行账户 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/account-bank.html) | 1. 银行卡卡片列表<br>2. 「添加银行卡」按钮（弹窗表单）<br>3. 「设为默认」按钮<br>4. 「解除绑定」按钮（二次确认）<br>5. 开户行下拉选择<br>6. 账号类型选择（对公/对私） | 银行卡绑定、默认银行卡设置、开户行管理、银行卡信息维护 |
+| 20 | 控制台 | 合同管理 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/account-billing.html) | 1. 合同列表表格<br>2. 状态标签筛选（待签署/已签署/已到期）<br>3. 「发起合同」按钮<br>4. 「在线签署」按钮（弹窗）<br>5. 「下载合同」按钮<br>6. 「续签合同」按钮<br>7. 到期提醒标识 | 合同列表管理、电子合同签署、合同下载、合同续签、到期提醒、合同状态追踪 |
+| 21 | 控制台 | 母子公司 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/account-fund.html) | 1. 资金划拨表单<br>2. 划拨方向单选（母公司→子公司/子公司→母公司）<br>3. 子公司下拉选择<br>4. 金额输入框<br>5. 「确认划拨」按钮<br>6. 流水表格筛选<br>7. 「导出流水」按钮 | 母子公司资金划拨、划拨流水查询、资金导出、划拨审批 |
+| 22 | 控制台 | 消息中心 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/account-message.html) | 1. 消息列表<br>2. 消息类型 Tab（全部/系统/审批/通知）<br>3. 「全部标为已读」按钮<br>4. 消息卡片点击详情<br>5. 未读红点标识<br>6. 消息搜索 | 系统消息展示、审批通知、业务通知、消息已读管理、消息搜索 |
+| 23 | 控制台 | 权限概况 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/account-permission.html) | 1. 权限分类 Tab<br>2. 权限树展开/折叠<br>3. 权限详情点击查看<br>4. 权限分组筛选 | 权限分类展示、权限编码说明、权限使用场景、权限申请入口 |
+| 24 | 控制台 | 子公司管理 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/account-project.html) | 1. 子公司卡片列表<br>2. 「创建子公司」按钮<br>3. 子公司详情弹窗<br>4. 「编辑信息」按钮<br>5. 「查看成员」按钮<br>6. 子公司状态标签 | 子公司创建、子公司信息管理、子公司成员管理、子公司状态追踪 |
+| 25 | 控制台 | 企业实名 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/account-realname.html) | 1. 企业信息表单<br>2. 「上传营业执照」按钮（图片上传+预览）<br>3. 「上传法人身份证」按钮<br>4. 「提交认证」按钮<br>5. 认证状态进度条<br>6. 认证结果提示 | 企业基本信息填写、法人信息填写、资质文件上传、实名认证提交、认证状态查询 |
+| 26 | 控制台 | 角色管理 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/account-role.html) | 1. 角色列表表格<br>2. 「新建角色」按钮<br>3. 「编辑」按钮<br>4. 「删除」按钮（二次确认）<br>5. 角色成员数标识<br>6. 权限预览 | 角色创建、角色编辑、角色删除、角色权限预览、角色成员管理 |
+| 27 | 控制台 | 角色编辑 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/account-role-edit.html) | 1. 角色信息表单<br>2. 权限树勾选（树形展开/折叠）<br>3. 「全选」/「清空」按钮<br>4. 权限分组 Tab 切换<br>5. 「保存角色」按钮<br>6. 「取消」按钮（未保存提示） | 角色名称编辑、权限勾选、权限分组管理、角色保存 |
+| 28 | 控制台 | 安全中心 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/account-security.html) | 1. 「修改密码」按钮<br>2. 「开启两步验证」开关<br>3. 登录设备列表<br>4. 「移除设备」按钮<br>5. 登录日志查看<br>6. 「绑定手机」按钮 | 密码修改、两步验证、登录设备管理、登录日志查询、手机绑定 |
+| 29 | 控制台 | 用户管理 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/account-user.html) | 1. 用户列表表格<br>2. 「邀请用户」按钮<br>3. 「批量导入」按钮<br>4. 角色分配下拉<br>5. 「启用/禁用」开关<br>6. 「重置密码」按钮<br>7. 「删除用户」按钮<br>8. 批量操作栏<br>9. 搜索框+筛选 | 用户 CRUD、批量导入、角色分配、账户启用/禁用、密码重置、用户搜索筛选 |
+| 30 | 业务流程 | 业务流程文档 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/business-process.html) | 1. SVG 流程图卡片悬浮高亮<br>2. 标注框拖拽移动<br>3. 「框」按钮切换标注框显示/隐藏<br>4. 「记」按钮切换标注记号显示/隐藏<br>5. 左侧面板「页面说明」「功能流程」Tab 切换<br>6. 锚点跳转（注册流程/多主体/主子管理员/母子公司） | 注册全流程图（爱签认证/中信开户）、多主体关联关系图、主子管理员权限层级图、母子公司组织结构图、标注系统（框+记）、页面说明面板 |
+| 31 | 其他 | 关于我们 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/about.html) | 1. 公司时间线滚动动画<br>2. 「加入我们」按钮跳转<br>3. 「联系我们」按钮跳转<br>4. 文化卡片悬浮 | 公司介绍、发展历程、企业文化、团队介绍 |
+| 32 | 其他 | 加入我们 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/career.html) | 1. 岗位分类筛选<br>2. 岗位卡片展开详情<br>3. 「投递简历」按钮（弹窗表单）<br>4. 「上传简历」文件上传<br>5. 搜索框 | 招聘岗位列表、岗位详情、简历投递、岗位分类筛选 |
+| 33 | 其他 | 联系我们 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/contact.html) | 1. 地图标注点击<br>2. 「导航」按钮<br>3. 留言表单（姓名/电话/内容）<br>4. 「提交留言」按钮<br>5. 表单校验 | 联系方式展示、公司地图定位、留言表单、在线咨询入口 |
+| 34 | 其他 | 新闻动态 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/news.html) | 1. 新闻分类 Tab（公司新闻/行业资讯/媒体报道）<br>2. 新闻卡片点击详情<br>3. 「阅读全文」按钮<br>4. 时间筛选<br>5. 搜索框 | 公司新闻、行业资讯、媒体报道、新闻搜索、新闻分类 |
+| 35 | 其他 | 隐私政策 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/privacy.html) | 1. 锚点目录点击跳转<br>2. 内容展开/折叠<br>3. 「同意政策」按钮 | 隐私保护条款、数据收集说明、Cookie 使用说明、用户权利说明 |
+| 36 | 其他 | 服务中心 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/service-center.html) | 1. 协议目录导航<br>2. 协议内容展开<br>3. 「同意协议」按钮 | 服务条款、使用协议、知识产权声明、免责声明 |
+| 37 | 其他 | 合同签署 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/contract-sign.html) | 1. 签署流程步骤条<br>2. 「预览合同」按钮<br>3. 「确认签署」按钮<br>4. 电子签章板<br>5. 「下载合同」按钮 | 电子合同签署流程、合同预览、电子签章、合同下载 |
+| 38 | 其他 | 开发者中心 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/developer-center.html) | 1. API 文档侧边导航<br>2. 代码示例复制按钮<br>3. 「创建应用」按钮<br>4. 「申请 API Key」按钮<br>5. 接口测试面板 | API 文档、SDK 下载、接入指南、接口测试、应用管理 |
+| 39 | 其他 | 消息详情 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/message-detail.html) | 1. 消息详情全文展示<br>2. 「标记已读」按钮<br>3. 「删除消息」按钮<br>4. 「上一条/下一条」导航<br>5. 消息附件下载 | 消息详情查看、消息操作、附件下载、消息导航 |
+| 40 | 导航 | 导航索引页 | [访问](https://zhc1231.github.io/mjyy-gw/annotation/navigation.html) | 1. 分组卡片导航（产品/文档/控制台/其他）<br>2. 卡片 hover 上浮<br>3. 「📄 页面说明」面板<br>4. 「🔄 功能流程」面板<br>5. 业务流程分组绿色主题区分<br>6. 点击卡片跳转对应页面 | 全部页面索引、分组导航、业务流程分组置顶区分、页面说明面板 |
 
 ### B. GitHub Pages 地址
 
